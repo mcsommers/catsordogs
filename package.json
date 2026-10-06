@@ -1,0 +1,13 @@
+{
+  "name": "cats-or-dogs",
+  "private": true,
+  "scripts": {
+    "db:start": "supabase start",
+    "db:stop": "supabase stop",
+    "db:reset": "supabase db reset",
+    "db:test": "supabase test db"
+  },
+  "devDependencies": {
+    "supabase": "^2.120.0"
+  }
+}
