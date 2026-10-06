@@ -1,0 +1,154 @@
+# MVP Scope & Requirements — Authenticity-First Dating App
+
+Sep 27, 2026 · @Mike
+
+## MVP Philosophy
+
+The single hypothesis this MVP needs to test: **will people reliably show up daily to record an unscripted video, and does that produce profiles people trust more than photo-based ones?** Everything in scope exists to test that. Everything deferred is deferred because it either assumes the hypothesis already holds, or because it's a large build that isn't needed to find out.
+
+Given limited engineering resources, the MVP deliberately avoids two of the hardest technical problems raised in earlier discussion: multimodal AI-based video ranking, and biometric identity verification. Traditional filtering plus transcript-based text matching stands in for AI ranking at launch; a trust mechanic that's easy to reason about and cheap to build stands in for ID verification. Both can be layered on in v2 once the core loop is proven.
+
+## Core User Flows
+
+&#91;embedded content: core user flow · signup once, daily gate every session\]
+
+Signup drops a new user straight into the daily gate with today's question, and that first recording unlocks the feed. Every session after that hits the same gate first — no feed or browsing until today's response is recorded, while matching and messaging stay available.
+
+## Functional Requirements (for engineering)
+
+Every row below is scoped for a v1 build. Priority: **Must** = the core loop breaks without it; **Should** = launch is weaker but survivable without it; **Defer** = explicitly v2, listed here so it isn't accidentally pulled forward.
+
+| Area | Requirement | Priority |
+| --- | --- | --- |
+| Accounts | Sign up and log in (see sign-up flow below). | Must |
+| Accounts | Build Profile (step 2 of sign-up) collects: photos ("Add a few photos"; at least 1 is required, up to 6; Continue stays disabled until one is added), first name, birthday, gender (Woman / Man / Non-binary / More), pronouns (She/her, He/him, They/them, or add your own), sexual orientation (select all that apply: Straight, Gay, Lesbian, Bisexual, Asexual, or add your own), height, living in (city), job title, company, school, About Me (500 characters), lifestyle tags (e.g. Social drinker, Non-smoker, Dog lover, Cat lover, Vegetarian, Gym regular, Night owl, Aries), languages, interests (choose up to 5), and relationship goals (single choice from a fixed list, from "Long-term relationship" to "Still figuring it out"). | Must |
+| Accounts | "Cats or Dogs?" is the app's name. The Welcome screen introduces the concept ("Pick your pack"), with Get Started and Log In. | Must |
+| Daily question engine | After Build Profile, a short "How it works" screen (03b) explains the mechanic in three steps (everyone gets the same question; answer on camera in up to 14 seconds; your answer unlocks the feed), then a "Record My First Answer" button leads to the first recording. Copy that mentions the recording length should read from the admin-set recording length. | Must |
+| Accounts | Age is calculated from the birthday. The birthday entered at sign-up serves as the self-attested age check (see below). Profiles display name and age (e.g. "Jordan, 27"). | Must |
+| Accounts | Sign-up is a two-step flow ("Step 1 of 2: Create your account", then "Step 2 of 2: Build your profile"). Step 1 offers Continue with Apple, Continue with Google, or email and password, with a Terms & Privacy Policy agreement line. Existing users log in from the Welcome screen. | Must |
+| Accounts | Age verification at signup (self-attestation for MVP; hard ID checks deferred) | Must |
+| Daily question engine | Admin-authored question calendar, scheduled arbitrarily far ahead | Must |
+| Daily question engine | Admin override to swap a scheduled question for a current-events one | Must |
+| Daily question engine | New signups start at the daily gate with today's question; their first recording is the gate unlock. Admin setting for testing: onboarding question = today's question (default) or a fixed universal question (e.g. "Cats or dogs?") | Must |
+| Daily question engine | Global daily question (same question, same UTC day, for all users) | Must |
+| Video capture | In-app camera recording, hard-capped at a duration set via the admin backend (default: 14 seconds) | Must |
+| Video capture | Background options (None / Blur / Photo, including a virtual photo background) are deferred and are not on the recording screens. If added later, build them as an isolated, removable module and confirm feasibility with the video service (Mux) first. | Defer (later) |
+| Video capture | Recording is hands-free tap-to-start, tap-to-stop. States: Ready (04: timer 0:00, hint "Tap to start recording"), Countdown (04d: a 3-second "3, 2, 1" over the camera preview, hint "Get ready…"), and Recording (04e: progress ring and live timer count up toward the cap, the record button becomes a stop square, hint "Tap to stop"). Recording stops automatically at the cap. A front/back camera flip is available. | Must |
+| Video capture | Re-record before submit (not after; no editing post-submission) | Must |
+| Video storage | Permanent per-user, per-question video archive tied to profile | Must |
+| Video storage | Auto-generated captions per video, editable before the video goes live | Must |
+| Video storage | Review & Submit (05): after recording, the user sees the video with its auto-generated caption ("Auto-captioned from your audio — tap to edit") and can Re-record or submit. Edit Captions (05b) shows the caption in timed segments (e.g. 0:00 – 0:05), lets the user edit the text of any segment, and has "Reset to auto". Reviewing captions is optional; captions cannot be edited after submitting. | Must |
+| Video storage | Answer Submitted (05c): a confirmation that says "Your response is live. You can now see what everyone else said today," which unlocks the feed. | Must |
+| Access gate | Block browsing until today's response is recorded (matching and messaging remain available) | Must |
+| Access gate | Gate does not block viewing or editing one's own past archive | Should |
+| Access gate | Users may skip today's question from the recording screen, after a confirmation ("You won't be able to see today's responses in the feed until you answer. Your matches and chats stay available."). Skipping is not final: the user can change their mind and record today's answer at any time that day (e.g. from the locked-feed screen), which unlocks the feed. | Must |
+| Access gate | Skipping or not yet answering locks only the Feed tab. The Matches (incl. Chats) and Profile tabs and everything inside them stay fully available. | Must |
+| Access gate | While the feed is locked, everything in the Matches tab still works: accepting or declining incoming requests, outgoing requests, and chats. | Must |
+| Matching | The "more options" (three-dot) button and the heart (match) button always appear side by side, with more options on the left and the heart on the right, in the same place on every screen that has them: bottom right of each feed video and bottom right of the photo at the top of a profile page (including the full-screen answer view, 06k). Profile pages no longer have a more-options button at the top right. | Must |
+| Matching | A user can initiate a match (send a match request) from the feed or from any user's profile page, via the heart button. Initiating from a profile does not require the feed to be unlocked. | Must |
+| Matching | A match request notifies the recipient. It appears in the recipient's Matches tab under Incoming, showing the sender's name and age, the answer they liked ("Liked your answer to ..."), and the time. The recipient can View Profile, Accept (on the sender's profile), or Decline. Declining does not notify the sender. | Must |
+| Matching | The sender sees the request under Outgoing as "Waiting for a response · Sent [when]". Each outgoing row has two buttons: Cancel Request (secondary) and View Profile (primary, opens the person's profile). There is no separate Pending badge or small cancel icon. Cancelling does not notify the recipient, and the sender can send a new request later by liking one of their answers again. | Must |
+| Matching | A mutual match (the recipient accepts or sends their own request) opens a chat between the two users. Chat is unavailable before a match. | Must |
+| Messaging | Chat between matched users supports text messages (with emoji) only. The Chats tab lists conversations with the other person's name, the last message preview, and a relative time. | Must |
+| Messaging | A user can turn off notifications for a single conversation (with a confirmation: "You won't be notified about new messages from [name] until you turn this back on."). | Should |
+| Messaging | Blocking a user removes any match and ends the conversation; neither person can message the other. | Must |
+| Messaging | Video and photo messages are not in v1. They may be added later, so message storage should not assume text-only content. | Defer (later) |
+| Matching | Confirmation dialogs before sending a request say the other person will be notified, and that they can chat only if both match. | Must |
+| Access gate | While locked, the Feed tab shows a "Today's feed is locked" screen that explains the feed unlocks once the user records today's answer, shows today's question, and offers an "Answer Today's Question" button. The button opens the full recording flow (record, review, submit); the feed unlocks once the answer is submitted. If the user backs out without submitting, they return to the locked feed. | Must |
+| Browsing | Skippable video feed with an admin-configurable minimum watch time before skip unlocks | Must |
+| Browsing | Muted autoplay with captions on by default | Should |
+| Matching | Filters are limited to attributes users actually enter on their profile: gender, sexual orientation, age range, distance, height, occupation (job title), smoking and drinking (lifestyle tags), interests, and relationship goals. Education level, religion, star sign, and family plans are not collected on profiles in v1, so they are not filters in v1. | Must |
+| Matching | The profile questions will be refined as user feedback comes in. The Build Profile fields, profile display, and Feed Settings filters must change together: adding or removing a profile question means adding or removing the matching filter. Build the filter list as configuration tied to profile fields, not hard-coded screens. | Must |
+| Matching | Text-based match ranking using transcribed captions (not video/audio analysis) — this is the default sort for the feed, so it's load-bearing, not optional | Must |
+| Matching | Multimodal AI ranking on video content | Defer (v2) |
+| Matching | Feed Settings screen with two sections. **Filters** (hard rules for who can appear): Show me (Women / Men / Everyone), age range, maximum distance, height range, and pick-lists for sexual orientation, occupation, smoking, drinking, relationship goals, and interests, each defaulting to "Any". **Ranking** (order only): six Low / Medium / High weights for Shared Interests, Relationship Goals Match, Response Depth, Lifestyle Compatibility, Distance, and Recency. | Must |
+| Matching | Ranking weights are user-adjustable and separate from the hard filters. Followed profiles' current-day videos still come first (subject to the followed-content cap). The user can reset ranking to the recommended defaults. | Must |
+| Matching | Feed Settings only change what the user sees; they never change what others see about them. | Must |
+| Daily reward | View count visible to the poster on each of their own responses, shown as an eye icon with a number on the response thumbnail in "Your Answers" on their own profile. Only the count is shown, never who viewed. | Must |
+| Daily reward | A user's own profile shows how many people have viewed their profile (e.g. "186 profile views"). Only the count is shown, never who viewed. Not visible on other people's profiles. | Must |
+| Daily reward | There is no separate reaction signal in v1. A "like" is a match request (see Matching). The lightweight-reaction idea from the earlier draft is dropped. | Decided |
+| Daily reward | Streaks: a user's streak is the number of consecutive days (UTC) they have answered the daily question, shown as a badge (e.g. "14-day streak") on their feed videos, on their profile for other people, and on their own profile. Streaks are public. Missing a day, including skipping the question and not answering it before the day ends, resets the streak to 0. Answering later on the same day keeps it. | Should |
+| Accounts | Profile pages show a "Joined [month year]" badge. A user's own profile shows their streak, match count, and join date. | Should |
+| Moderation | The "more options" menu is identical everywhere it appears: on a feed video (06e), on a profile page (06p), and on the full-screen answer view (06k). Options, in order: Follow (or Unfollow if already followed), Not Interested, Report, Block, then Cancel. The same set is shown in all three places; only Follow/Unfollow changes with follow state (06r, 06t). | Must |
+| Moderation | Per-video flagging by other users, from the "more options" menu on a feed video (confirmation: "We'll review this response for violations of our community guidelines. [Name] won't be notified.") | Must |
+| Moderation | Users can also report a profile (from the "more options" menu on a profile page) and a chat message (from the flag icon in the chat header, next to the notification bell; screens 07c and 07m). There is no long-press message menu and no "Copy Text" feature. Each uses a confirmation dialog stating the reported person won't be notified. Reports of profiles and messages go to the moderator review queue. They never disable an account or hide a profile or message automatically. A profile reported by many different people is marked high priority in the queue (the number is an admin setting), and a moderator decides. | Must |
+| Moderation | Block (from the feed menu or a profile's menu) removes any match, ends the conversation, and hides both users from each other. The confirmation states: "You won't see each other again, and any match will be removed. You and [name] won't be able to message each other." | Must |
+| Moderation | "Not Interested" (in the more options menu on a feed video, a profile page, or the answer view) removes that person from the user's feed without notifying them. | Should |
+| Moderation | Flag-threshold auto-disable of a single flagged video (never the whole account) | Must |
+| Moderation | Moderator review queue and appeals path for disabled videos | Must |
+| Moderation | Flag-weighting (e.g., a flag from a matched user vs. a stranger) | Defer (v2) |
+| Notifications | Daily push notification when the question goes live | Must |
+| Identity trust | Biometric/liveness ID verification | Defer (v2, pending legal review) |
+| Notifications | Push notification when a mutual match occurs | Must |
+| Follow | Users can follow another profile without a mutual match | Must |
+| Follow | A user follows another user from the "more options" menu (Follow / Not Interested / Report / Block) on a feed video, or from the menu on a profile page, after a confirmation: "She won't know you're following her. Her answer will show up at the top of your feed every day she posts." | Must |
+| Follow | A user can unfollow from the same menus, where "Follow" becomes "Unfollow" for profiles they already follow (06r on the feed, 06t on a profile). A confirmation (06s) says the person won't be notified, their answers will no longer show up at the top of the feed, and the user won't be able to nudge them. Unfollowing never notifies the other person. | Must |
+| Matching | Following overrides filters: a followed profile's current-day video always appears at the top of the feed even if the person falls outside the viewer's filters (age, distance, height, etc.), subject to the followed-content cap. Blocked users and disabled videos are still excluded. | Must |
+| Follow | A user's own profile shows their follower count (e.g. "24 followers") with a note that identities stay private. The count is the only follower information ever shown. | Must |
+| Follow | A follower sees a Nudge card at the top of a followed user's profile only while that user has not yet answered today's question. Tapping "Nudge [name]" opens a confirmation ("She'll be told that a follower wants to hear her answer to today's question. She won't know who. You can nudge her once a day."). Once the user answers, the card disappears and that day's answer shows in their answer list. | Must |
+| Profile / archive | Tapping an answer in a person's profile (own or someone else's) opens it full-screen (06k Answer Detail), showing that day's question with its date, the caption, and the person's name, distance, and streak. A back arrow in the upper left returns to the profile. From this view the user can scroll up and down to move through that person's other answers in timeline order (scroll to the next one for the next older answer, back for the newer one), without returning to the profile. Scrolling stops at the person's first and most recent answers. The question label and date update to match each answer as it comes into view. The same minimum-watch and skip rules as the feed apply. | Must |
+| Follow | Followed user sees that they have followers, but never a follower's identity | Must |
+| Follow | A user can disallow followers entirely via an "Allow followers" toggle in Privacy & Safety (08b). When off, no one can follow them, and existing followers can no longer nudge them. | Must |
+| Accounts | Edit Profile (08d, from the Account list) reuses the Build Profile fields and layout, pre-filled with the user's current values, with a "Save Changes" button. Edits update the profile immediately. | Must |
+| Notifications | Notification settings (08c) let a user turn each type on or off separately for push and for email. Types: Daily question, Matches (requests and mutual matches), Messages, and Nudges. Defaults: push on for all types; email on only for Matches. Every email carries a working unsubscribe link. | Must |
+| Notifications | Per-conversation mute is separate from these settings (see Messaging). | Should |
+| Accounts | Help & Support in the Account menu opens an external help and support website in the browser. No in-app help screens are built. The URL is a configuration value (to be supplied). | Must |
+| Accounts | Privacy & Safety screen (08b, reached from the Account list on the user's own profile) contains: the Allow followers toggle, a Blocked users list (with count) where a user can review who they've blocked, and Delete account. | Must |
+| Accounts | Delete account (in Privacy & Safety) permanently and immediately deletes everything after a single confirmation step: the profile, photos, all answer videos, chats, and matches. There is no grace period and no undo. The permanent answer archive therefore lasts until the user deletes their account. Legal review of retention and any data that must be kept (e.g. moderation records) is still needed before launch. The confirmation screen is not yet designed. | Must |
+| Accounts | Other users' views of a deleted account's content disappear immediately: their videos leave feeds, and the account disappears from others' Matches, Chats, and Outgoing/Incoming lists. | Must |
+| Follow | A follower can nudge a followed profile, prompting a notification that a follower wants to hear today's answer | Must |
+| Follow | Nudges are rate-limited to one per follower, per followed profile, per day | Must |
+| Follow | Nudge notifications state that a follower wants to hear today's answer, with a count when more than one, without ever revealing a follower's identity | Must |
+| Matching | Followed profiles' current-day videos surface at the top of the feed, ahead of filtered/algorithmic ranking | Must |
+| Matching | Followed-profile content is capped at a configurable share of the visible feed, so discovery content still surfaces even for users who follow many profiles | Should |
+| Follow | A followed user receives at most one nudge notification per day, no matter how many followers send a nudge that day | Must |
+| Matching | By default, the feed starts with today's answers, ranked by predicted interest match | Must |
+| Matching | Automatic day rollover: if no matching videos exist for today, or when the user reaches the end of a day's supply while scrolling, the feed automatically continues with the previous day's answers, and then the day before that, and so on. Each rolled-over day uses the same filters, ranking, and follow rules. | Must |
+| Matching | The rollover goes back a limited number of days, set by an admin setting (feed look-back days, default 7). When the user has seen everything within that limit, the feed shows a "You're all caught up" end screen (06v) that says what they've seen (e.g. "...from the last 7 days that matches your filters"), with buttons to Browse Past Questions and Adjust Feed Settings. The number of days in that text comes from the setting. | Must |
+| Matching | When the feed rolls to an earlier day, the question at the top changes to that day's question, and a banner shows the transition (e.g. "That's all of today. Showing yesterday, Oct 4"). The banner is temporary: it disappears once the user scrolls past the first video from the earlier day, and it does not return for that day. Screen 06u. | Must |
+| Browsing | The Question Pill at the top of the feed shows the date of the question it belongs to, before the question text (e.g. "Oct 5 · What are your thoughts on graffiti?"). When the feed rolls to an earlier day, the pill shows that day's date. Screens 06 and 06u. | Must |
+| Matching | The user stays on the day rollover only for the current session; next time the feed opens it starts at today again. | Must |
+| Matching | Users can switch the feed to any past day and see that day's answers, subject to the same filters | Must |
+| Matching | Keyword search over question text, with live autosuggest as the user types | Must |
+| Matching | A Browse Questions screen lists past questions newest first, each with its date, the question text, and a response count (e.g. "412 responses"); today's question is marked "Live now · Today's feed". Search (06d) filters this list as the user types and highlights the matching word in each question. Selecting a question opens that day's feed. | Must |
+
+## Design Requirements (for design)
+
+| Screen | Must accomplish | Constraints from earlier discussion |
+| --- | --- | --- |
+| Onboarding / first recording | First-run camera recording of today's question, framed as a welcome moment | 14-second cap; clear one-take-then-review flow |
+| Daily gate | Make it obvious today's response is required before anything else, without feeling punitive | Should read as "today's ritual," not a paywall or a blocker screen |
+| Locked feed (06m) | Shown on the Feed tab when the user has skipped or not yet answered today's question. Explains how to unlock the feed and links to the recording screen | Other tabs stay reachable; the screen must not read as an error or a paywall |
+| Recording screen | Countdown, live 14-second timer, re-record before submit | No background blur/replace in v1; no post-submit editing |
+| Caption review | Let the user check and correct the auto-generated caption before it goes live | Should feel like a quick confirm, not a chore |
+| Video feed / browse | Fast, swipe-like scanning despite video content | Minimum watch time before skip enabled; captions visible by default; muted autoplay; followed profiles' videos appear first, visually distinct enough that it's clear why they're at the top |
+| Profile / archive view | Show a scrollable history of past responses, not just today's | This is the core differentiator — should feel like a meaningful timeline, not a settings log; opening any answer (06k) lets the user keep scrolling up and down through that person's timeline without going back to the profile |
+| Match / filters (Feed Settings, 06i) | Filters (who can appear) and Ranking weights (what order) on one screen, with reset and save | Filters use familiar controls (segmented choice, range sliders, pick-lists defaulting to "Any"); ranking uses the same Low / Medium / High control for all six signals; copy must state that settings only affect the user's own feed |
+| Own-response feedback (08 Profile) | Show the user view counts on each of their answers and a count of profile views | This is the daily, match-independent reward — should be visible without digging; counts only, never identities |
+| Moderation / flag | Simple in-context flag action on a single video | Flagging a video should not read as flagging the person |
+| Nudge action (06n profile variant, 06o confirmation) | Let a follower prompt someone to answer today's question, without feeling like pressure or a demand | Only shown on the profile of a followed user who hasn't answered today; confirmation says the person won't know who nudged; aggregated notification copy, not one-per-nudge |
+| Own profile follower count (08) | Show the user how many people follow them, without any identities | Count only, with an explicit "identities stay private" note |
+| Day switcher | Let users leave the today-only default and browse any past day's answers | Should reset back to today on next open, so browsing history never quietly becomes the default |
+| Question search | Let users find a specific past question by keyword | Autosuggest as they type; selecting a result should drop them into that day's feed |
+
+Overall tone: the product should feel more like a shared daily ritual than a swipe marketplace — closer in spirit to a habit app than to existing dating apps, since the daily question is the hook, not the browsing.
+
+## Explicitly Out of Scope for v1
+
+- **AI-based video/audio ranking.** Needs training data on real match outcomes that won't exist until after launch; text-transcript matching stands in for now.
+- **Biometric ID verification.** Triggers biometric privacy law (BIPA, GDPR special-category data) that needs legal review before any build starts; self-attested age at signup covers the MVP.
+- **Flag-weighting by relationship (matched user vs. stranger).** A refinement on top of basic per-video flagging, not required to prove the core loop.
+- **Public or viral question-sharing features** (e.g., letting non-users see "today's question"). Interesting for growth later, but adds scope without testing the core hypothesis.
+- **Per-user local-time question scheduling.** Launching with one global daily question (same UTC day for everyone) is simpler and still testable; per-timezone scheduling is a later optimization.
+- **Anonymous follow as an abuse vector.** A user who can follow someone without ever being identified can monitor that profile indefinitely with no way for the target to know who it is. Mitigation: the followed user must be able to disallow followers entirely via a privacy setting, follow counts should be visible enough that unusual attention is noticeable, and this feature should get extra scrutiny from moderation and legal before launch, not treated as a minor add-on.
+- **Daily questions double as first-ever questions.** New signups start with the day's question instead of a fixed easy one, so a heavy or divisive prompt can be someone's very first recording. The question calendar needs editorial care, and the admin fallback to a fixed universal question exists for cases where that isn't enough.
+
+## Pre-Build Open Questions
+
+- [x] Profile and chat-message reports: moderator review only, with high-priority marking for profiles reported by many different people. Nothing is hidden automatically.
+
+- [ ] Decide whether daily questions go through a "would this work as someone's first-ever question?" editorial check, since new signups now start with the day's question.
+- [ ] Confirm legal review of biometric/video data handling and retention before any storage architecture is finalized.
+- [ ] Decide the specific launch wedge (city or audience segment) before scoping localization or geographic matching logic.
+- [ ] Define the exact flag threshold and appeals SLA for disabling a video, so moderation queue tooling can be sized correctly.
+- [x] Decided by the design: captions are editable before submitting, review is optional, and captions cannot be edited after the video is live.

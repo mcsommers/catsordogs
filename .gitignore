@@ -1,0 +1,34 @@
+# OS
+.DS_Store
+
+# Secrets (never commit these)
+.env
+.env.*
+!.env.example
+*.pem
+*.p8
+*.p12
+*.key
+*.jks
+google-services.json
+GoogleService-Info.plist
+
+# Node / Expo
+node_modules/
+.expo/
+dist/
+web-build/
+npm-debug.*
+*.tsbuildinfo
+
+# Native builds
+ios/
+android/
+
+# Supabase local
+supabase/.branches/
+supabase/.temp/
+
+# Editor
+.vscode/
+.idea/
