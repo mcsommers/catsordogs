@@ -256,3 +256,28 @@ test('the city on a profile is looked up for distance, and people cannot set coo
   assert.ok((await alice.client.from('profiles').update({ latitude: 1, longitude: 1 }).eq('id', alice.id)).error);
   assert.ok((await alice.client.rpc('set_profile_location', { p_user_id: alice.id, p_city: 'x', p_latitude: 1, p_longitude: 1 })).error);
 });
+
+test('streaks and view counts: counts are visible, who viewed never is', async () => {
+  // Alice watched Bob's answer earlier (once through the link; Carol was refused and left no trace)
+  const mine = await bob.client.rpc('get_my_answers');
+  assert.ifError(mine.error);
+  assert.equal(mine.data.length, 1);
+  assert.equal(mine.data[0].answer_id, bobAnswer);
+  assert.equal(mine.data[0].view_count, 1);
+  assert.ok(!('viewer_id' in mine.data[0]));
+
+  const streak = await alice.client.rpc('get_streak');
+  assert.equal(streak.data, 1);
+  const bobsStreakSeenByAlice = await alice.client.rpc('get_streak', { p_user_id: bob.id });
+  assert.equal(bobsStreakSeenByAlice.data, 1);
+  const feed = (await alice.client.rpc('get_feed', { p_limit: 50 })).data as any[];
+  assert.equal(feed.find((r) => r.user_id === bob.id).streak_days, 1);
+
+  assert.ifError((await alice.client.rpc('record_profile_view', { p_user_id: bob.id })).error);
+  assert.ifError((await alice.client.rpc('record_profile_view', { p_user_id: bob.id })).error);
+  assert.equal((await bob.client.rpc('get_my_profile_view_count')).data, 1);
+  assert.equal((await alice.client.rpc('get_my_profile_view_count')).data, 0);
+
+  assert.ok((await alice.client.from('answer_views').select('*')).error, 'answer views are closed to the app');
+  assert.ok((await bob.client.from('profile_views').select('*')).error, 'profile views are closed to the app');
+});
