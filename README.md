@@ -128,7 +128,8 @@ push through Expo, email through [Resend](https://resend.com), honoring each per
 email on only for matches, by default). Every email has an unsubscribe link (the `unsubscribe` Edge Function), and a
 scheduled job (every 5 minutes) queues "today's question is live" for each person when their own local clock reaches
 the send time (default 9:00 AM, changeable by an admin in the `app_settings` table's `daily_question_notify_time`, and
-later in the admin panel). The phone reports its time zone with `set_time_zone`; until it does, a person is treated as UTC.
+later in the admin panel). The phone reports its time zone with `set_time_zone`; until it does, a person is treated as UTC. Anyone who has already answered today's
+question is skipped.
 
 **Resend setup (once):** add and verify your sending domain (`catsordogs.net`) in Resend, then create an API key.
 **Per environment (staging and production),** add these to that environment's file in `supabase/functions/` (see

@@ -46,7 +46,9 @@ grant execute on function public.set_time_zone(text) to authenticated;
 -- ---------------------------------------------------------------------------
 -- A scheduled job runs this every 5 minutes. It queues "today's question is
 -- live" for each person (with a finished profile) whose local date is the
--- question's date and whose local time has reached the admin-set time. Each
+-- question's date and whose local time has reached the admin-set time, unless
+-- they have already answered today's question (a live or disabled answer, the
+-- same test the daily gate uses). Each
 -- person is queued once per question (the queue's dedupe key), so running it
 -- often is safe, and a missed run is made up on the next one. Where 9:00 AM
 -- local falls before the question goes live (Australia, for example), the
@@ -75,6 +77,10 @@ begin
   where p.profile_completed_at is not null
     and (p_now at time zone coalesce(p.time_zone, 'UTC'))::date = q.question_date
     and (p_now at time zone coalesce(p.time_zone, 'UTC'))::time >= notify_at
+    and not exists (
+      select 1 from public.answers a
+      where a.user_id = p.id and a.question_id = q.id and a.status in ('live', 'disabled')
+    )
   on conflict (user_id, dedupe_key) do nothing;
   get diagnostics added = row_count;
   return added;

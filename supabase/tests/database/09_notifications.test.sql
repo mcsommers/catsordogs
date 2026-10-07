@@ -2,7 +2,7 @@
 -- push tokens, the daily-question notification, the queue that the worker
 -- reads, retries, email unsubscribe, and the schedule.
 begin;
-select plan(100);
+select plan(103);
 
 delete from public.answers;
 delete from public.videos;
@@ -14,6 +14,13 @@ create function pg_temp.at(h int, m int default 0) returns timestamptz language 
 as $$ select ((public.utc_today()::timestamp + make_interval(hours => h, mins => m)) at time zone 'utc') $$;
 create function pg_temp.uid(n int) returns uuid language sql
 as $$ select ('f' || lpad(n::text, 7, '0') || '-0000-0000-0000-000000000000')::uuid $$;
+create function pg_temp.answer_today(n int, st text) returns void language plpgsql as $$
+declare vid uuid := gen_random_uuid(); q uuid := (select id from public.questions where question_date = public.utc_today());
+begin
+  insert into public.videos (id, user_id, question_id, status, mux_playback_id, duration_seconds, captions_status, caption_segments, submitted_at)
+  values (vid, pg_temp.uid(n), q, 'ready', 'pb', 5, 'unavailable', '[]', now());
+  insert into public.answers (user_id, question_id, video_id, duration_seconds, status) values (pg_temp.uid(n), q, vid, 5, st);
+end $$;
 create function pg_temp.claims(n int) returns text language sql
 as $$ select json_build_object('sub', pg_temp.uid(n), 'role', 'authenticated')::text $$;
 create function pg_temp.person(n int, finished boolean default true) returns void language plpgsql as $$
@@ -249,6 +256,20 @@ select is(public.enqueue_daily_question_notifications(pg_temp.at(18)), 1, 'at 18
 select is((select user_id from public.notification_outbox), pg_temp.uid(1), 'and it is them');
 reset role;
 update public.app_settings set daily_question_notify_time = '09:00';
+
+-- people who already answered today are not reminded
+-- 1 has a live answer  2 a disabled one (still counts as answered)  3 a removed one (does not)  4 none
+reset role;
+delete from public.notification_outbox;
+update public.profiles set time_zone = null;
+select pg_temp.answer_today(1, 'live');
+select pg_temp.answer_today(2, 'disabled');
+select pg_temp.answer_today(3, 'removed');
+set local role service_role;
+select is(public.enqueue_daily_question_notifications(pg_temp.at(12)), 2, 'only the two people without a live or disabled answer are queued');
+select is((select array_agg(user_id order by user_id) from public.notification_outbox), array[pg_temp.uid(3), pg_temp.uid(4)], 'those are 3 and 4');
+select is((select count(*) from public.notification_outbox where user_id in (pg_temp.uid(1), pg_temp.uid(2))), 0::bigint, 'nobody who has answered is reminded');
+reset role;
 
 -- ---------------------------------------------------------------------------
 -- Schedule

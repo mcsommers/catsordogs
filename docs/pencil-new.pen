@@ -30843,7 +30843,7 @@
                   "fill": "$text-dark-muted",
                   "textGrowth": "fixed-width",
                   "width": "fill_container",
-                  "content": "When today's question goes live.",
+                  "content": "A daily reminder that today's question is live, sent at the same time every day in your time zone.",
                   "lineHeight": 1.35,
                   "fontFamily": "$font-body",
                   "fontSize": 12,

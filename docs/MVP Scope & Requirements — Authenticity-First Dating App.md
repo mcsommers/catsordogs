@@ -80,7 +80,7 @@ Every row below is scoped for a v1 build. Priority: **Must** = the core loop bre
 | Moderation | Flag-threshold auto-disable of a single flagged video (never the whole account) | Must |
 | Moderation | Moderator review queue and appeals path for disabled videos | Must |
 | Moderation | Flag-weighting (e.g., a flag from a matched user vs. a stranger) | Defer (v2) |
-| Notifications | Daily notification that the question is live, sent at a set time of day in each user's own time zone (default 9:00 AM local; an admin can change the time, in whole minutes). Each person gets it once per question, checked every 5 minutes. Where that local time comes before the question goes live (for example Australia, where 9:00 AM local is before 00:00 UTC), it is sent when the question goes live. The phone reports its time zone each time the app opens; someone with no time zone yet is treated as UTC. | Must |
+| Notifications | Daily notification that the question is live, sent at a set time of day in each user's own time zone (default 9:00 AM local; an admin can change the time, in whole minutes). Each person gets it once per question, checked every 5 minutes, and not at all if they have already answered today's question (a live or disabled answer counts). Where that local time comes before the question goes live (for example Australia, where 9:00 AM local is before 00:00 UTC), it is sent when the question goes live. The phone reports its time zone each time the app opens; someone with no time zone yet is treated as UTC. | Must |
 | Identity trust | Biometric/liveness ID verification | Defer (v2, pending legal review) |
 | Notifications | Push notification when a mutual match occurs | Must |
 | Follow | Users can follow another profile without a mutual match | Must |
@@ -154,7 +154,7 @@ Overall tone: the product should feel more like a shared daily ritual than a swi
 - [x] Not Interested on someone the user follows also unfollows them, and the confirmation says so ("Yes, Hide and Unfollow", 06w). Otherwise the button is "Yes, Hide" (06f).
 - [x] Blocks and Not Interested can both be undone from a new "Blocked and Not Interested" row in the Account list on the user's Profile (screens 08e to 08g).
 - [x] Daily question notification: sent at a set local time per user (default 9:00 AM, admin-editable), not at 00:00 UTC. The question stays global.
-- [ ] Decide whether the daily notification should skip people who have already answered today's question. As built, someone who finishes onboarding after the send time gets it at the next 5-minute check, even though they just answered. Suggested: skip anyone who already has an answer for today.
+- [x] The daily notification skips anyone who has already answered today's question (decided; includes new signups who answered while onboarding).
 - [ ] Decide whether daily questions go through a "would this work as someone's first-ever question?" editorial check, since new signups now start with the day's question.
 - [ ] Confirm legal review of biometric/video data handling and retention before any storage architecture is finalized.
 - [x] Location for distance: decided to look up coordinates from the typed city name on the server (no device permission). Still to do before launch: choose a paid lookup service (the default free one is for non-commercial use) and decide what the app says when a city cannot be found.
