@@ -40,6 +40,23 @@ Run from the project root unless noted.
 | `cd mobile && npm test` | Runs the app's tests |
 | `cd mobile && npm run typecheck` | Checks the app's TypeScript for errors |
 
+## Making yourself an admin
+
+Admins can edit the question calendar and app settings (through the admin panel, built in Phase 8).
+Nobody can make themselves an admin from the app. To add one, sign up in the app first, then run this
+in the SQL editor of the right Supabase project (the local one is at http://127.0.0.1:54323), replacing the email:
+
+```sql
+insert into public.admin_users (user_id)
+select id from auth.users where email = 'you@example.com';
+```
+
+## Local sample data
+
+`npm run db:reset` rebuilds the local database and loads `supabase/seed.sql`: a week of past questions and
+a couple of weeks of upcoming ones, so there is always a "today" question locally. The seed file is never
+applied to staging or production, so those need their real questions scheduled by an admin.
+
 ## Environments
 
 There are three separate Supabase projects so testing never touches real users' data:
