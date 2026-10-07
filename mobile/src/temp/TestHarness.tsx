@@ -17,6 +17,7 @@ export default function TestHarness() {
   const [genders, setGenders] = useState<string[]>([]);
   const [profile, setProfile] = useState<unknown>(null);
   const [message, setMessage] = useState('');
+  const [questionInfo, setQuestionInfo] = useState<unknown>(null);
 
   const say = (m: string) => setMessage(m);
 
@@ -86,9 +87,18 @@ export default function TestHarness() {
     say(error ? error.message : 'Sample filters saved.');
   }
 
+  async function loadQuestion() {
+    const today = await supabase.rpc('get_todays_question');
+    const onboarding = await supabase.rpc('get_onboarding_question');
+    const config = await supabase.rpc('get_app_config');
+    const err = today.error ?? onboarding.error ?? config.error;
+    if (err) return say(err.message);
+    setQuestionInfo({ today: today.data, onboarding: onboarding.data, config: config.data });
+  }
+
   return (
     <ScrollView contentContainerStyle={styles.page}>
-      <Text style={styles.title}>Phase 1 test screen (temporary)</Text>
+      <Text style={styles.title}>Phase 1-2 test screen (temporary)</Text>
       {message ? <Text style={styles.message}>{message}</Text> : null}
 
       {!session ? (
@@ -112,6 +122,8 @@ export default function TestHarness() {
           <Button title="Add a photo" onPress={addPhoto} />
           <Button title="Finish setup" onPress={finish} />
           <Button title="Save sample filters" onPress={saveSampleFilters} />
+          <Button title="Load today's question + settings" onPress={loadQuestion} />
+          <Text style={styles.json}>{questionInfo ? JSON.stringify(questionInfo, null, 2) : ''}</Text>
           <Button title="Log out" onPress={() => supabase.auth.signOut()} />
           <Text style={styles.json}>{JSON.stringify(profile, null, 2)}</Text>
         </View>
