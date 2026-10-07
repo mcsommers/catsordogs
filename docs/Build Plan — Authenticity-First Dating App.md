@@ -54,13 +54,15 @@ These are the main tables the agent should create in Phase 1 through Phase 7. Th
 | Table | What it holds | Access |
 | --- | --- | --- |
 | profiles | First name, birthday (age is calculated), photos, gender, pronouns, sexual orientation, height, city, job title, company, school, bio (500 characters), lifestyle tags, languages, interests (up to 5), and relationship goals. Also the "allow followers" setting and the join date. The profile questions will change as user feedback arrives, so keep profile fields and the Feed Settings filters tied together in configuration (see requirements doc). | A user edits their own row. Others see it only through the feed function. |
-| filter\_preferences | Each user's own filter choices (age range, distance, and so on). | Own row only. |
+| profile\_photos | Up to 6 photos per profile (position 1 to 6), pointing to files in a private storage bucket. At least 1 is required to finish a profile. Files live in a folder named after the user. When an account is deleted (Phase 7), the files must be deleted from storage too; they do not go away automatically with the database rows. | Own rows only. Other people's photos are served later by server functions as short-lived links. |
+| profile\_options, profile\_field\_defs, filter\_definitions | Configuration: the allowed answers for each profile question (gender, lifestyle tags, interests, relationship goals, and so on), the rules for each question (single or multiple choice, whether custom entries are allowed, maximum number), and the list of filters with their type and limits. Screens and server checks both read these, so adding or removing a profile question (and its filter) is a data change plus one column. | Signed-in users can read. Only admins write (admin panel, Phase 8). |
+| filter\_preferences | Each user's own filter choices (age range, distance, and so on), stored as one row per user and checked against the filter definitions below. "Any" means the filter is not set. Ranking weights are not here; they live in feed\_settings. | Own row only. |
 | questions | One row per day: the date, the question text, and whether an admin overrode it. | Everyone can read today's question. Only admins write. |
 | app\_settings | Recording length (default 14 seconds), minimum watch time, onboarding mode (today's question or a fixed question) and the fixed question, followed-content cap in the feed, flag threshold, and feed look-back days (how many earlier days the feed rolls back through; default 7). | Admins write. The app reads the few values it needs. |
 | answers | One row per user per question: video reference, duration, caption text, and a status (live, disabled by flags, removed). Unique on user and question. | A user reads their own. Others only through the feed function, and only after passing the gate. |
 | answer\_views | Who viewed an answer. | Only the counts are returned to the poster, never the rows. (There is no separate reactions table in v1; a "like" is a match request.) |
 | profile\_views | Who viewed a profile. | Only the count is returned to the profile's owner, never the rows. |
-| feed\_settings | Each user's ranking weights (Low / Medium / High for six signals) and filter choices. | Own row only. |
+| feed\_settings | Each user's ranking weights (Low / Medium / High for six signals). Built in Phase 4. (Filter choices are in filter\_preferences.) | Own row only. |
 | streaks | Consecutive-day answer count per user, derived from answers. | Public count, computed on the server. |
 | follows | Who follows whom. | **No app access at all.** Only server functions read or write it. |
 | nudges | Who nudged whom, on which question. Unique on sender, target, and question. Plus a record of the one notification sent to each target per day. | **No app access at all.** Server functions only. |
@@ -194,6 +196,10 @@ While turning the requirements into a plan, I found things they don't yet say. S
 - **Photos.** Profiles do show photos (Build Profile asks for a few, and profile pages have a Photos section). At least 1 photo is required to finish Build Profile (up to 6); enforce on the server too.
 
 **Still open:**
+
+- **Location and distance.** The profile stores only a typed city, which cannot measure distance. Decide how location is captured (device permission or looking up the city) before Phase 4. See the requirements doc.
+- **Apple and Google sign-in.** Email and password work now. "Continue with Apple" and "Continue with Google" need the Apple Developer account and a Google sign-in setup, and are switched on in Phase A.
+- **Email confirmation.** Locally, sign-up signs people in immediately. Decide whether staging and production should require confirming the email address first.
 
 - **Help & Support.** Settled: the Account menu row opens an external help website. The URL is a config value, still to be supplied; no in-app screens or backend.
 

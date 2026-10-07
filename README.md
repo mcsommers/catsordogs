@@ -35,7 +35,8 @@ Run from the project root unless noted.
 | `npm run db:stop` | Stops it |
 | `npm run db:reset` | Rebuilds the local database from the migration files |
 | `npm run db:test` | Runs the database tests (rules like the daily gate live here) |
-| `cd mobile && npm start` | Starts the app (press `i` for the iOS simulator) |
+| `npm run api:test` | Runs end-to-end tests through the real API as signed-in users (needs `db:start` running) |
+| `cd mobile && npm start` | Starts the app (press `i` for the iOS simulator). A real phone can't reach `127.0.0.1`; use your computer's network address in `mobile/.env` instead. |
 | `cd mobile && npm test` | Runs the app's tests |
 | `cd mobile && npm run typecheck` | Checks the app's TypeScript for errors |
 

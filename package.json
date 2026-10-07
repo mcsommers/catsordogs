@@ -5,9 +5,11 @@
     "db:start": "supabase start",
     "db:stop": "supabase stop",
     "db:reset": "supabase db reset",
-    "db:test": "supabase test db"
+    "db:test": "supabase test db",
+    "api:test": "sh supabase/tests/api/run.sh"
   },
   "devDependencies": {
+    "@supabase/supabase-js": "^2.117.2",
     "supabase": "^2.120.0"
   }
 }
