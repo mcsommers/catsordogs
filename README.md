@@ -54,9 +54,11 @@ select id from auth.users where email = 'you@example.com';
 
 ## Local sample data
 
-`npm run db:reset` rebuilds the local database and loads `supabase/seed.sql`: a week of past questions and
-a couple of weeks of upcoming ones, so there is always a "today" question locally. The seed file is never
-applied to staging or production, so those need their real questions scheduled by an admin.
+`npm run db:reset` rebuilds the local database and loads `supabase/seed.sql` (a week of past questions) and
+`supabase/sample_questions.sql` (20 placeholder questions: today and the next 19 days), so there is always a "today"
+question locally. Neither file is applied automatically to staging or production. To put the 20 sample questions
+there, run `sample_questions.sql` in that project's SQL editor (it skips days that already have a question, and an admin
+can swap any of them later from the admin panel, Phase 8).
 
 ## Environments
 
