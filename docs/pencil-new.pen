@@ -18544,6 +18544,53 @@
                 },
                 {
                   "type": "frame",
+                  "id": "FLLWB",
+                  "name": "Blocked and Not Interested Row",
+                  "width": "fill_container",
+                  "fill": "$surface-dark",
+                  "cornerRadius": 16,
+                  "stroke": "$border-dark",
+                  "strokeWidth": 1,
+                  "gap": 12,
+                  "padding": 14,
+                  "alignItems": "center",
+                  "children": [
+                    {
+                      "type": "icon",
+                      "id": "j5iPu5",
+                      "name": "Icon",
+                      "width": 16,
+                      "height": 16,
+                      "icon": "user-x",
+                      "library": "lucide",
+                      "fill": "$text-dark-muted"
+                    },
+                    {
+                      "type": "text",
+                      "id": "qlULq",
+                      "name": "Label",
+                      "fill": "$white",
+                      "textGrowth": "fixed-width",
+                      "width": "fill_container",
+                      "content": "Blocked and Not Interested",
+                      "fontFamily": "$font-body",
+                      "fontSize": 14,
+                      "fontWeight": "600"
+                    },
+                    {
+                      "type": "icon",
+                      "id": "jSQTi",
+                      "name": "Chevron",
+                      "width": 16,
+                      "height": 16,
+                      "icon": "chevron-right",
+                      "library": "lucide",
+                      "fill": "$text-dark-faint"
+                    }
+                  ]
+                },
+                {
+                  "type": "frame",
                   "id": "V45sqG",
                   "name": "Help & Support Row",
                   "width": "fill_container",
@@ -30586,101 +30633,6 @@
             },
             {
               "type": "frame",
-              "id": "WDeoB",
-              "name": "Blocking Section",
-              "width": "fill_container",
-              "layout": "vertical",
-              "gap": 10,
-              "children": [
-                {
-                  "type": "text",
-                  "id": "IHv9U",
-                  "name": "Title",
-                  "fill": "$white",
-                  "content": "Blocking",
-                  "fontFamily": "$font-heading",
-                  "fontSize": 16,
-                  "fontWeight": "normal"
-                },
-                {
-                  "type": "frame",
-                  "id": "vAujf",
-                  "name": "Blocked Users",
-                  "width": "fill_container",
-                  "fill": "$surface-dark",
-                  "cornerRadius": 16,
-                  "stroke": "$border-dark",
-                  "strokeWidth": 1,
-                  "gap": 12,
-                  "padding": 14,
-                  "alignItems": "center",
-                  "children": [
-                    {
-                      "type": "icon",
-                      "id": "EFSCw",
-                      "name": "Icon",
-                      "width": 18,
-                      "height": 18,
-                      "icon": "ban",
-                      "library": "lucide",
-                      "fill": "$text-dark-muted"
-                    },
-                    {
-                      "type": "frame",
-                      "id": "tPttN",
-                      "name": "Text Col",
-                      "width": "fill_container",
-                      "layout": "vertical",
-                      "gap": 2,
-                      "children": [
-                        {
-                          "type": "text",
-                          "id": "NStle",
-                          "name": "Name",
-                          "fill": "$white",
-                          "content": "Blocked users",
-                          "fontFamily": "$font-body",
-                          "fontSize": 14,
-                          "fontWeight": "700"
-                        },
-                        {
-                          "type": "text",
-                          "id": "fmtR5",
-                          "name": "Description",
-                          "fill": "$text-dark-muted",
-                          "content": "People you block can't see you or message you.",
-                          "fontFamily": "$font-body",
-                          "fontSize": 12,
-                          "fontWeight": "normal"
-                        }
-                      ]
-                    },
-                    {
-                      "type": "text",
-                      "id": "xLtaQ",
-                      "name": "Count",
-                      "fill": "$text-dark-muted",
-                      "content": "2",
-                      "fontFamily": "$font-body",
-                      "fontSize": 13,
-                      "fontWeight": "normal"
-                    },
-                    {
-                      "type": "icon",
-                      "id": "s9qNy",
-                      "name": "Chevron",
-                      "width": 15,
-                      "height": 15,
-                      "icon": "chevron-right",
-                      "library": "lucide",
-                      "fill": "$text-dark-faint"
-                    }
-                  ]
-                }
-              ]
-            },
-            {
-              "type": "frame",
               "id": "mqOvn",
               "name": "Account Section",
               "width": "fill_container",
@@ -37608,6 +37560,2312 @@
                   "fontWeight": "700"
                 }
               }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "frame",
+      "id": "ZkE02",
+      "x": 1841,
+      "y": 5391,
+      "name": "06w Not Interested Confirmation (Following)",
+      "clip": true,
+      "width": 393,
+      "height": 844,
+      "layout": "none",
+      "children": [
+        {
+          "type": "frame",
+          "id": "ID5Ci",
+          "x": 0,
+          "y": 0,
+          "name": "06 Feed",
+          "clip": true,
+          "width": 393,
+          "height": 844,
+          "fill": "#000000",
+          "layout": "none",
+          "children": [
+            {
+              "type": "frame",
+              "id": "dhYQU",
+              "x": 0,
+              "y": 0,
+              "name": "Video Frame BG",
+              "width": 393,
+              "height": 844,
+              "fill": {
+                "type": "image",
+                "enabled": true,
+                "url": "images/jordan-selfie.png",
+                "mode": "cover"
+              }
+            },
+            {
+              "type": "frame",
+              "id": "fZ3Qe",
+              "x": 0,
+              "y": 0,
+              "name": "Top Scrim",
+              "width": 393,
+              "height": 200,
+              "fill": {
+                "type": "gradient",
+                "gradientType": "linear",
+                "enabled": true,
+                "rotation": 180,
+                "size": {
+                  "height": 1
+                },
+                "colors": [
+                  {
+                    "color": "#000000B3",
+                    "position": 0
+                  },
+                  {
+                    "color": "#00000000",
+                    "position": 1
+                  }
+                ]
+              }
+            },
+            {
+              "type": "frame",
+              "id": "i7hGZQ",
+              "x": 0,
+              "y": 524,
+              "name": "Bottom Scrim",
+              "width": 393,
+              "height": 320,
+              "fill": {
+                "type": "gradient",
+                "gradientType": "linear",
+                "enabled": true,
+                "rotation": 180,
+                "size": {
+                  "height": 1
+                },
+                "colors": [
+                  {
+                    "color": "#00000000",
+                    "position": 0
+                  },
+                  {
+                    "color": "#000000D9",
+                    "position": 1
+                  }
+                ]
+              }
+            },
+            {
+              "type": "frame",
+              "id": "FZLAi",
+              "x": 0,
+              "y": 0,
+              "name": "Overlay Stack",
+              "width": 393,
+              "height": 844,
+              "layout": "vertical",
+              "justifyContent": "space_between",
+              "children": [
+                {
+                  "type": "frame",
+                  "id": "fzIWm",
+                  "name": "Top Group",
+                  "width": "fill_container",
+                  "layout": "vertical",
+                  "gap": 10,
+                  "padding": [
+                    16,
+                    20,
+                    0,
+                    20
+                  ],
+                  "children": [
+                    {
+                      "id": "f0hyh",
+                      "type": "ref",
+                      "ref": "Lpmh1",
+                      "name": "Status Bar",
+                      "width": "fill_container",
+                      "descendants": {
+                        "dqRvc": {
+                          "fill": "$white"
+                        },
+                        "O11Ipk": {
+                          "fill": "$white"
+                        },
+                        "S4IT1": {
+                          "fill": "$white"
+                        },
+                        "MdGlp": {
+                          "fill": "$white"
+                        }
+                      }
+                    },
+                    {
+                      "type": "frame",
+                      "id": "yCMr2",
+                      "name": "Progress Track",
+                      "width": "fill_container",
+                      "height": 3,
+                      "fill": "#FFFFFF2E",
+                      "cornerRadius": 2,
+                      "children": [
+                        {
+                          "type": "frame",
+                          "id": "nR3UF",
+                          "name": "Progress Fill",
+                          "width": 190,
+                          "height": 3,
+                          "fill": "$white",
+                          "cornerRadius": 2
+                        }
+                      ]
+                    },
+                    {
+                      "type": "frame",
+                      "id": "PqjJR",
+                      "name": "Question Row",
+                      "width": "fill_container",
+                      "alignItems": "center",
+                      "children": [
+                        {
+                          "type": "frame",
+                          "id": "V33iun",
+                          "name": "Question Pill",
+                          "fill": "#00000066",
+                          "cornerRadius": 9999,
+                          "gap": 6,
+                          "padding": [
+                            7,
+                            12
+                          ],
+                          "alignItems": "center",
+                          "children": [
+                            {
+                              "type": "icon",
+                              "id": "BrYw4",
+                              "name": "Quote Icon",
+                              "width": 13,
+                              "height": 13,
+                              "icon": "quote",
+                              "library": "lucide",
+                              "fill": "#FFFFFFCC"
+                            },
+                            {
+                              "type": "text",
+                              "id": "HDgAI",
+                              "name": "Question",
+                              "fill": "#FFFFFFE6",
+                              "content": "What are your thoughts on graffiti?",
+                              "fontFamily": "$font-body",
+                              "fontSize": 12,
+                              "fontWeight": "600"
+                            },
+                            {
+                              "type": "icon",
+                              "id": "uUF0X",
+                              "name": "Chevron",
+                              "width": 12,
+                              "height": 12,
+                              "icon": "chevron-down",
+                              "library": "lucide",
+                              "fill": "#FFFFFFB3"
+                            }
+                          ]
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "type": "frame",
+                  "id": "KRWtK",
+                  "name": "Bottom Cluster",
+                  "width": "fill_container",
+                  "layout": "vertical",
+                  "gap": 16,
+                  "padding": [
+                    0,
+                    20,
+                    12,
+                    20
+                  ],
+                  "children": [
+                    {
+                      "type": "frame",
+                      "id": "fSUWI",
+                      "name": "Info Actions Row",
+                      "width": "fill_container",
+                      "justifyContent": "space_between",
+                      "alignItems": "end",
+                      "children": [
+                        {
+                          "type": "frame",
+                          "id": "EfLFd",
+                          "name": "Info Col",
+                          "layout": "vertical",
+                          "gap": 6,
+                          "children": [
+                            {
+                              "type": "text",
+                              "id": "mwaBh",
+                              "name": "Name",
+                              "fill": "$white",
+                              "content": "Jordan, 27",
+                              "fontFamily": "$font-heading",
+                              "fontSize": 22,
+                              "fontWeight": "normal"
+                            },
+                            {
+                              "type": "frame",
+                              "id": "hRF4n",
+                              "name": "Meta Row",
+                              "gap": 6,
+                              "alignItems": "center",
+                              "children": [
+                                {
+                                  "type": "icon",
+                                  "id": "o40Tt",
+                                  "name": "Pin",
+                                  "width": 13,
+                                  "height": 13,
+                                  "icon": "map-pin",
+                                  "library": "lucide",
+                                  "fill": "#FFFFFFB3"
+                                },
+                                {
+                                  "type": "text",
+                                  "id": "ciCmR",
+                                  "name": "Distance",
+                                  "fill": "#FFFFFFB3",
+                                  "content": "2 miles away",
+                                  "fontFamily": "$font-body",
+                                  "fontSize": 13,
+                                  "fontWeight": "normal"
+                                }
+                              ]
+                            },
+                            {
+                              "type": "frame",
+                              "id": "U4nzeF",
+                              "name": "Streak Badge",
+                              "fill": "#FFFFFF1F",
+                              "cornerRadius": 9999,
+                              "gap": 4,
+                              "padding": [
+                                4,
+                                10
+                              ],
+                              "alignItems": "center",
+                              "children": [
+                                {
+                                  "type": "icon",
+                                  "id": "QpbXL",
+                                  "name": "Flame",
+                                  "width": 12,
+                                  "height": 12,
+                                  "icon": "flame",
+                                  "library": "lucide",
+                                  "fill": "$accent-dog"
+                                },
+                                {
+                                  "type": "text",
+                                  "id": "AtQW4",
+                                  "name": "Streak",
+                                  "fill": "$white",
+                                  "content": "14-day streak",
+                                  "fontFamily": "$font-body",
+                                  "fontSize": 11,
+                                  "fontWeight": "600"
+                                }
+                              ]
+                            }
+                          ]
+                        },
+                        {
+                          "type": "frame",
+                          "id": "jTd0f",
+                          "name": "Action Rail",
+                          "gap": 14,
+                          "alignItems": "center",
+                          "children": [
+                            {
+                              "type": "frame",
+                              "id": "G9vL43",
+                              "name": "More Button",
+                              "width": 48,
+                              "height": 48,
+                              "fill": "#00000066",
+                              "cornerRadius": 9999,
+                              "justifyContent": "center",
+                              "alignItems": "center",
+                              "children": [
+                                {
+                                  "type": "icon",
+                                  "id": "W84ML",
+                                  "name": "Icon",
+                                  "width": 22,
+                                  "height": 22,
+                                  "icon": "ellipsis-vertical",
+                                  "library": "lucide",
+                                  "fill": "$white"
+                                }
+                              ]
+                            },
+                            {
+                              "type": "frame",
+                              "id": "VubXl",
+                              "name": "Like Button",
+                              "width": 48,
+                              "height": 48,
+                              "fill": "#00000066",
+                              "cornerRadius": 9999,
+                              "justifyContent": "center",
+                              "alignItems": "center",
+                              "children": [
+                                {
+                                  "type": "icon",
+                                  "id": "SqClk",
+                                  "name": "Icon",
+                                  "width": 22,
+                                  "height": 22,
+                                  "icon": "heart",
+                                  "library": "lucide",
+                                  "fill": "$white"
+                                }
+                              ]
+                            }
+                          ]
+                        }
+                      ]
+                    },
+                    {
+                      "id": "UOji4",
+                      "type": "ref",
+                      "ref": "dmyf6",
+                      "name": "Tab Bar",
+                      "width": "fill_container"
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "frame",
+          "id": "Wk081",
+          "x": 0,
+          "y": 0,
+          "name": "Scrim",
+          "width": 393,
+          "height": 844,
+          "fill": "#000000B3",
+          "layout": "vertical",
+          "justifyContent": "center",
+          "alignItems": "center",
+          "children": [
+            {
+              "type": "frame",
+              "id": "TL3hT",
+              "name": "Dialog",
+              "width": 320,
+              "fill": "$surface-dark",
+              "cornerRadius": 24,
+              "stroke": "$border-dark",
+              "strokeWidth": 1,
+              "layout": "vertical",
+              "gap": 18,
+              "padding": [
+                28,
+                24
+              ],
+              "alignItems": "center",
+              "children": [
+                {
+                  "type": "frame",
+                  "id": "zElaY",
+                  "name": "Avatar Wrap",
+                  "width": 72,
+                  "height": 72,
+                  "layout": "none",
+                  "children": [
+                    {
+                      "type": "frame",
+                      "id": "p8XTEX",
+                      "x": 0,
+                      "y": 0,
+                      "name": "Avatar Image",
+                      "clip": true,
+                      "width": 72,
+                      "height": 72,
+                      "fill": {
+                        "type": "image",
+                        "enabled": true,
+                        "url": "images/jordan-profile.png",
+                        "mode": "cover"
+                      },
+                      "cornerRadius": 9999
+                    },
+                    {
+                      "type": "frame",
+                      "id": "TilwI",
+                      "x": 44,
+                      "y": 44,
+                      "name": "Icon Badge",
+                      "width": 28,
+                      "height": 28,
+                      "fill": "#FFFFFF33",
+                      "cornerRadius": 9999,
+                      "stroke": "$surface-dark",
+                      "strokeWidth": 3,
+                      "justifyContent": "center",
+                      "alignItems": "center",
+                      "children": [
+                        {
+                          "type": "icon",
+                          "id": "NWHVt",
+                          "name": "Icon",
+                          "width": 14,
+                          "height": 14,
+                          "icon": "eye-off",
+                          "library": "lucide",
+                          "fill": "$white"
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "type": "frame",
+                  "id": "BR19S",
+                  "name": "Text Group",
+                  "width": "fill_container",
+                  "layout": "vertical",
+                  "gap": 8,
+                  "alignItems": "center",
+                  "children": [
+                    {
+                      "type": "text",
+                      "id": "f81TRU",
+                      "name": "Title",
+                      "fill": "$white",
+                      "textGrowth": "fixed-width",
+                      "width": "fill_container",
+                      "content": "Not interested in Jordan?",
+                      "textAlign": "center",
+                      "fontFamily": "$font-heading",
+                      "fontSize": 20,
+                      "fontWeight": "normal"
+                    },
+                    {
+                      "type": "text",
+                      "id": "Itvc2",
+                      "name": "Body",
+                      "fill": "$text-dark-muted",
+                      "textGrowth": "fixed-width",
+                      "width": "fill_container",
+                      "content": "You won't see Jordan in your feed anymore, and you'll unfollow them. They won't be notified.",
+                      "lineHeight": 1.4,
+                      "textAlign": "center",
+                      "fontFamily": "$font-body",
+                      "fontSize": 14,
+                      "fontWeight": "normal"
+                    }
+                  ]
+                },
+                {
+                  "type": "frame",
+                  "id": "w5dmxb",
+                  "name": "Buttons Group",
+                  "width": "fill_container",
+                  "layout": "vertical",
+                  "gap": 8,
+                  "children": [
+                    {
+                      "id": "OnCNA",
+                      "type": "ref",
+                      "ref": "FMBP0",
+                      "name": "Confirm Button",
+                      "width": "fill_container",
+                      "descendants": {
+                        "dcLjE": {
+                          "content": "Yes, Hide and Unfollow"
+                        }
+                      }
+                    },
+                    {
+                      "type": "frame",
+                      "id": "RyfcH",
+                      "name": "Cancel Button",
+                      "width": "fill_container",
+                      "padding": [
+                        13,
+                        20
+                      ],
+                      "justifyContent": "center",
+                      "alignItems": "center",
+                      "children": [
+                        {
+                          "type": "text",
+                          "id": "g9ZMrB",
+                          "name": "Label",
+                          "fill": "$text-dark-muted",
+                          "content": "Cancel",
+                          "fontFamily": "$font-body",
+                          "fontSize": 15,
+                          "fontWeight": "700"
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "frame",
+      "id": "XYxlW",
+      "x": 1790,
+      "y": 11771,
+      "name": "08e Blocked and Not Interested",
+      "clip": true,
+      "width": 393,
+      "height": 844,
+      "fill": "$bg-dark",
+      "layout": "vertical",
+      "children": [
+        {
+          "id": "q4O8MH",
+          "type": "ref",
+          "ref": "Lpmh1",
+          "name": "Status Bar",
+          "width": "fill_container",
+          "descendants": {
+            "dqRvc": {
+              "fill": "$white"
+            },
+            "O11Ipk": {
+              "fill": "$white"
+            },
+            "S4IT1": {
+              "fill": "$white"
+            },
+            "MdGlp": {
+              "fill": "$white"
+            }
+          }
+        },
+        {
+          "type": "frame",
+          "id": "LGR7B",
+          "name": "Header Row",
+          "width": "fill_container",
+          "gap": 12,
+          "padding": [
+            14,
+            20,
+            0,
+            20
+          ],
+          "alignItems": "center",
+          "children": [
+            {
+              "type": "frame",
+              "id": "Sirfe",
+              "name": "Back Button",
+              "width": 36,
+              "height": 36,
+              "fill": "#FFFFFF14",
+              "cornerRadius": 9999,
+              "justifyContent": "center",
+              "alignItems": "center",
+              "children": [
+                {
+                  "type": "icon",
+                  "id": "vvhDB",
+                  "name": "Icon",
+                  "width": 16,
+                  "height": 16,
+                  "icon": "arrow-left",
+                  "library": "lucide",
+                  "fill": "$white"
+                }
+              ]
+            },
+            {
+              "type": "text",
+              "id": "ENeIP",
+              "name": "Title",
+              "fill": "$white",
+              "content": "Blocked and Not Interested",
+              "fontFamily": "$font-heading",
+              "fontSize": 17,
+              "fontWeight": "normal"
+            }
+          ]
+        },
+        {
+          "type": "frame",
+          "id": "KSNqf",
+          "name": "Content Wrapper",
+          "width": "fill_container",
+          "layout": "vertical",
+          "gap": 16,
+          "padding": [
+            16,
+            20,
+            32,
+            20
+          ],
+          "children": [
+            {
+              "type": "frame",
+              "id": "eUsfg",
+              "name": "Tabs",
+              "width": "fill_container",
+              "fill": "#00000040",
+              "cornerRadius": 9999,
+              "gap": 4,
+              "padding": 3,
+              "children": [
+                {
+                  "type": "frame",
+                  "id": "obh1Q",
+                  "name": "Blocked Tab",
+                  "width": "fill_container",
+                  "fill": "$accent-dog",
+                  "cornerRadius": 9999,
+                  "gap": 6,
+                  "padding": [
+                    10,
+                    0
+                  ],
+                  "justifyContent": "center",
+                  "alignItems": "center",
+                  "children": [
+                    {
+                      "type": "text",
+                      "id": "hbEvW",
+                      "name": "Label",
+                      "fill": "$white",
+                      "content": "Blocked",
+                      "fontFamily": "$font-body",
+                      "fontSize": 13,
+                      "fontWeight": "700"
+                    },
+                    {
+                      "type": "frame",
+                      "id": "XLGXA",
+                      "name": "Badge",
+                      "width": 18,
+                      "height": 18,
+                      "fill": "$white",
+                      "cornerRadius": 9999,
+                      "justifyContent": "center",
+                      "alignItems": "center",
+                      "children": [
+                        {
+                          "type": "text",
+                          "id": "oPHlb",
+                          "name": "Count",
+                          "fill": "$accent-dog",
+                          "content": "2",
+                          "fontFamily": "$font-body",
+                          "fontSize": 10,
+                          "fontWeight": "700"
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "type": "frame",
+                  "id": "eRoDj",
+                  "name": "Not Interested Tab",
+                  "width": "fill_container",
+                  "fill": "#00000000",
+                  "cornerRadius": 9999,
+                  "gap": 6,
+                  "padding": [
+                    10,
+                    0
+                  ],
+                  "justifyContent": "center",
+                  "alignItems": "center",
+                  "children": [
+                    {
+                      "type": "text",
+                      "id": "MheHt",
+                      "name": "Label",
+                      "fill": "$text-dark-muted",
+                      "content": "Not Interested",
+                      "fontFamily": "$font-body",
+                      "fontSize": 13,
+                      "fontWeight": "600"
+                    },
+                    {
+                      "type": "frame",
+                      "id": "Q6WVNd",
+                      "name": "Badge",
+                      "width": 18,
+                      "height": 18,
+                      "fill": "$white",
+                      "cornerRadius": 9999,
+                      "justifyContent": "center",
+                      "alignItems": "center",
+                      "children": [
+                        {
+                          "type": "text",
+                          "id": "UEY9m",
+                          "name": "Count",
+                          "fill": "$accent-dog",
+                          "content": "3",
+                          "fontFamily": "$font-body",
+                          "fontSize": 10,
+                          "fontWeight": "700"
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "text",
+              "id": "cCCAv",
+              "name": "Intro",
+              "fill": "$text-dark-muted",
+              "textGrowth": "fixed-width",
+              "width": "fill_container",
+              "content": "People you've blocked can't see you or message you, and you can't see them. They're never told.",
+              "lineHeight": 1.4,
+              "fontFamily": "$font-body",
+              "fontSize": 12,
+              "fontWeight": "normal"
+            },
+            {
+              "type": "frame",
+              "id": "vYihD",
+              "name": "List",
+              "width": "fill_container",
+              "layout": "vertical",
+              "gap": 10,
+              "children": [
+                {
+                  "type": "frame",
+                  "id": "y8hz9",
+                  "name": "Taylor, 34 Row",
+                  "width": "fill_container",
+                  "fill": "$surface-dark",
+                  "cornerRadius": 16,
+                  "stroke": "$border-dark",
+                  "strokeWidth": 1,
+                  "gap": 12,
+                  "padding": 12,
+                  "alignItems": "center",
+                  "children": [
+                    {
+                      "type": "frame",
+                      "id": "FdaXa",
+                      "name": "Avatar T",
+                      "width": 48,
+                      "height": 48,
+                      "fill": {
+                        "type": "gradient",
+                        "gradientType": "linear",
+                        "enabled": true,
+                        "rotation": 135,
+                        "size": {
+                          "height": 1
+                        },
+                        "colors": [
+                          {
+                            "color": "#A5694A",
+                            "position": 0
+                          },
+                          {
+                            "color": "#3D2A1B",
+                            "position": 1
+                          }
+                        ]
+                      },
+                      "cornerRadius": 9999,
+                      "justifyContent": "center",
+                      "alignItems": "center",
+                      "children": [
+                        {
+                          "type": "text",
+                          "id": "uyyx0",
+                          "name": "Initial",
+                          "fill": "$white",
+                          "content": "T",
+                          "fontFamily": "$font-heading",
+                          "fontSize": 17,
+                          "fontWeight": "normal"
+                        }
+                      ]
+                    },
+                    {
+                      "type": "frame",
+                      "id": "zgZPm",
+                      "name": "Text Col",
+                      "width": "fill_container",
+                      "layout": "vertical",
+                      "gap": 3,
+                      "children": [
+                        {
+                          "type": "text",
+                          "id": "UJPKa",
+                          "name": "Name",
+                          "fill": "$white",
+                          "content": "Taylor, 34",
+                          "fontFamily": "$font-body",
+                          "fontSize": 14,
+                          "fontWeight": "700"
+                        },
+                        {
+                          "type": "text",
+                          "id": "E89CCK",
+                          "name": "Subtitle",
+                          "fill": "$text-dark-muted",
+                          "content": "Blocked Oct 2",
+                          "fontFamily": "$font-body",
+                          "fontSize": 12,
+                          "fontWeight": "normal"
+                        }
+                      ]
+                    },
+                    {
+                      "id": "y47mc",
+                      "type": "ref",
+                      "ref": "wc6Up",
+                      "name": "Unblock Button",
+                      "width": 92,
+                      "height": 36,
+                      "padding": [
+                        8,
+                        14
+                      ],
+                      "stroke": "#FFFFFF33",
+                      "descendants": {
+                        "xT9qn": {
+                          "content": "Unblock",
+                          "fill": "$white",
+                          "fontSize": 13
+                        }
+                      }
+                    }
+                  ]
+                },
+                {
+                  "type": "frame",
+                  "id": "VgZol",
+                  "name": "Morgan, 28 Row",
+                  "width": "fill_container",
+                  "fill": "$surface-dark",
+                  "cornerRadius": 16,
+                  "stroke": "$border-dark",
+                  "strokeWidth": 1,
+                  "gap": 12,
+                  "padding": 12,
+                  "alignItems": "center",
+                  "children": [
+                    {
+                      "type": "frame",
+                      "id": "ouhjG",
+                      "name": "Avatar M",
+                      "width": 48,
+                      "height": 48,
+                      "fill": {
+                        "type": "gradient",
+                        "gradientType": "linear",
+                        "enabled": true,
+                        "rotation": 135,
+                        "size": {
+                          "height": 1
+                        },
+                        "colors": [
+                          {
+                            "color": "#6FA54A",
+                            "position": 0
+                          },
+                          {
+                            "color": "#1F3D1B",
+                            "position": 1
+                          }
+                        ]
+                      },
+                      "cornerRadius": 9999,
+                      "justifyContent": "center",
+                      "alignItems": "center",
+                      "children": [
+                        {
+                          "type": "text",
+                          "id": "Nhi5X",
+                          "name": "Initial",
+                          "fill": "$white",
+                          "content": "M",
+                          "fontFamily": "$font-heading",
+                          "fontSize": 17,
+                          "fontWeight": "normal"
+                        }
+                      ]
+                    },
+                    {
+                      "type": "frame",
+                      "id": "z76bb",
+                      "name": "Text Col",
+                      "width": "fill_container",
+                      "layout": "vertical",
+                      "gap": 3,
+                      "children": [
+                        {
+                          "type": "text",
+                          "id": "CpGtf",
+                          "name": "Name",
+                          "fill": "$white",
+                          "content": "Morgan, 28",
+                          "fontFamily": "$font-body",
+                          "fontSize": 14,
+                          "fontWeight": "700"
+                        },
+                        {
+                          "type": "text",
+                          "id": "NFrKl",
+                          "name": "Subtitle",
+                          "fill": "$text-dark-muted",
+                          "content": "Blocked Sep 28",
+                          "fontFamily": "$font-body",
+                          "fontSize": 12,
+                          "fontWeight": "normal"
+                        }
+                      ]
+                    },
+                    {
+                      "id": "q3onop",
+                      "type": "ref",
+                      "ref": "wc6Up",
+                      "name": "Unblock Button",
+                      "width": 92,
+                      "height": 36,
+                      "padding": [
+                        8,
+                        14
+                      ],
+                      "stroke": "#FFFFFF33",
+                      "descendants": {
+                        "xT9qn": {
+                          "content": "Unblock",
+                          "fill": "$white",
+                          "fontSize": 13
+                        }
+                      }
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "LjyFp",
+              "name": "Note",
+              "width": "fill_container",
+              "gap": 10,
+              "padding": [
+                4,
+                2
+              ],
+              "children": [
+                {
+                  "type": "icon",
+                  "id": "BAUsF",
+                  "name": "Icon",
+                  "width": 14,
+                  "height": 14,
+                  "icon": "info",
+                  "library": "lucide",
+                  "fill": "$text-dark-faint"
+                },
+                {
+                  "type": "text",
+                  "id": "AAksh",
+                  "name": "Note Text",
+                  "fill": "$text-dark-faint",
+                  "textGrowth": "fixed-width",
+                  "width": "fill_container",
+                  "content": "Unblocking doesn't bring back a match or anyone you followed. They won't be notified.",
+                  "lineHeight": 1.4,
+                  "fontFamily": "$font-body",
+                  "fontSize": 12,
+                  "fontWeight": "normal"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "frame",
+      "id": "RT1Uv",
+      "x": 2243,
+      "y": 11771,
+      "name": "08f Blocked and Not Interested (Not Interested tab)",
+      "clip": true,
+      "width": 393,
+      "height": 844,
+      "fill": "$bg-dark",
+      "layout": "vertical",
+      "children": [
+        {
+          "id": "NLK50",
+          "type": "ref",
+          "ref": "Lpmh1",
+          "name": "Status Bar",
+          "width": "fill_container",
+          "descendants": {
+            "dqRvc": {
+              "fill": "$white"
+            },
+            "O11Ipk": {
+              "fill": "$white"
+            },
+            "S4IT1": {
+              "fill": "$white"
+            },
+            "MdGlp": {
+              "fill": "$white"
+            }
+          }
+        },
+        {
+          "type": "frame",
+          "id": "lzwHL",
+          "name": "Header Row",
+          "width": "fill_container",
+          "gap": 12,
+          "padding": [
+            14,
+            20,
+            0,
+            20
+          ],
+          "alignItems": "center",
+          "children": [
+            {
+              "type": "frame",
+              "id": "yrHV2",
+              "name": "Back Button",
+              "width": 36,
+              "height": 36,
+              "fill": "#FFFFFF14",
+              "cornerRadius": 9999,
+              "justifyContent": "center",
+              "alignItems": "center",
+              "children": [
+                {
+                  "type": "icon",
+                  "id": "GYmer",
+                  "name": "Icon",
+                  "width": 16,
+                  "height": 16,
+                  "icon": "arrow-left",
+                  "library": "lucide",
+                  "fill": "$white"
+                }
+              ]
+            },
+            {
+              "type": "text",
+              "id": "X0U4W",
+              "name": "Title",
+              "fill": "$white",
+              "content": "Blocked and Not Interested",
+              "fontFamily": "$font-heading",
+              "fontSize": 17,
+              "fontWeight": "normal"
+            }
+          ]
+        },
+        {
+          "type": "frame",
+          "id": "fGAso",
+          "name": "Content Wrapper",
+          "width": "fill_container",
+          "layout": "vertical",
+          "gap": 16,
+          "padding": [
+            16,
+            20,
+            32,
+            20
+          ],
+          "children": [
+            {
+              "type": "frame",
+              "id": "pFNOq",
+              "name": "Tabs",
+              "width": "fill_container",
+              "fill": "#00000040",
+              "cornerRadius": 9999,
+              "gap": 4,
+              "padding": 3,
+              "children": [
+                {
+                  "type": "frame",
+                  "id": "BADJz",
+                  "name": "Blocked Tab",
+                  "width": "fill_container",
+                  "fill": "#00000000",
+                  "cornerRadius": 9999,
+                  "gap": 6,
+                  "padding": [
+                    10,
+                    0
+                  ],
+                  "justifyContent": "center",
+                  "alignItems": "center",
+                  "children": [
+                    {
+                      "type": "text",
+                      "id": "QRUc8",
+                      "name": "Label",
+                      "fill": "$text-dark-muted",
+                      "content": "Blocked",
+                      "fontFamily": "$font-body",
+                      "fontSize": 13,
+                      "fontWeight": "600"
+                    },
+                    {
+                      "type": "frame",
+                      "id": "FHwuY",
+                      "name": "Badge",
+                      "width": 18,
+                      "height": 18,
+                      "fill": "$white",
+                      "cornerRadius": 9999,
+                      "justifyContent": "center",
+                      "alignItems": "center",
+                      "children": [
+                        {
+                          "type": "text",
+                          "id": "lKWKU",
+                          "name": "Count",
+                          "fill": "$accent-dog",
+                          "content": "2",
+                          "fontFamily": "$font-body",
+                          "fontSize": 10,
+                          "fontWeight": "700"
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "type": "frame",
+                  "id": "s6Uh6",
+                  "name": "Not Interested Tab",
+                  "width": "fill_container",
+                  "fill": "$accent-dog",
+                  "cornerRadius": 9999,
+                  "gap": 6,
+                  "padding": [
+                    10,
+                    0
+                  ],
+                  "justifyContent": "center",
+                  "alignItems": "center",
+                  "children": [
+                    {
+                      "type": "text",
+                      "id": "EXIfQ",
+                      "name": "Label",
+                      "fill": "$white",
+                      "content": "Not Interested",
+                      "fontFamily": "$font-body",
+                      "fontSize": 13,
+                      "fontWeight": "700"
+                    },
+                    {
+                      "type": "frame",
+                      "id": "Fmz4m",
+                      "name": "Badge",
+                      "width": 18,
+                      "height": 18,
+                      "fill": "$white",
+                      "cornerRadius": 9999,
+                      "justifyContent": "center",
+                      "alignItems": "center",
+                      "children": [
+                        {
+                          "type": "text",
+                          "id": "wpNLS",
+                          "name": "Count",
+                          "fill": "$accent-dog",
+                          "content": "3",
+                          "fontFamily": "$font-body",
+                          "fontSize": 10,
+                          "fontWeight": "700"
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "text",
+              "id": "DPJgp",
+              "name": "Intro",
+              "fill": "$text-dark-muted",
+              "textGrowth": "fixed-width",
+              "width": "fill_container",
+              "content": "People you've hidden from your feed. They're never told.",
+              "lineHeight": 1.4,
+              "fontFamily": "$font-body",
+              "fontSize": 12,
+              "fontWeight": "normal"
+            },
+            {
+              "type": "frame",
+              "id": "wPJyA",
+              "name": "List",
+              "width": "fill_container",
+              "layout": "vertical",
+              "gap": 10,
+              "children": [
+                {
+                  "type": "frame",
+                  "id": "B9WwTD",
+                  "name": "Jordan, 27 Row",
+                  "width": "fill_container",
+                  "fill": "$surface-dark",
+                  "cornerRadius": 16,
+                  "stroke": "$border-dark",
+                  "strokeWidth": 1,
+                  "gap": 12,
+                  "padding": 12,
+                  "alignItems": "center",
+                  "children": [
+                    {
+                      "type": "frame",
+                      "id": "m5yjZL",
+                      "name": "Avatar J",
+                      "clip": true,
+                      "width": 48,
+                      "height": 48,
+                      "fill": {
+                        "type": "image",
+                        "enabled": true,
+                        "url": "images/jordan-profile.png",
+                        "mode": "cover"
+                      },
+                      "cornerRadius": 9999
+                    },
+                    {
+                      "type": "frame",
+                      "id": "cFeHg",
+                      "name": "Text Col",
+                      "width": "fill_container",
+                      "layout": "vertical",
+                      "gap": 3,
+                      "children": [
+                        {
+                          "type": "text",
+                          "id": "z3y0G",
+                          "name": "Name",
+                          "fill": "$white",
+                          "content": "Jordan, 27",
+                          "fontFamily": "$font-body",
+                          "fontSize": 14,
+                          "fontWeight": "700"
+                        },
+                        {
+                          "type": "text",
+                          "id": "mpUx3",
+                          "name": "Subtitle",
+                          "fill": "$text-dark-muted",
+                          "content": "Hidden Oct 5",
+                          "fontFamily": "$font-body",
+                          "fontSize": 12,
+                          "fontWeight": "normal"
+                        }
+                      ]
+                    },
+                    {
+                      "id": "o5N1L",
+                      "type": "ref",
+                      "ref": "wc6Up",
+                      "name": "Undo Button",
+                      "width": 92,
+                      "height": 36,
+                      "padding": [
+                        8,
+                        14
+                      ],
+                      "stroke": "#FFFFFF33",
+                      "descendants": {
+                        "xT9qn": {
+                          "content": "Undo",
+                          "fill": "$white",
+                          "fontSize": 13
+                        }
+                      }
+                    }
+                  ]
+                },
+                {
+                  "type": "frame",
+                  "id": "RDwAt",
+                  "name": "Riley, 26 Row",
+                  "width": "fill_container",
+                  "fill": "$surface-dark",
+                  "cornerRadius": 16,
+                  "stroke": "$border-dark",
+                  "strokeWidth": 1,
+                  "gap": 12,
+                  "padding": 12,
+                  "alignItems": "center",
+                  "children": [
+                    {
+                      "type": "frame",
+                      "id": "DN1yl",
+                      "name": "Avatar R",
+                      "width": 48,
+                      "height": 48,
+                      "fill": {
+                        "type": "gradient",
+                        "gradientType": "linear",
+                        "enabled": true,
+                        "rotation": 135,
+                        "size": {
+                          "height": 1
+                        },
+                        "colors": [
+                          {
+                            "color": "#A54A8B",
+                            "position": 0
+                          },
+                          {
+                            "color": "#3D1B33",
+                            "position": 1
+                          }
+                        ]
+                      },
+                      "cornerRadius": 9999,
+                      "justifyContent": "center",
+                      "alignItems": "center",
+                      "children": [
+                        {
+                          "type": "text",
+                          "id": "hrvsv",
+                          "name": "Initial",
+                          "fill": "$white",
+                          "content": "R",
+                          "fontFamily": "$font-heading",
+                          "fontSize": 17,
+                          "fontWeight": "normal"
+                        }
+                      ]
+                    },
+                    {
+                      "type": "frame",
+                      "id": "tyRrK",
+                      "name": "Text Col",
+                      "width": "fill_container",
+                      "layout": "vertical",
+                      "gap": 3,
+                      "children": [
+                        {
+                          "type": "text",
+                          "id": "Lzhiq",
+                          "name": "Name",
+                          "fill": "$white",
+                          "content": "Riley, 26",
+                          "fontFamily": "$font-body",
+                          "fontSize": 14,
+                          "fontWeight": "700"
+                        },
+                        {
+                          "type": "text",
+                          "id": "PGCZn",
+                          "name": "Subtitle",
+                          "fill": "$text-dark-muted",
+                          "content": "Hidden Oct 3",
+                          "fontFamily": "$font-body",
+                          "fontSize": 12,
+                          "fontWeight": "normal"
+                        }
+                      ]
+                    },
+                    {
+                      "id": "FiLzH",
+                      "type": "ref",
+                      "ref": "wc6Up",
+                      "name": "Undo Button",
+                      "width": 92,
+                      "height": 36,
+                      "padding": [
+                        8,
+                        14
+                      ],
+                      "stroke": "#FFFFFF33",
+                      "descendants": {
+                        "xT9qn": {
+                          "content": "Undo",
+                          "fill": "$white",
+                          "fontSize": 13
+                        }
+                      }
+                    }
+                  ]
+                },
+                {
+                  "type": "frame",
+                  "id": "ulwF0",
+                  "name": "Casey, 31 Row",
+                  "width": "fill_container",
+                  "fill": "$surface-dark",
+                  "cornerRadius": 16,
+                  "stroke": "$border-dark",
+                  "strokeWidth": 1,
+                  "gap": 12,
+                  "padding": 12,
+                  "alignItems": "center",
+                  "children": [
+                    {
+                      "type": "frame",
+                      "id": "KGBE8",
+                      "name": "Avatar C",
+                      "width": 48,
+                      "height": 48,
+                      "fill": {
+                        "type": "gradient",
+                        "gradientType": "linear",
+                        "enabled": true,
+                        "rotation": 135,
+                        "size": {
+                          "height": 1
+                        },
+                        "colors": [
+                          {
+                            "color": "#4AA5A0",
+                            "position": 0
+                          },
+                          {
+                            "color": "#1B3D3A",
+                            "position": 1
+                          }
+                        ]
+                      },
+                      "cornerRadius": 9999,
+                      "justifyContent": "center",
+                      "alignItems": "center",
+                      "children": [
+                        {
+                          "type": "text",
+                          "id": "ZKAjJ",
+                          "name": "Initial",
+                          "fill": "$white",
+                          "content": "C",
+                          "fontFamily": "$font-heading",
+                          "fontSize": 17,
+                          "fontWeight": "normal"
+                        }
+                      ]
+                    },
+                    {
+                      "type": "frame",
+                      "id": "KgI7X",
+                      "name": "Text Col",
+                      "width": "fill_container",
+                      "layout": "vertical",
+                      "gap": 3,
+                      "children": [
+                        {
+                          "type": "text",
+                          "id": "FFHp9",
+                          "name": "Name",
+                          "fill": "$white",
+                          "content": "Casey, 31",
+                          "fontFamily": "$font-body",
+                          "fontSize": 14,
+                          "fontWeight": "700"
+                        },
+                        {
+                          "type": "text",
+                          "id": "hPytl",
+                          "name": "Subtitle",
+                          "fill": "$text-dark-muted",
+                          "content": "Hidden Sep 30",
+                          "fontFamily": "$font-body",
+                          "fontSize": 12,
+                          "fontWeight": "normal"
+                        }
+                      ]
+                    },
+                    {
+                      "id": "g4zLNc",
+                      "type": "ref",
+                      "ref": "wc6Up",
+                      "name": "Undo Button",
+                      "width": 92,
+                      "height": 36,
+                      "padding": [
+                        8,
+                        14
+                      ],
+                      "stroke": "#FFFFFF33",
+                      "descendants": {
+                        "xT9qn": {
+                          "content": "Undo",
+                          "fill": "$white",
+                          "fontSize": 13
+                        }
+                      }
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "NoHDK",
+              "name": "Note",
+              "width": "fill_container",
+              "gap": 10,
+              "padding": [
+                4,
+                2
+              ],
+              "children": [
+                {
+                  "type": "icon",
+                  "id": "WebD1",
+                  "name": "Icon",
+                  "width": 14,
+                  "height": 14,
+                  "icon": "info",
+                  "library": "lucide",
+                  "fill": "$text-dark-faint"
+                },
+                {
+                  "type": "text",
+                  "id": "k2DUA",
+                  "name": "Note Text",
+                  "fill": "$text-dark-faint",
+                  "textGrowth": "fixed-width",
+                  "width": "fill_container",
+                  "content": "Undoing lets this person show up in your feed again. They won't be notified. If you followed them, you'll need to follow them again.",
+                  "lineHeight": 1.4,
+                  "fontFamily": "$font-body",
+                  "fontSize": 12,
+                  "fontWeight": "normal"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "frame",
+      "id": "wu7my",
+      "x": 2696,
+      "y": 11771,
+      "name": "08g Unblock Confirmation",
+      "clip": true,
+      "width": 393,
+      "height": 844,
+      "layout": "none",
+      "children": [
+        {
+          "type": "frame",
+          "id": "GtlrF",
+          "x": 0,
+          "y": 0,
+          "name": "08e Blocked and Not Interested",
+          "clip": true,
+          "width": 393,
+          "height": 844,
+          "fill": "$bg-dark",
+          "layout": "vertical",
+          "children": [
+            {
+              "id": "j1FRcA",
+              "type": "ref",
+              "ref": "Lpmh1",
+              "name": "Status Bar",
+              "width": "fill_container",
+              "descendants": {
+                "dqRvc": {
+                  "fill": "$white"
+                },
+                "O11Ipk": {
+                  "fill": "$white"
+                },
+                "S4IT1": {
+                  "fill": "$white"
+                },
+                "MdGlp": {
+                  "fill": "$white"
+                }
+              }
+            },
+            {
+              "type": "frame",
+              "id": "N33bH",
+              "name": "Header Row",
+              "width": "fill_container",
+              "gap": 12,
+              "padding": [
+                14,
+                20,
+                0,
+                20
+              ],
+              "alignItems": "center",
+              "children": [
+                {
+                  "type": "frame",
+                  "id": "VEnqF",
+                  "name": "Back Button",
+                  "width": 36,
+                  "height": 36,
+                  "fill": "#FFFFFF14",
+                  "cornerRadius": 9999,
+                  "justifyContent": "center",
+                  "alignItems": "center",
+                  "children": [
+                    {
+                      "type": "icon",
+                      "id": "d5oup",
+                      "name": "Icon",
+                      "width": 16,
+                      "height": 16,
+                      "icon": "arrow-left",
+                      "library": "lucide",
+                      "fill": "$white"
+                    }
+                  ]
+                },
+                {
+                  "type": "text",
+                  "id": "z4MAs8",
+                  "name": "Title",
+                  "fill": "$white",
+                  "content": "Blocked and Not Interested",
+                  "fontFamily": "$font-heading",
+                  "fontSize": 17,
+                  "fontWeight": "normal"
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "qvwXc",
+              "name": "Content Wrapper",
+              "width": "fill_container",
+              "layout": "vertical",
+              "gap": 16,
+              "padding": [
+                16,
+                20,
+                32,
+                20
+              ],
+              "children": [
+                {
+                  "type": "frame",
+                  "id": "HUcy8",
+                  "name": "Tabs",
+                  "width": "fill_container",
+                  "fill": "#00000040",
+                  "cornerRadius": 9999,
+                  "gap": 4,
+                  "padding": 3,
+                  "children": [
+                    {
+                      "type": "frame",
+                      "id": "mw2Lf",
+                      "name": "Blocked Tab",
+                      "width": "fill_container",
+                      "fill": "$accent-dog",
+                      "cornerRadius": 9999,
+                      "gap": 6,
+                      "padding": [
+                        10,
+                        0
+                      ],
+                      "justifyContent": "center",
+                      "alignItems": "center",
+                      "children": [
+                        {
+                          "type": "text",
+                          "id": "vGDyA",
+                          "name": "Label",
+                          "fill": "$white",
+                          "content": "Blocked",
+                          "fontFamily": "$font-body",
+                          "fontSize": 13,
+                          "fontWeight": "700"
+                        },
+                        {
+                          "type": "frame",
+                          "id": "N5FiJ",
+                          "name": "Badge",
+                          "width": 18,
+                          "height": 18,
+                          "fill": "$white",
+                          "cornerRadius": 9999,
+                          "justifyContent": "center",
+                          "alignItems": "center",
+                          "children": [
+                            {
+                              "type": "text",
+                              "id": "V0RdVf",
+                              "name": "Count",
+                              "fill": "$accent-dog",
+                              "content": "2",
+                              "fontFamily": "$font-body",
+                              "fontSize": 10,
+                              "fontWeight": "700"
+                            }
+                          ]
+                        }
+                      ]
+                    },
+                    {
+                      "type": "frame",
+                      "id": "X1oBvW",
+                      "name": "Not Interested Tab",
+                      "width": "fill_container",
+                      "fill": "#00000000",
+                      "cornerRadius": 9999,
+                      "gap": 6,
+                      "padding": [
+                        10,
+                        0
+                      ],
+                      "justifyContent": "center",
+                      "alignItems": "center",
+                      "children": [
+                        {
+                          "type": "text",
+                          "id": "LJPrb",
+                          "name": "Label",
+                          "fill": "$text-dark-muted",
+                          "content": "Not Interested",
+                          "fontFamily": "$font-body",
+                          "fontSize": 13,
+                          "fontWeight": "600"
+                        },
+                        {
+                          "type": "frame",
+                          "id": "kYMoW",
+                          "name": "Badge",
+                          "width": 18,
+                          "height": 18,
+                          "fill": "$white",
+                          "cornerRadius": 9999,
+                          "justifyContent": "center",
+                          "alignItems": "center",
+                          "children": [
+                            {
+                              "type": "text",
+                              "id": "B2FTw",
+                              "name": "Count",
+                              "fill": "$accent-dog",
+                              "content": "3",
+                              "fontFamily": "$font-body",
+                              "fontSize": 10,
+                              "fontWeight": "700"
+                            }
+                          ]
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "type": "text",
+                  "id": "zxOt1",
+                  "name": "Intro",
+                  "fill": "$text-dark-muted",
+                  "textGrowth": "fixed-width",
+                  "width": "fill_container",
+                  "content": "People you've blocked can't see you or message you, and you can't see them. They're never told.",
+                  "lineHeight": 1.4,
+                  "fontFamily": "$font-body",
+                  "fontSize": 12,
+                  "fontWeight": "normal"
+                },
+                {
+                  "type": "frame",
+                  "id": "SC42t",
+                  "name": "List",
+                  "width": "fill_container",
+                  "layout": "vertical",
+                  "gap": 10,
+                  "children": [
+                    {
+                      "type": "frame",
+                      "id": "KyDXA",
+                      "name": "Taylor, 34 Row",
+                      "width": "fill_container",
+                      "fill": "$surface-dark",
+                      "cornerRadius": 16,
+                      "stroke": "$border-dark",
+                      "strokeWidth": 1,
+                      "gap": 12,
+                      "padding": 12,
+                      "alignItems": "center",
+                      "children": [
+                        {
+                          "type": "frame",
+                          "id": "mPeiD",
+                          "name": "Avatar T",
+                          "width": 48,
+                          "height": 48,
+                          "fill": {
+                            "type": "gradient",
+                            "gradientType": "linear",
+                            "enabled": true,
+                            "rotation": 135,
+                            "size": {
+                              "height": 1
+                            },
+                            "colors": [
+                              {
+                                "color": "#A5694A",
+                                "position": 0
+                              },
+                              {
+                                "color": "#3D2A1B",
+                                "position": 1
+                              }
+                            ]
+                          },
+                          "cornerRadius": 9999,
+                          "justifyContent": "center",
+                          "alignItems": "center",
+                          "children": [
+                            {
+                              "type": "text",
+                              "id": "i15L5",
+                              "name": "Initial",
+                              "fill": "$white",
+                              "content": "T",
+                              "fontFamily": "$font-heading",
+                              "fontSize": 17,
+                              "fontWeight": "normal"
+                            }
+                          ]
+                        },
+                        {
+                          "type": "frame",
+                          "id": "lv3Vd",
+                          "name": "Text Col",
+                          "width": "fill_container",
+                          "layout": "vertical",
+                          "gap": 3,
+                          "children": [
+                            {
+                              "type": "text",
+                              "id": "iPKQP",
+                              "name": "Name",
+                              "fill": "$white",
+                              "content": "Taylor, 34",
+                              "fontFamily": "$font-body",
+                              "fontSize": 14,
+                              "fontWeight": "700"
+                            },
+                            {
+                              "type": "text",
+                              "id": "BZVrm",
+                              "name": "Subtitle",
+                              "fill": "$text-dark-muted",
+                              "content": "Blocked Oct 2",
+                              "fontFamily": "$font-body",
+                              "fontSize": 12,
+                              "fontWeight": "normal"
+                            }
+                          ]
+                        },
+                        {
+                          "id": "wYFBH",
+                          "type": "ref",
+                          "ref": "wc6Up",
+                          "name": "Unblock Button",
+                          "width": 92,
+                          "height": 36,
+                          "padding": [
+                            8,
+                            14
+                          ],
+                          "stroke": "#FFFFFF33",
+                          "descendants": {
+                            "xT9qn": {
+                              "content": "Unblock",
+                              "fill": "$white",
+                              "fontSize": 13
+                            }
+                          }
+                        }
+                      ]
+                    },
+                    {
+                      "type": "frame",
+                      "id": "Yt2Tu",
+                      "name": "Morgan, 28 Row",
+                      "width": "fill_container",
+                      "fill": "$surface-dark",
+                      "cornerRadius": 16,
+                      "stroke": "$border-dark",
+                      "strokeWidth": 1,
+                      "gap": 12,
+                      "padding": 12,
+                      "alignItems": "center",
+                      "children": [
+                        {
+                          "type": "frame",
+                          "id": "tM9f8",
+                          "name": "Avatar M",
+                          "width": 48,
+                          "height": 48,
+                          "fill": {
+                            "type": "gradient",
+                            "gradientType": "linear",
+                            "enabled": true,
+                            "rotation": 135,
+                            "size": {
+                              "height": 1
+                            },
+                            "colors": [
+                              {
+                                "color": "#6FA54A",
+                                "position": 0
+                              },
+                              {
+                                "color": "#1F3D1B",
+                                "position": 1
+                              }
+                            ]
+                          },
+                          "cornerRadius": 9999,
+                          "justifyContent": "center",
+                          "alignItems": "center",
+                          "children": [
+                            {
+                              "type": "text",
+                              "id": "Bk05F",
+                              "name": "Initial",
+                              "fill": "$white",
+                              "content": "M",
+                              "fontFamily": "$font-heading",
+                              "fontSize": 17,
+                              "fontWeight": "normal"
+                            }
+                          ]
+                        },
+                        {
+                          "type": "frame",
+                          "id": "S6ohh",
+                          "name": "Text Col",
+                          "width": "fill_container",
+                          "layout": "vertical",
+                          "gap": 3,
+                          "children": [
+                            {
+                              "type": "text",
+                              "id": "rxlhF",
+                              "name": "Name",
+                              "fill": "$white",
+                              "content": "Morgan, 28",
+                              "fontFamily": "$font-body",
+                              "fontSize": 14,
+                              "fontWeight": "700"
+                            },
+                            {
+                              "type": "text",
+                              "id": "ounbB",
+                              "name": "Subtitle",
+                              "fill": "$text-dark-muted",
+                              "content": "Blocked Sep 28",
+                              "fontFamily": "$font-body",
+                              "fontSize": 12,
+                              "fontWeight": "normal"
+                            }
+                          ]
+                        },
+                        {
+                          "id": "xuYSC",
+                          "type": "ref",
+                          "ref": "wc6Up",
+                          "name": "Unblock Button",
+                          "width": 92,
+                          "height": 36,
+                          "padding": [
+                            8,
+                            14
+                          ],
+                          "stroke": "#FFFFFF33",
+                          "descendants": {
+                            "xT9qn": {
+                              "content": "Unblock",
+                              "fill": "$white",
+                              "fontSize": 13
+                            }
+                          }
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "type": "frame",
+                  "id": "Wo2S9",
+                  "name": "Note",
+                  "width": "fill_container",
+                  "gap": 10,
+                  "padding": [
+                    4,
+                    2
+                  ],
+                  "children": [
+                    {
+                      "type": "icon",
+                      "id": "OLvp6",
+                      "name": "Icon",
+                      "width": 14,
+                      "height": 14,
+                      "icon": "info",
+                      "library": "lucide",
+                      "fill": "$text-dark-faint"
+                    },
+                    {
+                      "type": "text",
+                      "id": "oo7ZV",
+                      "name": "Note Text",
+                      "fill": "$text-dark-faint",
+                      "textGrowth": "fixed-width",
+                      "width": "fill_container",
+                      "content": "Unblocking doesn't bring back a match or anyone you followed. They won't be notified.",
+                      "lineHeight": 1.4,
+                      "fontFamily": "$font-body",
+                      "fontSize": 12,
+                      "fontWeight": "normal"
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "frame",
+          "id": "dG6yA",
+          "x": 0,
+          "y": 0,
+          "name": "Scrim",
+          "width": 393,
+          "height": 844,
+          "fill": "#000000B3",
+          "layout": "vertical",
+          "justifyContent": "center",
+          "alignItems": "center",
+          "children": [
+            {
+              "type": "frame",
+              "id": "r9d5ap",
+              "name": "Dialog",
+              "width": 320,
+              "fill": "$surface-dark",
+              "cornerRadius": 24,
+              "stroke": "$border-dark",
+              "strokeWidth": 1,
+              "layout": "vertical",
+              "gap": 18,
+              "padding": [
+                28,
+                24
+              ],
+              "alignItems": "center",
+              "children": [
+                {
+                  "type": "frame",
+                  "id": "NJcDw",
+                  "name": "Avatar Wrap",
+                  "width": 72,
+                  "height": 72,
+                  "layout": "none",
+                  "children": [
+                    {
+                      "type": "frame",
+                      "id": "bhNIx",
+                      "x": 0,
+                      "y": 0,
+                      "name": "Avatar Image",
+                      "clip": true,
+                      "width": 72,
+                      "height": 72,
+                      "fill": {
+                        "type": "gradient",
+                        "gradientType": "linear",
+                        "enabled": true,
+                        "rotation": 135,
+                        "size": {
+                          "height": 1
+                        },
+                        "colors": [
+                          {
+                            "color": "#A5694A",
+                            "position": 0
+                          },
+                          {
+                            "color": "#3D2A1B",
+                            "position": 1
+                          }
+                        ]
+                      },
+                      "cornerRadius": 9999,
+                      "justifyContent": "center",
+                      "alignItems": "center",
+                      "children": [
+                        {
+                          "type": "text",
+                          "id": "B5eF2",
+                          "name": "Initial",
+                          "fill": "$white",
+                          "content": "T",
+                          "fontFamily": "$font-heading",
+                          "fontSize": 28,
+                          "fontWeight": "normal"
+                        }
+                      ]
+                    },
+                    {
+                      "type": "frame",
+                      "id": "V0xXJX",
+                      "x": 44,
+                      "y": 44,
+                      "name": "Icon Badge",
+                      "width": 28,
+                      "height": 28,
+                      "fill": "#FFFFFF33",
+                      "cornerRadius": 9999,
+                      "stroke": "$surface-dark",
+                      "strokeWidth": 3,
+                      "justifyContent": "center",
+                      "alignItems": "center",
+                      "children": [
+                        {
+                          "type": "icon",
+                          "id": "W1XF4",
+                          "name": "Icon",
+                          "width": 14,
+                          "height": 14,
+                          "icon": "user-check",
+                          "library": "lucide",
+                          "fill": "$white"
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "type": "frame",
+                  "id": "gC7hi",
+                  "name": "Text Group",
+                  "width": "fill_container",
+                  "layout": "vertical",
+                  "gap": 8,
+                  "alignItems": "center",
+                  "children": [
+                    {
+                      "type": "text",
+                      "id": "RAQbP",
+                      "name": "Title",
+                      "fill": "$white",
+                      "textGrowth": "fixed-width",
+                      "width": "fill_container",
+                      "content": "Unblock Taylor?",
+                      "textAlign": "center",
+                      "fontFamily": "$font-heading",
+                      "fontSize": 20,
+                      "fontWeight": "normal"
+                    },
+                    {
+                      "type": "text",
+                      "id": "S7KDF",
+                      "name": "Body",
+                      "fill": "$text-dark-muted",
+                      "textGrowth": "fixed-width",
+                      "width": "fill_container",
+                      "content": "Taylor will be able to see you and message you again, and you'll see their answers in your feed. Your old match won't come back. They won't be notified.",
+                      "lineHeight": 1.4,
+                      "textAlign": "center",
+                      "fontFamily": "$font-body",
+                      "fontSize": 14,
+                      "fontWeight": "normal"
+                    }
+                  ]
+                },
+                {
+                  "type": "frame",
+                  "id": "CYvyQ",
+                  "name": "Buttons Group",
+                  "width": "fill_container",
+                  "layout": "vertical",
+                  "gap": 8,
+                  "children": [
+                    {
+                      "id": "q3vvma",
+                      "type": "ref",
+                      "ref": "FMBP0",
+                      "name": "Confirm Button",
+                      "width": "fill_container",
+                      "descendants": {
+                        "dcLjE": {
+                          "content": "Yes, Unblock"
+                        }
+                      }
+                    },
+                    {
+                      "type": "frame",
+                      "id": "zGm8s",
+                      "name": "Cancel Button",
+                      "width": "fill_container",
+                      "padding": [
+                        13,
+                        20
+                      ],
+                      "justifyContent": "center",
+                      "alignItems": "center",
+                      "children": [
+                        {
+                          "type": "text",
+                          "id": "iHKM0",
+                          "name": "Label",
+                          "fill": "$text-dark-muted",
+                          "content": "Cancel",
+                          "fontFamily": "$font-body",
+                          "fontSize": 15,
+                          "fontWeight": "700"
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
             }
           ]
         }
