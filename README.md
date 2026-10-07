@@ -79,8 +79,15 @@ Mux has its own Staging and Production environments. Use them like the Supabase 
 **Mux Staging with Supabase Staging** (and local testing), **Mux Production only with Supabase Production**.
 Do not record real users' video in Mux Production until the legal review in the Build Plan is done.
 
-Three Edge Functions (in `supabase/functions/`) do the work: `create-video-upload` (the app asks for an upload link),
-`mux-webhook` (Mux reports progress, checked against Mux's signature), and `get-playback-url` (short-lived signed links to watch).
+Four Edge Functions (in `supabase/functions/`) do the work: `create-video-upload` (the app asks for an upload link),
+`mux-webhook` (Mux reports progress, checked against Mux's signature), `get-playback-url` (short-lived signed links to watch your own recording, or another person's answer once the daily gate is open),
+and `update-location` (looks up coordinates for the city on a profile, so distance works).
+
+### City lookup (distance)
+
+`update-location` uses a free geocoding service by default (Open-Meteo), whose free tier is for non-commercial use. Before launch,
+choose a service you can use commercially and set `GEOCODING_URL` in the functions' settings file (see `supabase/functions/.env.example`).
+The service must accept `?name=<city>&count=1` and answer `{ "results": [{ "latitude": ..., "longitude": ... }] }`.
 
 ### Connecting a Mux environment
 
