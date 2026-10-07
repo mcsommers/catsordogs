@@ -1,4 +1,4 @@
-// TEMPORARY plain screen for checking Phase 1 works on a real device or simulator.
+// TEMPORARY plain screen for checking Phases 1-3 work on a real device or simulator.
 // It is replaced by the designed screens (01 Welcome, 02 Sign Up, 03 Build Profile) in Phase A.
 import { useCallback, useEffect, useState } from 'react';
 import { Button, ScrollView, StyleSheet, Text, TextInput, View } from 'react-native';
@@ -6,6 +6,7 @@ import * as ImagePicker from 'expo-image-picker';
 import type { Session } from '@supabase/supabase-js';
 import { supabase } from '../lib/supabase';
 import { parseBirthdayInput } from '../lib/dates';
+import VideoTest from './VideoTest';
 
 export default function TestHarness() {
   const [session, setSession] = useState<Session | null>(null);
@@ -98,7 +99,7 @@ export default function TestHarness() {
 
   return (
     <ScrollView contentContainerStyle={styles.page}>
-      <Text style={styles.title}>Phase 1-2 test screen (temporary)</Text>
+      <Text style={styles.title}>Phase 1-3 test screen (temporary)</Text>
       {message ? <Text style={styles.message}>{message}</Text> : null}
 
       {!session ? (
@@ -124,6 +125,7 @@ export default function TestHarness() {
           <Button title="Save sample filters" onPress={saveSampleFilters} />
           <Button title="Load today's question + settings" onPress={loadQuestion} />
           <Text style={styles.json}>{questionInfo ? JSON.stringify(questionInfo, null, 2) : ''}</Text>
+          <VideoTest />
           <Button title="Log out" onPress={() => supabase.auth.signOut()} />
           <Text style={styles.json}>{JSON.stringify(profile, null, 2)}</Text>
         </View>
