@@ -2,13 +2,16 @@
 -- push tokens, the daily-question notification, the queue that the worker
 -- reads, retries, email unsubscribe, and the schedule.
 begin;
-select plan(78);
+select plan(100);
 
 delete from public.answers;
 delete from public.videos;
 delete from public.questions;
 insert into public.questions (question_date, text) values (public.utc_today(), 'Cats or dogs? Make your case.');
 
+-- a moment on today's UTC date, to run the daily-question queueing "at"
+create function pg_temp.at(h int, m int default 0) returns timestamptz language sql
+as $$ select ((public.utc_today()::timestamp + make_interval(hours => h, mins => m)) at time zone 'utc') $$;
 create function pg_temp.uid(n int) returns uuid language sql
 as $$ select ('f' || lpad(n::text, 7, '0') || '-0000-0000-0000-000000000000')::uuid $$;
 create function pg_temp.claims(n int) returns text language sql
@@ -117,8 +120,8 @@ select throws_ok($$select * from private.worker_config$$, '42501', null, 'and ca
 
 reset role;
 set local role service_role;
-select is(public.enqueue_daily_question_notifications(), 4, 'everyone with a finished profile is queued (not the unfinished one)');
-select is(public.enqueue_daily_question_notifications(), 0, 'running it again queues nobody twice');
+select is(public.enqueue_daily_question_notifications(pg_temp.at(12)), 4, 'everyone with a finished profile is queued (not the unfinished one)');
+select is(public.enqueue_daily_question_notifications(pg_temp.at(12)), 0, 'running it again queues nobody twice');
 create temp table work as select * from public.claim_notifications(200);
 grant select on work to public;
 select is((select count(*) from work), 2::bigint, 'the worker gets 2 of the 4: people with no channel are skipped');
@@ -196,10 +199,62 @@ select is((select array_agg(push_enabled) from public.get_notification_preferenc
 select is((select array_agg(email_enabled) from public.get_notification_preferences()), array[false, false, false, false], 'the app shows email off for all types');
 
 -- ---------------------------------------------------------------------------
+-- The daily question goes out at the admin-set time in each person's own time zone
+-- ---------------------------------------------------------------------------
+-- 1 has no time zone yet (UTC)  2 New York  3 Sydney  4 Honolulu  5 unfinished  6 admin (unfinished)
+reset role;
+select pg_temp.person(6, false);
+insert into public.admin_users (user_id) values (pg_temp.uid(6));
+delete from public.notification_outbox;
+
+select set_config('request.jwt.claims', pg_temp.claims(2), true);
+set local role authenticated;
+select lives_ok($$select public.set_time_zone('America/New_York')$$, 'a person can report their time zone');
+select is((select time_zone from public.profiles), 'America/New_York', 'and it is saved on their profile');
+select throws_ok($$select public.set_time_zone('Mars/Olympus')$$, '23514', 'That is not a known time zone.', 'an unknown time zone is rejected');
+select throws_ok($$select public.set_time_zone(null)$$, '23514', 'That is not a known time zone.', 'so is an empty one');
+select throws_ok($$update public.profiles set time_zone = 'Mars/Olympus'$$, '42501', null, 'the column cannot be written directly');
+reset role;
+set local role anon;
+select throws_ok($$select public.set_time_zone('UTC')$$, '42501', null, 'signed-out visitors cannot set a time zone');
+reset role;
+update public.profiles set time_zone = 'Australia/Sydney' where id = pg_temp.uid(3);
+update public.profiles set time_zone = 'Pacific/Honolulu' where id = pg_temp.uid(4);
+
+select is((select daily_question_notify_time from public.app_settings), '09:00'::time, 'the default send time is 9:00 AM');
+set local role service_role;
+select is(public.enqueue_daily_question_notifications(pg_temp.at(0)), 1, '00:00 UTC: only Sydney (10 or 11 AM there) is past 9 AM on the question''s date');
+select is((select user_id from public.notification_outbox where dedupe_key like 'daily:%'), pg_temp.uid(3), 'that is the person in Sydney');
+select is(public.enqueue_daily_question_notifications(pg_temp.at(9)), 1, '09:00 UTC: the person with no time zone (UTC) is next, exactly at 9:00');
+select is(public.enqueue_daily_question_notifications(pg_temp.at(14, 30)), 1, '14:30 UTC: New York is past 9 AM (summer or winter time)');
+select is(public.enqueue_daily_question_notifications(pg_temp.at(19)), 1, '19:00 UTC: Honolulu reaches 9 AM');
+select is(public.enqueue_daily_question_notifications(pg_temp.at(19)), 0, 'running again queues nobody twice');
+select is(public.enqueue_daily_question_notifications(pg_temp.at(23, 59)), 0, 'and a late run does not queue Sydney again for its next morning');
+select is((select count(*) from public.notification_outbox where dedupe_key like 'daily:%'), 4::bigint, 'each of the four finished profiles got exactly one');
+select is(public.enqueue_daily_question_notifications(pg_temp.at(12) + interval '5 days'), 0, 'with no question for that day, nothing is queued');
+
+-- the admin changes the time
+reset role;
+delete from public.notification_outbox;
+select set_config('request.jwt.claims', pg_temp.claims(1), true);
+set local role authenticated;
+select is_empty($$update public.app_settings set daily_question_notify_time = '03:00' returning 1$$, 'a user cannot change the send time');
+select set_config('request.jwt.claims', pg_temp.claims(6), true);
+select lives_ok($$update public.app_settings set daily_question_notify_time = '18:00'$$, 'an admin can change the send time');
+select throws_ok($$update public.app_settings set daily_question_notify_time = '09:00:30'$$, '23514', null, 'but only to a whole minute');
+reset role;
+set local role service_role;
+select is(public.enqueue_daily_question_notifications(pg_temp.at(17, 59)), 0, 'with 6:00 PM set, nobody is queued at 17:59 UTC (UTC person not there yet, Sydney already into the next day)');
+select is(public.enqueue_daily_question_notifications(pg_temp.at(18)), 1, 'at 18:00 UTC the UTC person is queued');
+select is((select user_id from public.notification_outbox), pg_temp.uid(1), 'and it is them');
+reset role;
+update public.app_settings set daily_question_notify_time = '09:00';
+
+-- ---------------------------------------------------------------------------
 -- Schedule
 -- ---------------------------------------------------------------------------
 reset role;
-select is((select schedule from cron.job where jobname = 'daily-question-notifications'), '0 0 * * *', 'the daily question is queued at the start of each UTC day');
+select is((select schedule from cron.job where jobname = 'daily-question-notifications'), '*/5 * * * *', 'the daily question is checked every 5 minutes');
 select is((select schedule from cron.job where jobname = 'notification-worker'), '* * * * *', 'the worker is woken every minute');
 select lives_ok($$select private.kick_notification_worker()$$, 'waking the worker does nothing until it is configured');
 
