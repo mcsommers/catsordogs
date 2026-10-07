@@ -17,7 +17,7 @@ MVP Scope & Requirements doc. Rules for the AI coding agent are in [`AGENTS.md`]
 ## One-time setup
 
 You need: Node 24 (already installed), Git, and [Docker Desktop](https://www.docker.com/products/docker-desktop/)
-(the local database runs in Docker).
+(the local database runs in Docker). If `db:start` reports an unhealthy container, check that Docker Desktop is running.
 
 ```sh
 npm install              # in the project root: installs the Supabase command line tool
