@@ -23,6 +23,8 @@ end $$;
 
 -- 1 has a phone and default settings   2 has a phone but turned everything off for daily questions
 -- 3 has no phone but turned email on   4 has no phone and defaults   5 has an unfinished profile
+-- (people left in a local database by other test runs must not take part)
+delete from auth.users;
 select pg_temp.person(1); select pg_temp.person(2); select pg_temp.person(3); select pg_temp.person(4); select pg_temp.person(5, false);
 
 -- ---------------------------------------------------------------------------
