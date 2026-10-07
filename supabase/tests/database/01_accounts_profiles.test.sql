@@ -9,7 +9,7 @@ insert into auth.users (id, email, aud, role, instance_id) values
 
 select is((select count(*) from public.profiles where id in ('aaaaaaaa-0000-0000-0000-000000000001', 'bbbbbbbb-0000-0000-0000-000000000002')), 2::bigint,
   'signing up creates an empty profile for each new account');
-select is((select count(*) from public.filter_preferences), 2::bigint,
+select is((select count(*) from public.filter_preferences where user_id in ('aaaaaaaa-0000-0000-0000-000000000001', 'bbbbbbbb-0000-0000-0000-000000000002')), 2::bigint,
   'signing up creates empty filter preferences');
 select is((select profile_completed_at from public.profiles where id = 'aaaaaaaa-0000-0000-0000-000000000001'), null,
   'a new profile is not finished');

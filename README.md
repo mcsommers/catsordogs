@@ -35,7 +35,8 @@ Run from the project root unless noted.
 | `npm run db:stop` | Stops it |
 | `npm run db:reset` | Rebuilds the local database from the migration files |
 | `npm run db:test` | Runs the database tests (rules like the daily gate live here) |
-| `npm run api:test` | Runs end-to-end tests through the real API as signed-in users (needs `db:start` running) |
+| `npm run api:test` | Runs end-to-end tests through the real API and Edge Functions as signed-in users (needs `db:start` running). Uses a stand-in for Mux, so it needs no Mux account or secrets. |
+| `npm run unit:test` | Runs small tests of plain helper code (such as the caption file reader) |
 | `cd mobile && npm start` | Starts the app (press `i` for the iOS simulator). A real phone can't reach `127.0.0.1`; use your computer's network address in `mobile/.env` instead. |
 | `cd mobile && npm test` | Runs the app's tests |
 | `cd mobile && npm run typecheck` | Checks the app's TypeScript for errors |
@@ -68,6 +69,35 @@ There are three separate Supabase projects so testing never touches real users' 
 | Production | Real users | Set before store submission |
 
 Never commit keys or `.env` files. Only `.env.example` (with blank values) is committed.
+
+## Video (Mux)
+
+Videos are stored, converted, captioned and streamed by Mux; our database only stores Mux's ids, the length and the captions.
+Mux has its own Staging and Production environments. Use them like the Supabase ones:
+**Mux Staging with Supabase Staging** (and local testing), **Mux Production only with Supabase Production**.
+Do not record real users' video in Mux Production until the legal review in the Build Plan is done.
+
+Three Edge Functions (in `supabase/functions/`) do the work: `create-video-upload` (the app asks for an upload link),
+`mux-webhook` (Mux reports progress, checked against Mux's signature), and `get-playback-url` (short-lived signed links to watch).
+
+### Connecting a Mux environment
+
+In the Mux dashboard, with the right environment (Staging or Production) selected:
+
+1. **Settings > Access Tokens**: create a token with permission for **Mux Video** (read and write). You get a Token ID and Token Secret.
+2. **Settings > Signing Keys**: create a signing key for Video. You get a Key ID and a private key (shown once).
+3. **Settings > Webhooks**: add a webhook for that environment, with the URL
+   `https://<your-supabase-project-id>.supabase.co/functions/v1/mux-webhook`, and copy its **Signing secret**.
+
+Put the five values in a file named `supabase/functions/.env` (copy `supabase/functions/.env.example`; the file is git-ignored),
+then send them to the matching Supabase project and deploy the functions:
+
+```sh
+npx supabase secrets set --env-file supabase/functions/.env --project-ref <project id>
+npx supabase functions deploy --project-ref <project id>
+```
+
+Never paste these values into chat, an issue, or a commit.
 
 ## Workflow
 

@@ -8,6 +8,7 @@
     "expo": "~57.0.27",
     "expo-image-picker": "~57.0.20",
     "expo-status-bar": "~57.0.1",
+    "expo-video": "~57.0.5",
     "react": "19.2.3",
     "react-native": "0.86.3",
     "react-native-url-polyfill": "^4.0.0"

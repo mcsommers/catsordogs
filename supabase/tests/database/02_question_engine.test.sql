@@ -3,6 +3,7 @@ begin;
 select plan(68);
 
 -- Start from a clean calendar (the local seed data is removed inside this test only).
+delete from public.videos;
 delete from public.questions;
 
 insert into auth.users (id, email, aud, role, instance_id) values

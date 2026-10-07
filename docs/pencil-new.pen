@@ -39870,6 +39870,397 @@
           ]
         }
       ]
+    },
+    {
+      "type": "frame",
+      "id": "DZdog",
+      "x": 2388,
+      "y": 1471,
+      "name": "04f Daily Limit Reached",
+      "clip": true,
+      "width": 393,
+      "height": 919,
+      "layout": "none",
+      "children": [
+        {
+          "type": "frame",
+          "id": "Hjqbc",
+          "x": 0,
+          "y": 0,
+          "name": "04 Today's Question",
+          "clip": true,
+          "width": 393,
+          "fill": "$bg-dark",
+          "layout": "vertical",
+          "children": [
+            {
+              "id": "swzlf",
+              "type": "ref",
+              "ref": "Lpmh1",
+              "name": "Status Bar",
+              "width": "fill_container",
+              "descendants": {
+                "dqRvc": {
+                  "fill": "$white"
+                },
+                "O11Ipk": {
+                  "fill": "$white"
+                },
+                "S4IT1": {
+                  "fill": "$white"
+                },
+                "MdGlp": {
+                  "fill": "$white"
+                }
+              }
+            },
+            {
+              "type": "frame",
+              "id": "NJKAK",
+              "name": "Content Wrapper",
+              "width": "fill_container",
+              "layout": "vertical",
+              "gap": 28,
+              "padding": [
+                28,
+                20,
+                40,
+                20
+              ],
+              "children": [
+                {
+                  "type": "frame",
+                  "id": "CB73s",
+                  "name": "Intro Group",
+                  "width": "fill_container",
+                  "layout": "vertical",
+                  "gap": 12,
+                  "alignItems": "center",
+                  "children": [
+                    {
+                      "type": "frame",
+                      "id": "LlhKl",
+                      "name": "Badge",
+                      "fill": "#FF6B3526",
+                      "cornerRadius": 9999,
+                      "stroke": "$accent-dog",
+                      "strokeWidth": 1,
+                      "padding": [
+                        6,
+                        14
+                      ],
+                      "children": [
+                        {
+                          "type": "text",
+                          "id": "W2VPO",
+                          "name": "Label",
+                          "fill": "$accent-dog",
+                          "content": "TODAY'S QUESTION",
+                          "fontFamily": "$font-body",
+                          "fontSize": 11,
+                          "fontWeight": "700",
+                          "letterSpacing": 1
+                        }
+                      ]
+                    },
+                    {
+                      "type": "text",
+                      "id": "YtDHg",
+                      "name": "Question",
+                      "fill": "$white",
+                      "textGrowth": "fixed-width",
+                      "width": "fill_container",
+                      "content": "What are your thoughts on graffiti?",
+                      "textAlign": "center",
+                      "fontFamily": "$font-heading",
+                      "fontSize": 28,
+                      "fontWeight": "normal"
+                    },
+                    {
+                      "type": "text",
+                      "id": "heMz2",
+                      "name": "Subtext",
+                      "fill": "$text-dark-muted",
+                      "textGrowth": "fixed-width",
+                      "width": "fill_container",
+                      "content": "Everyone answers before anyone can see today's responses.",
+                      "lineHeight": 1.4,
+                      "textAlign": "center",
+                      "fontFamily": "$font-body",
+                      "fontSize": 14,
+                      "fontWeight": "normal"
+                    }
+                  ]
+                },
+                {
+                  "type": "frame",
+                  "id": "rTfNb",
+                  "name": "Camera Preview",
+                  "width": "fill_container",
+                  "height": 380,
+                  "cornerRadius": 28,
+                  "stroke": "$border-dark",
+                  "strokeWidth": 1,
+                  "layout": "vertical",
+                  "justifyContent": "center",
+                  "alignItems": "center",
+                  "children": [
+                    {
+                      "type": "ellipse",
+                      "id": "k4lQD7",
+                      "name": "Face Guide",
+                      "width": 170,
+                      "height": 220,
+                      "stroke": "$border-dark",
+                      "strokeWidth": 2
+                    },
+                    {
+                      "type": "frame",
+                      "id": "C09JMB",
+                      "layoutPosition": "absolute",
+                      "x": 297,
+                      "y": 16,
+                      "name": "Flip Camera",
+                      "width": 40,
+                      "height": 40,
+                      "fill": "#00000066",
+                      "cornerRadius": 9999,
+                      "justifyContent": "center",
+                      "alignItems": "center",
+                      "children": [
+                        {
+                          "type": "icon",
+                          "id": "m6lHC",
+                          "name": "Icon",
+                          "width": 18,
+                          "height": 18,
+                          "icon": "timer",
+                          "library": "lucide",
+                          "fill": "$white"
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "type": "frame",
+                  "id": "FnFk0",
+                  "name": "Record Control",
+                  "width": "fill_container",
+                  "layout": "vertical",
+                  "gap": 10,
+                  "alignItems": "center",
+                  "children": [
+                    {
+                      "type": "frame",
+                      "id": "uxK3h",
+                      "name": "Ring Wrap",
+                      "width": 84,
+                      "height": 84,
+                      "layout": "none",
+                      "children": [
+                        {
+                          "type": "ellipse",
+                          "id": "Z0IvC",
+                          "x": 0,
+                          "y": 0,
+                          "name": "Ring Track",
+                          "width": 84,
+                          "height": 84,
+                          "stroke": "$border-dark",
+                          "strokeWidth": 4
+                        },
+                        {
+                          "type": "ellipse",
+                          "id": "ou9Wg",
+                          "x": 0,
+                          "y": 0,
+                          "name": "Ring Progress",
+                          "enabled": false,
+                          "startAngle": 90,
+                          "sweepAngle": -130,
+                          "width": 84,
+                          "height": 84,
+                          "stroke": "$accent-dog",
+                          "strokeWidth": 4,
+                          "strokeLinecap": "round"
+                        },
+                        {
+                          "type": "frame",
+                          "id": "Ks6rX",
+                          "x": 12,
+                          "y": 12,
+                          "name": "Capture Button",
+                          "width": 60,
+                          "height": 60,
+                          "fill": "$accent-dog",
+                          "cornerRadius": 9999
+                        }
+                      ]
+                    },
+                    {
+                      "type": "text",
+                      "id": "tokn4",
+                      "name": "Timer",
+                      "fill": "$text-dark-muted",
+                      "content": "0:00 / 0:14",
+                      "fontFamily": "$font-body",
+                      "fontSize": 13,
+                      "fontWeight": "600"
+                    },
+                    {
+                      "type": "text",
+                      "id": "cnqE0",
+                      "name": "Hint",
+                      "fill": "$text-dark-faint",
+                      "content": "Tap to start recording",
+                      "fontFamily": "$font-body",
+                      "fontSize": 12,
+                      "fontWeight": "normal"
+                    }
+                  ]
+                },
+                {
+                  "type": "frame",
+                  "id": "GM6Ec",
+                  "name": "Skip Row",
+                  "width": "fill_container",
+                  "justifyContent": "center",
+                  "children": [
+                    {
+                      "type": "text",
+                      "id": "btdUB",
+                      "name": "Skip Link",
+                      "fill": "$text-dark-muted",
+                      "content": "Skip today's question",
+                      "fontFamily": "$font-body",
+                      "fontSize": 13,
+                      "fontWeight": "600"
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "frame",
+          "id": "L9dK3",
+          "x": 0,
+          "y": 0,
+          "name": "Scrim",
+          "width": 393,
+          "height": 919,
+          "fill": "#000000B3",
+          "layout": "vertical",
+          "justifyContent": "center",
+          "alignItems": "center",
+          "children": [
+            {
+              "type": "frame",
+              "id": "cetdZ",
+              "name": "Dialog",
+              "width": 320,
+              "fill": "$surface-dark",
+              "cornerRadius": 24,
+              "stroke": "$border-dark",
+              "strokeWidth": 1,
+              "layout": "vertical",
+              "gap": 18,
+              "padding": [
+                28,
+                24
+              ],
+              "alignItems": "center",
+              "children": [
+                {
+                  "type": "frame",
+                  "id": "lVmhd",
+                  "name": "Icon Wrap",
+                  "width": 56,
+                  "height": 56,
+                  "fill": "#FF6B3526",
+                  "cornerRadius": 9999,
+                  "justifyContent": "center",
+                  "alignItems": "center",
+                  "children": [
+                    {
+                      "type": "icon",
+                      "id": "FQdeZ",
+                      "name": "Icon",
+                      "width": 26,
+                      "height": 26,
+                      "icon": "timer",
+                      "library": "lucide",
+                      "fill": "$accent-dog"
+                    }
+                  ]
+                },
+                {
+                  "type": "frame",
+                  "id": "xRnXB",
+                  "name": "Text Group",
+                  "width": "fill_container",
+                  "layout": "vertical",
+                  "gap": 8,
+                  "alignItems": "center",
+                  "children": [
+                    {
+                      "type": "text",
+                      "id": "u70Ia9",
+                      "name": "Title",
+                      "fill": "$white",
+                      "textGrowth": "fixed-width",
+                      "width": "fill_container",
+                      "content": "Recording limit reached",
+                      "textAlign": "center",
+                      "fontFamily": "$font-heading",
+                      "fontSize": 20,
+                      "fontWeight": "normal"
+                    },
+                    {
+                      "type": "text",
+                      "id": "kF2y6",
+                      "name": "Body",
+                      "fill": "$text-dark-muted",
+                      "textGrowth": "fixed-width",
+                      "width": "fill_container",
+                      "content": "You've used all 10 of today's recordings. The limit resets with tomorrow's question. Your matches and chats stay available.",
+                      "lineHeight": 1.4,
+                      "textAlign": "center",
+                      "fontFamily": "$font-body",
+                      "fontSize": 14,
+                      "fontWeight": "normal"
+                    }
+                  ]
+                },
+                {
+                  "type": "frame",
+                  "id": "Z4kOn",
+                  "name": "Buttons Group",
+                  "width": "fill_container",
+                  "layout": "vertical",
+                  "gap": 8,
+                  "children": [
+                    {
+                      "id": "sgMfZ",
+                      "type": "ref",
+                      "ref": "FMBP0",
+                      "name": "Return Button",
+                      "width": "fill_container",
+                      "descendants": {
+                        "dcLjE": {
+                          "content": "Got It"
+                        }
+                      }
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ]
     }
   ],
   "variables": {
