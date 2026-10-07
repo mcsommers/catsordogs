@@ -418,3 +418,12 @@ enabled = true
 # cannot require a user login. It verifies Mux's own signature instead.
 [functions.mux-webhook]
 verify_jwt = false
+
+# Phase 5: the unsubscribe link is opened from an email (no login), and the
+# notification worker is called by the database's scheduler. Each checks its
+# own secret instead (a signed link, and the x-worker-secret header).
+[functions.unsubscribe]
+verify_jwt = false
+
+[functions.process-notifications]
+verify_jwt = false
