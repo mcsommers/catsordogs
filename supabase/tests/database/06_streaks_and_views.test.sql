@@ -1,6 +1,6 @@
 -- Phase 4 rules: streaks, answer view counts, profile view counts.
 begin;
-select plan(40);
+select plan(58);
 
 delete from public.answers;
 delete from public.videos;
@@ -82,6 +82,7 @@ select throws_ok($$select public.get_streak()$$, '42501', null, 'a signed-out vi
 select throws_ok($$select public.record_profile_view('d0000002-0000-0000-0000-000000000000')$$, '42501', null,
   'a signed-out visitor cannot record a profile view');
 select throws_ok($$select * from public.get_my_answers()$$, '42501', null, 'a signed-out visitor cannot read answers');
+select throws_ok($$select public.record_answer_view(gen_random_uuid())$$, '42501', null, 'a signed-out visitor cannot report a view');
 
 reset role;
 select set_config('request.jwt.claims', pg_temp.claims(1), true);
@@ -94,33 +95,88 @@ select is((select streak_days from public.get_feed(50, 0, public.utc_today()) wh
 select is((select streak_days from public.get_feed(50, 0, public.utc_today()) where first_name = 'SBig'), 8, 'including a long streak');
 
 -- ---------------------------------------------------------------------------
--- Answer views
+-- Answer views: counted only after the minimum watch time (default 3 seconds)
 -- ---------------------------------------------------------------------------
 reset role;
 select set_config('request.jwt.claims', pg_temp.claims(3), true);
 set local role authenticated;
 select is((select view_count from public.get_my_answers()), 0::bigint, 'a new answer has no views');
 
--- V (gate open) watches S1's answer, twice
+-- V (gate open) is given a link to S1's answer
 reset role;
 select set_config('request.jwt.claims', pg_temp.claims(1), true);
 set local role authenticated;
 select is((select count(*) from public.get_answer_for_playback((select id from ids where name = 's1_answer'))), 1::bigint,
   'V can watch S1''s answer');
+select is(public.record_answer_view((select id from ids where name = 's1_answer')), false,
+  'reporting a view straight away does not count: the minimum watch time has not passed');
 select is((select count(*) from public.get_answer_for_playback((select id from ids where name = 's1_answer'))), 1::bigint,
-  'and watch it again');
--- V blocked by Blocker: no view recorded, and no playback
-select is_empty($$select * from public.get_answer_for_playback((select id from ids where name = 'blocker_answer'))$$,
-  'V cannot watch a video of someone who blocked them');
--- own answer: no view recorded
-select is((select count(*) from public.get_answer_for_playback((select id from ids where name = 'v_answer'))), 1::bigint,
-  'V can watch their own answer');
+  'asking for the link again is fine');
 
 reset role;
+select set_config('request.jwt.claims', pg_temp.claims(3), true);
+set local role authenticated;
+select is((select view_count from public.get_my_answers()), 0::bigint, 'getting a link alone is not a view');
+
+-- three seconds later
+reset role;
+update public.answer_views set link_issued_at = clock_timestamp() - interval '3 seconds' where viewer_id = pg_temp.uid(1);
+select set_config('request.jwt.claims', pg_temp.claims(1), true);
+set local role authenticated;
+select is(public.record_answer_view((select id from ids where name = 's1_answer')), true, 'after the minimum watch time the view counts');
+select is(public.record_answer_view((select id from ids where name = 's1_answer')), true, 'reporting it again changes nothing');
+select is((select count(*) from public.get_answer_for_playback((select id from ids where name = 's1_answer'))), 1::bigint,
+  'watching it again is allowed');
+select is(public.record_answer_view((select id from ids where name = 's1_answer')), true, 'and still counts once');
+
+-- cannot report a view without being given a link, or for videos you cannot see
+select is_empty($$select * from public.get_answer_for_playback((select id from ids where name = 'blocker_answer'))$$,
+  'V cannot watch a video of someone who blocked them');
+select is(public.record_answer_view((select id from ids where name = 'blocker_answer')), false,
+  'and cannot report a view of it');
+select is(public.record_answer_view((select id from ids where name = 'blocker_answer')), false, 'repeating it still reveals nothing');
+select is(public.record_answer_view(gen_random_uuid()), false, 'an unknown answer is just not counted');
+select is((select count(*) from public.get_answer_for_playback((select id from ids where name = 'v_answer'))), 1::bigint,
+  'V can watch their own answer');
+select is(public.record_answer_view((select id from ids where name = 'v_answer')), false, 'watching your own answer never counts');
+
+-- the minimum watch time is an admin setting, read from app_settings
+reset role;
+update public.app_settings set min_watch_seconds = 6;
+select set_config('request.jwt.claims', pg_temp.claims(8), true);
+set local role authenticated;
+select is((select count(*) from public.get_answer_for_playback((select id from ids where name = 's1_answer'))), 1::bigint, 'SBig is given a link');
+reset role;
+update public.answer_views set link_issued_at = clock_timestamp() - interval '5 seconds' where viewer_id = pg_temp.uid(8);
+select set_config('request.jwt.claims', pg_temp.claims(8), true);
+set local role authenticated;
+select is(public.record_answer_view((select id from ids where name = 's1_answer')), false, 'with a 6 second setting, 5 seconds is not enough');
+reset role;
+update public.answer_views set link_issued_at = clock_timestamp() - interval '7 seconds' where viewer_id = pg_temp.uid(8);
+select set_config('request.jwt.claims', pg_temp.claims(8), true);
+set local role authenticated;
+select is(public.record_answer_view((select id from ids where name = 's1_answer')), true, 'and 7 seconds is');
+
+-- a viewer who has since been blocked cannot add a view
+reset role;
+select set_config('request.jwt.claims', pg_temp.claims(4), true);
+set local role authenticated;
+select is((select count(*) from public.get_answer_for_playback((select id from ids where name = 's1_answer'))), 1::bigint, 'S3 is given a link');
+reset role;
+update public.answer_views set link_issued_at = clock_timestamp() - interval '7 seconds' where viewer_id = pg_temp.uid(4);
+insert into public.blocks (blocker_id, blocked_id) values (pg_temp.uid(3), pg_temp.uid(4));
+select set_config('request.jwt.claims', pg_temp.claims(4), true);
+set local role authenticated;
+select is(public.record_answer_view((select id from ids where name = 's1_answer')), false, 'a viewer blocked after getting the link cannot add a view');
+
+-- a second person, with the setting back at 0
+reset role;
+update public.app_settings set min_watch_seconds = 0;
 select set_config('request.jwt.claims', pg_temp.claims(11), true);
 set local role authenticated;
 select is((select count(*) from public.get_answer_for_playback((select id from ids where name = 's1_answer'))), 1::bigint,
   'a second person watches S1''s answer');
+select is(public.record_answer_view((select id from ids where name = 's1_answer')), true, 'with no minimum, the view counts straight away');
 
 -- a person behind the gate cannot watch, so cannot add a view
 reset role;
@@ -128,11 +184,12 @@ select set_config('request.jwt.claims', pg_temp.claims(12), true);
 set local role authenticated;
 select is_empty($$select * from public.get_answer_for_playback((select id from ids where name = 's1_answer'))$$,
   'someone who has not answered cannot watch');
+select is(public.record_answer_view((select id from ids where name = 's1_answer')), false, 'and cannot report a view');
 
 reset role;
 select set_config('request.jwt.claims', pg_temp.claims(3), true);
 set local role authenticated;
-select is((select view_count from public.get_my_answers()), 2::bigint, 'the owner sees a count of different viewers (watching twice counts once)');
+select is((select view_count from public.get_my_answers()), 3::bigint, 'the owner sees only the counted views, one per different person');
 select is((select count(*) from public.get_my_answers()), 1::bigint, 'the owner sees only their own answers');
 select is((select question_text from public.get_my_answers()), 'Question 0', 'each of their answers says which question it is for');
 select throws_ok($$select * from public.answer_views$$, '42501', null, 'the app cannot read who viewed an answer');

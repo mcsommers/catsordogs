@@ -258,12 +258,23 @@ test('the city on a profile is looked up for distance, and people cannot set coo
 });
 
 test('streaks and view counts: counts are visible, who viewed never is', async () => {
-  // Alice watched Bob's answer earlier (once through the link; Carol was refused and left no trace)
+  // Alice was given a link to Bob's answer earlier (Carol was refused and left no trace),
+  // but a link alone is not a view.
   const mine = await bob.client.rpc('get_my_answers');
   assert.ifError(mine.error);
   assert.equal(mine.data.length, 1);
   assert.equal(mine.data[0].answer_id, bobAnswer);
-  assert.equal(mine.data[0].view_count, 1);
+  assert.equal(mine.data[0].view_count, 0);
+
+  // reporting too early does not count; after the minimum watch time (an admin setting) it does
+  const minWatch = (await admin.from('app_settings').select('min_watch_seconds').single()).data!.min_watch_seconds;
+  assert.ok(minWatch > 0, 'the default setting needs some watch time');
+  assert.equal((await alice.client.rpc('record_answer_view', { p_answer_id: bobAnswer })).data, false);
+  await new Promise((r) => setTimeout(r, minWatch * 1000 + 300));
+  assert.equal((await alice.client.rpc('record_answer_view', { p_answer_id: bobAnswer })).data, true);
+  assert.equal((await alice.client.rpc('record_answer_view', { p_answer_id: bobAnswer })).data, true);
+  assert.equal((await carol.client.rpc('record_answer_view', { p_answer_id: bobAnswer })).data, false, 'Carol never got a link');
+  assert.equal((await bob.client.rpc('get_my_answers')).data[0].view_count, 1);
   assert.ok(!('viewer_id' in mine.data[0]));
 
   const streak = await alice.client.rpc('get_streak');
