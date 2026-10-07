@@ -292,3 +292,28 @@ test('streaks and view counts: counts are visible, who viewed never is', async (
   assert.ok((await alice.client.from('answer_views').select('*')).error, 'answer views are closed to the app');
   assert.ok((await bob.client.from('profile_views').select('*')).error, 'profile views are closed to the app');
 });
+
+test('Browse Questions and search work only behind the gate, with response counts', async () => {
+  const before = await carol.client.rpc('browse_questions');
+  assert.ifError(before.error);
+  assert.deepEqual(before.data, [], 'Carol has not answered, so the list is closed');
+
+  const list = await alice.client.rpc('browse_questions', { p_limit: 100 });
+  assert.ifError(list.error);
+  const rows = list.data as any[];
+  assert.ok(rows.length >= 1);
+  const today = rows.find((r) => r.is_today);
+  assert.ok(today, 'today is marked');
+  assert.ok(Number(today.response_count) >= 2, 'it counts Alice and Bob\'s live answers');
+  const dates = rows.map((r) => r.question_date);
+  assert.deepEqual(dates, [...dates].sort().reverse(), 'newest first');
+  assert.ok(dates.every((d: string) => d <= new Date().toISOString().slice(0, 10)), 'never the calendar ahead');
+
+  const word = String(today.question_text).split(/\s+/)[0].replace(/[^A-Za-z]/g, '').slice(0, 4).toUpperCase();
+  const found = await alice.client.rpc('browse_questions', { p_query: word, p_limit: 8 });
+  assert.ifError(found.error);
+  assert.ok((found.data as any[]).some((r) => r.question_id === today.question_id), 'autosuggest finds it, ignoring case');
+
+  const anon = createClient(url, key, { auth: { persistSession: false } });
+  assert.ok((await anon.rpc('browse_questions')).error, 'signed-out visitors cannot browse');
+});

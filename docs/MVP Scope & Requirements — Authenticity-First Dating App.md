@@ -113,7 +113,7 @@ Every row below is scoped for a v1 build. Priority: **Must** = the core loop bre
 | Matching | The user stays on the day rollover only for the current session; next time the feed opens it starts at today again. | Must |
 | Matching | Users can switch the feed to any past day and see that day's answers, subject to the same filters | Must |
 | Matching | Keyword search over question text, with live autosuggest as the user types | Must |
-| Matching | A Browse Questions screen lists past questions newest first, each with its date, the question text, and a response count (e.g. "412 responses"); today's question is marked "Live now · Today's feed". Search (06d) filters this list as the user types and highlights the matching word in each question. Selecting a question opens that day's feed. | Must |
+| Matching | A Browse Questions screen lists past questions newest first, each with its date, the question text, and a response count (e.g. "412 responses"); today's question is marked "Live now · Today's feed". Search (06d) filters this list as the user types and highlights the matching word in each question. Selecting a question opens that day's feed. The list is behind the daily gate like the feed, shows only today's and earlier questions (never the calendar ahead), and the response count is the number of live answers (answers disabled by flags are not counted). Search and autosuggest use the same list: a question matches when it contains every word typed, ignoring case and matching inside words; the app highlights the match. | Must |
 
 ## Design Requirements (for design)
 
