@@ -12,11 +12,12 @@ export SUPABASE_PUBLISHABLE_KEY="${PUBLISHABLE_KEY:-$ANON_KEY}"
 
 WORK="$(mktemp -d)"
 FAKE_MUX_PORT=54399
+FAKE_GEOCODER_PORT=54398
 openssl genrsa -out "$WORK/key.pem" 2048 2>/dev/null
 openssl rsa -in "$WORK/key.pem" -pubout -out "$WORK/pub.pem" 2>/dev/null
 export MUX_WEBHOOK_SECRET="test-webhook-$(openssl rand -hex 16)"
 export MUX_TEST_PUBLIC_KEY="$(cat "$WORK/pub.pem")"
-export FAKE_MUX_PORT
+export FAKE_MUX_PORT FAKE_GEOCODER_PORT
 
 cat > "$WORK/functions.env" <<ENV
 MUX_TOKEN_ID=test-token-id
@@ -27,6 +28,7 @@ MUX_PRIVATE_KEY=$(base64 < "$WORK/key.pem" | tr -d '\n')
 MUX_BASE_URL=http://host.docker.internal:$FAKE_MUX_PORT
 MUX_STREAM_BASE_URL=http://host.docker.internal:$FAKE_MUX_PORT/stream
 MUX_IMAGE_BASE_URL=http://host.docker.internal:$FAKE_MUX_PORT/image
+GEOCODING_URL=http://host.docker.internal:$FAKE_GEOCODER_PORT/v1/search
 ENV
 
 cleanup() {
