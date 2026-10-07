@@ -62,11 +62,13 @@ applied to staging or production, so those need their real questions scheduled b
 
 There are three separate Supabase projects so testing never touches real users' data:
 
-| Environment | Used for | Where its keys go |
-| --- | --- | --- |
-| Local | Day-to-day development (Docker) | `mobile/.env` |
-| Staging | Testing with real services before release | Set when we create it (Phase 0 follow-up) |
-| Production | Real users | Set before store submission |
+| Environment | Supabase project | Mux environment | Video keys file | Used for |
+| --- | --- | --- | --- | --- |
+| Local | Docker, on your computer | A stand-in (automated tests only) | none | Day-to-day development. The app's keys go in `mobile/.env`. |
+| Staging | "Cats or Dogs - Staging" (`pgwnqasselhstrechmsa`) | Staging, with `MUX_TEST_MODE=true` | `supabase/functions/.env.staging` | Testing with real services before release |
+| Production | "Cats or Dogs - Production" (`fvnbcofflierdlnnglko`) | Production, test mode off | `supabase/functions/.env.production` | Real users. No real users' video until the legal review in the Build Plan is done. |
+
+Project IDs are not secret (they appear in the project's web address). Keys and secrets are.
 
 Never commit keys or `.env` files. Only `.env.example` (with blank values) is committed.
 
@@ -89,13 +91,23 @@ In the Mux dashboard, with the right environment (Staging or Production) selecte
 3. **Settings > Webhooks**: add a webhook for that environment, with the URL
    `https://<your-supabase-project-id>.supabase.co/functions/v1/mux-webhook`, and copy its **Signing secret**.
 
-Put the five values in a file named `supabase/functions/.env` (copy `supabase/functions/.env.example`; the file is git-ignored),
-then send them to the matching Supabase project and deploy the functions:
+Put the five values in one file per environment, named `supabase/functions/.env.staging` or `supabase/functions/.env.production`
+(copy `supabase/functions/.env.example`; these files are git-ignored). Then send them to the matching Supabase project,
+set up its database, and deploy the functions. Always pass `--project-ref`, so nothing goes to the wrong project:
 
 ```sh
-npx supabase secrets set --env-file supabase/functions/.env --project-ref <project id>
-npx supabase functions deploy --project-ref <project id>
+# staging
+npx supabase secrets set --env-file supabase/functions/.env.staging --project-ref pgwnqasselhstrechmsa
+npx supabase db push --project-ref pgwnqasselhstrechmsa
+npx supabase functions deploy --project-ref pgwnqasselhstrechmsa
+
+# production: the same three commands with --env-file supabase/functions/.env.production
+# and --project-ref fvnbcofflierdlnnglko
 ```
+
+`MUX_TEST_MODE=true` (staging only) makes Mux create free test videos: watermarked, 10 seconds at most, deleted after 24 hours.
+Leave it out of the production file. In each Mux environment, the webhook URL must point at that environment's own Supabase project:
+`https://<project id>.supabase.co/functions/v1/mux-webhook`.
 
 Never paste these values into chat, an issue, or a commit.
 
