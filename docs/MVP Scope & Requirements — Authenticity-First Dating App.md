@@ -147,6 +147,8 @@ Overall tone: the product should feel more like a shared daily ritual than a swi
 
 - [x] Profile and chat-message reports: moderator review only, with high-priority marking for profiles reported by many different people. Nothing is hidden automatically.
 
+- [ ] Decide what happens when a user marks someone Not Interested but also follows them. Suggested: Not Interested also removes the follow, so their answers are not pinned to the top of the feed against the user's wishes.
+- [ ] Decide whether Not Interested can be undone, and where (there is no screen for it yet). Without one, a mis-tap hides that person for good.
 - [ ] Decide whether daily questions go through a "would this work as someone's first-ever question?" editorial check, since new signups now start with the day's question.
 - [ ] Confirm legal review of biometric/video data handling and retention before any storage architecture is finalized.
 - [ ] Decide how a user's location is captured so "Maximum distance" and the distance shown on answers can work. The profile currently stores only a typed city name ("Living in"), which cannot be used to measure distance. Options: ask for device location permission, or look up coordinates from the city name. Needed before the feed is built (Phase 4).
