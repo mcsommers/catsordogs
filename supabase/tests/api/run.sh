@@ -13,11 +13,14 @@ export SUPABASE_PUBLISHABLE_KEY="${PUBLISHABLE_KEY:-$ANON_KEY}"
 WORK="$(mktemp -d)"
 FAKE_MUX_PORT=54399
 FAKE_GEOCODER_PORT=54398
+FAKE_NOTIFY_PORT=54397
 openssl genrsa -out "$WORK/key.pem" 2048 2>/dev/null
 openssl rsa -in "$WORK/key.pem" -pubout -out "$WORK/pub.pem" 2>/dev/null
 export MUX_WEBHOOK_SECRET="test-webhook-$(openssl rand -hex 16)"
 export MUX_TEST_PUBLIC_KEY="$(cat "$WORK/pub.pem")"
-export FAKE_MUX_PORT FAKE_GEOCODER_PORT
+export FAKE_MUX_PORT FAKE_GEOCODER_PORT FAKE_NOTIFY_PORT
+export NOTIFICATION_WORKER_SECRET="test-worker-$(openssl rand -hex 16)"
+export UNSUBSCRIBE_SECRET="test-unsub-$(openssl rand -hex 16)"
 
 cat > "$WORK/functions.env" <<ENV
 MUX_TOKEN_ID=test-token-id
@@ -29,6 +32,13 @@ MUX_BASE_URL=http://host.docker.internal:$FAKE_MUX_PORT
 MUX_STREAM_BASE_URL=http://host.docker.internal:$FAKE_MUX_PORT/stream
 MUX_IMAGE_BASE_URL=http://host.docker.internal:$FAKE_MUX_PORT/image
 GEOCODING_URL=http://host.docker.internal:$FAKE_GEOCODER_PORT/v1/search
+NOTIFICATION_WORKER_SECRET=$NOTIFICATION_WORKER_SECRET
+UNSUBSCRIBE_SECRET=$UNSUBSCRIBE_SECRET
+RESEND_API_KEY=test-resend-key
+RESEND_FROM=Cats or Dogs? <noreply@catsordogs.net>
+RESEND_BASE_URL=http://host.docker.internal:$FAKE_NOTIFY_PORT/resend
+EXPO_PUSH_URL=http://host.docker.internal:$FAKE_NOTIFY_PORT/expo/push/send
+PUBLIC_FUNCTIONS_URL=$API_URL/functions/v1
 ENV
 
 cleanup() {

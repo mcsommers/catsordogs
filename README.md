@@ -81,9 +81,10 @@ Mux has its own Staging and Production environments. Use them like the Supabase 
 **Mux Staging with Supabase Staging** (and local testing), **Mux Production only with Supabase Production**.
 Do not record real users' video in Mux Production until the legal review in the Build Plan is done.
 
-Four Edge Functions (in `supabase/functions/`) do the work: `create-video-upload` (the app asks for an upload link),
+Six Edge Functions (in `supabase/functions/`) do the work: `create-video-upload` (the app asks for an upload link),
 `mux-webhook` (Mux reports progress, checked against Mux's signature), `get-playback-url` (short-lived signed links to watch your own recording, or another person's answer once the daily gate is open),
-and `update-location` (looks up coordinates for the city on a profile, so distance works).
+`update-location` (looks up coordinates for the city on a profile, so distance works),
+`process-notifications` (sends queued push and email), and `unsubscribe` (the link in every email).
 
 ### City lookup (distance)
 
@@ -119,6 +120,32 @@ Leave it out of the production file. In each Mux environment, the webhook URL mu
 `https://<project id>.supabase.co/functions/v1/mux-webhook`.
 
 Never paste these values into chat, an issue, or a commit.
+
+## Notifications (push and email)
+
+Notifications go through a queue in the database. A worker (the `process-notifications` Edge Function) sends them:
+push through Expo, email through [Resend](https://resend.com), honoring each person's settings (push on for everything;
+email on only for matches, by default). Every email has an unsubscribe link (the `unsubscribe` Edge Function), and a
+scheduled job queues "today's question is live" for everyone at 00:00 UTC.
+
+**Resend setup (once):** add and verify your sending domain (`catsordogs.net`) in Resend, then create an API key.
+**Per environment (staging and production),** add these to that environment's file in `supabase/functions/` (see
+`.env.example`): `RESEND_API_KEY`, `RESEND_FROM` (an address on the verified domain), and two long random secrets you
+make up, `NOTIFICATION_WORKER_SECRET` and `UNSUBSCRIBE_SECRET` (for example `openssl rand -hex 32`; use different values
+per environment). Then send the settings and deploy, as in "Connecting a Mux environment" above
+(`secrets set`, `db push`, `functions deploy`).
+
+**Tell the database where the worker is (once per environment).** In that project's SQL editor, with the same
+`NOTIFICATION_WORKER_SECRET` value, run:
+
+```sql
+insert into private.worker_config (url, secret)
+values ('https://<project id>.supabase.co/functions/v1/process-notifications', '<the NOTIFICATION_WORKER_SECRET value>');
+```
+
+Until this is done the scheduled job does nothing, so nothing is sent. Locally nothing is sent either (the tests use
+stand-ins for Expo and Resend). Push needs real phones with a development build and Expo push credentials, which come
+with the app screens.
 
 ## Workflow
 
