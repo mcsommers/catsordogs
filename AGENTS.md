@@ -21,6 +21,15 @@ Rules that must never break:
 4. A flag disables one video, never an account.
 5. Every server rule gets an automated test.
 
+Docs and designs stay in sync with the code (standing instruction from Mike):
+Whenever a decision or change alters anything the docs in docs/ describe
+(requirements, data model, rules, build plan, scope) or what a screen in
+docs/pencil-new.pen shows, update the affected doc(s) and the design file in
+the same piece of work, so docs, designs and code never disagree. Do not
+wait to be asked. In the end-of-phase summary, list exactly what you changed
+in docs/ and in the design file. Edit the .pen file only through the Pencil
+tools, never as plain text.
+
 Secrets: never commit API keys, tokens, or .env files. Read them from
 environment variables. Commit only .env.example files with placeholder values.
 
