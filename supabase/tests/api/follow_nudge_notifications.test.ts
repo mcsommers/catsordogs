@@ -125,7 +125,10 @@ test('email goes only to people who turned it on, with a working unsubscribe lin
   assert.ifError((await bob.client.rpc('register_device_token', { p_token: `ExponentPushToken[bob-${run}]`, p_platform: 'ios' })).error);
   assert.ifError((await bob.client.rpc('set_notification_preference', { p_type: 'daily_question', p_channel: 'push', p_enabled: false })).error);
 
-  const queued = await admin.rpc('enqueue_daily_question_notifications');
+  // late on today's UTC date, so everyone (all in UTC here) is past the 9 AM send time
+  const lateToday = new Date();
+  lateToday.setUTCHours(23, 59, 0, 0);
+  const queued = await admin.rpc('enqueue_daily_question_notifications', { p_now: lateToday.toISOString() });
   assert.ifError(queued.error);
   assert.ok(queued.data >= 4, 'everyone with a finished profile is queued');
 
@@ -208,4 +211,12 @@ test('the app cannot touch the queue, tokens or server-only functions', async ()
   const anon = createClient(url, key, { auth: { persistSession: false } });
   assert.ok((await anon.rpc('get_follower_count')).error);
   assert.ok((await anon.from('follows').select('*')).error);
+});
+
+test('the app can report its time zone, but only a real one', async () => {
+  assert.ifError((await alice.client.rpc('set_time_zone', { p_time_zone: 'America/Chicago' })).error);
+  const mine = await alice.client.from('profiles').select('time_zone').eq('id', alice.id).single();
+  assert.equal(mine.data?.time_zone, 'America/Chicago');
+  assert.ok((await alice.client.rpc('set_time_zone', { p_time_zone: 'Not/AZone' })).error);
+  assert.ok((await alice.client.from('profiles').update({ time_zone: 'UTC' }).eq('id', alice.id)).error);
 });
