@@ -1038,6 +1038,19 @@
                       "content": "••••••••"
                     }
                   }
+                },
+                {
+                  "type": "text",
+                  "id": "mGTRZ",
+                  "name": "Password Hint",
+                  "fill": "$text-secondary",
+                  "textGrowth": "fixed-width",
+                  "width": "fill_container",
+                  "content": "At least 8 characters.",
+                  "lineHeight": 1.4,
+                  "fontFamily": "$font-body",
+                  "fontSize": 12,
+                  "fontWeight": "normal"
                 }
               ]
             },
@@ -1401,6 +1414,19 @@
                       "content": "January 1, 2000"
                     }
                   }
+                },
+                {
+                  "type": "text",
+                  "id": "Clmj7",
+                  "name": "Birthday Hint",
+                  "fill": "$text-secondary",
+                  "textGrowth": "fixed-width",
+                  "width": "fill_container",
+                  "content": "You must be 18 or older to use Cats or Dogs?",
+                  "lineHeight": 1.4,
+                  "fontFamily": "$font-body",
+                  "fontSize": 12,
+                  "fontWeight": "normal"
                 }
               ]
             },
