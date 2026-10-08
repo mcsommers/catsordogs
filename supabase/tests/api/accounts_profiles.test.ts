@@ -99,16 +99,26 @@ test('a user cannot read or change anyone else\'s profile, photos or filters', a
   assert.equal(a?.first_name, 'Alex');
 });
 
-test('photo files are private to their owner', async () => {
-  const path = `${alice.id}/1.jpg`;
-  const own = await alice.client.storage.from('profile-photos').download(path);
+test('the first photo is the avatar; later photos stay private', async () => {
+  const avatar = `${alice.id}/1.jpg`;
+  const extra = `${alice.id}/2.jpg`;
+  const up = await alice.client.storage.from('profile-photos').upload(extra, jpeg, { contentType: 'image/jpeg' });
+  assert.ifError(up.error);
+  assert.ifError((await alice.client.from('profile_photos').insert({
+    user_id: alice.id, position: 2, storage_path: extra,
+  })).error);
+
+  const own = await alice.client.storage.from('profile-photos').download(avatar);
   assert.ifError(own.error);
 
-  const other = await bob.client.storage.from('profile-photos').download(path);
-  assert.ok(other.error, 'another user must not be able to download the file');
+  const otherAvatar = await bob.client.storage.from('profile-photos').download(avatar);
+  assert.ifError(otherAvatar.error);
+
+  const otherExtra = await bob.client.storage.from('profile-photos').download(extra);
+  assert.ok(otherExtra.error, 'a later photo stays private to its owner');
 
   const anon = createClient(url, key, { auth: { persistSession: false } });
-  const pub = await anon.storage.from('profile-photos').download(path);
+  const pub = await anon.storage.from('profile-photos').download(avatar);
   assert.ok(pub.error, 'a signed-out visitor must not be able to download the file');
 
   const intoOthers = await bob.client.storage.from('profile-photos').upload(`${alice.id}/evil.jpg`, jpeg, { contentType: 'image/jpeg' });
