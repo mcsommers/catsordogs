@@ -51,8 +51,9 @@ async function sendPush(work: Work, db: ReturnType<typeof serviceClient>): Promi
 async function sendEmail(work: Work): Promise<void> {
   const apiKey = Deno.env.get('RESEND_API_KEY');
   if (!apiKey) throw new Error('Email is not configured (RESEND_API_KEY is missing).');
+  const safety = work.type === 'moderation';
   const base = Deno.env.get('PUBLIC_FUNCTIONS_URL') || `${requireEnv('SUPABASE_URL')}/functions/v1`;
-  const link = await unsubscribeUrl(base, requireEnv('UNSUBSCRIBE_SECRET'), work.user_id, work.type);
+  const link = safety ? null : await unsubscribeUrl(base, requireEnv('UNSUBSCRIBE_SECRET'), work.user_id, work.type);
   const res = await fetch(`${Deno.env.get('RESEND_BASE_URL') || 'https://api.resend.com'}/emails`, {
     method: 'POST',
     headers: { Authorization: `Bearer ${apiKey}`, 'Content-Type': 'application/json' },
@@ -60,9 +61,11 @@ async function sendEmail(work: Work): Promise<void> {
       from: Deno.env.get('RESEND_FROM') || 'Cats or Dogs? <noreply@catsordogs.net>',
       to: [work.email],
       subject: work.title,
-      text: `${work.body}\n\nYou can turn these emails off any time: ${link}`,
-      html: `<p>${escapeHtml(work.body)}</p><p style="color:#888;font-size:12px"><a href="${escapeHtml(link)}">Unsubscribe from these emails</a></p>`,
-      headers: { 'List-Unsubscribe': `<${link}>`, 'List-Unsubscribe-Post': 'List-Unsubscribe=One-Click' },
+      text: link ? `${work.body}\n\nYou can turn these emails off any time: ${link}` : work.body,
+      html: link
+        ? `<p>${escapeHtml(work.body)}</p><p style="color:#888;font-size:12px"><a href="${escapeHtml(link)}">Unsubscribe from these emails</a></p>`
+        : `<p>${escapeHtml(work.body)}</p>`,
+      ...(link ? { headers: { 'List-Unsubscribe': `<${link}>`, 'List-Unsubscribe-Post': 'List-Unsubscribe=One-Click' } } : {}),
     }),
   });
   if (!res.ok) throw new Error(`Resend failed with status ${res.status}.`);
