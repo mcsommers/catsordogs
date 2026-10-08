@@ -12,7 +12,7 @@ A few working habits will save you a lot of pain:
 - **The requirements doc stays the source of truth.** Every prompt below points at it. When a decision changes, change the doc first, then tell the agent.
 - **Put the never-break rules in a project instructions file** (an `AGENTS.md` in the project root, or a rule in `.cursor/rules`; a starter is in the prompts section) so every session starts with them.
 - **Ask for tests with each phase**, especially for the server rules: the daily gate, follower anonymity, and the nudge caps.
-- **After each phase, ask the agent to explain in plain language what it built and what assumptions it made.** That's your review method if you don't read code.
+- **After each phase, ask the agent to explain in plain language what it built and what assumptions it made.** That's your review method if you don't read code. Mike is a product manager, not a professional developer: the agent should use everyday language, define jargon, and do (or offer to do) any step it can run itself.
 - **Keep the project in version control** and make one commit per phase, so you can always go back to a working state.
 
 ## Stack
