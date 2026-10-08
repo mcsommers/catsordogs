@@ -38,6 +38,14 @@ in plain language what you built, what you assumed, and what I
 should check. List anything in the docs that was unclear. Do not
 add features outside the current phase.
 
+Mike is a product manager, not a professional developer. Write for
+that reader. If a step is Mike's to take, explain it in everyday
+terms: what it is, why it matters, and what to do. Define jargon
+the first time it appears. Whenever you can do the work yourself
+(commands, git, GitHub, Supabase, tests, file edits), do it or
+offer to do it — do not leave a homework list of things you could
+have run.
+
 Git workflow: one branch per phase (e.g. phase-0-foundations), one pull
 request per phase into main. Never commit directly to main after the
 initial commit.
