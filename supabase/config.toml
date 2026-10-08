@@ -427,3 +427,7 @@ verify_jwt = false
 
 [functions.process-notifications]
 verify_jwt = false
+
+# Phase 7: the signed-in user deletes their own account. JWT is required.
+[functions.delete-account]
+verify_jwt = true
