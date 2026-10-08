@@ -28,7 +28,10 @@ docs/pencil-new.pen shows, update the affected doc(s) and the design file in
 the same piece of work, so docs, designs and code never disagree. Do not
 wait to be asked. In the end-of-phase summary, list exactly what you changed
 in docs/ and in the design file. Edit the .pen file only through the Pencil
-tools, never as plain text.
+tools, never as plain text. New top-level screens must not overlap existing
+frames. Before placing one, use Pencil's FindEmptySpace (padding 80) so it
+lands in a clear gap; chain to a related screen with nodeId and direction
+"right" (or "bottom" if that row is full). Never pick x/y by hand.
 
 Secrets: never commit API keys, tokens, or .env files. Read them from
 environment variables. Commit only .env.example files with placeholder values.
