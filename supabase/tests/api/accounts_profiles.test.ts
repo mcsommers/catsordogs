@@ -3,13 +3,14 @@
 import { test, before } from 'node:test';
 import assert from 'node:assert/strict';
 import { createClient, type SupabaseClient } from '@supabase/supabase-js';
+import { signUpAndSignIn, testPassword } from './signup.ts';
 
 const url = process.env.SUPABASE_URL!;
 const key = process.env.SUPABASE_PUBLISHABLE_KEY!;
 assert.ok(url && key, 'Run via supabase/tests/api/run.sh so the local URL and key are set.');
 
 const run = Date.now();
-const password = 'correct-horse-battery';
+const password = testPassword;
 const eighteenYearsAgo = () => {
   const d = new Date();
   d.setFullYear(d.getFullYear() - 25);
@@ -17,12 +18,9 @@ const eighteenYearsAgo = () => {
 };
 
 async function newUser(label: string) {
-  const client = createClient(url, key, { auth: { persistSession: false } });
   const email = `${label}-${run}@example.com`;
-  const { data, error } = await client.auth.signUp({ email, password });
-  assert.ifError(error);
-  assert.ok(data.user && data.session, 'sign-up should sign the user straight in (no email confirmation locally)');
-  return { client, id: data.user.id, email };
+  const signed = await signUpAndSignIn(email);
+  return { client: signed.client, id: signed.id, email };
 }
 
 let alice: Awaited<ReturnType<typeof newUser>>;

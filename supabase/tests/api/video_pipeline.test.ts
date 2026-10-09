@@ -6,6 +6,7 @@ import assert from 'node:assert/strict';
 import { createHmac, createPublicKey, verify } from 'node:crypto';
 import { createClient } from '@supabase/supabase-js';
 import { startFakeMux, type FakeMux } from './fake-mux.ts';
+import { signUpAndSignIn } from './signup.ts';
 
 const url = process.env.SUPABASE_URL!;
 const key = process.env.SUPABASE_PUBLISHABLE_KEY!;
@@ -17,20 +18,17 @@ assert.ok(url && key && serviceKey && webhookSecret && publicKeyPem && fakeMuxPo
 
 const functionsUrl = `${url}/functions/v1`;
 const run = Date.now();
-const password = 'correct-horse-battery';
 const admin = createClient(url, serviceKey, { auth: { persistSession: false } });
 
 let fake: FakeMux;
 
 async function newUser(label: string, { completeProfile }: { completeProfile: boolean }) {
-  const client = createClient(url, key, { auth: { persistSession: false } });
-  const { data, error } = await client.auth.signUp({ email: `${label}-${run}@example.com`, password });
-  assert.ifError(error);
+  const signed = await signUpAndSignIn(`${label}-${run}@example.com`);
   if (completeProfile) {
-    const res = await admin.from('profiles').update({ profile_completed_at: new Date().toISOString() }).eq('id', data.user!.id);
+    const res = await admin.from('profiles').update({ profile_completed_at: new Date().toISOString() }).eq('id', signed.id);
     assert.ifError(res.error);
   }
-  return { client, id: data.user!.id, token: data.session!.access_token };
+  return { client: signed.client, id: signed.id, token: signed.token };
 }
 
 function callFunction(name: string, token: string | null, body: unknown = {}) {

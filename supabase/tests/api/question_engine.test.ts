@@ -2,6 +2,7 @@
 import { test, before, after } from 'node:test';
 import assert from 'node:assert/strict';
 import { createClient } from '@supabase/supabase-js';
+import { signUpAndSignIn } from './signup.ts';
 
 const url = process.env.SUPABASE_URL!;
 const key = process.env.SUPABASE_PUBLISHABLE_KEY!;
@@ -9,14 +10,11 @@ const serviceKey = process.env.SERVICE_ROLE_KEY!;
 assert.ok(url && key && serviceKey, 'Run via supabase/tests/api/run.sh so the local URL and keys are set.');
 
 const run = Date.now();
-const password = 'correct-horse-battery';
 const admin = createClient(url, serviceKey, { auth: { persistSession: false } }); // server-side only, bypasses all rules
 
 async function newUser(label: string) {
-  const client = createClient(url, key, { auth: { persistSession: false } });
-  const { data, error } = await client.auth.signUp({ email: `${label}-${run}@example.com`, password });
-  assert.ifError(error);
-  return { client, id: data.user!.id };
+  const signed = await signUpAndSignIn(`${label}-${run}@example.com`);
+  return { client: signed.client, id: signed.id };
 }
 
 const farFuture = (daysAhead: number) => {

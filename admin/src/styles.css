@@ -1,0 +1,168 @@
+:root {
+  color: #1c1917;
+  background: #f6f3ee;
+  font-family: Georgia, "Iowan Old Style", Palatino, serif;
+  line-height: 1.45;
+}
+
+* { box-sizing: border-box; }
+
+body { margin: 0; }
+
+button, input, select, textarea {
+  font: inherit;
+  color: inherit;
+}
+
+a { color: #7c2d12; }
+
+.app-shell { max-width: 1240px; margin: 0 auto; padding: 24px 20px 64px; }
+
+.top {
+  display: flex;
+  justify-content: space-between;
+  gap: 16px;
+  align-items: baseline;
+  margin-bottom: 8px;
+}
+
+h1 { font-size: 1.6rem; margin: 0; font-weight: 600; }
+h2 { font-size: 1.15rem; margin: 0 0 8px; font-weight: 600; }
+
+nav { display: flex; flex-wrap: wrap; gap: 8px; margin: 16px 0 24px; }
+
+nav a, button, .ghost {
+  border: 1px solid #d6d3d1;
+  background: #fff;
+  border-radius: 999px;
+  padding: 6px 12px;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+nav a.active, button.primary {
+  background: #1c1917;
+  color: #fff;
+  border-color: #1c1917;
+}
+
+button:disabled { opacity: 0.5; cursor: not-allowed; }
+
+.card {
+  background: #fff;
+  border: 1px solid #e7e5e4;
+  border-radius: 12px;
+  padding: 16px;
+  margin-bottom: 12px;
+}
+
+.card.today,
+.card.missing {
+  border-color: #c2410c;
+  box-shadow: 0 0 0 3px #ffedd5;
+}
+
+.card.missing { background: #fff7ed; }
+
+label.setting-row {
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+  gap: 16px 24px;
+  font-size: 1rem;
+}
+
+label.setting-row span { flex: 1 1 16rem; }
+
+label.setting-row input,
+label.setting-row select {
+  flex: 0 1 16rem;
+  width: 16rem;
+  max-width: 100%;
+}
+
+@media (max-width: 640px) {
+  label.setting-row {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  label.setting-row input,
+  label.setting-row select {
+    flex: 1 1 auto;
+    width: 100%;
+  }
+}
+
+.row { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
+.stack { display: flex; flex-direction: column; gap: 8px; }
+.grid { display: grid; gap: 12px; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); }
+
+label { display: flex; flex-direction: column; gap: 4px; font-size: 0.92rem; }
+input, select, textarea {
+  border: 1px solid #d6d3d1;
+  border-radius: 8px;
+  padding: 8px 10px;
+  background: #fff;
+}
+textarea { min-height: 72px; resize: vertical; }
+
+.muted { color: #57534e; }
+.error { color: #9f1239; }
+.banner {
+  background: #fff7ed;
+  border: 1px solid #fdba74;
+  border-radius: 12px;
+  padding: 12px 14px;
+  margin-bottom: 12px;
+}
+.tag {
+  display: inline-block;
+  border-radius: 999px;
+  padding: 2px 8px;
+  background: #f5f5f4;
+  font-size: 0.8rem;
+}
+.tag.hot { background: #ffe4e6; color: #9f1239; }
+.tag.locked { background: #e7e5e4; }
+
+.login { max-width: 420px; margin: 48px auto; }
+
+.photos { display: flex; flex-wrap: wrap; gap: 8px; }
+.photos img { width: 120px; height: 120px; object-fit: cover; border-radius: 8px; background: #e7e5e4; }
+
+video.player { width: 100%; max-height: 480px; background: #000; border-radius: 8px; }
+
+table { width: 100%; border-collapse: collapse; }
+th, td { text-align: left; padding: 8px 6px; border-bottom: 1px solid #e7e5e4; vertical-align: top; }
+th { font-weight: 600; font-size: 0.85rem; }
+
+.table-wrap { overflow-x: auto; background: #fff; border: 1px solid #e7e5e4; border-radius: 12px; }
+
+table.sheet { min-width: 1080px; }
+table.sheet th, table.sheet td { white-space: nowrap; padding: 8px 10px; vertical-align: middle; }
+table.sheet th.num, table.sheet td.num { text-align: right; font-variant-numeric: tabular-nums; }
+table.sheet tbody tr.clickable { cursor: pointer; }
+table.sheet tbody tr.clickable:hover { background: #fafaf9; }
+table.sheet tbody tr.open { background: #fff7ed; }
+table.sheet tr.detail td { white-space: normal; background: #fffaf5; }
+
+button.sort {
+  border: 0;
+  background: transparent;
+  border-radius: 0;
+  padding: 0;
+  font: inherit;
+  font-weight: 600;
+  font-size: 0.85rem;
+}
+
+.thumb {
+  width: 36px;
+  height: 36px;
+  object-fit: cover;
+  border-radius: 4px;
+  background: #e7e5e4;
+  display: block;
+}
+.thumb.empty { border: 1px solid #e7e5e4; }

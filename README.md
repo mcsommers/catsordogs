@@ -34,17 +34,44 @@ Run from the project root unless noted.
 | `npm run db:start` | Starts a local copy of the backend (needs Docker). Prints the local URL and keys to put in `mobile/.env`. |
 | `npm run db:stop` | Stops it |
 | `npm run db:reset` | Rebuilds the local database from the migration files |
+| `npm run db:seed-admin` | Reloads the local admin demo people, videos, reports, and chat (needs `db:start`) |
+| `npm run db:demo` | Rebuilds the local database, then loads the admin demo data |
 | `npm run db:test` | Runs the database tests (rules like the daily gate live here) |
 | `npm run api:test` | Runs end-to-end tests through the real API and Edge Functions as signed-in users (needs `db:start` running). Uses a stand-in for Mux, so it needs no Mux account or secrets. |
 | `npm run unit:test` | Runs small tests of plain helper code (such as the caption file reader) |
 | `cd mobile && npm start` | Starts the app (press `i` for the iOS simulator). A real phone can't reach `127.0.0.1`; use your computer's network address in `mobile/.env` instead. |
 | `cd mobile && npm test` | Runs the app's tests |
 | `cd mobile && npm run typecheck` | Checks the app's TypeScript for errors |
+| `npm run admin` | Opens the admin website at http://127.0.0.1:5173/admin/ (after the one-time setup below) |
+
+## Admin website
+
+Admins run the app from a website at `/admin`: the question calendar, every setting, the review queue,
+every profile (including photos), every video, and the choices on profile questions. A normal account
+cannot stay signed in. There is no Create Account on this site.
+
+One-time, from the project folder, after `npm run db:start`:
+
+```sh
+cd admin && npm install
+cp .env.example .env
+```
+
+Put the local URL and the anon key from `npm run db:start` into `admin/.env`
+(`VITE_SUPABASE_URL` and `VITE_SUPABASE_ANON_KEY`). They are the same public values as `mobile/.env`.
+Then `npm run admin` and open http://127.0.0.1:5173/admin/
+
+Sign in with the email and password of someone on the admin list. The question calendar opens on
+today and the days ahead. A day ahead with no question stays in the list and is highlighted. Previous
+questions are a separate view, newest first, without today or the days ahead. Today and past questions show how many people answered.
+A question that has answers can open the video list for that day. The video list can also be limited to a range of dates.
+The review queue can be limited to videos, profiles, or chats. Opening an item shows the hidden video, the reported profile (including photos), or the full chat. People is a sortable table (thumbnail, first name, email, followers, following, matches, answers, joined, last login). Click a row for the full profile. If tomorrow has no question, the calendar says so, and each admin gets one
+email (the same notification worker as the rest of the app).
 
 ## Making yourself an admin
 
-Admins can edit the question calendar and app settings (through the admin panel, built in Phase 8).
-Nobody can make themselves an admin from the app. To add one, sign up in the app first, then run this
+Nobody can make themselves an admin from the app or the website. To add one, sign up in the app first
+(and confirm the email; locally the message is in the email catcher at http://127.0.0.1:54324), then run this
 in the SQL editor of the right Supabase project (the local one is at http://127.0.0.1:54323), replacing the email:
 
 ```sql
@@ -59,6 +86,22 @@ select id from auth.users where email = 'you@example.com';
 question locally. Neither file is applied automatically to staging or production. To put the 20 sample questions
 there, run `sample_questions.sql` in that project's SQL editor (it skips days that already have a question, and an admin
 can swap any of them later from the admin panel, Phase 8).
+
+To walk through every admin screen with people, videos, reports, and a chat already in place,
+or to load that demo again later, start the local backend (`npm run db:start`) and from the
+project folder run:
+
+```sh
+npm run db:seed-admin
+```
+
+That replaces the previous demo people (`*@local.demo`) and puts a fresh set back. It does not
+touch staging or production. If the local database is in a messy state, rebuild and seed in one
+step with `npm run db:demo`.
+
+Then open http://127.0.0.1:5173/admin/ and sign in as `admin@local.demo` with password
+`correct-horse-battery`. If you were already signed in as an older local admin, sign out first.
+`visitor@local.demo` (same password) is a normal account and should be turned away.
 
 ## Environments
 
@@ -128,8 +171,8 @@ Notifications go through a queue in the database. A worker (the `process-notific
 push through Expo, email through [Resend](https://resend.com), honoring each person's settings (push on for everything;
 email on only for matches, by default). Every email has an unsubscribe link (the `unsubscribe` Edge Function), and a
 scheduled job (every 5 minutes) queues "today's question is live" for each person when their own local clock reaches
-the send time (default 9:00 AM, changeable by an admin in the `app_settings` table's `daily_question_notify_time`, and
-later in the admin panel). The phone reports its time zone with `set_time_zone`; until it does, a person is treated as UTC. Anyone who has already answered today's
+the send time (default 9:00 AM, changeable by an admin in the admin website). A separate hourly check
+emails every admin if the next day has no question. The phone reports its time zone with `set_time_zone`; until it does, a person is treated as UTC. Anyone who has already answered today's
 question is skipped.
 
 **Resend setup (once):** add and verify your sending domain (`catsordogs.net`) in Resend, then create an API key.
@@ -150,6 +193,16 @@ values ('https://<project id>.supabase.co/functions/v1/process-notifications', '
 Until this is done the scheduled job does nothing, so nothing is sent. Locally nothing is sent either (the tests use
 stand-ins for Expo and Resend). Push needs real phones with a development build and Expo push credentials, which come
 with the app screens.
+
+## Email confirmation
+
+Signing up with email does not sign the person in. They get a link. Tapping it opens the app
+(`catsordogs://auth-callback`), signs them in, and lands on Build Profile. The designed screen 03 is
+not built yet, so today that landing is the temporary test screen's profile form. Apple and Google
+sign-in are still later.
+
+This is on for the local database, staging, and production. A new email account is not signed in
+until the person taps the link. The link is allowed to open the app (`catsordogs://auth-callback`).
 
 ## Workflow
 

@@ -4,6 +4,7 @@ import { test, before, after } from 'node:test';
 import assert from 'node:assert/strict';
 import { createClient } from '@supabase/supabase-js';
 import { startFakeNotify, type FakeNotify } from './fake-notify.ts';
+import { signUpAndSignIn } from './signup.ts';
 
 const url = process.env.SUPABASE_URL!;
 const key = process.env.SUPABASE_PUBLISHABLE_KEY!;
@@ -14,24 +15,21 @@ assert.ok(url && key && serviceKey && workerSecret && fakePort, 'Run via supabas
 
 const functionsUrl = `${url}/functions/v1`;
 const run = Date.now();
-const password = 'correct-horse-battery';
 const admin = createClient(url, serviceKey, { auth: { persistSession: false } });
 
 let fake: FakeNotify;
 
 async function newUser(label: string) {
-  const client = createClient(url, key, { auth: { persistSession: false } });
   const email = `${label}-${run}@example.com`;
-  const { data, error } = await client.auth.signUp({ email, password });
-  assert.ifError(error);
+  const signed = await signUpAndSignIn(email);
   const done = await admin.from('profiles')
     .update({ first_name: label, gender: 'Woman', birthday: '1995-05-05', profile_completed_at: new Date().toISOString() })
-    .eq('id', data.user!.id);
+    .eq('id', signed.id);
   assert.ifError(done.error);
   assert.ifError((await admin.from('profile_photos').insert({
-    user_id: data.user!.id, position: 1, storage_path: `${data.user!.id}/1.jpg`,
+    user_id: signed.id, position: 1, storage_path: `${signed.id}/1.jpg`,
   })).error);
-  return { client, id: data.user!.id, token: data.session!.access_token, label, email };
+  return { client: signed.client, id: signed.id, token: signed.token, label, email };
 }
 type User = Awaited<ReturnType<typeof newUser>>;
 
