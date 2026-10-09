@@ -7,7 +7,10 @@
     "db:reset": "supabase db reset",
     "db:test": "supabase test db",
     "api:test": "sh supabase/tests/api/run.sh",
-    "unit:test": "node --test supabase/tests/unit/*.test.ts"
+    "unit:test": "node --test supabase/tests/unit/*.test.ts",
+    "admin": "npm --prefix admin run dev",
+    "db:seed-admin": "node supabase/seed-admin.mjs",
+    "db:demo": "supabase db reset && node supabase/seed-admin.mjs"
   },
   "devDependencies": {
     "@supabase/supabase-js": "^2.117.2",

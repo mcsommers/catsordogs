@@ -51,7 +51,8 @@ async function sendPush(work: Work, db: ReturnType<typeof serviceClient>): Promi
 async function sendEmail(work: Work): Promise<void> {
   const apiKey = Deno.env.get('RESEND_API_KEY');
   if (!apiKey) throw new Error('Email is not configured (RESEND_API_KEY is missing).');
-  const safety = work.type === 'moderation';
+  // Hidden-video notices and admin operational mail have no unsubscribe link.
+  const safety = work.type === 'moderation' || work.type === 'admin_alert';
   const base = Deno.env.get('PUBLIC_FUNCTIONS_URL') || `${requireEnv('SUPABASE_URL')}/functions/v1`;
   const link = safety ? null : await unsubscribeUrl(base, requireEnv('UNSUBSCRIBE_SECRET'), work.user_id, work.type);
   const res = await fetch(`${Deno.env.get('RESEND_BASE_URL') || 'https://api.resend.com'}/emails`, {

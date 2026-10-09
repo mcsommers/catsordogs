@@ -8,6 +8,7 @@ import { createHmac } from 'node:crypto';
 import { createClient } from '@supabase/supabase-js';
 import { startFakeMux, type FakeMux } from './fake-mux.ts';
 import { startFakeGeocoder, type FakeGeocoder } from './fake-geocoder.ts';
+import { signUpAndSignIn } from './signup.ts';
 
 const url = process.env.SUPABASE_URL!;
 const key = process.env.SUPABASE_PUBLISHABLE_KEY!;
@@ -19,21 +20,18 @@ assert.ok(url && key && serviceKey && webhookSecret && fakeMuxPort && fakeGeocod
 
 const functionsUrl = `${url}/functions/v1`;
 const run = Date.now();
-const password = 'correct-horse-battery';
 const admin = createClient(url, serviceKey, { auth: { persistSession: false } });
 
 let fakeMux: FakeMux;
 let geocoder: FakeGeocoder;
 
 async function newUser(label: string) {
-  const client = createClient(url, key, { auth: { persistSession: false } });
-  const { data, error } = await client.auth.signUp({ email: `${label}-${run}@example.com`, password });
-  assert.ifError(error);
+  const signed = await signUpAndSignIn(`${label}-${run}@example.com`);
   const done = await admin.from('profiles')
     .update({ first_name: label, gender: 'Woman', birthday: '1995-05-05', profile_completed_at: new Date().toISOString() })
-    .eq('id', data.user!.id);
+    .eq('id', signed.id);
   assert.ifError(done.error);
-  return { client, id: data.user!.id, token: data.session!.access_token, label };
+  return { client: signed.client, id: signed.id, token: signed.token, label };
 }
 type User = Awaited<ReturnType<typeof newUser>>;
 

@@ -1,8 +1,11 @@
 // TEMPORARY plain screen for checking Phases 1-3 work on a real device or simulator.
 // It is replaced by the designed screens (01 Welcome, 02 Sign Up, 03 Build Profile) in Phase A.
+// Until then, the email confirmation link signs the person in and lands on this profile form,
+// which is the stand-in for screen 03.
 import { useCallback, useEffect, useState } from 'react';
 import { Button, ScrollView, StyleSheet, Text, TextInput, View } from 'react-native';
 import * as ImagePicker from 'expo-image-picker';
+import * as Linking from 'expo-linking';
 import type { Session } from '@supabase/supabase-js';
 import { supabase } from '../lib/supabase';
 import { parseBirthdayInput } from '../lib/dates';
@@ -40,13 +43,42 @@ export default function TestHarness() {
   }, []);
 
   useEffect(() => {
+    async function finishEmailLink(url: string) {
+      const query = url.includes('?') ? url.split('?')[1].split('#')[0] : '';
+      const hash = url.includes('#') ? url.split('#')[1] : '';
+      const params = new URLSearchParams(hash || query);
+      const code = params.get('code');
+      const accessToken = params.get('access_token');
+      const refreshToken = params.get('refresh_token');
+      if (code) {
+        const { error } = await supabase.auth.exchangeCodeForSession(code);
+        say(error ? error.message : 'Email confirmed. You are signed in.');
+        return;
+      }
+      if (accessToken && refreshToken) {
+        const { error } = await supabase.auth.setSession({ access_token: accessToken, refresh_token: refreshToken });
+        say(error ? error.message : 'Email confirmed. You are signed in.');
+      }
+    }
+    Linking.getInitialURL().then((url) => { if (url) finishEmailLink(url); });
+    const sub = Linking.addEventListener('url', ({ url }) => finishEmailLink(url));
+    return () => sub.remove();
+  }, []);
+
+  useEffect(() => {
     if (session) refresh();
     else setProfile(null);
   }, [session, refresh]);
 
   async function signUp() {
-    const { error } = await supabase.auth.signUp({ email, password });
-    say(error ? error.message : 'Signed up.');
+    const { data, error } = await supabase.auth.signUp({
+      email,
+      password,
+      options: { emailRedirectTo: Linking.createURL('auth-callback') },
+    });
+    if (error) return say(error.message);
+    if (data.session) return say('Signed up.');
+    say('Check your email and tap the link. It opens the app, signs you in, and brings you here to build your profile.');
   }
   async function logIn() {
     const { error } = await supabase.auth.signInWithPassword({ email, password });
@@ -111,7 +143,15 @@ export default function TestHarness() {
         </View>
       ) : (
         <View style={styles.block}>
+          <Text style={styles.title}>
+            {profile && typeof profile === 'object' && 'profile_completed_at' in profile && profile.profile_completed_at
+              ? 'Signed in'
+              : 'Build your profile'}
+          </Text>
           <Text>Signed in as {session.user.email}</Text>
+          <Text style={styles.note}>
+            Temporary stand-in for screen 03 Build Profile. The designed screen arrives with the phone-app phase.
+          </Text>
           <TextInput style={styles.input} placeholder="First name" value={firstName} onChangeText={setFirstName} />
           <TextInput style={styles.input} placeholder="Birthday (YYYY-MM-DD)" value={birthday} onChangeText={setBirthday} />
           <View style={styles.row}>
@@ -142,4 +182,5 @@ const styles = StyleSheet.create({
   row: { flexDirection: 'row', flexWrap: 'wrap' },
   input: { borderWidth: 1, borderColor: '#ccc', borderRadius: 8, padding: 10 },
   json: { fontFamily: 'Courier', fontSize: 11 },
+  note: { color: '#57534e' },
 });
