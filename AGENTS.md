@@ -49,6 +49,13 @@ the first time it appears. Whenever you can do the work yourself
 offer to do it — do not leave a homework list of things you could
 have run.
 
+Check, don't guess (standing instruction from Mike):
+When an answer depends on whether something is already set up — a
+worker, a secret, a scheduled job, a remote setting, a row in the
+database, an environment — look it up before you answer. Check the
+place that actually matters (local, staging, production, or all of
+them). Say what you found. Do not say it might or might not be done.
+
 Git workflow: one branch per phase (e.g. phase-0-foundations), one pull
 request per phase into main. Never commit directly to main after the
 initial commit.
