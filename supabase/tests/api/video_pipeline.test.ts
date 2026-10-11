@@ -91,7 +91,9 @@ test('starting a recording needs a signed-in user', async () => {
 test('a user who has not finished their profile cannot start a recording', async () => {
   const res = await callFunction('create-video-upload', newcomer.token);
   assert.equal(res.status, 409);
-  assert.match((await res.json()).error, /Finish your profile/);
+  const body = await res.json();
+  assert.match(body.error, /Finish your profile/);
+  assert.equal(body.reason, 'profile_incomplete');
   assert.equal(fake.uploadRequests.length, 0, 'Mux was not contacted');
 });
 
@@ -264,6 +266,26 @@ test('cancelled and errored uploads and assets are recorded; unknown events are 
   assert.equal((await sendWebhook('video.asset.ready', { id: 'z', passthrough: 'not-ours', duration: 3 })).status, 200);
   assert.equal((await sendWebhook('video.asset.created', { id: 'z' })).status, 200);
   assert.equal((await sendWebhook('video.upload.cancelled', { id: 'unknown-upload' })).status, 200);
+});
+
+test('at the daily limit, the refusal says why and gives the admin-set limit', async () => {
+  const limiter = await newUser('vp-limit', { completeProfile: true });
+  const settings = await admin.from('app_settings').select('max_recordings_per_day').single();
+  assert.ifError(settings.error);
+  const max = settings.data!.max_recordings_per_day as number;
+  const question = await admin.from('questions').select('id').eq('question_date', new Date().toISOString().slice(0, 10)).single();
+  assert.ifError(question.error);
+  const rows = Array.from({ length: max }, () => ({ user_id: limiter.id, question_id: question.data!.id }));
+  assert.ifError((await admin.from('videos').insert(rows)).error);
+
+  const before = fake.uploadRequests.length;
+  const res = await callFunction('create-video-upload', limiter.token);
+  assert.equal(res.status, 409);
+  const body = await res.json();
+  assert.equal(body.reason, 'daily_limit');
+  assert.equal(body.limit, max);
+  assert.match(body.error, new RegExp(`limit of ${max} recordings`));
+  assert.equal(fake.uploadRequests.length, before, 'Mux was not contacted');
 });
 
 test('the app cannot write to videos or call the server-only functions', async () => {

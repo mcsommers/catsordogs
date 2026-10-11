@@ -23,7 +23,7 @@ as $$ select ('b' || lpad(n::text, 7, '0') || '-0000-0000-0000-000000000000')::u
 create function pg_temp.claims(n int) returns text language sql
 as $$ select json_build_object('sub', pg_temp.uid(n), 'role', 'authenticated')::text $$;
 
-create function pg_temp.person(n int, label text, p_gender text, p_age int, p_height int, p_interests text[],
+create function pg_temp.person(n int, label text, p_gender text, p_age int, p_height_inches int, p_interests text[],
                                p_job text, p_lat double precision, p_lng double precision, finished boolean default true)
 returns void language plpgsql as $$
 begin
@@ -31,7 +31,7 @@ begin
   values (pg_temp.uid(n), label || '@example.com', 'authenticated', 'authenticated', '00000000-0000-0000-0000-000000000000');
   update public.profiles set
     first_name = label, gender = p_gender, birthday = (current_date - make_interval(years => p_age) - interval '10 days')::date,
-    height_cm = p_height, interests = p_interests, job_title = p_job, latitude = p_lat, longitude = p_lng,
+    height_inches = p_height_inches, interests = p_interests, job_title = p_job, latitude = p_lat, longitude = p_lng,
     profile_completed_at = case when finished then now() end
   where id = pg_temp.uid(n);
 end $$;
@@ -76,22 +76,22 @@ grant select on ids to public;
 --  10 X5 answer removed  11 X6 unfinished profile                    12 W no answer yet
 --  13 U unfinished       14 OLD answered 10 days ago                 15 D3 answered 3 days ago
 -- ---------------------------------------------------------------------------
-select pg_temp.person(1, 'V', 'Woman', 29, 165, array['Hiking', 'Coffee'], 'Designer', 40.7128, -74.0060);
+select pg_temp.person(1, 'V', 'Woman', 29, 65, array['Hiking', 'Coffee'], 'Designer', 40.7128, -74.0060);
 update public.profiles set relationship_goal = 'Long-term relationship', lifestyle_tags = array['Dog lover'] where id = pg_temp.uid(1);
-select pg_temp.person(2, 'W1', 'Woman', 30, 170, array['Hiking', 'Coffee'], 'Nurse', 40.73, -73.99);
-select pg_temp.person(3, 'W2', 'Woman', 25, 160, array['Movies'], 'Teacher', 42.36, -71.06);
-select pg_temp.person(4, 'M1', 'Man', 35, 185, array['Hiking'], 'Chef', null, null);
-select pg_temp.person(5, 'N1', 'Non-binary', 28, 175, array['Yoga'], 'Writer', null, null);
-select pg_temp.person(6, 'X1', 'Woman', 31, 168, array['Hiking'], 'Vet', 40.74, -73.98);
-select pg_temp.person(7, 'X2', 'Woman', 32, 168, array['Hiking'], 'Vet', 40.75, -73.97);
-select pg_temp.person(8, 'X3', 'Woman', 33, 168, array['Hiking'], 'Vet', 40.76, -73.96);
-select pg_temp.person(9, 'X4', 'Woman', 34, 168, array['Hiking'], 'Vet', null, null);
-select pg_temp.person(10, 'X5', 'Woman', 35, 168, array['Hiking'], 'Vet', null, null);
-select pg_temp.person(11, 'X6', 'Woman', 36, 168, array['Hiking'], 'Vet', null, null, false);
-select pg_temp.person(12, 'W', 'Woman', 27, 165, '{}', null, null, null);
-select pg_temp.person(13, 'U', 'Woman', 27, 165, '{}', null, null, null, false);
-select pg_temp.person(14, 'OLD', 'Woman', 40, 165, '{}', null, null, null);
-select pg_temp.person(15, 'D3', 'Woman', 41, 165, '{}', null, null, null);
+select pg_temp.person(2, 'W1', 'Woman', 30, 67, array['Hiking', 'Coffee'], 'Nurse', 40.73, -73.99);
+select pg_temp.person(3, 'W2', 'Woman', 25, 63, array['Movies'], 'Teacher', 42.36, -71.06);
+select pg_temp.person(4, 'M1', 'Man', 35, 73, array['Hiking'], 'Chef', null, null);
+select pg_temp.person(5, 'N1', 'Non-binary', 28, 69, array['Yoga'], 'Writer', null, null);
+select pg_temp.person(6, 'X1', 'Woman', 31, 66, array['Hiking'], 'Vet', 40.74, -73.98);
+select pg_temp.person(7, 'X2', 'Woman', 32, 66, array['Hiking'], 'Vet', 40.75, -73.97);
+select pg_temp.person(8, 'X3', 'Woman', 33, 66, array['Hiking'], 'Vet', 40.76, -73.96);
+select pg_temp.person(9, 'X4', 'Woman', 34, 66, array['Hiking'], 'Vet', null, null);
+select pg_temp.person(10, 'X5', 'Woman', 35, 66, array['Hiking'], 'Vet', null, null);
+select pg_temp.person(11, 'X6', 'Woman', 36, 66, array['Hiking'], 'Vet', null, null, false);
+select pg_temp.person(12, 'W', 'Woman', 27, 65, '{}', null, null, null);
+select pg_temp.person(13, 'U', 'Woman', 27, 65, '{}', null, null, null, false);
+select pg_temp.person(14, 'OLD', 'Woman', 40, 65, '{}', null, null, null);
+select pg_temp.person(15, 'D3', 'Woman', 41, 65, '{}', null, null, null);
 
 
 -- No question scheduled today
@@ -282,7 +282,7 @@ select is(pg_temp.filtered('{"show_me":"Women"}'), array['W1', 'W2', 'X1', 'X2',
 select is(pg_temp.filtered('{"show_me":"Men"}'), array['M1'], 'filter: show me men');
 select is(pg_temp.filtered('{"show_me":"Everyone"}'), array['M1', 'N1', 'W1', 'W2', 'X1', 'X2', 'X3'], 'filter: everyone shows all');
 select is(pg_temp.filtered('{"age_range":{"min":26,"max":32}}'), array['N1', 'W1', 'X1', 'X2'], 'filter: age range');
-select is(pg_temp.filtered('{"height_range":{"min":180,"max":200}}'), array['M1'], 'filter: height range');
+select is(pg_temp.filtered('{"height_range":{"min":71,"max":79}}'), array['M1'], 'filter: height range (inches)');
 select is(pg_temp.filtered('{"interests":["hiking"]}'), array['M1', 'W1', 'X1', 'X2', 'X3'], 'filter: interests (any overlap, ignoring case)');
 select is(pg_temp.filtered('{"occupation":["Nurse","Chef"]}'), array['M1', 'W1'], 'filter: occupation');
 select is(pg_temp.filtered('{"max_distance":10}'), array['W1', 'X1', 'X2', 'X3'], 'filter: maximum distance (people with no location are excluded)');

@@ -45,7 +45,7 @@ select lives_ok(
       first_name = 'Alex', gender = 'Woman', pronouns = '{"She/her","Xe/xem"}',
       sexual_orientation = '{"Bisexual","Pansexual"}', languages = '{"English","Klingon"}',
       interests = '{"Hiking","Coffee","Movies"}', lifestyle_tags = '{"Dog lover"}',
-      relationship_goal = 'Long-term relationship', height_cm = 175, city = 'Brooklyn, NY',
+      relationship_goal = 'Long-term relationship', height_inches = 69, city = 'Brooklyn, NY',
       about_me = 'Hello'
     where id = 'aaaaaaaa-0000-0000-0000-000000000001'$$,
   'a normal profile (with custom pronouns, orientation and language) is accepted');
@@ -174,7 +174,7 @@ select lives_ok(
       "show_me": "Women",
       "age_range": {"min": 24, "max": 35},
       "max_distance": 25,
-      "height_range": {"min": 152, "max": 193},
+      "height_range": {"min": 60, "max": 76},
       "interests": ["Hiking", "Coffee"],
       "occupation": ["Product Designer"]
     }' where user_id = 'aaaaaaaa-0000-0000-0000-000000000001'$$,

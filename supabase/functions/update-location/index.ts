@@ -10,21 +10,7 @@
 // launch: Open-Meteo's free service is for non-commercial use.
 import { corsHeaders, json } from '../_shared/http.ts';
 import { serviceClient, userClient } from '../_shared/clients.ts';
-
-const DEFAULT_GEOCODING_URL = 'https://geocoding-api.open-meteo.com/v1/search';
-
-async function lookUp(city: string): Promise<{ latitude: number; longitude: number } | null> {
-  const url = new URL(Deno.env.get('GEOCODING_URL') || DEFAULT_GEOCODING_URL);
-  url.searchParams.set('name', city);
-  url.searchParams.set('count', '1');
-  url.searchParams.set('language', 'en');
-  url.searchParams.set('format', 'json');
-  const res = await fetch(url);
-  if (!res.ok) throw new Error(`Geocoding failed with status ${res.status}.`);
-  const hit = (await res.json())?.results?.[0];
-  if (typeof hit?.latitude !== 'number' || typeof hit?.longitude !== 'number') return null;
-  return { latitude: hit.latitude, longitude: hit.longitude };
-}
+import { geocodeOne } from '../_shared/geocoding.ts';
 
 Deno.serve(async (req) => {
   if (req.method === 'OPTIONS') return new Response('ok', { headers: corsHeaders });
@@ -51,7 +37,7 @@ Deno.serve(async (req) => {
   if (profile.latitude !== null && profile.longitude !== null) return json({ found: true });
 
   try {
-    const place = await lookUp(city);
+    const place = await geocodeOne(city);
     if (!place) return json({ found: false });
     const { error: saveError } = await serviceClient().rpc('set_profile_location', {
       p_user_id: auth.user.id, p_city: profile.city, p_latitude: place.latitude, p_longitude: place.longitude,

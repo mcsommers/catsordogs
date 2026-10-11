@@ -10,6 +10,19 @@ If the code and the docs disagree, ask before deciding.
 Stack: Expo (React Native) for iOS and Android, Supabase (Postgres,
 auth, server functions), a hosted video service, Expo push, an email service.
 
+Mobile platforms (standing instruction from Mike):
+Unless Mike specifies otherwise, every change to the mobile app applies
+to both Android and iOS — same screens, copy, and behavior. If one
+platform truly needs a different implementation (for example an OS bug
+workaround), say why in the summary and note it in docs/UAT-flows.md when
+it affects what Mike should test on each phone.
+
+Mobile forms (standing instruction from Mike):
+Show field-level errors as soon as the rule is knowable (for example an
+under-18 birthday right after the user picks a date). When the user
+submits a form that still has errors, scroll the screen to the first
+field with an error so they can fix it without hunting.
+
 Rules that must never break:
 1. The app never reads follower identities. The follows and nudges
    tables have no client access; only server functions touch them.
@@ -55,6 +68,22 @@ worker, a secret, a scheduled job, a remote setting, a row in the
 database, an environment — look it up before you answer. Check the
 place that actually matters (local, staging, production, or all of
 them). Say what you found. Do not say it might or might not be done.
+
+User acceptance tests (standing instruction from Mike):
+docs/UAT-flows.md holds the hands-on tests Mike runs on a real phone to
+confirm the mobile app works as designed and specified. In every mobile
+phase (A through E, and any later phase that changes what the app shows or
+does), add or update that phase's section in the same piece of work: one
+checkbox per test, with a test ID (e.g. B-04), plain-language steps, the
+screen number from docs/pencil-new.pen, and the exact expected result
+(wording as it appears in the app). Cover the main path, every designed
+state (empty, error, limit, locked), and every rule the requirements set
+for those screens. Check expected wording against the code, not memory.
+If a later change alters an earlier phase's behavior, update those tests
+too. When a test needs something Mike can't do from the phone (an admin
+setting, a missing question, a staging-only condition), say so in the step
+and offer to do it for him. In the end-of-phase summary, point Mike to the
+new tests.
 
 Git workflow: one branch per phase (e.g. phase-0-foundations), one pull
 request per phase into main. Never commit directly to main after the

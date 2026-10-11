@@ -12,7 +12,7 @@ type Person = {
   gender: string | null;
   pronouns: string[];
   sexual_orientation: string[];
-  height_cm: number | null;
+  height_inches: number | null;
   city: string | null;
   latitude: number | null;
   longitude: number | null;
@@ -186,7 +186,12 @@ export default function People() {
                             {line('Gender', person.gender)}
                             {line('Pronouns', (person.pronouns ?? []).join(', '))}
                             {line('Orientation', (person.sexual_orientation ?? []).join(', '))}
-                            {line('Height', person.height_cm ? `${person.height_cm} cm` : null)}
+                            {line(
+                              'Height',
+                              person.height_inches != null
+                                ? `${Math.floor(person.height_inches / 12)} ft ${person.height_inches % 12} in`
+                                : null
+                            )}
                             {line('City', person.city)}
                             {line('Location lookup', person.latitude != null && person.longitude != null ? `${person.latitude}, ${person.longitude}` : null)}
                             {line('Job', [person.job_title, person.company].filter(Boolean).join(' at ') || null)}

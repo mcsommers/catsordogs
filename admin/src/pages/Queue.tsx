@@ -41,7 +41,7 @@ type ProfileContent = {
   gender: string | null;
   pronouns: string[] | null;
   sexual_orientation: string[] | null;
-  height_cm: number | null;
+  height_inches: number | null;
   city: string | null;
   job_title: string | null;
   company: string | null;
@@ -256,7 +256,12 @@ function ReviewPane({
           {line('Gender', content.gender)}
           {line('Pronouns', (content.pronouns ?? []).join(', '))}
           {line('Orientation', (content.sexual_orientation ?? []).join(', '))}
-          {line('Height', content.height_cm ? `${content.height_cm} cm` : null)}
+          {line(
+            'Height',
+            content.height_inches != null
+              ? `${Math.floor(content.height_inches / 12)} ft ${content.height_inches % 12} in`
+              : null
+          )}
           {line('City', content.city)}
           {line('Job', [content.job_title, content.company].filter(Boolean).join(' at ') || null)}
           {line('School', content.school)}
