@@ -121,7 +121,7 @@ The backend phases (0 through 8) don't need designs, so they can start now. The 
 | 6. Matching and messaging | Match interest, mutual match, match notification, messages (Realtime), block handling (removes matches, ends chats, stops requests and messages) | Two users can match and talk | No |
 | 7. Moderation and safety | Video flags, profile and message reports, per-video disabling, moderator queue (restore / keep / reviewed), hidden-video notice, account deletion. Automatic scanning deferred. | A moderator can review and act on flagged videos | No |
 | 8. Admin panel | Question calendar editor, settings screen (including the daily-question notification time), moderation queue, every profile and video, profile-question lists, and an email when tomorrow has no question | An internal website at /admin that runs the app without touching the database. Only admins can sign in. | No |
-| A. Onboarding and core loop | Signup, first recording, daily gate, recording screen, caption review | The full first-session experience on a real phone | **Yes** |
+| A. Onboarding and core loop | Welcome, sign up, log in and password reset (Apple and Google shown as coming soon), Build Profile with its error states, How It Works, first recording (ready, countdown, recording, skip, daily limit, no question today), caption review (including captions processing and no speech found), Answer Submitted, and the Feed / Matches / Profile tab bar (Feed shows Feed Locked until answered; Matches and Profile are placeholders until Phases C and D). Tested on a real phone against staging. | The full first-session experience on a real phone | **Yes** |
 | B. Feed and browse | Scrollable video feed, minimum watch time, captions, followed-first display | Browsing that feels right on a phone | **Yes** |
 | C. Profile and archive | Profile view, archive timeline, view counts and reactions | Profiles that show the answer history (the view counts and streak numbers already come from the Phase 4 server functions; the app calls `record_answer_view` once the viewer has watched for the minimum watch time), including scrolling between a person's answers from the full-screen answer view (06k) | **Yes** |
 | D. Social screens | Follow, nudge, match, messages, filters, settings, the more-options menu (Not Interested, Report, Block), the Blocked and Not Interested list with Unblock and Undo, flagging | Every remaining user-facing screen | **Yes** |
@@ -215,8 +215,9 @@ While turning the requirements into a plan, I found things they don't yet say. S
 
 **Still open:**
 
-- **Apple and Google sign-in.** Email and password work now. "Continue with Apple" and "Continue with Google" need the Apple Developer account and a Google sign-in setup, and are switched on in Phase A.
-- **Email confirmation.** Decided, and on for local, staging, and production: email sign-up is not signed in until the person taps the link. The link opens the app and lands on Build Profile (03). The designed screen 03 is still the phone-app phase, so until that screen exists the temporary test screen is the landing. Apple and Google sign-in remain later.
+- **Apple and Google sign-in.** Email and password work now. "Continue with Apple" and "Continue with Google" need the Apple Developer account and a Google sign-in setup that only Mike can create. Decided for Phase A: the buttons are shown on Sign Up and Log In, dimmed with a "Coming soon" tag, and do nothing until those accounts exist.
+- **Email confirmation.** Decided, and on for local, staging, and production: email sign-up is not signed in until the person taps the link. The link opens the app (`catsordogs://auth-callback`) and lands on Build Profile (03). Phase A adds Check Your Email (02d), shown after Sign Up and after asking for a password reset.
+- **Log In and forgot password.** Designed and built in Phase A: Log In (02b), Forgot Password (02c), Check Your Email (02d) and Set New Password (02e). The reset link opens the app on Set New Password.
 
 - **Help & Support.** Settled: the Account menu row opens an external help website. The URL is a config value, still to be supplied; no in-app screens or backend.
 

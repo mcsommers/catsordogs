@@ -39,10 +39,92 @@ Run from the project root unless noted.
 | `npm run db:test` | Runs the database tests (rules like the daily gate live here) |
 | `npm run api:test` | Runs end-to-end tests through the real API and Edge Functions as signed-in users (needs `db:start` running). Uses a stand-in for Mux, so it needs no Mux account or secrets. |
 | `npm run unit:test` | Runs small tests of plain helper code (such as the caption file reader) |
-| `cd mobile && npm start` | Starts the app (press `i` for the iOS simulator). A real phone can't reach `127.0.0.1`; use your computer's network address in `mobile/.env` instead. |
+| `cd mobile && npm run phone` | Starts the app for a real phone in Expo Go (see "Running the app on your phone" below) |
+| `cd mobile && npm start` | Starts the app for the iOS simulator (press `i`) |
 | `cd mobile && npm test` | Runs the app's tests |
 | `cd mobile && npm run typecheck` | Checks the app's TypeScript for errors |
 | `npm run admin` | Opens the admin website at http://127.0.0.1:5173/admin/ (after the one-time setup below) |
+
+## Running the app on your phone (Expo Go)
+
+While the app is being built, you run it on your phone with **Expo Go**, a free app that loads our app
+straight from your Mac. Nothing is published to the App Store or Google Play. Your Mac acts as the server
+for the app's code, so the Mac must stay on, with the command below running, while you use the app.
+
+**Once per phone**
+
+1. Install **Expo Go** from the App Store (iPhone) or Google Play (Android).
+2. Open it once. If you have several phones, install it on each. If you sign in to Expo Go with an Expo account,
+   the Mac must be signed in to the same account (next section), or Expo Go refuses to open the project.
+
+**Once per computer:** the one-time setup above (`npm install` in the project root and in `mobile/`),
+Cloudflare's free tunnel tool (`brew install cloudflared`), signing the Expo command-line tool in to your Expo
+account (`cd mobile && npx expo login -b`, which opens the browser), and a
+`mobile/.env` file saying which backend the app talks to. For phone testing that is **staging**:
+
+```sh
+EXPO_PUBLIC_SUPABASE_URL=https://pgwnqasselhstrechmsa.supabase.co
+EXPO_PUBLIC_SUPABASE_ANON_KEY=<staging anon key>
+```
+
+The anon key is the staging project's public app key. Print it with
+`npx supabase projects api-keys --project-ref pgwnqasselhstrechmsa` (the line named `anon`), or ask the agent to fill
+the file in. Don't point the app at production for testing. The local backend (`127.0.0.1`) only works on the
+iOS simulator, because a phone can't reach your Mac's `127.0.0.1`.
+
+**Each time you test**
+
+1. Make sure your Mac and phone are online (they don't need to share a Wi-Fi network).
+2. In Terminal, from the project folder:
+
+   ```sh
+   cd mobile
+   npm run phone
+   ```
+
+   After a few seconds a QR code appears in the Terminal window. Leave this window open; closing it stops the app.
+   Use `npm run phone`, not `npm start`. It opens a free Cloudflare tunnel, which gives the app a temporary public
+   address (like `exp://some-words.trycloudflare.com/--/`, also printed above the QR code). The `/--/` part matters on
+   Android. That one address works for
+   iPhone and Android, on any network. `npm start` uses your Mac's home-network address (`192.168.…`) instead:
+   Supabase refuses to send email links back to that, and Android phones often can't use the Mac's `.local` name.
+   The tunnel address changes every time you start, so scan the new QR code each time, and request fresh email
+   links after a restart (old links point at the old address).
+3. Open the app on your phone:
+   - **iPhone:** open the normal Camera app, point it at the QR code, and tap the "Open in Expo Go" banner.
+   - **Android:** open Expo Go and tap **Scan QR code**.
+4. The first load takes up to a minute while your Mac sends the app's code. After that, Cats or Dogs? opens.
+   Expo Go also remembers the project under **Recently opened**, so next time you can tap it there (the Terminal
+   command still has to be running).
+5. When you're done, press `Ctrl + C` in the Terminal window to stop.
+
+**Testing on two phones at once** (for example an iPhone and an Android): scan the same QR code on both. Each phone
+signs in separately, so you can use a different test account on each.
+
+**Changes to the code** show up on the phone by themselves within a few seconds. If something looks stuck, shake the
+phone to open the Expo menu and tap **Reload**.
+
+**Email links** (sign-up confirmation and password reset) must be tapped on the same phone that is running the app.
+They open Expo Go and take you to the right screen. On staging these emails are sent through Resend from
+"Cats or Dogs?" <noreply@catsordogs.net>, to any address, up to 30 an hour (and one per address every 30 seconds).
+If one doesn't arrive, check spam.
+
+**If it doesn't work**
+
+| What you see | What to do |
+| --- | --- |
+| "Could not connect to Expo CLI" or the phone keeps loading | Check you started with `npm run phone` (not `npm start`) and scanned the QR code from this run. Don't use `npx expo start --tunnel`: Expo's built-in tunnel is currently broken (its old ngrok version is rejected). |
+| "cloudflared is missing" or "The Cloudflare tunnel didn't start" | Run `brew install cloudflared` once, check the Mac is online, and try again. |
+| Expo Go says the project needs a newer or different version | Update Expo Go from the App Store or Google Play. This app uses Expo SDK 57. |
+| "Cats or Dogs? needs your camera and microphone" | Allow both when asked. If you said no before, tap **Open Settings** in the app and turn them on for Expo Go. |
+| "You're signed into Expo Go as … but not signed in to Expo CLI" | Run `cd mobile && npx expo login -b` on the Mac and sign in to the same Expo account, then restart `npm run phone`. |
+| Tapping an email link says "The application couldn't be opened" | The link is from before the last restart, the server was started with `npm start`, or the link was opened on a different phone. Make sure `npm run phone` is running, then in the app use "Resend" to get a fresh link. |
+| The app opens but says it can't reach the server | Check `mobile/.env` has the staging URL and key, then stop and restart `npm run phone` (changes to `.env` are read only at start). |
+| A red error screen | Take a screenshot and send it to the agent. Shake the phone and tap **Reload** to try again. |
+| Yellow "Cannot connect to the Expo CLI" | Harmless while using `npm run phone` (the Cloudflare tunnel). It only means live hot-reload could not connect; shake the phone and tap **Reload** when you want the latest code. |
+| Yellow "WebCrypto API is not supported" | Fixed in the app entry file; reload the app. If it still appears after a reload, tell the agent. |
+
+The hands-on tests to run on the phone are in [`docs/UAT-flows.md`](docs/UAT-flows.md).
 
 ## Admin website
 
@@ -197,12 +279,20 @@ with the app screens.
 ## Email confirmation
 
 Signing up with email does not sign the person in. They get a link. Tapping it opens the app
-(`catsordogs://auth-callback`), signs them in, and lands on Build Profile. The designed screen 03 is
-not built yet, so today that landing is the temporary test screen's profile form. Apple and Google
-sign-in are still later.
+(`catsordogs://auth-callback`), signs them in, and lands on Build Profile (03). Password-reset links
+open Set New Password (02e) the same way. Apple and Google sign-in are still later; their buttons show
+"Coming soon".
+
+**Who sends these emails:** locally they land in the email catcher (http://127.0.0.1:54324). Staging and
+production send them through Resend from "Cats or Dogs?" <noreply@catsordogs.net> (set in each project under
+Authentication > Emails > SMTP Settings, with that environment's `RESEND_API_KEY`), up to 30 an hour and one per
+address every 30 seconds. Supabase's built-in sender is not used: it only delivers to addresses on the Supabase team.
+Both projects require passwords of at least 8 characters.
 
 This is on for the local database, staging, and production. A new email account is not signed in
-until the person taps the link. The link is allowed to open the app (`catsordogs://auth-callback`).
+until the person taps the link. The links are allowed to open the installed app
+(`catsordogs://auth-callback`). Only staging also lets them open Expo Go (`exp://` addresses), which is
+what makes phone testing work. Production deliberately does not, so a production link can only open the real app.
 
 ## Workflow
 

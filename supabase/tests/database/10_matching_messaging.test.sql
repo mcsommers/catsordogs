@@ -273,7 +273,9 @@ select is((select ended_reason from public.matches
              and user_b = greatest(pg_temp.uid(1), pg_temp.uid(3)) and ended_at is not null),
   'blocked', 'the ended match is kept for moderators');
 select is((select count(*) from public.messages m join public.matches mt on mt.id = m.match_id
-           where mt.ended_reason = 'blocked'), 2::bigint, 'the messages are kept too');
+           where mt.ended_reason = 'blocked'
+             and mt.user_a = least(pg_temp.uid(1), pg_temp.uid(3))
+             and mt.user_b = greatest(pg_temp.uid(1), pg_temp.uid(3))), 2::bigint, 'the messages are kept too');
 
 select pg_temp.become(1);
 set local role authenticated;

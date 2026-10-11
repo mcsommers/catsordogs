@@ -1,6 +1,17 @@
 -- Phase 3 rules: recording attempts, the length limit, and caption editing.
 begin;
-select plan(75);
+select plan(77);
+
+-- The fixed reason a refusal carries (the app picks a screen from it).
+create function pg_temp.refusal_hint() returns text language plpgsql as $f$
+declare h text;
+begin
+  perform * from public.request_video_upload();
+  return null;
+exception when others then
+  get stacked diagnostics h = pg_exception_hint;
+  return h;
+end $f$;
 
 delete from public.videos;
 delete from public.questions;
@@ -204,6 +215,7 @@ select set_config('request.jwt.claims', '{"sub":"c2000000-0000-0000-0000-0000000
 select lives_ok($$select * from public.request_video_upload()$$, 'a user under the daily limit can record');
 select throws_ok($$select * from public.request_video_upload()$$, '23514', 'You have reached today''s limit of 8 recordings.',
   'a user at the daily limit cannot start another recording');
+select is(pg_temp.refusal_hint(), 'daily_limit', 'the daily-limit refusal carries the reason daily_limit');
 
 reset role;
 select set_config('request.jwt.claims', '', true);
@@ -213,6 +225,7 @@ set local role authenticated;
 select set_config('request.jwt.claims', '{"sub":"c1000000-0000-0000-0000-0000000000c1","role":"authenticated"}', true);
 select throws_ok($$select * from public.request_video_upload()$$, 'P0002', 'There is no question scheduled for today.',
   'nobody can record when no question is scheduled');
+select is(pg_temp.refusal_hint(), 'no_question_today', 'the no-question refusal carries the reason no_question_today');
 
 -- ---------------------------------------------------------------------------
 -- Settings

@@ -165,6 +165,8 @@ site_url = "catsordogs://auth-callback"
 # A list of *exact* URLs that auth providers are permitted to redirect to post authentication.
 additional_redirect_urls = [
   "catsordogs://auth-callback",
+  # Expo Go on a phone (exp://<computer address>:8081/--/auth-callback). Not used in production.
+  "exp://**",
   "http://127.0.0.1:8081/auth-callback",
   "http://localhost:8081/auth-callback",
   "http://127.0.0.1:5173/admin",

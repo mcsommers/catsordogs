@@ -10,9 +10,12 @@ Deno.serve(async (req) => {
 
   const { data, error } = await userClient(req).rpc('request_video_upload');
   if (error) {
-    // The database's own messages are written to be shown to the user.
+    // The database's own messages are written to be shown to the user. `reason`
+    // is a fixed word the app uses to pick a screen (e.g. 'daily_limit').
     const status = error.code === '28000' ? 401 : error.code === '42501' ? 401 : 409;
-    return json({ error: error.message }, status);
+    const reason = error.hint || undefined;
+    const limit = reason === 'daily_limit' ? Number(error.details) : undefined;
+    return json({ error: error.message, reason, limit }, status);
   }
   const { video_id, recording_length_seconds } = data[0];
 

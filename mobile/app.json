@@ -11,6 +11,7 @@
       "supportsTablet": true
     },
     "android": {
+      "softwareKeyboardLayoutMode": "resize",
       "adaptiveIcon": {
         "backgroundColor": "#E6F4FE",
         "foregroundImage": "./assets/android-icon-foreground.png",
@@ -23,7 +24,25 @@
       "favicon": "./assets/favicon.png"
     },
     "plugins": [
-      "expo-video"
+      "expo-video",
+      "expo-router",
+      "expo-font",
+      "@react-native-community/datetimepicker",
+      "expo-splash-screen",
+      [
+        "expo-camera",
+        {
+          "cameraPermission": "Cats or Dogs? uses your camera to record your answer to the daily question.",
+          "microphonePermission": "Cats or Dogs? uses your microphone so your answer has sound and captions.",
+          "recordAudioAndroid": true
+        }
+      ],
+      [
+        "expo-image-picker",
+        {
+          "photosPermission": "Cats or Dogs? uses your photos so you can add them to your profile."
+        }
+      ]
     ]
   }
 }
