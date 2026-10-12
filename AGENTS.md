@@ -7,6 +7,24 @@ The screen designs are in the Pencil file (docs/pencil-new.pen); the requirement
 doc names each screen.
 If the code and the docs disagree, ask before deciding.
 
+**IMPORTANT — Read specs and design before you implement (standing instruction from Mike):**
+Before writing or changing product-facing code (mobile UI, copy, flows, admin
+screens), you **must** consult the written documents **and** the design file.
+Do not implement from memory, from similar apps, or from partial context in the
+chat. This is as important as the “rules that must never break” below.
+
+1. **Written docs:** Read the sections that apply — at minimum the MVP
+   requirements and Build Plan for the current phase; also UAT-flows,
+   mobile-questions, and Concept Doc when they bear on the work.
+2. **Design file:** Open the matching frame(s) in docs/pencil-new.pen via the
+   Pencil MCP tools (screen numbers such as 06, 06c match the requirements).
+   Note every control, label, layout, and state you are about to build.
+3. **Then implement** so code matches docs and design. If something is missing
+   or unclear in docs or Pencil, ask Mike before inventing UI or behavior.
+
+Skipping this step is how extra buttons, wrong copy, and layout drift get into
+the app. After implementation, keep docs and Pencil in sync (see below).
+
 Stack: Expo (React Native) for iOS and Android, Supabase (Postgres,
 auth, server functions), a hosted video service, Expo push, an email service.
 
@@ -33,18 +51,35 @@ Rules that must never break:
    the app_settings table. Never hard-code them.
 4. A flag disables one video, never an account.
 5. Every server rule gets an automated test.
+6. **Feed scroll is a unified vertical page.** On screen **06**, swiping moves the
+   video and all chrome (pill, controls, captions, metadata) together as one
+   page. Do not replace this with a fixed overlay above the scroll list. See
+   `docs/mobile-feed-scroll.md` before any feed touch or layout change.
 
-Docs and designs stay in sync with the code (standing instruction from Mike):
-Whenever a decision or change alters anything the docs in docs/ describe
-(requirements, data model, rules, build plan, scope) or what a screen in
-docs/pencil-new.pen shows, update the affected doc(s) and the design file in
-the same piece of work, so docs, designs and code never disagree. Do not
-wait to be asked. In the end-of-phase summary, list exactly what you changed
-in docs/ and in the design file. Edit the .pen file only through the Pencil
-tools, never as plain text. New top-level screens must not overlap existing
-frames. Before placing one, use Pencil's FindEmptySpace (padding 80) so it
-lands in a clear gap; chain to a related screen with nodeId and direction
-"right" (or "bottom" if that row is full). Never pick x/y by hand.
+Docs and designs stay in sync with the code — after you implement (standing instruction from Mike):
+Any time you change app code (mobile, admin, or anything that changes what
+users see or do), update the relevant files under docs/ and update
+docs/pencil-new.pen in the same piece of work. Do not wait to be asked and
+do not treat docs or Pencil as optional follow-ups.
+
+Under docs/, keep in sync at minimum:
+- `docs/mobile-feed-scroll.md` when feed paging, touch handling, or chrome layout changes
+- MVP Scope & Requirements when behavior, copy, or rules change
+- Build Plan when scope, data model, or phase deliverables change
+- docs/UAT-flows.md when mobile screens, states, or wording change
+- docs/mobile-questions.md when product decisions are recorded
+- README when setup, env, or commands change
+
+The design file must reflect the same screens and UI the code ships: layout,
+labels, controls, and designed states. Edit docs/pencil-new.pen only through
+the Pencil MCP tools, never as plain text. New top-level screens must not
+overlap existing frames. Before placing one, use Pencil's FindEmptySpace
+(padding 80) so it lands in a clear gap; chain to a related screen with
+nodeId and direction "right" (or "bottom" if that row is full). Never pick
+x/y by hand.
+
+In the end-of-phase summary, list exactly what you changed in docs/ and in
+the design file.
 
 Secrets: never commit API keys, tokens, or .env files. Read them from
 environment variables. Commit only .env.example files with placeholder values.

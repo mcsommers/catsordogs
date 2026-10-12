@@ -1,10 +1,18 @@
-import { useEffect, useRef, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import { Linking, Platform, Pressable, StyleSheet, Text, View } from 'react-native';
-import { router } from 'expo-router';
+import { Redirect, router, useFocusEffect } from 'expo-router';
 import { CameraView, useCameraPermissions, useMicrophonePermissions, type CameraType } from 'expo-camera';
 import Svg, { Circle } from 'react-native-svg';
 import { RefreshCw, Timer, TriangleAlert } from 'lucide-react-native';
-import { getQuestionToAnswer, getRecordingLengthSeconds, startUpload, uploadRecording, type StartedUpload } from '../lib/api';
+import {
+  getGate,
+  getQuestionToAnswer,
+  getRecordingLengthSeconds,
+  startUpload,
+  uploadRecording,
+  type Gate,
+  type StartedUpload,
+} from '../lib/api';
 import { setCurrentRecording } from '../lib/currentRecording';
 import { timerLabel } from '../lib/format';
 import { CenteredSpinner, Dialog, PrimaryButton, QuestionBadge, Screen } from '../components/ui';
@@ -39,21 +47,40 @@ export default function TodaysQuestion() {
   const [limit, setLimit] = useState<number | null>(null);
 
   const [attempt, setAttempt] = useState(0);
+  const [gate, setGate] = useState<Gate | null>(null);
+
+  const loadScreen = useCallback(async () => {
+    if (sessionLoading || !session) return;
+    setLoadFailed(false);
+    setGate(null);
+    setQuestion(null);
+    setLengthSeconds(null);
+    try {
+      const g = await getGate();
+      setGate(g);
+      if (g.state !== 'not_answered') return;
+      const [q, len] = await Promise.all([getQuestionToAnswer(), getRecordingLengthSeconds()]);
+      if (!q) {
+        setGate({ ...g, state: 'open' });
+        return;
+      }
+      setQuestion(q.text);
+      setLengthSeconds(len);
+    } catch {
+      setLoadFailed(true);
+    }
+  }, [session, sessionLoading]);
+
+  useFocusEffect(
+    useCallback(() => {
+      loadScreen();
+    }, [loadScreen])
+  );
 
   useEffect(() => {
-    if (sessionLoading || !session) return;
-    (async () => {
-      try {
-        const [q, len] = await Promise.all([getQuestionToAnswer(), getRecordingLengthSeconds()]);
-        if (!q) return router.replace('/feed');
-        setQuestion(q.text);
-        setLengthSeconds(len);
-        setLoadFailed(false);
-      } catch {
-        setLoadFailed(true);
-      }
-    })();
-  }, [attempt, session, sessionLoading]);
+    if (attempt === 0) return;
+    loadScreen();
+  }, [attempt, loadScreen]);
 
   async function ensurePermissions(): Promise<boolean> {
     const cam = cameraPermission?.granted ? cameraPermission : await requestCamera();
@@ -123,7 +150,10 @@ export default function TodaysQuestion() {
     }
   }
 
-  if (sessionLoading || !session) return <CenteredSpinner dark />;
+  if (sessionLoading || !session || !gate) return <CenteredSpinner dark />;
+
+  if (gate.state === 'open' || gate.state === 'no_question_today') return <Redirect href="/feed" />;
+  if (gate.state === 'profile_incomplete') return <Redirect href="/build-profile" />;
 
   if (loadFailed) {
     return (

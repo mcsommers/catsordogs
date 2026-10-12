@@ -84,7 +84,7 @@ export default function Settings() {
       {saved ? <p>Saved.</p> : null}
       {row.updated_at ? <p className="muted">Last saved {formatWhen(row.updated_at)}.</p> : null}
       <NumberField label="Recording length (3 to 60 seconds)" value={row.recording_length_seconds} min={3} max={60} onChange={(n) => set('recording_length_seconds', n)} />
-      <NumberField label="Minimum watch time before skip (seconds, not longer than the recording)" value={row.min_watch_seconds} min={0} max={60} onChange={(n) => set('min_watch_seconds', n)} />
+      <NumberField label="Minimum watch time for a view to count (seconds, not longer than the recording)" value={row.min_watch_seconds} min={0} max={60} onChange={(n) => set('min_watch_seconds', n)} />
       <NumberField label="Followed people, share of the feed (0 to 100 percent)" value={row.followed_content_cap_percent} min={0} max={100} onChange={(n) => set('followed_content_cap_percent', n)} />
       <NumberField label="Flags that hide one video (at least 1)" value={row.flag_threshold} min={1} onChange={(n) => set('flag_threshold', n)} />
       <NumberField label="Different people reporting a profile before it is high priority" value={row.profile_report_priority_count} min={1} onChange={(n) => set('profile_report_priority_count', n)} />

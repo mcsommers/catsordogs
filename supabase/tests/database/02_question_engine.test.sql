@@ -1,6 +1,6 @@
 -- Phase 2 rules: the question calendar, settings, and who may change them.
 begin;
-select plan(68);
+select plan(69);
 
 -- Start from a clean calendar (the local seed data is removed inside this test only).
 delete from public.videos;
@@ -49,6 +49,7 @@ select is_empty($$update public.app_settings set recording_length_seconds = 60 r
 select is((select recording_length_seconds from public.get_app_config()), 14, 'the app reads the recording length (default 14 seconds)');
 select is((select min_watch_seconds from public.get_app_config()), 3, 'the app reads the minimum watch time');
 select is((select help_support_url from public.get_app_config()), null, 'the help URL is empty until supplied');
+select is((select feed_lookback_days from public.get_app_config()), 7, 'the app reads feed look-back days for caught-up copy');
 
 select is((select prompt_text from public.get_onboarding_question()), 'Today''s question',
   'onboarding defaults to today''s question');

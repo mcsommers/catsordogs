@@ -1,4 +1,4 @@
-import { Pressable, StyleSheet, Text, View } from 'react-native';
+import { Platform, Pressable, StyleSheet, Text, View } from 'react-native';
 import { Tabs } from 'expo-router';
 import type { BottomTabBarProps } from 'expo-router/tabs';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
@@ -8,10 +8,18 @@ import { colors, fonts } from '../../theme';
 const ICONS = { feed: Clapperboard, matches: Heart, profile: User } as const;
 const LABELS = { feed: 'Feed', matches: 'Matches', profile: 'Profile' } as const;
 
+/** Android 3-button nav often reports 0 safe-area inset; keep the pill above the system bar. */
+function tabBarBottomPadding(bottomInset: number): number {
+  if (Platform.OS === 'android') {
+    return bottomInset > 0 ? bottomInset + 18 : 38;
+  }
+  return Math.max(bottomInset, 16);
+}
+
 function TabBar({ state, navigation }: BottomTabBarProps) {
   const insets = useSafeAreaInsets();
   return (
-    <View style={[styles.wrapper, { paddingBottom: Math.max(insets.bottom, 16) }]}>
+    <View style={[styles.wrapper, { paddingBottom: tabBarBottomPadding(insets.bottom) }]}>
       <View style={styles.bar}>
         {state.routes.map((route, index) => {
           const name = route.name as keyof typeof ICONS;

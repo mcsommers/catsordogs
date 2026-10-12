@@ -50,7 +50,12 @@ test('a signed-in user gets today\'s question and the app config', async () => {
   const cfg = await user.client.rpc('get_app_config');
   assert.ifError(cfg.error);
   assert.equal(cfg.data[0].recording_length_seconds, 14);
-  assert.deepEqual(Object.keys(cfg.data[0]).sort(), ['help_support_url', 'min_watch_seconds', 'recording_length_seconds']);
+  assert.deepEqual(Object.keys(cfg.data[0]).sort(), [
+    'feed_lookback_days',
+    'help_support_url',
+    'min_watch_seconds',
+    'recording_length_seconds',
+  ]);
 });
 
 test('a user cannot see the calendar ahead, the settings, or change anything', async () => {

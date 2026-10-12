@@ -38,3 +38,27 @@ export function formatHeightFeetInches(totalInches: number): string {
   const { feet, inches } = splitHeightInches(totalInches);
   return `${feet}'${inches}"`;
 }
+
+const SHORT_MONTHS = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+
+/** Question pill date segment, e.g. "Oct 5". */
+export function shortQuestionDate(isoDate: string): string {
+  const [y, m, d] = isoDate.split('-').map(Number);
+  return `${SHORT_MONTHS[m - 1]} ${d}`;
+}
+
+/** Full question pill label: "Oct 5 · What are your thoughts on graffiti?" */
+export function questionPillLabel(isoDate: string, questionText: string): string {
+  return `${shortQuestionDate(isoDate)} · ${questionText}`;
+}
+
+export function formatDistanceMiles(miles: number | null): string | null {
+  if (miles == null) return null;
+  if (miles <= 1) return '1 mile away';
+  return `${miles} miles away`;
+}
+
+export function formatStreakBadge(days: number): string | null {
+  if (days < 1) return null;
+  return days === 1 ? '1-day streak' : `${days}-day streak`;
+}
