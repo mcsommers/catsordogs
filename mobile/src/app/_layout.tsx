@@ -34,6 +34,10 @@ export default function RootLayout() {
             <Stack.Screen name="review" options={{ gestureEnabled: false, contentStyle: { backgroundColor: colors.bgDark } }} />
             <Stack.Screen name="(tabs)" options={{ gestureEnabled: false }} />
             <Stack.Screen name="browse-questions" options={{ contentStyle: { backgroundColor: colors.bgDark } }} />
+            <Stack.Screen name="my-answers" options={{ contentStyle: { backgroundColor: colors.bgDark } }} />
+            <Stack.Screen name="user/[id]" options={{ contentStyle: { backgroundColor: colors.bgDark } }} />
+            <Stack.Screen name="user/[id]/photos" options={{ contentStyle: { backgroundColor: colors.bgDark } }} />
+            <Stack.Screen name="answer/[answerId]" options={{ contentStyle: { backgroundColor: colors.bgDark }, gestureEnabled: true }} />
           </Stack>
         </SignedOutGuard>
       </SessionProvider>

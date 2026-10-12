@@ -130,18 +130,55 @@ Prerequisites: you have submitted today's answer (gate open). For a busy feed on
 - [ ] **B-06 Following label.** If someone you follow posted today (agent can set this up on staging), their video shows an orange **Following** tag near the top.
 - [ ] **B-07 Streak badge.** When the poster has a streak, expected: flame icon and text like **14-day streak** under their name.
 - [ ] **B-08 Heart and more options (placeholder).** Tap the heart or **⋯**. Expected: alert title **Coming soon** with **Matching arrives in the next update.** or **More options arrives in the next update.**
-- [ ] **B-09 Profile tap (placeholder).** Tap the person's name. Expected: **Profile coming soon** sheet; close returns to the feed.
+- [ ] **B-09 Profile tap.** After **Phase C**, use **C-07** instead. Before Phase C: **Profile coming soon** sheet.
 - [ ] **B-10 Browse Questions (06c).** From the feed, tap the **question pill** at the top (quote icon, date, question text, and down chevron) or **Browse Past Questions** on the end screen. Expected: list of past questions with dates and response counts; today shows **Live now · Today's feed**. Pick an older question. Expected: feed shows answers for that day only.
 - [ ] **B-11 Search questions (06d).** On Browse Questions, type a word from an old question. Expected: the list filters; clearing search shows all again.
 - [ ] **B-12 Caught up (06v).** Swipe up through every video for today (and earlier days in your look-back window if the feed rolls). Expected: only after the **last** video does the next swipe show **You're all caught up** (not after the first swipe). Body text **You've seen every answer from the last 7 days that matches your filters. Check back tomorrow, or adjust your Feed Settings to see more people.**, buttons **Browse Past Questions** and **Adjust Feed Settings** (settings alert: **Feed Settings arrives in the next update.** until Phase D).
 - [ ] **B-13 Feed still locked without answer.** Log out, sign in with an account that has **not** answered today. Expected: Feed Locked (06m) unchanged from Phase A.
 - [ ] **B-14 Both platforms.** Run B-01 through B-05 and **B-15** on iPhone and Android if you have both.
 
+---
+
 
 
 ## Phase C — Profile and archive
 
-Added when Phase C is built.
+Prerequisites: gate open for feed tests; staging seed helps for other people's profiles. Decisions: `docs/mobile-questions.md` (Oct 2026).
+
+### Own profile (08, 08a)
+
+- [ ] **C-01 Profile tab (08).** Open **Profile**. Expected: your photo, name, age, location, streak / matches / joined badges, follower count and profile view count (counts only), **Your Answers** preview row, full profile fields, and **Account** rows (Edit Profile, Feed Settings, etc.). **No** edit icon on the hero photo (editing is under **Account**). **Log Out** works.
+- [ ] **C-02 Account placeholders.** Tap **Edit Profile**, **Feed Settings**, **Notifications**, **Privacy & Safety**, or **Blocked and Not Interested**. Expected: **Coming in the next update** (or equivalent) until Phase D — not a crash.
+- [ ] **C-03 View counts on your answers.** On **08**, expected: eye icon + number on each answer thumbnail in **Your Answers** (only on your own profile).
+- [ ] **C-04 See all (08a).** Tap **See all** in **Your Answers**. Expected: **08a Your Answers** with back arrow and title **Your Answers**, scrollable list of all your answers (newest first). Back returns to **08**.
+- [ ] **C-05 Lazy load (08a).** On **08a**, with many answers on staging, scroll toward the bottom. Expected: older answers appear as you scroll (no need to load the entire list at once).
+- [ ] **C-06 Disabled answer (08 / 08a).** Ask the agent to flag one of your answers disabled on staging. Expected: it still appears with a **hidden/disabled** state (not silently removed).
+
+### Someone else's profile (06j, 06n, 07h)
+
+- [ ] **C-07 Open from feed (06j).** On the feed, tap the poster's **name**. Expected: their profile (**06j**), not the Phase B placeholder sheet. Section headers (**About**, **Photos**, **Lifestyle**, **Jordan's Answers**, etc.) use **Anton** at 16pt (same as Pencil **06j**), not bold Funnel Sans.
+- [ ] **C-08 Photos grid.** Expected: up to **6** photos in **2 rows × 3**; **no** “N photos ›” row. No verified badge.
+- [ ] **C-09 Photo viewer (06ja).** Tap a photo. Expected: **06ja** with whole image visible (letterboxed), centered; **1 of N** below the image; **back** upper left returns to profile. Pinch to zoom; one-finger pan when zoomed. Swipe up/right → next photo; down/left → previous (horizontal slide).
+- [ ] **C-10 Archive scroll (07h / 06j).** On a profile with many answers (e.g. **07h** or seeded user), scroll the profile. Expected: you can reach **all** of their answers; more load as you scroll (**lazy loading**).
+- [ ] **C-11 Heart and more (placeholder).** On **06j**, tap heart or **⋯**. Expected: **Coming soon** alerts until Phase D.
+- [ ] **C-12 Answer row → 06k.** Tap an answer in their archive. Expected: **06k Answer Detail** full screen.
+
+### Answer detail (06k)
+
+- [ ] **C-13 Top chrome (06k).** On **06k**, check the top row under the progress bar. Expected: **question pill** like **06** (quote icon top-aligned on the left, **Oct 5 ·** date before question text, wrapping label; **no** down chevron — pill is not tappable here); **mute** control in a circular button to the right of the pill (no feed-settings icon on this screen). Video plays muted; tap mute to hear audio and tap again to mute.
+- [ ] **C-14 Unified scroll (06k).** On **06k**, swipe vertically to the next/older answer. Expected: video and chrome scroll as **one page** (same pattern as feed, `docs/mobile-feed-scroll.md`).
+- [ ] **C-14a Bottom chrome on Android (06k).** On **Android**, open **06k** from a profile. Expected: caption, name, and action buttons sit on the **bottom** of the screen (above the system nav bar only), not floating ~100px higher; bottom gradient reaches the screen edge.
+- [ ] **C-15 Back to profile.** Tap back on **06k**. Expected: return to the profile you came from.
+
+### Feed locked (3A)
+
+- [ ] **C-16 Profile while feed locked.** With an account that has **not** answered today, open another person's profile (e.g. from Matches when Phase D exists, or ask agent for entry path). Expected: profile and answer **list** visible; tapping playback shows a clear message that you must answer today to watch (gate), not a silent failure.
+
+### Both platforms
+
+- [ ] **C-17 Both platforms.** Run C-01, C-04, C-07, C-09, C-13, and C-14 on iPhone and Android if you have both.
+
+---
 
 ## Phase D — Social screens
 

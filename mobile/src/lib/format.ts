@@ -62,3 +62,37 @@ export function formatStreakBadge(days: number): string | null {
   if (days < 1) return null;
   return days === 1 ? '1-day streak' : `${days}-day streak`;
 }
+
+/** Profile join badge, e.g. "Joined June 2024". */
+export function formatJoinedMonthYear(isoTimestamp: string): string {
+  const d = new Date(isoTimestamp);
+  return `Joined ${MONTHS[d.getMonth()]} ${d.getFullYear()}`;
+}
+
+/** Join badge on 08, e.g. "Mar 2026". */
+export function formatJoinedShort(isoTimestamp: string): string {
+  const d = new Date(isoTimestamp);
+  return `${SHORT_MONTHS[d.getMonth()]} ${d.getFullYear()}`;
+}
+
+/** Archive row day label: Today, Yesterday, or "Sep 28". */
+export function formatAnswerDayLabel(isoDate: string): string {
+  const today = toIsoDate(new Date());
+  if (isoDate === today) return 'Today';
+  const y = new Date();
+  y.setDate(y.getDate() - 1);
+  if (isoDate === toIsoDate(y)) return 'Yesterday';
+  return shortQuestionDate(isoDate);
+}
+
+export function formatAnswerMeta(isoDate: string, durationSeconds: number): string {
+  return `${formatAnswerDayLabel(isoDate)} · ${clock(durationSeconds)}`;
+}
+
+/** 06j location line: "Brooklyn, NY · 2 miles away". */
+export function formatProfileLocation(city: string | null, distanceMiles: number | null): string | null {
+  const dist = formatDistanceMiles(distanceMiles);
+  if (city && dist) return `${city} · ${dist}`;
+  if (city) return city;
+  return dist;
+}
