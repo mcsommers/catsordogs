@@ -126,6 +126,42 @@ If one doesn't arrive, check spam.
 
 The hands-on tests to run on the phone are in [`docs/UAT-flows.md`](docs/UAT-flows.md).
 
+## Production vs staging on your phone
+
+**Staging** is the backend you should use for everyday phone testing (the URL and anon key in `mobile/.env` above).
+**Production** is the live Supabase and Mux stack for real users when the app ships. They are separate projects; see
+[Environments](#environments) below.
+
+### What “on production” can mean
+
+| Meaning | What actually happens |
+| --- | --- |
+| **Database / server updated for production** | Someone ran `npx supabase db push --project-ref fvnbcofflierdlnnglko` (and related deploy steps). Production’s rules and schema change. Your phone does **not** switch unless you change `mobile/.env`. |
+| **App talking to production APIs** | `mobile/.env` points at the production Supabase URL and anon key. Stop `npm run phone` and start it again so the app picks up the new values. |
+| **Real production for users** | A **TestFlight, internal Android build, or store build** of Cats or Dogs? built with production keys—not Expo Go loading code from your Mac. |
+
+### Keep phone UAT on staging
+
+For [`docs/UAT-flows.md`](docs/UAT-flows.md), leave `mobile/.env` on **staging**. Staging uses Mux test mode (short,
+watermarked clips) and test data. Production stores real uploads and is meant for launch, not day-to-day experiments.
+The Build Plan also says not to record real users’ video in Mux Production until legal review is done.
+
+### If you ever point Expo Go at production (usually don’t)
+
+Production values look like this (anon key from `npx supabase projects api-keys --project-ref fvnbcofflierdlnnglko`):
+
+```sh
+EXPO_PUBLIC_SUPABASE_URL=https://fvnbcofflierdlnnglko.supabase.co
+EXPO_PUBLIC_SUPABASE_ANON_KEY=<production anon key>
+```
+
+**Sign-up and password-reset emails will not work reliably in Expo Go on production.** Staging allows links that open
+Expo Go (`exp://…`). Production only allows links that open the installed app (`catsordogs://auth-callback`). That is
+intentional so production links cannot be hijacked into a dev shell. To exercise production auth and email end to end,
+use a **development or store build** of the app, not Expo Go.
+
+Switch back to staging in `mobile/.env` when you are done.
+
 ## Admin website
 
 Admins run the app from a website at `/admin`: the question calendar, every setting, the review queue,
