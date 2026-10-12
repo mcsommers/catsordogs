@@ -6,6 +6,14 @@ export type GateState = 'profile_incomplete' | 'no_question_today' | 'not_answer
 
 export type Gate = { state: GateState; questionId: string | null; questionText: string | null };
 
+/** Reports the phone's IANA time zone so "today" for the gate follows local midnight. */
+export async function syncDeviceTimeZone(): Promise<void> {
+  const tz = Intl.DateTimeFormat().resolvedOptions().timeZone;
+  if (!tz) return;
+  const { error } = await supabase.rpc('set_time_zone', { p_time_zone: tz });
+  if (error) throw error;
+}
+
 export async function getGate(): Promise<Gate> {
   const { data, error } = await supabase.rpc('get_gate_status');
   if (error) throw error;

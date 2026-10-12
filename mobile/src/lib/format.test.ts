@@ -1,4 +1,16 @@
-import { clock, formatHeightFeetInches, longDate, segmentRange, splitHeightInches, timerLabel, toIsoDate } from './format';
+import {
+  clock,
+  formatDistanceMiles,
+  formatHeightFeetInches,
+  formatStreakBadge,
+  longDate,
+  questionPillLabel,
+  segmentRange,
+  shortQuestionDate,
+  splitHeightInches,
+  timerLabel,
+  toIsoDate,
+} from './format';
 
 describe('formatting', () => {
   it('shows the recording timer against the admin-set length', () => {
@@ -26,5 +38,13 @@ describe('formatting', () => {
   it('formats height in feet and inches', () => {
     expect(splitHeightInches(69)).toEqual({ feet: 5, inches: 9 });
     expect(formatHeightFeetInches(69)).toBe('5\'9"');
+  });
+
+  it('formats feed labels', () => {
+    expect(shortQuestionDate('2026-10-05')).toBe('Oct 5');
+    expect(questionPillLabel('2026-10-05', 'Hi?')).toBe('Oct 5 · Hi?');
+    expect(formatDistanceMiles(2)).toBe('2 miles away');
+    expect(formatDistanceMiles(1)).toBe('1 mile away');
+    expect(formatStreakBadge(14)).toBe('14-day streak');
   });
 });

@@ -1,31 +1,32 @@
 import { useEffect, useState } from 'react';
-import { useRouter } from 'expo-router';
+import { Redirect } from 'expo-router';
 import { Text, View } from 'react-native';
 import { useSession } from '../lib/session';
 import { getGate, getProfileCompleted } from '../lib/api';
-import { startRoute } from '../lib/routing';
+import { startRoute, type StartRoute } from '../lib/routing';
 import { CenteredSpinner, PrimaryButton, styles } from '../components/ui';
 
 /** Decides where the app opens: Welcome, Build Profile, Today's Question, or the Feed. */
 export default function Start() {
   const { session, loading } = useSession();
-  const router = useRouter();
   const [failed, setFailed] = useState(false);
   const [attempt, setAttempt] = useState(0);
+  const [href, setHref] = useState<StartRoute | null>(null);
 
   useEffect(() => {
     if (loading) return;
     let cancelled = false;
     (async () => {
       setFailed(false);
+      setHref(null);
       if (!session) {
-        router.replace('/welcome');
+        if (!cancelled) setHref('/welcome');
         return;
       }
       try {
         const profileCompleted = await getProfileCompleted(session.user.id);
         const gate = profileCompleted ? (await getGate()).state : null;
-        if (!cancelled) router.replace(startRoute({ signedIn: true, profileCompleted, gate }));
+        if (!cancelled) setHref(startRoute({ signedIn: true, profileCompleted, gate }));
       } catch {
         if (!cancelled) setFailed(true);
       }
@@ -34,6 +35,9 @@ export default function Start() {
       cancelled = true;
     };
   }, [session, loading, attempt]);
+
+  if (!loading && !session && href) return <Redirect href={href} />;
+  if (!loading && session && href) return <Redirect href={href} />;
 
   if (failed) {
     return (

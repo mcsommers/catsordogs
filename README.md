@@ -181,6 +181,19 @@ That replaces the previous demo people (`*@local.demo`) and puts a fresh set bac
 touch staging or production. If the local database is in a messy state, rebuild and seed in one
 step with `npm run db:demo`.
 
+**Staging feed demo (Phase B UAT).** To fill today's feed on staging with extra demo posters (in addition to your own recording):
+
+1. In the [staging Supabase dashboard](https://supabase.com/dashboard/project/pgwnqasselhstrechmsa/settings/api), open **Project Settings → API** and copy the **`service_role`** key (secret). It bypasses all row-level security — treat it like a root password and never commit it or paste it into chat.
+2. On your Mac only, copy `supabase/.env.scripts.example` to `supabase/.env.scripts.staging` and paste the key after `SUPABASE_SERVICE_ROLE_KEY=`. That file stays git-ignored (same as `supabase/functions/.env.staging`).
+3. **Do not** put the service role in `supabase/functions/.env.staging`. That file is meant for Edge Function secrets and is uploaded with `npx supabase secrets set --env-file …`, which would put the master key in the cloud.
+4. Run the seed (the script refuses production):
+
+```sh
+node --env-file=supabase/.env.scripts.staging supabase/seed-staging-feed.mjs
+```
+
+Demo accounts use `@catsordogs.demo` emails. Videos use Mux test mode like any other staging upload; for playback UAT, your own submitted answer is the most reliable clip.
+
 Then open http://127.0.0.1:5173/admin/ and sign in as `admin@local.demo` with password
 `correct-horse-battery`. If you were already signed in as an older local admin, sign out first.
 `visitor@local.demo` (same password) is a normal account and should be turned away.

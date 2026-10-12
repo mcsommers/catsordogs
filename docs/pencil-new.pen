@@ -1236,10 +1236,54 @@
                   "fill": "$text-secondary",
                   "textGrowth": "fixed-width",
                   "width": "fill_container",
-                  "content": "Add a few photos and the basics.",
+                  "content": "Required: at least one photo, first name, birthday, and gender. Everything else is optional.",
                   "fontFamily": "$font-body",
                   "fontSize": 15,
                   "fontWeight": "normal"
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "jGqp2",
+              "name": "Photos Header",
+              "width": "fill_container",
+              "justifyContent": "space_between",
+              "alignItems": "center",
+              "children": [
+                {
+                  "type": "text",
+                  "id": "xhcQp",
+                  "name": "Title",
+                  "fill": "$text-primary",
+                  "content": "Photos",
+                  "fontFamily": "$font-heading",
+                  "fontSize": 18,
+                  "fontWeight": "normal"
+                },
+                {
+                  "type": "frame",
+                  "id": "i0GZv",
+                  "name": "Required Tag",
+                  "fill": "#FF6B3526",
+                  "cornerRadius": 9999,
+                  "padding": [
+                    4,
+                    10
+                  ],
+                  "children": [
+                    {
+                      "type": "text",
+                      "id": "RmuzF",
+                      "name": "Label",
+                      "fill": "$accent-dog",
+                      "content": "Required",
+                      "fontFamily": "$font-body",
+                      "fontSize": 11,
+                      "fontWeight": "700",
+                      "letterSpacing": 0.3
+                    }
+                  ]
                 }
               ]
             },
@@ -1435,7 +1479,48 @@
                   "width": "fill_container",
                   "descendants": {
                     "JNTPW": {
-                      "content": "First Name"
+                      "type": "frame",
+                      "id": "UTUq9",
+                      "name": "Label Row",
+                      "width": "fill_container",
+                      "justifyContent": "space_between",
+                      "alignItems": "center",
+                      "children": [
+                        {
+                          "type": "text",
+                          "id": "f0y66",
+                          "name": "Field Label",
+                          "fill": "$text-secondary",
+                          "content": "First Name",
+                          "fontFamily": "$font-body",
+                          "fontSize": 13,
+                          "fontWeight": "600"
+                        },
+                        {
+                          "type": "frame",
+                          "id": "XlLd7",
+                          "name": "Required Tag",
+                          "fill": "#FF6B3526",
+                          "cornerRadius": 9999,
+                          "padding": [
+                            4,
+                            10
+                          ],
+                          "children": [
+                            {
+                              "type": "text",
+                              "id": "BEEtB",
+                              "name": "Label",
+                              "fill": "$accent-dog",
+                              "content": "Required",
+                              "fontFamily": "$font-body",
+                              "fontSize": 11,
+                              "fontWeight": "700",
+                              "letterSpacing": 0.3
+                            }
+                          ]
+                        }
+                      ]
                     },
                     "pRTRd": {
                       "icon": "user"
@@ -1453,7 +1538,48 @@
                   "width": "fill_container",
                   "descendants": {
                     "JNTPW": {
-                      "content": "Birthday"
+                      "type": "frame",
+                      "id": "P13LFb",
+                      "name": "Label Row",
+                      "width": "fill_container",
+                      "justifyContent": "space_between",
+                      "alignItems": "center",
+                      "children": [
+                        {
+                          "type": "text",
+                          "id": "BPfhG",
+                          "name": "Field Label",
+                          "fill": "$text-secondary",
+                          "content": "Birthday",
+                          "fontFamily": "$font-body",
+                          "fontSize": 13,
+                          "fontWeight": "600"
+                        },
+                        {
+                          "type": "frame",
+                          "id": "R5VymB",
+                          "name": "Required Tag",
+                          "fill": "#FF6B3526",
+                          "cornerRadius": 9999,
+                          "padding": [
+                            4,
+                            10
+                          ],
+                          "children": [
+                            {
+                              "type": "text",
+                              "id": "abNg1",
+                              "name": "Label",
+                              "fill": "$accent-dog",
+                              "content": "Required",
+                              "fontFamily": "$font-body",
+                              "fontSize": 11,
+                              "fontWeight": "700",
+                              "letterSpacing": 0.3
+                            }
+                          ]
+                        }
+                      ]
                     },
                     "pRTRd": {
                       "icon": "cake"
@@ -1503,6 +1629,30 @@
                       "fontFamily": "$font-heading",
                       "fontSize": 18,
                       "fontWeight": "normal"
+                    },
+                    {
+                      "type": "frame",
+                      "id": "rjNop",
+                      "name": "Required Tag",
+                      "fill": "#FF6B3526",
+                      "cornerRadius": 9999,
+                      "padding": [
+                        4,
+                        10
+                      ],
+                      "children": [
+                        {
+                          "type": "text",
+                          "id": "okWVU",
+                          "name": "Label",
+                          "fill": "$accent-dog",
+                          "content": "Required",
+                          "fontFamily": "$font-body",
+                          "fontSize": 11,
+                          "fontWeight": "700",
+                          "letterSpacing": 0.3
+                        }
+                      ]
                     }
                   ]
                 },
@@ -1589,6 +1739,16 @@
                       "fontFamily": "$font-heading",
                       "fontSize": 18,
                       "fontWeight": "normal"
+                    },
+                    {
+                      "type": "text",
+                      "id": "nfW6U",
+                      "name": "Optional Tag",
+                      "fill": "$text-secondary",
+                      "content": "Optional",
+                      "fontFamily": "$font-body",
+                      "fontSize": 12,
+                      "fontWeight": "600"
                     }
                   ]
                 },
@@ -1690,7 +1850,7 @@
                       "id": "CHm5O",
                       "name": "Helper",
                       "fill": "$text-secondary",
-                      "content": "Select all that apply",
+                      "content": "Optional · Select all that apply",
                       "fontFamily": "$font-body",
                       "fontSize": 12,
                       "fontWeight": "normal"
@@ -1787,32 +1947,126 @@
               ]
             },
             {
-              "id": "H7UQHf",
-              "type": "ref",
-              "ref": "G5xR1",
-              "name": "Height Input",
+              "type": "frame",
+              "id": "YcCeU",
+              "name": "Height Section",
               "width": "fill_container",
-              "descendants": {
-                "JNTPW": {
-                  "content": "Height"
+              "layout": "vertical",
+              "gap": 6,
+              "children": [
+                {
+                  "type": "frame",
+                  "id": "F8PRAa",
+                  "name": "Height Label Row",
+                  "width": "fill_container",
+                  "justifyContent": "space_between",
+                  "alignItems": "center",
+                  "children": [
+                    {
+                      "type": "text",
+                      "id": "no1cA",
+                      "name": "Label",
+                      "fill": "$text-primary",
+                      "content": "Height",
+                      "fontFamily": "$font-body",
+                      "fontSize": 14,
+                      "fontWeight": "600"
+                    },
+                    {
+                      "type": "text",
+                      "id": "h1upl",
+                      "name": "Tag",
+                      "fill": "$text-secondary",
+                      "content": "Optional",
+                      "fontFamily": "$font-body",
+                      "fontSize": 12,
+                      "fontWeight": "600"
+                    }
+                  ]
                 },
-                "pRTRd": {
-                  "icon": "ruler"
-                },
-                "p0VxJ": {
-                  "content": "5'9\" · 175 cm"
+                {
+                  "type": "frame",
+                  "id": "Bsoh0",
+                  "name": "Height Fields Row",
+                  "width": "fill_container",
+                  "gap": 12,
+                  "children": [
+                    {
+                      "id": "zjpa6",
+                      "type": "ref",
+                      "ref": "G5xR1",
+                      "name": "Feet Input",
+                      "width": "fill_container",
+                      "descendants": {
+                        "JNTPW": {
+                          "content": "Feet"
+                        },
+                        "pRTRd": {
+                          "icon": "ruler"
+                        },
+                        "p0VxJ": {
+                          "content": "5"
+                        }
+                      }
+                    },
+                    {
+                      "id": "m5OFSw",
+                      "type": "ref",
+                      "ref": "G5xR1",
+                      "name": "Inches Input",
+                      "width": "fill_container",
+                      "descendants": {
+                        "JNTPW": {
+                          "content": "Inches"
+                        },
+                        "pRTRd": {
+                          "icon": "ruler"
+                        },
+                        "p0VxJ": {
+                          "content": "9"
+                        }
+                      }
+                    }
+                  ]
                 }
-              }
+              ]
             },
             {
               "id": "dpwcc",
               "type": "ref",
               "ref": "G5xR1",
-              "name": "Living In Input",
+              "name": "Location Input",
               "width": "fill_container",
               "descendants": {
                 "JNTPW": {
-                  "content": "Living In"
+                  "type": "frame",
+                  "id": "x7HUP",
+                  "name": "Label Row",
+                  "width": "fill_container",
+                  "justifyContent": "space_between",
+                  "alignItems": "center",
+                  "children": [
+                    {
+                      "type": "text",
+                      "id": "cHiGl",
+                      "name": "Field Label",
+                      "fill": "$text-secondary",
+                      "content": "Location",
+                      "fontFamily": "$font-body",
+                      "fontSize": 13,
+                      "fontWeight": "600"
+                    },
+                    {
+                      "type": "text",
+                      "id": "KCiio",
+                      "name": "Optional Tag",
+                      "fill": "$text-secondary",
+                      "content": "Optional",
+                      "fontFamily": "$font-body",
+                      "fontSize": 12,
+                      "fontWeight": "600"
+                    }
+                  ]
                 },
                 "pRTRd": {
                   "icon": "map-pin"
@@ -1821,6 +2075,63 @@
                   "content": "Brooklyn, NY"
                 }
               }
+            },
+            {
+              "type": "frame",
+              "id": "NHTqk",
+              "name": "Location Suggestions",
+              "width": "fill_container",
+              "fill": "$white",
+              "cornerRadius": 16,
+              "stroke": "$border-subtle",
+              "strokeWidth": 1.5,
+              "layout": "vertical",
+              "children": [
+                {
+                  "type": "frame",
+                  "id": "X2eyG",
+                  "name": "Suggestion Row",
+                  "width": "fill_container",
+                  "padding": [
+                    12,
+                    16
+                  ],
+                  "children": [
+                    {
+                      "type": "text",
+                      "id": "nQHyo",
+                      "name": "Label",
+                      "fill": "$text-primary",
+                      "content": "Brooklyn, NY",
+                      "fontFamily": "$font-body",
+                      "fontSize": 15,
+                      "fontWeight": "normal"
+                    }
+                  ]
+                },
+                {
+                  "type": "frame",
+                  "id": "n8wcc",
+                  "name": "Suggestion Row",
+                  "width": "fill_container",
+                  "padding": [
+                    12,
+                    16
+                  ],
+                  "children": [
+                    {
+                      "type": "text",
+                      "id": "wvNhN",
+                      "name": "Label",
+                      "fill": "$text-primary",
+                      "content": "Brooklyn Center, MN",
+                      "fontFamily": "$font-body",
+                      "fontSize": 15,
+                      "fontWeight": "normal"
+                    }
+                  ]
+                }
+              ]
             },
             {
               "type": "frame",
@@ -1837,7 +2148,34 @@
                   "width": "fill_container",
                   "descendants": {
                     "JNTPW": {
-                      "content": "Job Title"
+                      "type": "frame",
+                      "id": "ckYxT",
+                      "name": "Label Row",
+                      "width": "fill_container",
+                      "justifyContent": "space_between",
+                      "alignItems": "center",
+                      "children": [
+                        {
+                          "type": "text",
+                          "id": "I4fMea",
+                          "name": "Field Label",
+                          "fill": "$text-secondary",
+                          "content": "Job Title",
+                          "fontFamily": "$font-body",
+                          "fontSize": 13,
+                          "fontWeight": "600"
+                        },
+                        {
+                          "type": "text",
+                          "id": "gaLMO",
+                          "name": "Optional Tag",
+                          "fill": "$text-secondary",
+                          "content": "Optional",
+                          "fontFamily": "$font-body",
+                          "fontSize": 12,
+                          "fontWeight": "600"
+                        }
+                      ]
                     },
                     "pRTRd": {
                       "icon": "briefcase"
@@ -1855,7 +2193,34 @@
                   "width": "fill_container",
                   "descendants": {
                     "JNTPW": {
-                      "content": "Company"
+                      "type": "frame",
+                      "id": "Ek9Pb",
+                      "name": "Label Row",
+                      "width": "fill_container",
+                      "justifyContent": "space_between",
+                      "alignItems": "center",
+                      "children": [
+                        {
+                          "type": "text",
+                          "id": "rAInt",
+                          "name": "Field Label",
+                          "fill": "$text-secondary",
+                          "content": "Company",
+                          "fontFamily": "$font-body",
+                          "fontSize": 13,
+                          "fontWeight": "600"
+                        },
+                        {
+                          "type": "text",
+                          "id": "XpaZf",
+                          "name": "Optional Tag",
+                          "fill": "$text-secondary",
+                          "content": "Optional",
+                          "fontFamily": "$font-body",
+                          "fontSize": 12,
+                          "fontWeight": "600"
+                        }
+                      ]
                     },
                     "pRTRd": {
                       "icon": "building-2"
@@ -1875,7 +2240,34 @@
               "width": "fill_container",
               "descendants": {
                 "JNTPW": {
-                  "content": "School"
+                  "type": "frame",
+                  "id": "sgTLV",
+                  "name": "Label Row",
+                  "width": "fill_container",
+                  "justifyContent": "space_between",
+                  "alignItems": "center",
+                  "children": [
+                    {
+                      "type": "text",
+                      "id": "g2AVLz",
+                      "name": "Field Label",
+                      "fill": "$text-secondary",
+                      "content": "School",
+                      "fontFamily": "$font-body",
+                      "fontSize": 13,
+                      "fontWeight": "600"
+                    },
+                    {
+                      "type": "text",
+                      "id": "FwHXs",
+                      "name": "Optional Tag",
+                      "fill": "$text-secondary",
+                      "content": "Optional",
+                      "fontFamily": "$font-body",
+                      "fontSize": 12,
+                      "fontWeight": "600"
+                    }
+                  ]
                 },
                 "pRTRd": {
                   "icon": "graduation-cap"
@@ -1894,14 +2286,34 @@
               "gap": 6,
               "children": [
                 {
-                  "type": "text",
-                  "id": "jgY7N",
-                  "name": "Field Label",
-                  "fill": "$text-secondary",
-                  "content": "About Me",
-                  "fontFamily": "$font-body",
-                  "fontSize": 13,
-                  "fontWeight": "600"
+                  "type": "frame",
+                  "id": "AzE3w",
+                  "name": "Label Row",
+                  "width": "fill_container",
+                  "justifyContent": "space_between",
+                  "alignItems": "center",
+                  "children": [
+                    {
+                      "type": "text",
+                      "id": "g1dR8",
+                      "name": "Field Label",
+                      "fill": "$text-secondary",
+                      "content": "About Me",
+                      "fontFamily": "$font-body",
+                      "fontSize": 13,
+                      "fontWeight": "600"
+                    },
+                    {
+                      "type": "text",
+                      "id": "wCoQ2",
+                      "name": "Optional Tag",
+                      "fill": "$text-secondary",
+                      "content": "Optional",
+                      "fontFamily": "$font-body",
+                      "fontSize": 12,
+                      "fontWeight": "600"
+                    }
+                  ]
                 },
                 {
                   "type": "frame",
@@ -1974,6 +2386,16 @@
                       "fontFamily": "$font-heading",
                       "fontSize": 18,
                       "fontWeight": "normal"
+                    },
+                    {
+                      "type": "text",
+                      "id": "gMTD7",
+                      "name": "Optional Tag",
+                      "fill": "$text-secondary",
+                      "content": "Optional",
+                      "fontFamily": "$font-body",
+                      "fontSize": 12,
+                      "fontWeight": "600"
                     }
                   ]
                 },
@@ -2128,6 +2550,16 @@
                       "fontFamily": "$font-heading",
                       "fontSize": 18,
                       "fontWeight": "normal"
+                    },
+                    {
+                      "type": "text",
+                      "id": "iHBSZ",
+                      "name": "Optional Tag",
+                      "fill": "$text-secondary",
+                      "content": "Optional",
+                      "fontFamily": "$font-body",
+                      "fontSize": 12,
+                      "fontWeight": "600"
                     }
                   ]
                 },
@@ -2223,7 +2655,7 @@
                       "id": "Z1sqAT",
                       "name": "Helper",
                       "fill": "$text-secondary",
-                      "content": "3 of 5 selected",
+                      "content": "Optional · 3 of 5 selected",
                       "fontFamily": "$font-body",
                       "fontSize": 12,
                       "fontWeight": "normal"
@@ -2381,6 +2813,16 @@
                       "fontFamily": "$font-heading",
                       "fontSize": 18,
                       "fontWeight": "normal"
+                    },
+                    {
+                      "type": "text",
+                      "id": "h7Sbf",
+                      "name": "Optional Tag",
+                      "fill": "$text-secondary",
+                      "content": "Optional",
+                      "fontFamily": "$font-body",
+                      "fontSize": 12,
+                      "fontWeight": "600"
                     }
                   ]
                 },
@@ -2903,7 +3345,7 @@
                 {
                   "type": "frame",
                   "id": "igm1u",
-                  "name": "Progress Track",
+                  "name": "Playback progress track",
                   "width": "fill_container",
                   "height": 3,
                   "fill": "#FFFFFF2E",
@@ -2912,7 +3354,7 @@
                     {
                       "type": "frame",
                       "id": "XpGsv",
-                      "name": "Progress Fill",
+                      "name": "Playback progress fill (example)",
                       "width": 190,
                       "height": 3,
                       "fill": "$white",
@@ -2925,25 +3367,25 @@
                   "id": "iHE6i",
                   "name": "Question Row",
                   "width": "fill_container",
+                  "gap": 8,
                   "justifyContent": "space_between",
-                  "alignItems": "center",
                   "children": [
                     {
                       "type": "frame",
-                      "id": "VjD8Z",
+                      "id": "k52TCQ",
                       "name": "Question Pill",
+                      "width": "fill_container",
                       "fill": "#00000066",
-                      "cornerRadius": 9999,
-                      "gap": 6,
+                      "cornerRadius": 16,
+                      "gap": 8,
                       "padding": [
-                        7,
+                        10,
                         12
                       ],
-                      "alignItems": "center",
                       "children": [
                         {
                           "type": "icon",
-                          "id": "A00kYV",
+                          "id": "o8A3K4",
                           "name": "Quote Icon",
                           "width": 13,
                           "height": 13,
@@ -2953,37 +3395,20 @@
                         },
                         {
                           "type": "text",
-                          "id": "B7SFp7",
-                          "name": "Question Date",
-                          "fill": "#FFFFFFB3",
-                          "content": "Oct 5",
-                          "fontFamily": "$font-body",
-                          "fontSize": 12,
-                          "fontWeight": "700"
-                        },
-                        {
-                          "type": "text",
-                          "id": "mDUit",
-                          "name": "Separator",
-                          "fill": "#FFFFFF80",
-                          "content": "·",
-                          "fontFamily": "$font-body",
-                          "fontSize": 12,
-                          "fontWeight": "600"
-                        },
-                        {
-                          "type": "text",
-                          "id": "KjjlG",
-                          "name": "Question",
+                          "id": "qy4Kh",
+                          "name": "Question pill label (wraps)",
                           "fill": "#FFFFFFE6",
-                          "content": "What are your thoughts on graffiti?",
+                          "textGrowth": "fixed-width",
+                          "width": "fill_container",
+                          "content": "Oct 5 · If you could change one thing about how people meet each other today, what would it be and why would that matter to you?",
+                          "lineHeight": 1.35,
                           "fontFamily": "$font-body",
                           "fontSize": 12,
                           "fontWeight": "600"
                         },
                         {
                           "type": "icon",
-                          "id": "m4c4l",
+                          "id": "I7wju",
                           "name": "Chevron",
                           "width": 12,
                           "height": 12,
@@ -2995,24 +3420,57 @@
                     },
                     {
                       "type": "frame",
-                      "id": "fVrAB",
-                      "name": "Feed Settings Button",
-                      "width": 32,
-                      "height": 32,
-                      "fill": "#00000066",
-                      "cornerRadius": 9999,
-                      "justifyContent": "center",
+                      "id": "fsf7q",
+                      "name": "Feed top actions",
+                      "layout": "vertical",
+                      "gap": 8,
                       "alignItems": "center",
                       "children": [
                         {
-                          "type": "icon",
-                          "id": "v3ZTa",
-                          "name": "Icon",
-                          "width": 15,
-                          "height": 15,
-                          "icon": "sliders-horizontal",
-                          "library": "lucide",
-                          "fill": "$white"
+                          "type": "frame",
+                          "id": "fVrAB",
+                          "name": "Feed Settings Button",
+                          "width": 32,
+                          "height": 32,
+                          "fill": "#00000066",
+                          "cornerRadius": 9999,
+                          "justifyContent": "center",
+                          "alignItems": "center",
+                          "children": [
+                            {
+                              "type": "icon",
+                              "id": "v3ZTa",
+                              "name": "Icon",
+                              "width": 15,
+                              "height": 15,
+                              "icon": "sliders-horizontal",
+                              "library": "lucide",
+                              "fill": "$white"
+                            }
+                          ]
+                        },
+                        {
+                          "type": "frame",
+                          "id": "E0BnRb",
+                          "name": "Mute Button",
+                          "width": 32,
+                          "height": 32,
+                          "fill": "#00000066",
+                          "cornerRadius": 9999,
+                          "justifyContent": "center",
+                          "alignItems": "center",
+                          "children": [
+                            {
+                              "type": "icon",
+                              "id": "C0PgVg",
+                              "name": "Icon",
+                              "width": 15,
+                              "height": 15,
+                              "icon": "volume-x",
+                              "library": "lucide",
+                              "fill": "$white"
+                            }
+                          ]
                         }
                       ]
                     }
@@ -3219,6 +3677,16 @@
               ]
             }
           ]
+        },
+        {
+          "type": "note",
+          "id": "aWJdp",
+          "x": 0,
+          "y": -140,
+          "name": "Unified page scroll spec",
+          "width": 320,
+          "height": 120,
+          "content": "LOCKED UX: Swiping moves video + all chrome (pill, mute, captions, metadata) together as one vertical page. Not a fixed HUD. See docs/mobile-feed-scroll.md"
         }
       ]
     },
@@ -31940,32 +32408,99 @@
               ]
             },
             {
-              "id": "V8a0bx",
-              "type": "ref",
-              "ref": "G5xR1",
-              "name": "Height Input",
+              "type": "frame",
+              "id": "E6RfQ",
+              "name": "Height Section",
               "width": "fill_container",
-              "descendants": {
-                "JNTPW": {
-                  "content": "Height"
+              "layout": "vertical",
+              "gap": 6,
+              "children": [
+                {
+                  "type": "frame",
+                  "id": "yV3f1",
+                  "name": "Height Label Row",
+                  "width": "fill_container",
+                  "justifyContent": "space_between",
+                  "alignItems": "center",
+                  "children": [
+                    {
+                      "type": "text",
+                      "id": "gGoFu",
+                      "name": "Label",
+                      "fill": "$text-primary",
+                      "content": "Height",
+                      "fontFamily": "$font-body",
+                      "fontSize": 14,
+                      "fontWeight": "600"
+                    },
+                    {
+                      "type": "text",
+                      "id": "vpcHM",
+                      "name": "Tag",
+                      "fill": "$text-secondary",
+                      "content": "Optional",
+                      "fontFamily": "$font-body",
+                      "fontSize": 12,
+                      "fontWeight": "600"
+                    }
+                  ]
                 },
-                "pRTRd": {
-                  "icon": "ruler"
-                },
-                "p0VxJ": {
-                  "content": "5'9\" · 175 cm"
+                {
+                  "type": "frame",
+                  "id": "q5UV4c",
+                  "name": "Height Fields Row",
+                  "width": "fill_container",
+                  "gap": 12,
+                  "children": [
+                    {
+                      "id": "lvdi8",
+                      "type": "ref",
+                      "ref": "G5xR1",
+                      "name": "Feet Input",
+                      "width": "fill_container",
+                      "descendants": {
+                        "JNTPW": {
+                          "content": "Feet"
+                        },
+                        "pRTRd": {
+                          "icon": "ruler"
+                        },
+                        "p0VxJ": {
+                          "content": "5"
+                        }
+                      }
+                    },
+                    {
+                      "id": "p98wpo",
+                      "type": "ref",
+                      "ref": "G5xR1",
+                      "name": "Inches Input",
+                      "width": "fill_container",
+                      "descendants": {
+                        "JNTPW": {
+                          "content": "Inches"
+                        },
+                        "pRTRd": {
+                          "icon": "ruler"
+                        },
+                        "p0VxJ": {
+                          "content": "9"
+                        }
+                      }
+                    }
+                  ]
                 }
-              }
+              ]
             },
             {
               "id": "i3CMb",
               "type": "ref",
               "ref": "G5xR1",
-              "name": "Living In Input",
+              "name": "Location Input",
               "width": "fill_container",
               "descendants": {
                 "JNTPW": {
-                  "content": "Living In"
+                  "content": "Location"
                 },
                 "pRTRd": {
                   "icon": "map-pin"
@@ -45124,32 +45659,99 @@
               ]
             },
             {
-              "id": "qH0fq",
-              "type": "ref",
-              "ref": "G5xR1",
-              "name": "Height Input",
+              "type": "frame",
+              "id": "vCSc0",
+              "name": "Height Section",
               "width": "fill_container",
-              "descendants": {
-                "JNTPW": {
-                  "content": "Height"
+              "layout": "vertical",
+              "gap": 6,
+              "children": [
+                {
+                  "type": "frame",
+                  "id": "Bgj1F",
+                  "name": "Height Label Row",
+                  "width": "fill_container",
+                  "justifyContent": "space_between",
+                  "alignItems": "center",
+                  "children": [
+                    {
+                      "type": "text",
+                      "id": "u6blR",
+                      "name": "Label",
+                      "fill": "$text-primary",
+                      "content": "Height",
+                      "fontFamily": "$font-body",
+                      "fontSize": 14,
+                      "fontWeight": "600"
+                    },
+                    {
+                      "type": "text",
+                      "id": "zsve9",
+                      "name": "Tag",
+                      "fill": "$text-secondary",
+                      "content": "Optional",
+                      "fontFamily": "$font-body",
+                      "fontSize": 12,
+                      "fontWeight": "600"
+                    }
+                  ]
                 },
-                "pRTRd": {
-                  "icon": "ruler"
-                },
-                "p0VxJ": {
-                  "content": "5'9\" · 175 cm"
+                {
+                  "type": "frame",
+                  "id": "VEUs2",
+                  "name": "Height Fields Row",
+                  "width": "fill_container",
+                  "gap": 12,
+                  "children": [
+                    {
+                      "id": "xgfnT",
+                      "type": "ref",
+                      "ref": "G5xR1",
+                      "name": "Feet Input",
+                      "width": "fill_container",
+                      "descendants": {
+                        "JNTPW": {
+                          "content": "Feet"
+                        },
+                        "pRTRd": {
+                          "icon": "ruler"
+                        },
+                        "p0VxJ": {
+                          "content": "5"
+                        }
+                      }
+                    },
+                    {
+                      "id": "bFUon",
+                      "type": "ref",
+                      "ref": "G5xR1",
+                      "name": "Inches Input",
+                      "width": "fill_container",
+                      "descendants": {
+                        "JNTPW": {
+                          "content": "Inches"
+                        },
+                        "pRTRd": {
+                          "icon": "ruler"
+                        },
+                        "p0VxJ": {
+                          "content": "9"
+                        }
+                      }
+                    }
+                  ]
                 }
-              }
+              ]
             },
             {
               "id": "r5LHap",
               "type": "ref",
               "ref": "G5xR1",
-              "name": "Living In Input",
+              "name": "Location Input",
               "width": "fill_container",
               "descendants": {
                 "JNTPW": {
-                  "content": "Living In"
+                  "content": "Location"
                 },
                 "pRTRd": {
                   "icon": "map-pin"
@@ -46749,6 +47351,44 @@
               ]
             }
           ]
+        }
+      ]
+    },
+    {
+      "type": "frame",
+      "id": "b796Se",
+      "x": 9040,
+      "y": 4409,
+      "name": "06 spec — playback progress",
+      "width": 340,
+      "fill": "#1A1A1C",
+      "cornerRadius": 12,
+      "layout": "vertical",
+      "gap": 8,
+      "padding": 16,
+      "children": [
+        {
+          "type": "text",
+          "id": "hARcH",
+          "name": "Spec title",
+          "fill": "#FFFFFF",
+          "content": "06 — Top playback bar",
+          "fontFamily": "Inter",
+          "fontSize": 14,
+          "fontWeight": "normal"
+        },
+        {
+          "type": "text",
+          "id": "w6B1jt",
+          "name": "Spec body",
+          "fill": "#FFFFFFB3",
+          "textGrowth": "fixed-width",
+          "width": 308,
+          "content": "Question pill wraps (no ellipsis). Right column: Feed settings on top, mute/unmute below (volume-x when muted). Tap pill → Browse Questions (06c).",
+          "lineHeight": 1.35,
+          "fontFamily": "Inter",
+          "fontSize": 12,
+          "fontWeight": "normal"
         }
       ]
     }
