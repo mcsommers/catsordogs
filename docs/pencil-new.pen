@@ -11133,16 +11133,6 @@
                       "fontFamily": "$font-heading",
                       "fontSize": 24,
                       "fontWeight": "normal"
-                    },
-                    {
-                      "type": "icon",
-                      "id": "QML4B",
-                      "name": "Verified",
-                      "width": 18,
-                      "height": 18,
-                      "icon": "badge-check",
-                      "library": "lucide",
-                      "fill": "$accent-dog"
                     }
                   ]
                 },
@@ -11349,7 +11339,6 @@
                   "id": "fzVEC",
                   "name": "Photos Header",
                   "width": "fill_container",
-                  "justifyContent": "space_between",
                   "alignItems": "center",
                   "children": [
                     {
@@ -11361,35 +11350,6 @@
                       "fontFamily": "$font-heading",
                       "fontSize": 16,
                       "fontWeight": "normal"
-                    },
-                    {
-                      "type": "frame",
-                      "id": "x1bXW",
-                      "name": "See All",
-                      "gap": 4,
-                      "alignItems": "center",
-                      "children": [
-                        {
-                          "type": "text",
-                          "id": "d2tLjv",
-                          "name": "Count",
-                          "fill": "$text-dark-muted",
-                          "content": "9 photos",
-                          "fontFamily": "$font-body",
-                          "fontSize": 12,
-                          "fontWeight": "normal"
-                        },
-                        {
-                          "type": "icon",
-                          "id": "a1N9L",
-                          "name": "Chevron",
-                          "width": 14,
-                          "height": 14,
-                          "icon": "chevron-right",
-                          "library": "lucide",
-                          "fill": "$text-dark-muted"
-                        }
-                      ]
                     }
                   ]
                 },
@@ -11414,7 +11374,7 @@
                           "name": "Photo 1",
                           "clip": true,
                           "width": "fill_container",
-                          "height": 236,
+                          "height": 115,
                           "fill": {
                             "type": "image",
                             "enabled": true,
@@ -11426,45 +11386,35 @@
                         },
                         {
                           "type": "frame",
-                          "id": "Rm0zx",
-                          "name": "Side Column",
-                          "width": 115,
-                          "layout": "vertical",
-                          "gap": 6,
-                          "children": [
-                            {
-                              "type": "frame",
-                              "id": "vy3bb",
-                              "name": "Photo 2",
-                              "clip": true,
-                              "width": "fill_container",
-                              "height": 115,
-                              "fill": {
-                                "type": "image",
-                                "enabled": true,
-                                "url": "images/jordan-photo-2.png",
-                                "mode": "cover"
-                              },
-                              "cornerRadius": 14,
-                              "layout": "none"
-                            },
-                            {
-                              "type": "frame",
-                              "id": "WLFfv",
-                              "name": "Photo 3",
-                              "clip": true,
-                              "width": "fill_container",
-                              "height": 115,
-                              "fill": {
-                                "type": "image",
-                                "enabled": true,
-                                "url": "images/jordan-photo-3.png",
-                                "mode": "cover"
-                              },
-                              "cornerRadius": 14,
-                              "layout": "none"
-                            }
-                          ]
+                          "id": "vy3bb",
+                          "name": "Photo 2",
+                          "clip": true,
+                          "width": "fill_container",
+                          "height": 115,
+                          "fill": {
+                            "type": "image",
+                            "enabled": true,
+                            "url": "images/jordan-photo-2.png",
+                            "mode": "cover"
+                          },
+                          "cornerRadius": 14,
+                          "layout": "none"
+                        },
+                        {
+                          "type": "frame",
+                          "id": "WLFfv",
+                          "name": "Photo 3",
+                          "clip": true,
+                          "width": "fill_container",
+                          "height": 115,
+                          "fill": {
+                            "type": "image",
+                            "enabled": true,
+                            "url": "images/jordan-photo-3.png",
+                            "mode": "cover"
+                          },
+                          "cornerRadius": 14,
+                          "layout": "none"
                         }
                       ]
                     },
@@ -11521,33 +11471,7 @@
                             "mode": "cover"
                           },
                           "cornerRadius": 14,
-                          "layout": "none",
-                          "children": [
-                            {
-                              "type": "frame",
-                              "id": "M30vcO",
-                              "x": 0,
-                              "y": 0,
-                              "name": "More Overlay",
-                              "width": 115,
-                              "height": 115,
-                              "fill": "#00000088",
-                              "justifyContent": "center",
-                              "alignItems": "center",
-                              "children": [
-                                {
-                                  "type": "text",
-                                  "id": "Hg20N",
-                                  "name": "More Count",
-                                  "fill": "$white",
-                                  "content": "+3",
-                                  "fontFamily": "$font-heading",
-                                  "fontSize": 22,
-                                  "fontWeight": "normal"
-                                }
-                              ]
-                            }
-                          ]
+                          "layout": "none"
                         }
                       ]
                     }
@@ -12783,19 +12707,21 @@
                   "id": "iXbPL",
                   "name": "Question Row",
                   "width": "fill_container",
+                  "gap": 8,
+                  "justifyContent": "space_between",
                   "children": [
                     {
                       "type": "frame",
                       "id": "KHBMV",
                       "name": "Question Pill",
+                      "width": "fill_container",
                       "fill": "#00000066",
-                      "cornerRadius": 9999,
-                      "gap": 6,
+                      "cornerRadius": 16,
+                      "gap": 8,
                       "padding": [
-                        7,
+                        10,
                         12
                       ],
-                      "alignItems": "center",
                       "children": [
                         {
                           "type": "icon",
@@ -12810,12 +12736,48 @@
                         {
                           "type": "text",
                           "id": "ohUEx",
-                          "name": "Question",
+                          "name": "Question pill label (wraps)",
                           "fill": "#FFFFFFE6",
-                          "content": "Sep 28 · Describe your ideal Sunday.",
+                          "textGrowth": "fixed-width",
+                          "width": "fill_container",
+                          "content": "Oct 5 · If you could change one thing about how people meet each other today, what would it be and why would that matter to you?",
+                          "lineHeight": 1.35,
                           "fontFamily": "$font-body",
                           "fontSize": 12,
                           "fontWeight": "600"
+                        }
+                      ]
+                    },
+                    {
+                      "type": "frame",
+                      "id": "oPP6X",
+                      "name": "Answer top actions",
+                      "layout": "vertical",
+                      "gap": 8,
+                      "alignItems": "center",
+                      "children": [
+                        {
+                          "type": "frame",
+                          "id": "mQp2m",
+                          "name": "Mute Button",
+                          "width": 32,
+                          "height": 32,
+                          "fill": "#00000066",
+                          "cornerRadius": 9999,
+                          "justifyContent": "center",
+                          "alignItems": "center",
+                          "children": [
+                            {
+                              "type": "icon",
+                              "id": "oOVyx",
+                              "name": "Icon",
+                              "width": 15,
+                              "height": 15,
+                              "icon": "volume-x",
+                              "library": "lucide",
+                              "fill": "$white"
+                            }
+                          ]
                         }
                       ]
                     }
@@ -17805,31 +17767,6 @@
             },
             {
               "type": "frame",
-              "id": "CUS8v",
-              "x": 337,
-              "y": 52,
-              "name": "Edit Photo Button",
-              "width": 36,
-              "height": 36,
-              "fill": "#00000066",
-              "cornerRadius": 9999,
-              "justifyContent": "center",
-              "alignItems": "center",
-              "children": [
-                {
-                  "type": "icon",
-                  "id": "h6RtNL",
-                  "name": "Icon",
-                  "width": 16,
-                  "height": 16,
-                  "icon": "camera",
-                  "library": "lucide",
-                  "fill": "$white"
-                }
-              ]
-            },
-            {
-              "type": "frame",
               "id": "A0U22e",
               "x": 20,
               "y": 238,
@@ -18486,7 +18423,7 @@
                           "name": "Photo 1",
                           "clip": true,
                           "width": "fill_container",
-                          "height": 236,
+                          "height": 115,
                           "fill": {
                             "type": "image",
                             "enabled": true,
@@ -18537,45 +18474,35 @@
                         },
                         {
                           "type": "frame",
-                          "id": "dMPXu",
-                          "name": "Side Column",
-                          "width": 115,
-                          "layout": "vertical",
-                          "gap": 6,
-                          "children": [
-                            {
-                              "type": "frame",
-                              "id": "I4JiJ",
-                              "name": "Photo 2",
-                              "clip": true,
-                              "width": "fill_container",
-                              "height": 115,
-                              "fill": {
-                                "type": "image",
-                                "enabled": true,
-                                "url": "images/alex-photo-2.png",
-                                "mode": "cover"
-                              },
-                              "cornerRadius": 14,
-                              "layout": "none"
-                            },
-                            {
-                              "type": "frame",
-                              "id": "yrqUz",
-                              "name": "Photo 3",
-                              "clip": true,
-                              "width": "fill_container",
-                              "height": 115,
-                              "fill": {
-                                "type": "image",
-                                "enabled": true,
-                                "url": "images/alex-photo-3.png",
-                                "mode": "cover"
-                              },
-                              "cornerRadius": 14,
-                              "layout": "none"
-                            }
-                          ]
+                          "id": "I4JiJ",
+                          "name": "Photo 2",
+                          "clip": true,
+                          "width": "fill_container",
+                          "height": 115,
+                          "fill": {
+                            "type": "image",
+                            "enabled": true,
+                            "url": "images/alex-photo-2.png",
+                            "mode": "cover"
+                          },
+                          "cornerRadius": 14,
+                          "layout": "none"
+                        },
+                        {
+                          "type": "frame",
+                          "id": "yrqUz",
+                          "name": "Photo 3",
+                          "clip": true,
+                          "width": "fill_container",
+                          "height": 115,
+                          "fill": {
+                            "type": "image",
+                            "enabled": true,
+                            "url": "images/alex-photo-3.png",
+                            "mode": "cover"
+                          },
+                          "cornerRadius": 14,
+                          "layout": "none"
                         }
                       ]
                     },
@@ -19759,16 +19686,6 @@
                       "fontFamily": "$font-heading",
                       "fontSize": 24,
                       "fontWeight": "normal"
-                    },
-                    {
-                      "type": "icon",
-                      "id": "eL7Ih",
-                      "name": "Verified",
-                      "width": 18,
-                      "height": 18,
-                      "icon": "badge-check",
-                      "library": "lucide",
-                      "fill": "$accent-dog"
                     }
                   ]
                 },
@@ -21270,16 +21187,6 @@
                           "fontFamily": "$font-heading",
                           "fontSize": 24,
                           "fontWeight": "normal"
-                        },
-                        {
-                          "type": "icon",
-                          "id": "M5Qv8",
-                          "name": "Verified",
-                          "width": 18,
-                          "height": 18,
-                          "icon": "badge-check",
-                          "library": "lucide",
-                          "fill": "$accent-dog"
                         }
                       ]
                     },
@@ -23031,16 +22938,6 @@
                       "fontFamily": "$font-heading",
                       "fontSize": 24,
                       "fontWeight": "normal"
-                    },
-                    {
-                      "type": "icon",
-                      "id": "wtfdD",
-                      "name": "Verified",
-                      "width": 18,
-                      "height": 18,
-                      "icon": "badge-check",
-                      "library": "lucide",
-                      "fill": "$accent-dog"
                     }
                   ]
                 },
@@ -23342,7 +23239,6 @@
                   "id": "symHc",
                   "name": "Photos Header",
                   "width": "fill_container",
-                  "justifyContent": "space_between",
                   "alignItems": "center",
                   "children": [
                     {
@@ -23354,35 +23250,6 @@
                       "fontFamily": "$font-heading",
                       "fontSize": 16,
                       "fontWeight": "normal"
-                    },
-                    {
-                      "type": "frame",
-                      "id": "DXT8l",
-                      "name": "See All",
-                      "gap": 4,
-                      "alignItems": "center",
-                      "children": [
-                        {
-                          "type": "text",
-                          "id": "jS44e",
-                          "name": "Count",
-                          "fill": "$text-dark-muted",
-                          "content": "9 photos",
-                          "fontFamily": "$font-body",
-                          "fontSize": 12,
-                          "fontWeight": "normal"
-                        },
-                        {
-                          "type": "icon",
-                          "id": "dAsjj",
-                          "name": "Chevron",
-                          "width": 14,
-                          "height": 14,
-                          "icon": "chevron-right",
-                          "library": "lucide",
-                          "fill": "$text-dark-muted"
-                        }
-                      ]
                     }
                   ]
                 },
@@ -23407,7 +23274,7 @@
                           "name": "Photo 1",
                           "clip": true,
                           "width": "fill_container",
-                          "height": 236,
+                          "height": 115,
                           "fill": {
                             "type": "image",
                             "enabled": true,
@@ -23419,45 +23286,35 @@
                         },
                         {
                           "type": "frame",
-                          "id": "C7RUN",
-                          "name": "Side Column",
-                          "width": 115,
-                          "layout": "vertical",
-                          "gap": 6,
-                          "children": [
-                            {
-                              "type": "frame",
-                              "id": "hR7q0",
-                              "name": "Photo 2",
-                              "clip": true,
-                              "width": "fill_container",
-                              "height": 115,
-                              "fill": {
-                                "type": "image",
-                                "enabled": true,
-                                "url": "images/jordan-photo-2.png",
-                                "mode": "cover"
-                              },
-                              "cornerRadius": 14,
-                              "layout": "none"
-                            },
-                            {
-                              "type": "frame",
-                              "id": "sNvn2",
-                              "name": "Photo 3",
-                              "clip": true,
-                              "width": "fill_container",
-                              "height": 115,
-                              "fill": {
-                                "type": "image",
-                                "enabled": true,
-                                "url": "images/jordan-photo-3.png",
-                                "mode": "cover"
-                              },
-                              "cornerRadius": 14,
-                              "layout": "none"
-                            }
-                          ]
+                          "id": "hR7q0",
+                          "name": "Photo 2",
+                          "clip": true,
+                          "width": "fill_container",
+                          "height": 115,
+                          "fill": {
+                            "type": "image",
+                            "enabled": true,
+                            "url": "images/jordan-photo-2.png",
+                            "mode": "cover"
+                          },
+                          "cornerRadius": 14,
+                          "layout": "none"
+                        },
+                        {
+                          "type": "frame",
+                          "id": "sNvn2",
+                          "name": "Photo 3",
+                          "clip": true,
+                          "width": "fill_container",
+                          "height": 115,
+                          "fill": {
+                            "type": "image",
+                            "enabled": true,
+                            "url": "images/jordan-photo-3.png",
+                            "mode": "cover"
+                          },
+                          "cornerRadius": 14,
+                          "layout": "none"
                         }
                       ]
                     },
@@ -23514,33 +23371,7 @@
                             "mode": "cover"
                           },
                           "cornerRadius": 14,
-                          "layout": "none",
-                          "children": [
-                            {
-                              "type": "frame",
-                              "id": "db6p9",
-                              "x": 0,
-                              "y": 0,
-                              "name": "More Overlay",
-                              "width": 115,
-                              "height": 115,
-                              "fill": "#00000088",
-                              "justifyContent": "center",
-                              "alignItems": "center",
-                              "children": [
-                                {
-                                  "type": "text",
-                                  "id": "BZNgM",
-                                  "name": "More Count",
-                                  "fill": "$white",
-                                  "content": "+3",
-                                  "fontFamily": "$font-heading",
-                                  "fontSize": 22,
-                                  "fontWeight": "normal"
-                                }
-                              ]
-                            }
-                          ]
+                          "layout": "none"
                         }
                       ]
                     }
@@ -24638,16 +24469,6 @@
                       "fontFamily": "$font-heading",
                       "fontSize": 24,
                       "fontWeight": "normal"
-                    },
-                    {
-                      "type": "icon",
-                      "id": "ukrI6",
-                      "name": "Verified",
-                      "width": 18,
-                      "height": 18,
-                      "icon": "badge-check",
-                      "library": "lucide",
-                      "fill": "$accent-dog"
                     }
                   ]
                 },
@@ -24974,7 +24795,7 @@
                           "id": "E4fZ1p",
                           "name": "Count",
                           "fill": "$text-dark-muted",
-                          "content": "9 photos",
+                          "content": "6 photos",
                           "fontFamily": "$font-body",
                           "fontSize": 12,
                           "fontWeight": "normal"
@@ -25014,7 +24835,7 @@
                           "name": "Photo 1",
                           "clip": true,
                           "width": "fill_container",
-                          "height": 236,
+                          "height": 115,
                           "fill": {
                             "type": "image",
                             "enabled": true,
@@ -25026,45 +24847,35 @@
                         },
                         {
                           "type": "frame",
-                          "id": "x8wYHq",
-                          "name": "Side Column",
-                          "width": 115,
-                          "layout": "vertical",
-                          "gap": 6,
-                          "children": [
-                            {
-                              "type": "frame",
-                              "id": "sX8e9",
-                              "name": "Photo 2",
-                              "clip": true,
-                              "width": "fill_container",
-                              "height": 115,
-                              "fill": {
-                                "type": "image",
-                                "enabled": true,
-                                "url": "images/jordan-photo-2.png",
-                                "mode": "cover"
-                              },
-                              "cornerRadius": 14,
-                              "layout": "none"
-                            },
-                            {
-                              "type": "frame",
-                              "id": "vilYY",
-                              "name": "Photo 3",
-                              "clip": true,
-                              "width": "fill_container",
-                              "height": 115,
-                              "fill": {
-                                "type": "image",
-                                "enabled": true,
-                                "url": "images/jordan-photo-3.png",
-                                "mode": "cover"
-                              },
-                              "cornerRadius": 14,
-                              "layout": "none"
-                            }
-                          ]
+                          "id": "sX8e9",
+                          "name": "Photo 2",
+                          "clip": true,
+                          "width": "fill_container",
+                          "height": 115,
+                          "fill": {
+                            "type": "image",
+                            "enabled": true,
+                            "url": "images/jordan-photo-2.png",
+                            "mode": "cover"
+                          },
+                          "cornerRadius": 14,
+                          "layout": "none"
+                        },
+                        {
+                          "type": "frame",
+                          "id": "vilYY",
+                          "name": "Photo 3",
+                          "clip": true,
+                          "width": "fill_container",
+                          "height": 115,
+                          "fill": {
+                            "type": "image",
+                            "enabled": true,
+                            "url": "images/jordan-photo-3.png",
+                            "mode": "cover"
+                          },
+                          "cornerRadius": 14,
+                          "layout": "none"
                         }
                       ]
                     },
@@ -25121,33 +24932,7 @@
                             "mode": "cover"
                           },
                           "cornerRadius": 14,
-                          "layout": "none",
-                          "children": [
-                            {
-                              "type": "frame",
-                              "id": "OGRHk",
-                              "x": 0,
-                              "y": 0,
-                              "name": "More Overlay",
-                              "width": 115,
-                              "height": 115,
-                              "fill": "#00000088",
-                              "justifyContent": "center",
-                              "alignItems": "center",
-                              "children": [
-                                {
-                                  "type": "text",
-                                  "id": "v07CJw",
-                                  "name": "More Count",
-                                  "fill": "$white",
-                                  "content": "+3",
-                                  "fontFamily": "$font-heading",
-                                  "fontSize": 22,
-                                  "fontWeight": "normal"
-                                }
-                              ]
-                            }
-                          ]
+                          "layout": "none"
                         }
                       ]
                     }
@@ -26418,16 +26203,6 @@
                       "fontFamily": "$font-heading",
                       "fontSize": 24,
                       "fontWeight": "normal"
-                    },
-                    {
-                      "type": "icon",
-                      "id": "blBEi",
-                      "name": "Verified",
-                      "width": 18,
-                      "height": 18,
-                      "icon": "badge-check",
-                      "library": "lucide",
-                      "fill": "$accent-dog"
                     }
                   ]
                 },
@@ -26659,7 +26434,7 @@
                           "id": "dw5rc",
                           "name": "Count",
                           "fill": "$text-dark-muted",
-                          "content": "9 photos",
+                          "content": "6 photos",
                           "fontFamily": "$font-body",
                           "fontSize": 12,
                           "fontWeight": "normal"
@@ -26699,7 +26474,7 @@
                           "name": "Photo 1",
                           "clip": true,
                           "width": "fill_container",
-                          "height": 236,
+                          "height": 115,
                           "fill": {
                             "type": "image",
                             "enabled": true,
@@ -26711,45 +26486,35 @@
                         },
                         {
                           "type": "frame",
-                          "id": "fweah",
-                          "name": "Side Column",
-                          "width": 115,
-                          "layout": "vertical",
-                          "gap": 6,
-                          "children": [
-                            {
-                              "type": "frame",
-                              "id": "Qfsfv",
-                              "name": "Photo 2",
-                              "clip": true,
-                              "width": "fill_container",
-                              "height": 115,
-                              "fill": {
-                                "type": "image",
-                                "enabled": true,
-                                "url": "images/jordan-photo-2.png",
-                                "mode": "cover"
-                              },
-                              "cornerRadius": 14,
-                              "layout": "none"
-                            },
-                            {
-                              "type": "frame",
-                              "id": "y7UEqH",
-                              "name": "Photo 3",
-                              "clip": true,
-                              "width": "fill_container",
-                              "height": 115,
-                              "fill": {
-                                "type": "image",
-                                "enabled": true,
-                                "url": "images/jordan-photo-3.png",
-                                "mode": "cover"
-                              },
-                              "cornerRadius": 14,
-                              "layout": "none"
-                            }
-                          ]
+                          "id": "Qfsfv",
+                          "name": "Photo 2",
+                          "clip": true,
+                          "width": "fill_container",
+                          "height": 115,
+                          "fill": {
+                            "type": "image",
+                            "enabled": true,
+                            "url": "images/jordan-photo-2.png",
+                            "mode": "cover"
+                          },
+                          "cornerRadius": 14,
+                          "layout": "none"
+                        },
+                        {
+                          "type": "frame",
+                          "id": "y7UEqH",
+                          "name": "Photo 3",
+                          "clip": true,
+                          "width": "fill_container",
+                          "height": 115,
+                          "fill": {
+                            "type": "image",
+                            "enabled": true,
+                            "url": "images/jordan-photo-3.png",
+                            "mode": "cover"
+                          },
+                          "cornerRadius": 14,
+                          "layout": "none"
                         }
                       ]
                     },
@@ -26806,33 +26571,7 @@
                             "mode": "cover"
                           },
                           "cornerRadius": 14,
-                          "layout": "none",
-                          "children": [
-                            {
-                              "type": "frame",
-                              "id": "yHpPV",
-                              "x": 0,
-                              "y": 0,
-                              "name": "More Overlay",
-                              "width": 115,
-                              "height": 115,
-                              "fill": "#00000088",
-                              "justifyContent": "center",
-                              "alignItems": "center",
-                              "children": [
-                                {
-                                  "type": "text",
-                                  "id": "Opeuz",
-                                  "name": "More Count",
-                                  "fill": "$white",
-                                  "content": "+3",
-                                  "fontFamily": "$font-heading",
-                                  "fontSize": 22,
-                                  "fontWeight": "normal"
-                                }
-                              ]
-                            }
-                          ]
+                          "layout": "none"
                         }
                       ]
                     }
@@ -28358,16 +28097,6 @@
                       "fontFamily": "$font-heading",
                       "fontSize": 24,
                       "fontWeight": "normal"
-                    },
-                    {
-                      "type": "icon",
-                      "id": "sBEyi",
-                      "name": "Verified",
-                      "width": 18,
-                      "height": 18,
-                      "icon": "badge-check",
-                      "library": "lucide",
-                      "fill": "$accent-dog"
                     }
                   ]
                 },
@@ -28599,7 +28328,7 @@
                           "id": "jz6it",
                           "name": "Count",
                           "fill": "$text-dark-muted",
-                          "content": "9 photos",
+                          "content": "6 photos",
                           "fontFamily": "$font-body",
                           "fontSize": 12,
                           "fontWeight": "normal"
@@ -28639,7 +28368,7 @@
                           "name": "Photo 1",
                           "clip": true,
                           "width": "fill_container",
-                          "height": 236,
+                          "height": 115,
                           "fill": {
                             "type": "image",
                             "enabled": true,
@@ -28651,45 +28380,35 @@
                         },
                         {
                           "type": "frame",
-                          "id": "zBH3f",
-                          "name": "Side Column",
-                          "width": 115,
-                          "layout": "vertical",
-                          "gap": 6,
-                          "children": [
-                            {
-                              "type": "frame",
-                              "id": "JAZSR",
-                              "name": "Photo 2",
-                              "clip": true,
-                              "width": "fill_container",
-                              "height": 115,
-                              "fill": {
-                                "type": "image",
-                                "enabled": true,
-                                "url": "images/jordan-photo-2.png",
-                                "mode": "cover"
-                              },
-                              "cornerRadius": 14,
-                              "layout": "none"
-                            },
-                            {
-                              "type": "frame",
-                              "id": "n8zu9O",
-                              "name": "Photo 3",
-                              "clip": true,
-                              "width": "fill_container",
-                              "height": 115,
-                              "fill": {
-                                "type": "image",
-                                "enabled": true,
-                                "url": "images/jordan-photo-3.png",
-                                "mode": "cover"
-                              },
-                              "cornerRadius": 14,
-                              "layout": "none"
-                            }
-                          ]
+                          "id": "JAZSR",
+                          "name": "Photo 2",
+                          "clip": true,
+                          "width": "fill_container",
+                          "height": 115,
+                          "fill": {
+                            "type": "image",
+                            "enabled": true,
+                            "url": "images/jordan-photo-2.png",
+                            "mode": "cover"
+                          },
+                          "cornerRadius": 14,
+                          "layout": "none"
+                        },
+                        {
+                          "type": "frame",
+                          "id": "n8zu9O",
+                          "name": "Photo 3",
+                          "clip": true,
+                          "width": "fill_container",
+                          "height": 115,
+                          "fill": {
+                            "type": "image",
+                            "enabled": true,
+                            "url": "images/jordan-photo-3.png",
+                            "mode": "cover"
+                          },
+                          "cornerRadius": 14,
+                          "layout": "none"
                         }
                       ]
                     },
@@ -28746,33 +28465,7 @@
                             "mode": "cover"
                           },
                           "cornerRadius": 14,
-                          "layout": "none",
-                          "children": [
-                            {
-                              "type": "frame",
-                              "id": "vrcnU",
-                              "x": 0,
-                              "y": 0,
-                              "name": "More Overlay",
-                              "width": 115,
-                              "height": 115,
-                              "fill": "#00000088",
-                              "justifyContent": "center",
-                              "alignItems": "center",
-                              "children": [
-                                {
-                                  "type": "text",
-                                  "id": "pHKZz",
-                                  "name": "More Count",
-                                  "fill": "$white",
-                                  "content": "+3",
-                                  "fontFamily": "$font-heading",
-                                  "fontSize": 22,
-                                  "fontWeight": "normal"
-                                }
-                              ]
-                            }
-                          ]
+                          "layout": "none"
                         }
                       ]
                     }
@@ -30801,7 +30494,7 @@
     {
       "type": "frame",
       "id": "kwIVC",
-      "x": 431,
+      "x": 914,
       "y": 11771,
       "name": "08b Privacy & Safety",
       "clip": true,
@@ -31061,7 +30754,7 @@
     {
       "type": "frame",
       "id": "y0tcXH",
-      "x": 884,
+      "x": 1367,
       "y": 11771,
       "name": "08c Notifications",
       "clip": true,
@@ -31779,7 +31472,7 @@
     {
       "type": "frame",
       "id": "g3IHl",
-      "x": 1337,
+      "x": 1820,
       "y": 11771,
       "name": "08d Edit Profile",
       "clip": true,
@@ -35551,16 +35244,6 @@
                       "fontFamily": "$font-heading",
                       "fontSize": 24,
                       "fontWeight": "normal"
-                    },
-                    {
-                      "type": "icon",
-                      "id": "Ri6Ns",
-                      "name": "Verified",
-                      "width": 18,
-                      "height": 18,
-                      "icon": "badge-check",
-                      "library": "lucide",
-                      "fill": "$accent-dog"
                     }
                   ]
                 },
@@ -35792,7 +35475,7 @@
                           "id": "X9UVj",
                           "name": "Count",
                           "fill": "$text-dark-muted",
-                          "content": "9 photos",
+                          "content": "6 photos",
                           "fontFamily": "$font-body",
                           "fontSize": 12,
                           "fontWeight": "normal"
@@ -35832,7 +35515,7 @@
                           "name": "Photo 1",
                           "clip": true,
                           "width": "fill_container",
-                          "height": 236,
+                          "height": 115,
                           "fill": {
                             "type": "image",
                             "enabled": true,
@@ -35844,45 +35527,35 @@
                         },
                         {
                           "type": "frame",
-                          "id": "WSDwy",
-                          "name": "Side Column",
-                          "width": 115,
-                          "layout": "vertical",
-                          "gap": 6,
-                          "children": [
-                            {
-                              "type": "frame",
-                              "id": "h0DXv2",
-                              "name": "Photo 2",
-                              "clip": true,
-                              "width": "fill_container",
-                              "height": 115,
-                              "fill": {
-                                "type": "image",
-                                "enabled": true,
-                                "url": "images/jordan-photo-2.png",
-                                "mode": "cover"
-                              },
-                              "cornerRadius": 14,
-                              "layout": "none"
-                            },
-                            {
-                              "type": "frame",
-                              "id": "hNEor",
-                              "name": "Photo 3",
-                              "clip": true,
-                              "width": "fill_container",
-                              "height": 115,
-                              "fill": {
-                                "type": "image",
-                                "enabled": true,
-                                "url": "images/jordan-photo-3.png",
-                                "mode": "cover"
-                              },
-                              "cornerRadius": 14,
-                              "layout": "none"
-                            }
-                          ]
+                          "id": "h0DXv2",
+                          "name": "Photo 2",
+                          "clip": true,
+                          "width": "fill_container",
+                          "height": 115,
+                          "fill": {
+                            "type": "image",
+                            "enabled": true,
+                            "url": "images/jordan-photo-2.png",
+                            "mode": "cover"
+                          },
+                          "cornerRadius": 14,
+                          "layout": "none"
+                        },
+                        {
+                          "type": "frame",
+                          "id": "hNEor",
+                          "name": "Photo 3",
+                          "clip": true,
+                          "width": "fill_container",
+                          "height": 115,
+                          "fill": {
+                            "type": "image",
+                            "enabled": true,
+                            "url": "images/jordan-photo-3.png",
+                            "mode": "cover"
+                          },
+                          "cornerRadius": 14,
+                          "layout": "none"
                         }
                       ]
                     },
@@ -35939,33 +35612,7 @@
                             "mode": "cover"
                           },
                           "cornerRadius": 14,
-                          "layout": "none",
-                          "children": [
-                            {
-                              "type": "frame",
-                              "id": "G1hj0",
-                              "x": 0,
-                              "y": 0,
-                              "name": "More Overlay",
-                              "width": 115,
-                              "height": 115,
-                              "fill": "#00000088",
-                              "justifyContent": "center",
-                              "alignItems": "center",
-                              "children": [
-                                {
-                                  "type": "text",
-                                  "id": "fmZmV",
-                                  "name": "More Count",
-                                  "fill": "$white",
-                                  "content": "+3",
-                                  "fontFamily": "$font-heading",
-                                  "fontSize": 22,
-                                  "fontWeight": "normal"
-                                }
-                              ]
-                            }
-                          ]
+                          "layout": "none"
                         }
                       ]
                     }
@@ -38538,7 +38185,7 @@
     {
       "type": "frame",
       "id": "XYxlW",
-      "x": 1790,
+      "x": 2273,
       "y": 11771,
       "name": "08e Blocked and Not Interested",
       "clip": true,
@@ -39021,7 +38668,7 @@
     {
       "type": "frame",
       "id": "RT1Uv",
-      "x": 2243,
+      "x": 2726,
       "y": 11771,
       "name": "08f Blocked and Not Interested (Not Interested tab)",
       "clip": true,
@@ -39584,7 +39231,7 @@
     {
       "type": "frame",
       "id": "wu7my",
-      "x": 2696,
+      "x": 3179,
       "y": 11771,
       "name": "08g Unblock Confirmation",
       "clip": true,
@@ -40280,7 +39927,7 @@
       "type": "frame",
       "id": "DZdog",
       "x": 2388,
-      "y": 1471,
+      "y": 1533,
       "name": "04f Daily Limit Reached",
       "clip": true,
       "width": 393,
@@ -41288,16 +40935,6 @@
                       "fontFamily": "$font-heading",
                       "fontSize": 24,
                       "fontWeight": "normal"
-                    },
-                    {
-                      "type": "icon",
-                      "id": "e2kAaI",
-                      "name": "Verified",
-                      "width": 18,
-                      "height": 18,
-                      "icon": "badge-check",
-                      "library": "lucide",
-                      "fill": "$accent-dog"
                     }
                   ]
                 },
@@ -41529,7 +41166,7 @@
                           "id": "bdoKK",
                           "name": "Count",
                           "fill": "$text-dark-muted",
-                          "content": "9 photos",
+                          "content": "6 photos",
                           "fontFamily": "$font-body",
                           "fontSize": 12,
                           "fontWeight": "normal"
@@ -41569,7 +41206,7 @@
                           "name": "Photo 1",
                           "clip": true,
                           "width": "fill_container",
-                          "height": 236,
+                          "height": 115,
                           "fill": {
                             "type": "image",
                             "enabled": true,
@@ -41581,45 +41218,35 @@
                         },
                         {
                           "type": "frame",
-                          "id": "EiJ8s",
-                          "name": "Side Column",
-                          "width": 115,
-                          "layout": "vertical",
-                          "gap": 6,
-                          "children": [
-                            {
-                              "type": "frame",
-                              "id": "a8F9x",
-                              "name": "Photo 2",
-                              "clip": true,
-                              "width": "fill_container",
-                              "height": 115,
-                              "fill": {
-                                "type": "image",
-                                "enabled": true,
-                                "url": "images/jordan-photo-2.png",
-                                "mode": "cover"
-                              },
-                              "cornerRadius": 14,
-                              "layout": "none"
-                            },
-                            {
-                              "type": "frame",
-                              "id": "jOyJU",
-                              "name": "Photo 3",
-                              "clip": true,
-                              "width": "fill_container",
-                              "height": 115,
-                              "fill": {
-                                "type": "image",
-                                "enabled": true,
-                                "url": "images/jordan-photo-3.png",
-                                "mode": "cover"
-                              },
-                              "cornerRadius": 14,
-                              "layout": "none"
-                            }
-                          ]
+                          "id": "a8F9x",
+                          "name": "Photo 2",
+                          "clip": true,
+                          "width": "fill_container",
+                          "height": 115,
+                          "fill": {
+                            "type": "image",
+                            "enabled": true,
+                            "url": "images/jordan-photo-2.png",
+                            "mode": "cover"
+                          },
+                          "cornerRadius": 14,
+                          "layout": "none"
+                        },
+                        {
+                          "type": "frame",
+                          "id": "jOyJU",
+                          "name": "Photo 3",
+                          "clip": true,
+                          "width": "fill_container",
+                          "height": 115,
+                          "fill": {
+                            "type": "image",
+                            "enabled": true,
+                            "url": "images/jordan-photo-3.png",
+                            "mode": "cover"
+                          },
+                          "cornerRadius": 14,
+                          "layout": "none"
                         }
                       ]
                     },
@@ -41676,33 +41303,7 @@
                             "mode": "cover"
                           },
                           "cornerRadius": 14,
-                          "layout": "none",
-                          "children": [
-                            {
-                              "type": "frame",
-                              "id": "NNn1J",
-                              "x": 0,
-                              "y": 0,
-                              "name": "More Overlay",
-                              "width": 115,
-                              "height": 115,
-                              "fill": "#00000088",
-                              "justifyContent": "center",
-                              "alignItems": "center",
-                              "children": [
-                                {
-                                  "type": "text",
-                                  "id": "ICxoa",
-                                  "name": "More Count",
-                                  "fill": "$white",
-                                  "content": "+3",
-                                  "fontFamily": "$font-heading",
-                                  "fontSize": 22,
-                                  "fontWeight": "normal"
-                                }
-                              ]
-                            }
-                          ]
+                          "layout": "none"
                         }
                       ]
                     }
@@ -47357,8 +46958,8 @@
     {
       "type": "frame",
       "id": "b796Se",
-      "x": 9040,
-      "y": 4409,
+      "x": -24,
+      "y": 4171,
       "name": "06 spec — playback progress",
       "width": 340,
       "fill": "#1A1A1C",
@@ -47389,6 +46990,263 @@
           "fontFamily": "Inter",
           "fontSize": 12,
           "fontWeight": "normal"
+        }
+      ]
+    },
+    {
+      "type": "frame",
+      "id": "F8kIJ",
+      "x": 5056,
+      "y": 5449,
+      "name": "06ja Profile Photos",
+      "clip": true,
+      "width": 393,
+      "height": 844,
+      "fill": "$bg-dark",
+      "layout": "none",
+      "children": [
+        {
+          "type": "frame",
+          "id": "U4XGqg",
+          "layoutPosition": "absolute",
+          "x": 0,
+          "y": 100,
+          "name": "Photo Area",
+          "width": 393,
+          "height": 620,
+          "justifyContent": "center",
+          "alignItems": "center",
+          "children": [
+            {
+              "type": "frame",
+              "id": "yindq",
+              "name": "Photo",
+              "width": 353,
+              "height": 520,
+              "fill": {
+                "type": "image",
+                "enabled": true,
+                "url": "images/jordan-photo-2.png",
+                "mode": "contain"
+              }
+            }
+          ]
+        },
+        {
+          "type": "frame",
+          "id": "zAqKu",
+          "layoutPosition": "absolute",
+          "x": 0,
+          "y": 0,
+          "name": "Header",
+          "width": 393,
+          "height": 120,
+          "layout": "none",
+          "children": [
+            {
+              "type": "frame",
+              "id": "H6z7hH",
+              "layoutPosition": "absolute",
+              "x": 20,
+              "y": 52,
+              "name": "Back Button",
+              "width": 36,
+              "height": 36,
+              "fill": "#00000066",
+              "cornerRadius": 9999,
+              "justifyContent": "center",
+              "alignItems": "center",
+              "children": [
+                {
+                  "type": "icon",
+                  "id": "D7Klhu",
+                  "name": "Icon",
+                  "width": 16,
+                  "height": 16,
+                  "icon": "arrow-left",
+                  "library": "lucide",
+                  "fill": "#FFFFFF"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "text",
+          "id": "rZezH",
+          "layoutPosition": "absolute",
+          "x": 0,
+          "y": 728,
+          "name": "Page Indicator",
+          "fill": "#FFFFFFB3",
+          "textGrowth": "fixed-width",
+          "width": 393,
+          "content": "1 of 6",
+          "textAlign": "center",
+          "fontFamily": "$font-body",
+          "fontSize": 13,
+          "fontWeight": "normal"
+        }
+      ]
+    },
+    {
+      "type": "frame",
+      "id": "jdYBx",
+      "x": 428,
+      "y": 11771,
+      "name": "08a Your Answers",
+      "clip": true,
+      "width": 393,
+      "height": 844,
+      "fill": "$bg-dark",
+      "layout": "vertical",
+      "children": [
+        {
+          "type": "frame",
+          "id": "rnW7I",
+          "name": "Header",
+          "width": "fill_container",
+          "gap": 12,
+          "padding": [
+            52,
+            20,
+            16,
+            20
+          ],
+          "alignItems": "center",
+          "children": [
+            {
+              "type": "frame",
+              "id": "AktpI",
+              "name": "Back Button",
+              "width": 36,
+              "height": 36,
+              "fill": "#00000066",
+              "cornerRadius": 9999,
+              "justifyContent": "center",
+              "alignItems": "center",
+              "children": [
+                {
+                  "type": "icon",
+                  "id": "xkWob",
+                  "width": 16,
+                  "height": 16,
+                  "icon": "arrow-left",
+                  "library": "lucide",
+                  "fill": "#FFFFFF"
+                }
+              ]
+            },
+            {
+              "type": "text",
+              "id": "U8TlF8",
+              "name": "Title",
+              "fill": "#FFFFFF",
+              "content": "Your Answers",
+              "fontFamily": "$font-heading",
+              "fontSize": 20,
+              "fontWeight": "normal"
+            }
+          ]
+        },
+        {
+          "type": "frame",
+          "id": "OfK6N",
+          "name": "Archive List",
+          "width": "fill_container",
+          "height": "fill_container",
+          "layout": "vertical",
+          "gap": 10,
+          "padding": [
+            0,
+            20,
+            100,
+            20
+          ],
+          "children": [
+            {
+              "type": "frame",
+              "id": "PjPAW",
+              "name": "Answer Card",
+              "width": "fill_container",
+              "fill": "$surface-dark",
+              "cornerRadius": 16,
+              "stroke": "$border-dark",
+              "strokeWidth": 1,
+              "gap": 12,
+              "padding": 12,
+              "alignItems": "center",
+              "children": [
+                {
+                  "type": "frame",
+                  "id": "IeHl2",
+                  "name": "Thumbnail",
+                  "clip": true,
+                  "width": 64,
+                  "height": 64,
+                  "fill": {
+                    "type": "image",
+                    "enabled": true,
+                    "url": "images/generated-8.png",
+                    "mode": "cover"
+                  },
+                  "cornerRadius": 12
+                },
+                {
+                  "type": "frame",
+                  "id": "c2fbW",
+                  "name": "Text Col",
+                  "width": "fill_container",
+                  "layout": "vertical",
+                  "gap": 3,
+                  "children": [
+                    {
+                      "type": "text",
+                      "id": "ZcOQB",
+                      "fill": "#FFFFFF",
+                      "textGrowth": "fixed-width",
+                      "width": "fill_container",
+                      "content": "What are your thoughts on graffiti?",
+                      "lineHeight": 1.3,
+                      "fontFamily": "$font-body",
+                      "fontSize": 13,
+                      "fontWeight": "700"
+                    },
+                    {
+                      "type": "text",
+                      "id": "M5lUi",
+                      "fill": "$text-dark-muted",
+                      "content": "Today · 0:14",
+                      "fontFamily": "$font-body",
+                      "fontSize": 11,
+                      "fontWeight": "normal"
+                    }
+                  ]
+                },
+                {
+                  "type": "icon",
+                  "id": "ed7fq",
+                  "width": 15,
+                  "height": 15,
+                  "icon": "chevron-right",
+                  "library": "lucide",
+                  "fill": "$text-dark-faint"
+                }
+              ]
+            },
+            {
+              "type": "text",
+              "id": "qOI6p",
+              "fill": "$text-dark-muted",
+              "textGrowth": "fixed-width",
+              "width": "fill_container",
+              "content": "Older answers load as you scroll",
+              "textAlign": "center",
+              "fontFamily": "$font-body",
+              "fontSize": 11,
+              "fontWeight": "normal"
+            }
+          ]
         }
       ]
     }

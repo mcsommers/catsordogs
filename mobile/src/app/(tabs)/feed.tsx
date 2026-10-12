@@ -24,7 +24,6 @@ import { shortQuestionDate } from '../../lib/format';
 import { FeedEndScreen } from '../../components/FeedEndScreen';
 import { FeedOverlay } from '../../components/FeedOverlay';
 import { FeedLocked, NoQuestionToday } from '../../components/QuestionStates';
-import { ProfileComingSoonSheet } from '../../components/ProfileComingSoonSheet';
 import { CenteredSpinner, PrimaryButton, Screen } from '../../components/ui';
 import { hlsSource, safePause, safePlay } from '../../lib/videoPlayer';
 import { useSession } from '../../lib/session';
@@ -70,7 +69,6 @@ export default function Feed() {
   const [videoProgress, setVideoProgress] = useState(0);
   const [dayBanner, setDayBanner] = useState<string | null>(null);
   const [dismissedBanners, setDismissedBanners] = useState<Set<string>>(() => new Set());
-  const [profileSheet, setProfileSheet] = useState<string | null>(null);
   const loadingMoreRef = useRef(false);
   const viewReportedRef = useRef<string | null>(null);
   const flatRef = useRef<FlatList<FeedItem>>(null);
@@ -308,7 +306,7 @@ export default function Feed() {
             item={item}
             muted={muted}
             onToggleMute={() => setMuted((m) => !m)}
-            onOpenProfile={() => setProfileSheet(item.firstName)}
+            onOpenProfile={() => router.push({ pathname: '/user/[id]', params: { id: item.userId } })}
             onBrowse={() => router.push('/browse-questions')}
             onFeedSettings={() => phaseDAlert('Feed Settings')}
             onMoreOptions={() => phaseDAlert('More options')}
@@ -421,7 +419,6 @@ export default function Feed() {
         style={StyleSheet.absoluteFill}
         renderItem={renderFeedRow}
       />
-      <ProfileComingSoonSheet visible={profileSheet != null} name={profileSheet} onClose={() => setProfileSheet(null)} />
     </View>
   );
 }

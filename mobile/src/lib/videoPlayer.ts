@@ -22,3 +22,27 @@ export function safePlay(player: VideoPlayer) {
     // Source may not be ready yet; statusChange handler will retry.
   }
 }
+
+export function safeSetMuted(player: VideoPlayer, muted: boolean) {
+  try {
+    player.muted = muted;
+  } catch {
+    // Native player may already be released.
+  }
+}
+
+export function safeTimeUpdateInterval(player: VideoPlayer, seconds: number) {
+  try {
+    player.timeUpdateEventInterval = seconds;
+  } catch {
+    // Native player may already be released (e.g. screen pop during cleanup).
+  }
+}
+
+export function safeRemoveListener(subscription: { remove: () => void }) {
+  try {
+    subscription.remove();
+  } catch {
+    // Listener may already be detached with the native player.
+  }
+}

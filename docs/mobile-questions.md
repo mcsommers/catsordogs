@@ -3,6 +3,169 @@
 A record of questions asked while planning the phone app, the options offered,
 and Mike's answer. Newest phase first.
 
+## Phase C: Profile and archive (asked Oct 12, 2026)
+
+Planning read-through: Build Plan Phase C, MVP requirements (profile / archive / 06j / 06k / 08), Concept doc, UAT placeholders, Pencil frames **06j**, **06n**, **06k**, **08**, and existing backend RPCs (`get_my_answers`, `get_my_profile_view_count`, `record_profile_view`, `get_answer_for_playback`, etc.).
+
+### Design corrections (Mike, Oct 12, 2026)
+
+#### More (⋯) button on profile hero (06j and 06n)
+
+The agent noted a possible conflict between Pencil and an older reading of the requirements (“no more-options at the top right”).
+
+Options:
+
+- **Follow the design file:** Keep the **more** (⋯) and **heart** controls on the profile **hero** as drawn on **06j** and **06n** (including **06n** when the nudge card is shown).
+- **Requirements-only layout:** Only bottom-right on the hero photo, with no separate top-nav more control.
+
+Answer: **Follow the design file** — there **should** be a more button on **06j** and **06n** as designed.
+
+#### Verified badge on profiles
+
+Options:
+
+- **Keep** the badge-check icon next to the name on **06j** (and similar frames).
+- **Remove** — no verified-user feature in v1.
+
+Answer: **Remove** the verified badge. That feature does not exist. (Design file updated; no badge in the app.)
+
+#### Profile photo count and layout
+
+Options:
+
+- **Up to 6 photos**, shown as **2 rows × 3 equal thumbnails** on every profile (own **08** and others’ **06j** / **06n**).
+- Asymmetric grid or “+N more” on the sixth cell (old Pencil).
+- More than 6 photos (e.g. “9 photos” in old Pencil).
+
+Answer: **At most 6 photos** per person, displayed as **two rows of three** equal photos. No “+3” overflow tile. (Design file and requirements updated.)
+
+#### Photo count row on **06j** and **06n** (removed)
+
+The Pencil headers had **“6 photos ›”** (count + chevron) above the grid even though all photos are already visible.
+
+Options:
+
+- **Keep** the count row as a shortcut to a gallery screen.
+- **Remove** the count/chevron on **06j** and **06n**; keep only the **Photos** section title (or title + grid).
+
+Answer: **Remove** the **“6 photos ›”** row on **06j** and **06n**. No separate “see all” affordance — the grid is complete.
+
+#### Full-screen photo viewer (**06ja**)
+
+Someone else’s profile needs a dedicated screen to view photos large.
+
+Options:
+
+- **Tap a thumbnail** on **06j** / **06n** → full-screen viewer (**06ja**) starting at that photo; **back arrow** or **X** returns to the profile. Swipe horizontally to move between photos (standard gallery).
+- Tap only opens a single photo with no paging.
+- Inline zoom on the grid without a new screen.
+
+Answer: **New screen 06ja Profile Photos** (frame to the right of **06j**). Tapping any thumbnail on **06j** / **06n** opens **06ja** at that photo.
+
+**06ja behavior (Mike, Oct 12, 2026 — updated):**
+
+- **Dismiss:** **Back** arrow **upper left**; tap returns to the profile (**06j** / **06n**). No **X**. No back control at the bottom of the screen.
+- **Page indicator:** **“1 of 6”** (current index and total) centered **below the image**, not at the very bottom of the phone chrome.
+- **Default view:** Show the **whole photo** (resize to fit — no crop). **Center** the image vertically in the viewport; letterboxing/pillarboxing as needed.
+- **Zoom:** **Two-finger pinch** to zoom in or out.
+- **Pan:** After zooming in so the image is **clipped**, **one-finger drag** pans within the image.
+- **Change photo:** Swipe **up** or **right** → **next** photo; swipe **down** or **left** → **previous** — incoming photo **slides horizontally** with the gesture (when not conflicting with pan/zoom; implement so paging and zoom/pan feel natural).
+
+#### Other users can see profile photos
+
+Today only the **avatar** (first photo) is readable from storage by other signed-in users; photos 2–6 were owner-only.
+
+Options:
+
+- **Update the backend** so **all profile photos** (positions 1–6) are visible to other users when viewing a profile (still subject to block rules and finished-profile checks).
+- **Avatar only** on others’ profiles until a later phase.
+- **Signed URLs** per photo via a new API without changing storage policy.
+
+Answer: **Update the backend** so profile photos are **visible to other users** when they view a profile. Implement in Phase C with server tests (storage policy and/or RPC, aligned with blocks).
+
+---
+
+### Scope and behavior (agent questions — answers pending unless noted)
+
+Reply with the **question number and option letter**, e.g. **1A**, **3B**. For question **2**, you can pick one letter for heart/⋯ and one for nudge (e.g. **2A** and **2D**).
+
+#### 1. Own Profile tab (08) vs Phase D Account rows
+
+Options:
+
+- **A.** Build **08** and **06j** for browsing (stats, archive, view counts). Show Account rows (Edit Profile, Feed Settings, Notifications, Privacy, Blocked list) as designed; taps show **“Coming in the next update”** until Phase D. **Log Out** stays working. *(Recommended.)*
+- **B.** Only **Log Out** on Profile tab in Phase C; hide other Account rows until Phase D.
+- **C.** Include **08d Edit Profile** in Phase C.
+
+Answer: **1A.**
+
+#### 2. Heart, ⋯ actions, and nudge on others’ profiles
+
+Options (heart / ⋯):
+
+- **A.** **Placeholders** on heart and ⋯ (like Phase B feed) until Phase D wires follow, match, report, block.
+- **B.** **Wire heart** to `get_match_state` / send–cancel in Phase C.
+
+Options (nudge on **06n**):
+
+- **C.** Build **06n** nudge card and **06o** confirmation in Phase C.
+- **D.** **Defer** nudge UI to Phase D.
+
+Answer: **2A** (heart and ⋯ placeholders until Phase D). Nudge (**06n** / **06o**) deferred to Phase D with the rest of social actions.
+
+#### 3. Feed locked — viewing someone else’s profile and answers
+
+Options:
+
+- **A.** Show profile and answer list but **block playback** with a clear message until today’s gate is open.
+- **B.** **Hide** their answers until the gate opens.
+- **C.** Only allow opening others’ profiles from the **unlocked feed** in Phase C.
+
+Answer: **3A.**
+
+#### 4. “See all” on 08 (Your Answers)
+
+Options:
+
+- **A.** Scroll the **same screen** to the full archive section.
+- **B.** Open a **dedicated full-archive screen** (not a separate Pencil frame today).
+- **C.** **Drop “See all”** — one long timeline on **08** only.
+
+Answer: **4B.** Tapping **See all** on **08** opens a dedicated screen **08a Your Answers** (designed to the right of **08** in Pencil): back returns to **08**; scrollable list of all the user’s answers (newest first), same row style as the profile archive, with view counts on thumbnails. **Lazy-load** older rows as the user scrolls.
+
+#### 5. 06k answer-to-answer paging
+
+Options:
+
+- **A.** Same **unified vertical page scroll** as the feed (`docs/mobile-feed-scroll.md`).
+- **B.** Simpler full-screen player + swipe as long as chrome moves with the video.
+
+Answer: **5A** (unified vertical page scroll per `docs/mobile-feed-scroll.md`).
+
+**Other person’s profile archive (06j, 06n, 07h, etc.) — Mike, Oct 12, 2026:** On profiles such as **07h** (and the same pattern on **06j** / **06n**), the user can **keep scrolling** the main profile to see **all** of that person’s previous answers, not just the first few rows. Use **lazy loading** (fetch/render more as they scroll) for performance.
+
+#### 6. Disabled answers on your own profile (08)
+
+Options:
+
+- **A.** Still **list** disabled answers with a hidden/disabled state.
+- **B.** **Omit** disabled answers from the list.
+
+Answer: **6A** (list disabled answers with a hidden/disabled state).
+
+#### 7. Git branch for Phase C
+
+Options:
+
+- **A.** **`phase-c-profile`** branch and one PR into `main` when done (same as earlier phases).
+- **B.** Use a different branch name (say which in your reply).
+
+Answer: **7A.**
+
+**Implementation note:** Phase C checkboxes are in `docs/UAT-flows.md` (updated when Mike answered these questions).
+
+---
+
 ## Daily gate calendar (asked Oct 12, 2026)
 
 ### When does "today" roll over for the gate?

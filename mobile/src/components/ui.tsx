@@ -32,6 +32,7 @@ type Icon = ComponentType<LucideProps>;
 export function Screen({
   children,
   dark = false,
+  flush = false,
   scroll = false,
   edges = ['top', 'bottom'],
   scrollRef,
@@ -39,6 +40,8 @@ export function Screen({
 }: {
   children: ReactNode;
   dark?: boolean;
+  /** Edge-to-edge content (no default 20px screen padding). Used for feed-like profile screens. */
+  flush?: boolean;
   scroll?: boolean;
   edges?: ('top' | 'bottom')[];
   /** When `scroll` is true, attach to the inner ScrollView (e.g. to scroll on field focus). */
@@ -64,7 +67,7 @@ export function Screen({
   }, [scroll]);
 
   const scrollContentStyle = [
-    styles.scrollContent,
+    flush ? styles.scrollContentFlush : styles.scrollContent,
     keyboardHeight > 0 && { paddingBottom: 40 + keyboardHeight },
   ];
   const scrollInner = (
@@ -88,7 +91,7 @@ export function Screen({
           </ScrollView>
         </KeyboardAvoidingView>
       ) : (
-        <View style={[styles.flex, styles.content]}>{children}</View>
+        <View style={[styles.flex, flush ? undefined : styles.content]}>{children}</View>
       )}
     </SafeAreaView>
   );
@@ -140,16 +143,29 @@ export function TextLink({
   );
 }
 
-export function BackButton({ onPress, dark = false }: { onPress?: () => void; dark?: boolean }) {
+export function BackButton({
+  onPress,
+  dark = false,
+  hero = false,
+}: {
+  onPress?: () => void;
+  dark?: boolean;
+  /** Translucent circle on profile photo hero (06j / 08). */
+  hero?: boolean;
+}) {
   return (
     <Pressable
       accessibilityRole="button"
       accessibilityLabel="Back"
       onPress={onPress ?? (() => (router.canGoBack() ? router.back() : router.replace('/welcome')))}
-      style={[styles.back, dark && { backgroundColor: colors.surfaceDark, borderColor: colors.borderDark }]}
+      style={[
+        styles.back,
+        hero && styles.backHero,
+        dark && !hero && { backgroundColor: colors.surfaceDark, borderColor: colors.borderDark },
+      ]}
       hitSlop={8}
     >
-      <ArrowLeft size={18} color={dark ? colors.white : colors.textPrimary} />
+      <ArrowLeft size={18} color={dark || hero ? colors.white : colors.textPrimary} />
     </Pressable>
   );
 }
@@ -424,6 +440,7 @@ export const styles = StyleSheet.create({
   center: { alignItems: 'center', justifyContent: 'center' },
   content: { paddingHorizontal: 20, paddingTop: 24, paddingBottom: 24, gap: 28 },
   scrollContent: { paddingHorizontal: 20, paddingTop: 24, paddingBottom: 40 },
+  scrollContentFlush: { paddingBottom: 40 },
   scrollInner: { gap: 28 },
   primary: {
     backgroundColor: colors.accentDog,
@@ -447,6 +464,13 @@ export const styles = StyleSheet.create({
     backgroundColor: colors.surface,
     alignItems: 'center',
     justifyContent: 'center',
+  },
+  backHero: {
+    width: 36,
+    height: 36,
+    borderRadius: 18,
+    borderWidth: 0,
+    backgroundColor: '#00000066',
   },
   header: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' },
   step: { fontFamily: fonts.bodySemi, fontSize: 13, color: colors.textSecondary },
