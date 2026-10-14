@@ -27,6 +27,10 @@ as $$
 declare
   v text;
 begin
+  -- Specific with nothing picked goes back to what the setting was before (Medium if it was already Specific).
+  if new.shared_interests = 'specific' and cardinality(new.specific_interests) = 0 then
+    new.shared_interests := case when old.shared_interests = 'specific' then 'medium' else old.shared_interests end;
+  end if;
   if new.specific_interests is not distinct from old.specific_interests then
     return new;
   end if;

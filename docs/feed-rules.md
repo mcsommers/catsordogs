@@ -80,7 +80,7 @@ Score = (how many of the **viewer's** interests also appear on the other person)
 
 **Specific option (4th choice, Oct 2026).** Shared Interests offers **Low / Medium / High / Specific**. Low, Medium and High weigh 1, 2 and 3 and score on the viewer's own profile interests, as above. **Specific** (`feed_settings.shared_interests = 'specific'`) scores on the interests the viewer picked on screen 06ia (`feed_settings.specific_interests`, any number, no limit) instead, and weighs **6** (double High), because the viewer is saying exactly which interests matter.
 - Score = (how many of the viewer's specific picks also appear on the other person) / (the smaller of the number picked and 3), capped at 1. So matching any 3 of the picks is a full score, however many were picked; a person who has none of them scores 0.
-- Specific with nothing picked behaves like Medium (weight 2, scored on the viewer's own profile interests).
+- Specific with nothing picked is not kept: the setting goes back to what it was before Specific was chosen (Medium if it was already Specific and every pick was cleared). The server enforces this.
 - The picks are kept when the viewer switches back to Low / Medium / High, and are cleared by **Reset**.
 
 **2. Relationship goals** (`feed_settings.relationship_goals`)

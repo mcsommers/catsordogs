@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { Alert, Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
-import { router } from 'expo-router';
+import { router, useFocusEffect } from 'expo-router';
 import { ChevronRight } from 'lucide-react-native';
 import { setSpecificInterestsRequest } from '../lib/specificInterestsPicker';
 import {
@@ -140,6 +140,19 @@ export default function FeedSettingsScreen() {
   const [options, setOptions] = useState<Record<string, Option[]>>({});
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
+  // What Shared Interests was set to before "Specific" was chosen (Specific with no picks goes back to it).
+  const beforeSpecific = useRef<SharedInterestsWeight>('medium');
+
+  // Coming back from the Specific Interests screen with nothing picked: undo the Specific choice.
+  useFocusEffect(
+    useCallback(() => {
+      setRanking((prev) =>
+        prev && prev.sharedInterests === 'specific' && prev.specificInterests.length === 0
+          ? { ...prev, sharedInterests: beforeSpecific.current }
+          : prev,
+      );
+    }, []),
+  );
 
   const load = useCallback(async () => {
     const [d, f, r, opts] = await Promise.all([
@@ -179,7 +192,13 @@ export default function FeedSettingsScreen() {
     setSaving(true);
     try {
       await saveFilterPreferences(filters);
-      if (ranking) await updateFeedRankingSettings(ranking);
+      if (ranking) {
+        const noPicks = ranking.sharedInterests === 'specific' && ranking.specificInterests.length === 0;
+        await updateFeedRankingSettings(
+          noPicks ? { ...ranking, sharedInterests: beforeSpecific.current } : ranking,
+        );
+        if (noPicks) setRanking({ ...ranking, sharedInterests: beforeSpecific.current });
+      }
       Alert.alert('Saved', 'Your feed settings were updated.');
     } catch (e) {
       Alert.alert('Could not save', (e as Error).message || 'Try again.');
@@ -245,7 +264,12 @@ export default function FeedSettingsScreen() {
               <Pressable
                 key={w}
                 style={[styles.segmentBtn, ranking[key] === w && styles.segmentBtnActive]}
-                onPress={() => setRanking({ ...ranking, [key]: w })}
+                onPress={() => {
+                  if (key === 'sharedInterests' && w === 'specific' && ranking.sharedInterests !== 'specific') {
+                    beforeSpecific.current = ranking.sharedInterests;
+                  }
+                  setRanking({ ...ranking, [key]: w });
+                }}
               >
                 <Text style={[styles.segmentLabel, ranking[key] === w && styles.segmentLabelActive]}>
                   {w.charAt(0).toUpperCase() + w.slice(1)}

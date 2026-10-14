@@ -3,7 +3,7 @@
 -- locations, and who can read what.
 -- (Followed-first ordering and its cap are in 05_feed_followed_cap.test.sql.)
 begin;
-select plan(142);
+select plan(143);
 
 delete from public.answers;
 delete from public.videos;
@@ -302,8 +302,12 @@ update public.feed_settings set shared_interests = 'high', relationship_goals = 
 select is((select first_name from public.get_feed(50, 0, public.utc_today()) limit 1), 'W1', 'ranking: high weight on shared interests puts the best interest match first');
 update public.feed_settings set shared_interests = 'specific', specific_interests = array['Yoga'];
 select is((select first_name from public.get_feed(50, 0, public.utc_today()) limit 1), 'N1', 'ranking: Specific puts the person who shares the chosen interest first');
+update public.feed_settings set shared_interests = 'low';
+update public.feed_settings set shared_interests = 'specific', specific_interests = '{}';
+select is((select shared_interests from public.feed_settings), 'low', 'choosing Specific with nothing picked keeps the previous setting');
+update public.feed_settings set shared_interests = 'specific', specific_interests = array['Yoga'];
 update public.feed_settings set specific_interests = '{}';
-select is((select first_name from public.get_feed(50, 0, public.utc_today()) limit 1), 'W1', 'ranking: Specific with nothing chosen falls back to the profile interests');
+select is((select shared_interests from public.feed_settings), 'medium', 'clearing every pick from a saved Specific falls back to Medium');
 select throws_ok($$update public.feed_settings set specific_interests = array['Dog lover']$$, '23514',
   '"Dog lover" is not an allowed choice for Interests.', 'a specific interest must be on the Interests list');
 select throws_ok($$update public.feed_settings set specific_interests = array['Yoga', 'Yoga']$$, '23514',
