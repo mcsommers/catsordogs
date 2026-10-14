@@ -18,7 +18,7 @@ export default function SpecificInterestsScreen() {
   const request = getSpecificInterestsRequest();
   const navigation = useNavigation();
   const insets = useSafeAreaInsets();
-  const footerGap = Math.max(FOOTER_MIN_GAP, insets.bottom);
+  const footerGap = Platform.OS === 'ios' ? Math.max(FOOTER_MIN_GAP, insets.bottom) : FOOTER_MIN_GAP;
   const gapAboveDone = Platform.OS === 'ios' ? footerGap : FOOTER_MIN_GAP;
   const [picked, setPicked] = useState<string[]>(() => request?.value ?? []);
   const [discardVisible, setDiscardVisible] = useState(false);
@@ -75,7 +75,8 @@ export default function SpecificInterestsScreen() {
   }
 
   return (
-    <Screen dark flush edges={['top']}>
+    // Android: the screen itself keeps clear of the 3-button nav bar, so Done is never covered.
+    <Screen dark flush edges={Platform.OS === 'android' ? ['top', 'bottom'] : ['top']}>
       <DiscardProfileChangesDialog
         visible={discardVisible}
         onKeepEditing={() => setDiscardVisible(false)}
