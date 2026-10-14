@@ -20,7 +20,6 @@ export type FeedRankingSettings = {
   sharedInterests: RankingWeight;
   relationshipGoals: RankingWeight;
   responseDepth: RankingWeight;
-  lifestyleCompatibility: RankingWeight;
   distance: RankingWeight;
   recency: RankingWeight;
 };
@@ -29,7 +28,6 @@ const RANKING_FIELDS: (keyof FeedRankingSettings)[] = [
   'sharedInterests',
   'relationshipGoals',
   'responseDepth',
-  'lifestyleCompatibility',
   'distance',
   'recency',
 ];
@@ -38,7 +36,6 @@ const RANKING_DB: Record<keyof FeedRankingSettings, string> = {
   sharedInterests: 'shared_interests',
   relationshipGoals: 'relationship_goals',
   responseDepth: 'response_depth',
-  lifestyleCompatibility: 'lifestyle_compatibility',
   distance: 'distance',
   recency: 'recency',
 };
@@ -62,7 +59,6 @@ function mapRanking(row: Record<string, unknown>): FeedRankingSettings {
     sharedInterests: String(row.shared_interests ?? 'medium') as RankingWeight,
     relationshipGoals: String(row.relationship_goals ?? 'medium') as RankingWeight,
     responseDepth: String(row.response_depth ?? 'medium') as RankingWeight,
-    lifestyleCompatibility: String(row.lifestyle_compatibility ?? 'medium') as RankingWeight,
     distance: String(row.distance ?? 'medium') as RankingWeight,
     recency: String(row.recency ?? 'medium') as RankingWeight,
   };
@@ -104,14 +100,13 @@ export async function loadFeedRankingSettings(): Promise<FeedRankingSettings> {
       sharedInterests: 'medium',
       relationshipGoals: 'medium',
       responseDepth: 'medium',
-      lifestyleCompatibility: 'medium',
       distance: 'medium',
       recency: 'medium',
     };
   }
   const { data, error } = await supabase
     .from('feed_settings')
-    .select('shared_interests, relationship_goals, response_depth, lifestyle_compatibility, distance, recency')
+    .select('shared_interests, relationship_goals, response_depth, distance, recency')
     .eq('user_id', uid)
     .maybeSingle();
   if (error) throw error;
@@ -139,7 +134,7 @@ export async function resetFeedSettings(): Promise<void> {
 export const RANKING_LABELS: Record<keyof FeedRankingSettings, { title: string; description: string }> = {
   sharedInterests: {
     title: 'Shared Interests',
-    description: 'How much overlap in your Interests & Passions tags matters.',
+    description: 'How much overlap in your chosen Interests matters.',
   },
   relationshipGoals: {
     title: 'Relationship Goals',
@@ -148,10 +143,6 @@ export const RANKING_LABELS: Record<keyof FeedRankingSettings, { title: string; 
   responseDepth: {
     title: 'Response Depth',
     description: 'How much longer, thoughtful answers are favored.',
-  },
-  lifestyleCompatibility: {
-    title: 'Lifestyle Compatibility',
-    description: 'How much shared lifestyle tags matter.',
   },
   distance: {
     title: 'Distance',

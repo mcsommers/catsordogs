@@ -1,6 +1,6 @@
 -- Phase 1 rules: accounts, profiles, photos, filters, and who can see what.
 begin;
-select plan(58);
+select plan(73);
 
 -- Two test users. The sign-up trigger should give each an empty profile.
 insert into auth.users (id, email, aud, role, instance_id) values
@@ -47,16 +47,27 @@ select throws_ok(
 select lives_ok(
   $$update public.profiles set
       first_name = 'Alex', gender = 'Woman',
-      sexual_orientation = '{"Bi-Sexual","Gay"}',
-      interested_in = '{"Men","Women"}', lifestyle_tags = '{"Dog lover"}',
+      sexual_orientation = '{"Bisexual"}',
+      interested_in = '{"Men","Women"}', interests = '{"Coffee","Hiking"}',
       relationship_goal = 'Long-term relationship', height_inches = 69, city = 'Brooklyn, NY',
       about_me = 'Hello'
     where id = 'aaaaaaaa-0000-0000-0000-000000000001'$$,
   'a normal profile with allowed choices is accepted');
 select throws_ok(
-  $$update public.profiles set sexual_orientation = '{"Pansexual"}' where id = 'aaaaaaaa-0000-0000-0000-000000000001'$$,
-  '23514', '"Pansexual" is not an allowed choice for Sexual orientation.',
+  $$update public.profiles set sexual_orientation = '{"Polysexual"}' where id = 'aaaaaaaa-0000-0000-0000-000000000001'$$,
+  '23514', '"Polysexual" is not an allowed choice for Sexual orientation.',
   'a custom sexual orientation is rejected');
+select lives_ok(
+  $$update public.profiles set sexual_orientation = '{"Lesbian"}' where id = 'aaaaaaaa-0000-0000-0000-000000000001'$$,
+  'Lesbian is an allowed sexual orientation, and is not tied to gender or Interested in');
+select throws_ok(
+  $$update public.profiles set sexual_orientation = '{"Gay","Queer"}' where id = 'aaaaaaaa-0000-0000-0000-000000000001'$$,
+  '23514', 'Choose up to 1 for Sexual orientation.',
+  'sexual orientation takes only one choice');
+select is(
+  (select array_agg(value order by sort_order) from public.profile_options where category = 'sexual_orientation'),
+  array['Straight','Gay','Lesbian','Bisexual','Asexual','Demisexual','Pansexual','Queer','Questioning'],
+  'sexual orientation choices are the nine designed ones');
 select is(
   (select allow_custom from public.profile_field_defs where field = 'sexual_orientation'),
   false,
@@ -72,7 +83,21 @@ select throws_ok(
 select is(
   (select count(*) from public.profile_options where category = 'gender' and value = 'More'),
   0::bigint,
-  'gender option More is removed from profile_options');
+  'gender option More is not itself a stored choice');
+select is(
+  (select count(*) from public.profile_options where category = 'gender'),
+  32::bigint,
+  'gender has Woman, Man, and the 30 More choices');
+select lives_ok(
+  $$update public.profiles set gender = 'Two-Spirit' where id = 'aaaaaaaa-0000-0000-0000-000000000001'$$,
+  'a gender from the More list is accepted');
+select lives_ok(
+  $$update public.profiles set gender = 'Woman' where id = 'aaaaaaaa-0000-0000-0000-000000000001'$$,
+  'gender can go back to Woman');
+select is(
+  (select show_gender and show_orientation from public.profiles where id = 'aaaaaaaa-0000-0000-0000-000000000001'),
+  true,
+  'show gender and show orientation default to on');
 select throws_ok(
   $$update public.profiles set relationship_goal = 'Marriage by Friday' where id = 'aaaaaaaa-0000-0000-0000-000000000001'$$,
   '23514', '"Marriage by Friday" is not an allowed choice for Relationship goals.',
@@ -90,9 +115,37 @@ select is(
   false,
   'languages is not collected on Build / Edit Profile');
 select throws_ok(
-  $$update public.profiles set lifestyle_tags = '{"Dog lover","Dog lover"}' where id = 'aaaaaaaa-0000-0000-0000-000000000001'$$,
-  '23514', 'Lifestyle contains duplicates.',
-  'duplicate tags are rejected');
+  $$update public.profiles set interests = '{"Coffee","Coffee"}' where id = 'aaaaaaaa-0000-0000-0000-000000000001'$$,
+  '23514', 'Interests contains duplicates.',
+  'duplicate interests are rejected');
+select throws_ok(
+  $$update public.profiles set interests = '{"Coffee","Hiking","Yoga","Travel","Wine","Tea"}' where id = 'aaaaaaaa-0000-0000-0000-000000000001'$$,
+  '23514', 'Choose up to 5 for Interests.',
+  'more than 5 interests are rejected');
+select throws_ok(
+  $$update public.profiles set interests = '{"Dog lover"}' where id = 'aaaaaaaa-0000-0000-0000-000000000001'$$,
+  '23514', '"Dog lover" is not an allowed choice for Interests.',
+  'an interest outside the list is rejected');
+select lives_ok(
+  $$update public.profiles set interests = '{"Coffee","Hiking","Yoga","Travel","Wine"}' where id = 'aaaaaaaa-0000-0000-0000-000000000001'$$,
+  'exactly 5 interests are accepted');
+select is(
+  (select count(*) from public.profile_options where category = 'interest'),
+  278::bigint,
+  'interests has the 278 designed choices');
+select is(
+  (select active from public.profile_field_defs where field = 'lifestyle_tags'),
+  false,
+  'lifestyle tags are not collected on Build / Edit Profile');
+select is(
+  (select count(*) from public.filter_definitions where key in ('smoking', 'drinking') and active),
+  0::bigint,
+  'the Smoking and Drinking filters are gone');
+select is(
+  (select count(*) from information_schema.columns
+    where table_schema = 'public' and table_name = 'feed_settings' and column_name = 'lifestyle_compatibility'),
+  0::bigint,
+  'the Lifestyle Compatibility ranking signal is gone');
 select is(
   (select active from public.profile_field_defs where field = 'pronouns'),
   false,

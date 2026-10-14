@@ -27,6 +27,13 @@ import {
   toggleChoice,
 } from '../lib/profileForm';
 import { DiscardProfileChangesDialog } from '../components/profile/DiscardProfileChangesDialog';
+import {
+  GenderSection,
+  InterestsSection,
+  OrientationSection,
+  moreGenderOptions,
+} from '../components/profile/ProfileChoiceSections';
+import { setProfilePickerRequest } from '../lib/profilePicker';
 import { ProfileBuildPhotos } from '../components/profile/ProfileBuildPhotos';
 import { LocationField } from '../components/LocationField';
 import { useProfileLeaveGuard } from '../hooks/useProfileLeaveGuard';
@@ -56,14 +63,16 @@ type Form = {
   first_name: string;
   birthday: string | null;
   gender: string | null;
+  show_gender: boolean;
   sexual_orientation: string[];
+  show_orientation: boolean;
   height_feet: string;
   height_inches: string;
   city: string;
   occupation: string;
   school: string;
   about_me: string;
-  lifestyle_tags: string[];
+  interests: string[];
   interested_in: string[];
   relationship_goal: string | null;
 };
@@ -72,20 +81,22 @@ const EMPTY: Form = {
   first_name: '',
   birthday: null,
   gender: null,
+  show_gender: true,
   sexual_orientation: [],
+  show_orientation: true,
   height_feet: '',
   height_inches: '',
   city: '',
   occupation: '',
   school: '',
   about_me: '',
-  lifestyle_tags: [],
+  interests: [],
   interested_in: [],
   relationship_goal: null,
 };
 
 const ABOUT_MAX = 500;
-type MultiField = 'sexual_orientation' | 'lifestyle_tags' | 'interested_in';
+type MultiField = 'interested_in';
 
 export default function EditProfile() {
   const { session } = useSession();
@@ -154,14 +165,16 @@ export default function EditProfile() {
           first_name: p.first_name ?? '',
           birthday: p.birthday,
           gender: p.gender,
-          sexual_orientation: p.sexual_orientation ?? [],
+          show_gender: p.show_gender ?? true,
+          sexual_orientation: (p.sexual_orientation ?? []).slice(0, 1),
+          show_orientation: p.show_orientation ?? true,
           height_feet: p.height_inches != null ? String(splitHeightInches(p.height_inches).feet) : '',
           height_inches: p.height_inches != null ? String(splitHeightInches(p.height_inches).inches) : '',
           city: p.city ?? '',
           occupation: [p.job_title, p.company].filter(Boolean).join(' at ') || '',
           school: p.school ?? '',
           about_me: p.about_me ?? '',
-          lifestyle_tags: p.lifestyle_tags ?? [],
+          interests: p.interests ?? [],
           interested_in: p.interested_in ?? [],
           relationship_goal: p.relationship_goal,
         });
@@ -179,6 +192,27 @@ export default function EditProfile() {
 
   function toggle(field: MultiField, value: string) {
     set(field, toggleChoice(form[field], value, defs[field]?.max_selected ?? null));
+  }
+
+  function openGenderMore() {
+    setProfilePickerRequest({
+      kind: 'gender',
+      options: moreGenderOptions(choices('gender').map((o) => o.value)),
+      value: form.gender,
+      onDone: (value) => set('gender', value),
+    });
+    router.push('/profile-gender');
+  }
+
+  function openInterests() {
+    setProfilePickerRequest({
+      kind: 'interests',
+      options: choices('interests').map((o) => o.value),
+      value: form.interests,
+      max: defs.interests?.max_selected ?? 5,
+      onDone: (value) => set('interests', value),
+    });
+    router.push('/profile-interests');
   }
 
   function addCustom() {
@@ -308,14 +342,16 @@ export default function EditProfile() {
         .update({
           first_name: form.first_name.trim(),
           gender: form.gender,
+          show_gender: form.show_gender,
           sexual_orientation: form.sexual_orientation,
+          show_orientation: form.show_orientation,
           height_inches: height,
           city: form.city.trim() || null,
           job_title: form.occupation.trim() || null,
           company: null,
           school: form.school.trim() || null,
           about_me: form.about_me.trim() || null,
-          lifestyle_tags: form.lifestyle_tags,
+          interests: form.interests,
           interested_in: form.interested_in,
           relationship_goal: form.relationship_goal,
         })
@@ -436,13 +472,15 @@ export default function EditProfile() {
         </View>
       </View>
 
-      <View ref={genderRef} collapsable={false} style={{ gap: 12 }}>
-        <SectionHeader title="Gender" requirement="required" />
-        <View style={styles.chips}>
-          {choices('gender').map((o) => (
-            <Chip key={o.value} label={o.value} selected={form.gender === o.value} onPress={() => set('gender', o.value)} />
-          ))}
-        </View>
+      <View ref={genderRef} collapsable={false}>
+        <GenderSection
+          allOptions={choices('gender').map((o) => o.value)}
+          value={form.gender}
+          show={form.show_gender}
+          onSelect={(v) => set('gender', v)}
+          onShowChange={(v) => set('show_gender', v)}
+          onOpenMore={openGenderMore}
+        />
       </View>
 
       <View style={{ gap: 16 }}>
@@ -534,9 +572,15 @@ export default function EditProfile() {
         <Text style={[ui.hint, { textAlign: 'right' }]}>{`${form.about_me.length} / ${ABOUT_MAX}`}</Text>
       </View>
 
-      {multiSection('sexual_orientation', 'Sexual Orientation', 'Select all that apply')}
+      <OrientationSection
+        options={choices('sexual_orientation').map((o) => o.value)}
+        value={form.sexual_orientation}
+        show={form.show_orientation}
+        onChange={(v) => set('sexual_orientation', v)}
+        onShowChange={(v) => set('show_orientation', v)}
+      />
       {multiSection('interested_in', 'Interested in', 'Select all that apply')}
-      {multiSection('lifestyle_tags', 'Lifestyle')}
+      {defs.interests ? <InterestsSection value={form.interests} onOpen={openInterests} /> : null}
 
       <View style={{ gap: 12 }}>
         <SectionHeader title="Relationship Goals" requirement="optional" />

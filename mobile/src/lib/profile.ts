@@ -11,11 +11,13 @@ export type UserProfile = {
   distanceMiles: number | null;
   heightInches: number | null;
   gender: string | null;
+  /** Only filled for your own profile; others never see it. */
+  showGender: boolean | null;
   sexualOrientation: string[];
+  showOrientation: boolean | null;
   occupation: string | null;
   school: string | null;
   aboutMe: string | null;
-  lifestyleTags: string[];
   languages: string[];
   interestedIn: string[];
   interests: string[];
@@ -61,7 +63,9 @@ function mapProfile(row: ProfileRow): UserProfile {
     distanceMiles: row.distance_miles == null ? null : Number(row.distance_miles),
     heightInches: row.height_inches == null ? null : Number(row.height_inches),
     gender: row.gender ? String(row.gender) : null,
+    showGender: row.show_gender == null ? null : Boolean(row.show_gender),
     sexualOrientation: (row.sexual_orientation as string[]) ?? [],
+    showOrientation: row.show_orientation == null ? null : Boolean(row.show_orientation),
     occupation: (() => {
       const job = row.job_title ? String(row.job_title) : '';
       const co = row.company ? String(row.company) : '';
@@ -70,7 +74,6 @@ function mapProfile(row: ProfileRow): UserProfile {
     })(),
     school: row.school ? String(row.school) : null,
     aboutMe: row.about_me ? String(row.about_me) : null,
-    lifestyleTags: (row.lifestyle_tags as string[]) ?? [],
     languages: (row.languages as string[]) ?? [],
     interestedIn: (row.interested_in as string[]) ?? [],
     interests: (row.interests as string[]) ?? [],

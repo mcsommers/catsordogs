@@ -56,6 +56,26 @@ Answer: **One profile photo (avatar)** plus **at most 6 gallery photos**, displa
 
 On **Build Profile** and **Edit Profile**, photo entry is split: a required **Profile photo** (circular avatar, position 1) at the top, and optional **More photos** (2×3 grid for gallery positions 2–7) above the primary button. Viewing profiles (**06j**, **08**) shows the avatar in the hero and **only gallery photos** in the grid.
 
+#### Gender on Build / Edit Profile (03 / 03d / 08d, Oct 2026)
+
+Gender used to offer Woman, Man, and Non-binary only. Decided: **Woman**, **Man**, and a **More >** chip that opens a separate **Gender** screen (**03d**) with 30 single-choice options (Agender through Two-Spirit; full list in the MVP requirements). The **More** chip shows the chosen value (truncated if long) once picked, and tapping it reopens **03d**. A **Show gender on my profile** switch sits under the chips, **on** by default; when off, other people do not see the gender, but it still counts for matching and the Show me filter. Everything chosen from More fails both Show me: Women and Show me: Men (see `feed-rules.md`). One **03d** screen serves both Build Profile and Edit Profile. Design, requirements, Build Plan, feed rules, and UAT (A-20, A-20b, A-20c, D-31c) are updated; database and app code are not yet.
+
+#### Sexual orientation on Build / Edit Profile (03 / 08d, Oct 2026)
+
+Decided: the chips are now Straight, Gay, Lesbian, Bisexual, Asexual, Demisexual, Pansexual, Queer, Questioning (replacing Straight, Gay, Bi-Sexual, Questioning), still optional, but now **single-select** (header "Optional · Choose one"; the earlier "select all that apply, up to 5" is removed). **Lesbian** is a plain option: it is not linked to Show me or Interested in (decided Oct 2026). A **Show orientation on my profile** switch (default on, same wording and rule as the gender switch) sits under the chips; hidden orientation still counts for the Sexual orientation filter. Database and app code are not yet updated (UAT A-20, A-20d).
+
+#### Interests replace Lifestyle on Build / Edit Profile (03 / 03e / 08d, Oct 2026)
+
+Decided:
+
+- The **Lifestyle** section is now **Interests**. An empty section shows one **Select Interests >** pill; it opens screen **03e**, which lists all 278 interests as pills in strict alphabetical order. Up to 5 can be chosen, with a live "N of 5 selected" counter.
+- **Done** on 03e stays disabled until something on that screen has changed. Leaving 03e with unsaved changes shows the existing **Discard changes?** dialog.
+- After Done, the picks show as orange selected pills with an orange **Edit** link in the section header.
+- The 5 picks **replace** the old hobby list in the `interests` column, and feed the Interests filter and the Shared Interests ranking.
+- Lifestyle tags are removed. So are the **Smoking** and **Drinking** filters and the **Lifestyle Compatibility** ranking signal (Feed Settings, 06i, now has five ranking signals). Every screen that said "Lifestyle" now says "Interests".
+- The top row (back arrow and "N of 5 selected") is sticky, and the space above **Done** equals the space below it (Pencil 03e and 03e Edited updated). The top row has 12 points of space above and below it. On Android the gap above **Done** is 24 points and does not include the phone's navigation bar; on iPhone it matches the gap below (which includes the home indicator).
+- **Done** is always visible: it is pinned at the bottom of 03e while the pill list scrolls above it (Pencil 03e and 03e Edited now show a phone-height screen with the list clipped and Done fixed at the bottom). The list is strictly alphabetical, ignoring capitals, so acronyms sort by their letters (BBQ falls after Basketball and before Beach Bars; DIY after Diving; EDM after E-Sports); the order is stored in `profile_options.sort_order` and the Pencil pills match it. When 5 are chosen, tapping another unselected pill does nothing.
+
 #### Photo count row on **06j** and **06n** (removed)
 
 The Pencil headers had **“6 photos ›”** (count + chevron) above the grid even though all photos are already visible.
@@ -259,7 +279,7 @@ Requirements: full **Filters** (driven by `filter_definitions`, not hard-coded) 
 
 Options:
 
-- **A.** **Full 06i in Phase D** — every filter and all six ranking sliders, wired to `filter_preferences`, `feed_settings`, and `reset_feed_settings`, opened from the feed settings control and from **08** Account. *(Recommended; matches MVP.)*
+- **A.** **Full 06i in Phase D** — every filter and all five ranking sliders (six before Oct 2026), wired to `filter_preferences`, `feed_settings`, and `reset_feed_settings`, opened from the feed settings control and from **08** Account. *(Recommended; matches MVP.)*
 - **B.** **Ranking section first** in one PR, Filters in a follow-up (same phase, two steps).
 - **C.** **Filters only** in Phase D; Ranking stays at server defaults until a follow-up.
 

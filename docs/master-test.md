@@ -52,19 +52,19 @@ Create them in this order. Ages are as of October 2026. Use the birthday exactly
 
 Shared profile choices, so ranking is explainable:
 
-| Person | Interests | Lifestyle | Relationship goal | What they say on camera |
-| --- | --- | --- | --- | --- |
-| Alex | Hiking, Coffee, Cooking | Dog lover, Non-smoker | Long-term relationship | Any short honest answer. Alex's own video never appears in Alex's feed. |
-| Jordan | Hiking, Coffee | Dog lover, Non-smoker | Long-term relationship | Read this, clearly, at a normal pace: "I walk my dog every morning before coffee, and I cook dinner at home most nights. I want something serious, and I care more about how someone treats people than about a perfect plan." |
-| Sam | Movies | Cat lover | Short-term fun | Say only: "Yeah." |
-| Riley | Hiking | Dog lover | Long-term relationship | One sentence about hiking. |
-| Morgan | Movies | Cat lover | New friends | One short sentence. |
-| Quinn | Travel, Yoga | Night owl | Still figuring it out | One sentence. |
-| Casey | Hiking | Dog lover | Long-term relationship | One sentence. Leave **Location** blank. |
-| Drew | Gaming | Social drinker | Short-term fun | One sentence. |
-| Taylor | Coffee | Non-smoker | Long-term relationship | Do not record until Part 8 says so. |
-| Parker | Hiking | Dog lover | Long-term relationship | Do not record until Part 12. |
-| Avery | any one interest | any one tag | any one goal | Do not record. |
+| Person | Interests (up to 5) | Relationship goal | What they say on camera |
+| --- | --- | --- | --- |
+| Alex | Hiking, Coffee, Cooking | Long-term relationship | Any short honest answer. Alex's own video never appears in Alex's feed. |
+| Jordan | Hiking, Coffee | Long-term relationship | Read this, clearly, at a normal pace: "I walk my dog every morning before coffee, and I cook dinner at home most nights. I want something serious, and I care more about how someone treats people than about a perfect plan." |
+| Sam | Movies | Short-term fun | Say only: "Yeah." |
+| Riley | Hiking | Long-term relationship | One sentence about hiking. |
+| Morgan | Movies | New friends | One short sentence. |
+| Quinn | Travel, Yoga | Still figuring it out | One sentence. |
+| Casey | Hiking | Long-term relationship | One sentence. Leave **Location** blank. |
+| Drew | Online Games | Short-term fun | One sentence. |
+| Taylor | Coffee | Long-term relationship | Do not record until Part 8 says so. |
+| Parker | Hiking | Long-term relationship | Do not record until Part 12. |
+| Avery | any one interest | any one goal | Do not record. |
 
 One photo each is enough (Finish Setup needs a photo, a first name, a birthday, and a gender). Height, job, school, and About Me can stay empty except where a step says otherwise. Jordan's job title is **Designer**. Sam's job title is **Teacher**.
 
@@ -222,7 +222,7 @@ Before anyone records on Day 2, ask the agent to trim staging **if the feed is n
 
 - [ ] **M-61 Edit Profile.** As Alex, Profile → **Edit Profile** (08d). Change About Me to `Master test note`. **Save Changes**. Profile shows the new text.
 - [ ] **M-61b Discard profile edits (optional).** On **Edit Profile** or **Build Profile**, change a field, tap back, tap **Keep Editing**, then save or leave with **Leave Without Saving** as in **A-22b** / **D-31b**.
-- [ ] **M-62 Ranking reset.** Feed Settings → set **Shared Interests** to High → save. Tap **Reset**. Every ranking signal returns to Medium. Save if the screen asks you to.
+- [ ] **M-62 Ranking reset.** Feed Settings → set **Shared Interests** to High → save. Tap **Reset**. Every ranking signal (five) returns to Medium. Save if the screen asks you to.
 - [ ] **M-63 Help & Support.** If the Help address is empty, Profile → **Help & Support** shows "Help is not set up yet. Check back later." As Avery, set Help & Support to `https://example.com` and save. As Alex, **Help & Support** opens that address in the browser. As Avery, put back the Help address you wrote down in M-08 (or clear it if it was empty).
 - [ ] **M-64 Restore every setting.** As Avery, set Settings back to the values from M-08, except keep any Help address you just restored. In particular: recording length **14**, minimum watch **3**, followed share **30**, flags to hide a video **5**, profile high-priority count **3**, feed look-back **7**, recordings per day **10**, Daily Question Send Time **12:03**, nudge notification delay **0**, first recording **Today's question**, fixed question **Cats or dogs?**. Save.
 - [ ] **M-65 Sign out of admin.** Sign out. The phone can stay on Alex. You are done with the main script.

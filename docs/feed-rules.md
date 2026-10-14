@@ -31,29 +31,28 @@ Within one multi-select filter, a person passes if **any** chosen value appears 
 
 | Filter key | Label in settings | Profile field | How it is applied |
 | --- | --- | --- | --- |
-| `show_me` | Show me | `profiles.gender` | `Women` keeps only gender `Woman`. `Men` keeps only gender `Man`. Any other saved value, including `Everyone`, removes nobody. `Non-binary` fails both `Women` and `Men`. |
+| `show_me` | Show me | `profiles.gender` | `Women` keeps only gender `Woman`. `Men` keeps only gender `Man`. Any other saved value, including `Everyone`, removes nobody. Every gender chosen from the **More** list on Build/Edit Profile (for example `Non-binary`, `Trans Woman`, `Two-Spirit`) fails both `Women` and `Men`. The gender is used here even when the person turns **Show gender on my profile** off; that switch only controls whether other people can see it. |
 | `age_range` | Age range | `profiles.birthday` | Age is `extract(year from age(current_date, birthday))`. Compared with the saved `min` and `max`. A bound that was not saved is not applied. A missing birthday fails the filter when the filter is set. |
 | `max_distance` | Maximum distance | `profiles.latitude`, `profiles.longitude` on both people | Miles are the haversine distance with an Earth radius of 3958.8. If the **viewer** has no latitude, this filter is skipped. If the viewer has a location and this filter is set, a person with no coordinates fails, and a person farther than the saved number of miles fails. A distance equal to the number passes. |
 | `height_range` | Height | `profiles.height_inches` | Same min/max rule as age. A missing height fails when the filter is set. The column is total inches (35 to 99). |
-| `sexual_orientation` | Sexual orientation | `profiles.sexual_orientation` | Any overlap with the viewer's chosen values (fixed list from `profile_options`; no custom entries on the profile). |
+| `sexual_orientation` | Sexual orientation | `profiles.sexual_orientation` | Each profile now holds at most one orientation (single-select on Build/Edit Profile). The viewer can still pick several values in Feed Settings; a person passes if their one value is among them. Lesbian is not linked to Show me or Interested in. (fixed list from `profile_options`: Straight, Gay, Lesbian, Bisexual, Asexual, Demisexual, Pansexual, Queer, Questioning; no custom entries on the profile). A person who turned **Show orientation on my profile** off is still compared; that switch only controls whether other people can see it. |
 | `occupation` | Occupation | `profiles.job_title` | The job title is one string. It passes when it equals one of the chosen values, ignoring case. |
-| `smoking` | Smoking | `profiles.lifestyle_tags` | Any overlap with the chosen lifestyle tags. |
-| `drinking` | Drinking | `profiles.lifestyle_tags` | A second filter on the same tags. If both smoking and drinking are set, the person must overlap each list. |
 | `relationship_goals` | Relationship goals | `profiles.relationship_goal` | The profile stores one goal. It passes when that goal is one of the chosen values, ignoring case. |
-| `interests` | Interests | `profiles.interests` | Any overlap with the chosen interests. Build / Edit Profile no longer edit this field (see below); new accounts usually have an empty array, so this filter only affects people with legacy or backfilled data until feed settings change. |
+| `interests` | Interests | `profiles.interests` | Any overlap with the chosen interests. A profile holds up to 5 Interests picked from the 278-item list on screen 03e (alphabetical, from `profile_options`). |
 
 ### Profile fields vs feed (Oct 2026)
 
 - **`interested_in`** (Men, Women, Non-Binary on the profile) is **not** a filter and **not** a ranking signal. It does not appear in `passes_filters` or `rank_score`.
-- **`interests`** (hobby tags on `profiles.interests`) is still what the **Interests** filter and **Shared interests** ranking use. The app replaced hobby **Interests** on Build / Edit Profile with **Interested in**; the `interests` column remains for old rows. Do not confuse the two names.
+- **`interests`** (up to 5 picks on `profiles.interests`, chosen on screen 03e) is what the **Interests** filter and the **Shared interests** ranking use. These picks replaced the older hobby list in the same column. Do not confuse it with **Interested in**.
+- **Lifestyle tags, Smoking, Drinking, and Lifestyle compatibility were removed (Oct 2026).** The `smoking` and `drinking` filters are inactive, and the old `lifestyle_tags` column is emptied and no longer edited. Ranking has five signals.
 
-These profile fields are also not filters and not ranking signals: first name, school, about me, profile photos (avatar and gallery), **`interested_in`**, **`languages`** and **`pronouns`** (legacy columns, not edited in the app), and the allow-followers switch.
+These profile fields are also not filters and not ranking signals: first name, school, about me, profile photos (avatar and gallery), **`interested_in`**, **`languages`**, **`pronouns`**, and **`lifestyle_tags`** (legacy columns, not edited in the app), and the **Show gender / Show orientation on my profile** switches (they only hide the value from other people's view), and the allow-followers switch.
 
 Followed people are exempt from this section, up to the cap described below. Block, Not Interested, a hidden video, and an unfinished profile are not exempt.
 
 ## Ranking — the order of people who passed
 
-`rank_score` is a weighted average of six signals. Each signal is a number from 0 to 1. Each has a viewer setting of Low, Medium, or High, stored on `feed_settings`. Those words become weights:
+`rank_score` is a weighted average of five signals. Each signal is a number from 0 to 1. Each has a viewer setting of Low, Medium, or High, stored on `feed_settings`. Those words become weights:
 
 | Setting | Weight |
 | --- | --- |
@@ -61,23 +60,23 @@ Followed people are exempt from this section, up to the cap described below. Blo
 | Medium | 2 |
 | High | 3 |
 
-Every column defaults to Medium. Reset sets all six back to Medium.
+Every column defaults to Medium. Reset sets all five back to Medium.
 
 The score is:
 
 ```
-(w1*s1 + w2*s2 + w3*s3 + w4*s4 + w5*s5 + w6*s6) / (w1 + w2 + w3 + w4 + w5 + w6)
+(w1*s1 + w2*s2 + w3*s3 + w4*s4 + w5*s5) / (w1 + w2 + w3 + w4 + w5)
 ```
 
-Raising one weight also shrinks the share of the other five, because they all divide by the same total. With every signal at Medium, each one is 2/12 of the score.
+Raising one weight also shrinks the share of the other four, because they all divide by the same total. With every signal at Medium, each one is 2/10 of the score.
 
-### The six signals
+### The five signals
 
 **1. Shared interests** (`feed_settings.shared_interests`)
 
-Fields: `profiles.interests` on the viewer and on the other person (hobby tags, **not** `interested_in`).
+Fields: `profiles.interests` on the viewer and on the other person (the up-to-5 Interests picks, **not** `interested_in`).
 
-Score = (how many of the **viewer's** interests also appear on the other person) / (how many interests the viewer has), capped at 1. Extra interests that only the other person has do not help. If the viewer has none, the score is 0. Because new profiles no longer fill `interests`, this signal is often 0 for everyone until feed settings or the server are updated.
+Score = (how many of the **viewer's** interests also appear on the other person) / (how many interests the viewer has), capped at 1. Extra interests that only the other person has do not help. If the viewer has none, the score is 0. A viewer who picked no Interests scores 0 with everyone.
 
 **2. Relationship goals** (`feed_settings.relationship_goals`)
 
@@ -97,13 +96,7 @@ That text is saved when the answer is submitted. It is the caption segments' `te
 
 Score = min(1, word count / 40). Words are split on whitespace. An empty caption scores 0. A caption of 40 or more words scores 1.
 
-**4. Lifestyle compatibility** (`feed_settings.lifestyle_compatibility`)
-
-Field: `profiles.lifestyle_tags` on the viewer and on the other person.
-
-Same overlap rule as interests: the share of the **viewer's** tags that the other person also has. If the viewer has none, the score is 0.
-
-**5. Distance** (`feed_settings.distance`)
+**4. Distance** (`feed_settings.distance`)
 
 Fields: `profiles.latitude` and `profiles.longitude` on both people. The miles are the same haversine used by the distance filter.
 
@@ -116,7 +109,7 @@ Fields: `profiles.latitude` and `profiles.longitude` on both people. The miles a
 
 The formula is `max(0, 1 - miles / 100)`.
 
-**6. Recency** (`feed_settings.recency`)
+**5. Recency** (`feed_settings.recency`)
 
 Fields: `answers.submitted_at`, and the question's `questions.question_date`.
 
@@ -138,7 +131,7 @@ ceil(day_total * followed_content_cap_percent / 100)
 
 `followed_content_cap_percent` is one admin setting for the whole app (default 30, allowed 0 to 100). The count is rounded up.
 
-Followed rows are ordered by the same six-signal score. The ones inside the slot count are marked as top slots. They stay in the feed even when they fail the viewer's filters. Followed rows past the slot count stay only if they pass the filters. Otherwise they are dropped.
+Followed rows are ordered by the same five-signal score. The ones inside the slot count are marked as top slots. They stay in the feed even when they fail the viewer's filters. Followed rows past the slot count stay only if they pass the filters. Otherwise they are dropped.
 
 A followed person who fails the filters still counts toward `day_total`, which can make the slot count larger.
 
@@ -146,7 +139,7 @@ A followed person who fails the filters still counts toward `day_total`, which c
 
 1. Newer question date first. The feed therefore starts with the viewer's local today, then the previous day, and so on, until the look-back limit.
 2. Within a day, top-slot followed answers first.
-3. Then the six-signal score, highest first.
+3. Then the five-signal score, highest first.
 4. If the score ties, the answer id, descending.
 
 Opening the feed with no date always starts from today again. Choosing a past question (`p_date`) returns that day only, with the same filters, score, and follow cap.

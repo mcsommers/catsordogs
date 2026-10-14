@@ -196,7 +196,7 @@ export default function People() {
                             {line('Location lookup', person.latitude != null && person.longitude != null ? `${person.latitude}, ${person.longitude}` : null)}
                             {line('Occupation', person.job_title)}
                             {line('School', person.school)}
-                            {line('Lifestyle', (person.lifestyle_tags ?? []).join(', '))}
+                            {line('Interests', (person.interests ?? []).join(', '))}
                             {line('Relationship goal', person.relationship_goal)}
                             {line('Allow followers', person.allow_followers ? 'Yes' : 'No')}
                             {line('Time zone', person.time_zone)}
