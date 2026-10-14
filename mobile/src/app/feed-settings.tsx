@@ -16,6 +16,7 @@ import {
   type SharedInterestsWeight,
 } from '../lib/feedSettings';
 import { supabase } from '../lib/supabase';
+import { RangeSlider } from '../components/RangeSlider';
 import {
   AppTextInput,
   BackButton,
@@ -33,6 +34,48 @@ type Option = { value: string };
 const WEIGHTS: SharedInterestsWeight[] = ['low', 'medium', 'high'];
 const SHARED_INTERESTS_WEIGHTS: SharedInterestsWeight[] = [...WEIGHTS, 'specific'];
 
+/** "70+" / 7'0"+" at the top end of the slider. */
+function formatRangeValue(d: FilterDefinition, n: number): string {
+  const top = n >= (d.maxValue ?? Infinity);
+  if (d.unit === 'in') return `${Math.floor(n / 12)}'${n % 12}"${top ? '+' : ''}`;
+  return `${n}${top ? '+' : ''}`;
+}
+
+function RangeFilter({
+  d,
+  filters,
+  setFilter,
+}: {
+  d: FilterDefinition;
+  filters: Record<string, unknown>;
+  setFilter: (key: string, value: unknown) => void;
+}) {
+  const lo0 = d.minValue as number;
+  const hi0 = d.maxValue as number;
+  const saved = filters[d.key] as { min?: number; max?: number } | undefined;
+  const low = Math.min(Math.max(saved?.min ?? lo0, lo0), hi0);
+  const high = Math.min(Math.max(saved?.max ?? hi0, lo0), hi0);
+  return (
+    <View style={{ gap: 12 }}>
+      <View style={styles.rangeLabelRow}>
+        <Text style={styles.filterLabel}>{d.label}</Text>
+        <Text style={styles.rangeValue}>{`${formatRangeValue(d, low)} – ${formatRangeValue(d, high)}`}</Text>
+      </View>
+      <RangeSlider
+        min={lo0}
+        max={hi0}
+        low={low}
+        high={high}
+        onChange={(l, h) => setFilter(d.key, l <= lo0 && h >= hi0 ? null : { min: l, max: h })}
+      />
+      <View style={styles.rangeLabelRow}>
+        <Text style={styles.rangeScale}>{formatRangeValue(d, lo0)}</Text>
+        <Text style={styles.rangeScale}>{formatRangeValue(d, hi0)}</Text>
+      </View>
+    </View>
+  );
+}
+
 function FilterDefinitionCard({
   d,
   filters,
@@ -48,7 +91,7 @@ function FilterDefinitionCard({
 
   return (
     <View ref={anchorRef} collapsable={false} style={styles.filterCard}>
-      <Text style={styles.filterLabel}>{d.label}</Text>
+      {d.control !== 'range' ? <Text style={styles.filterLabel}>{d.label}</Text> : null}
       {d.control === 'segmented' && d.optionCategory ? (
         <View style={styles.chips}>
           {(options[d.optionCategory] ?? []).map((o) => (
@@ -73,41 +116,8 @@ function FilterDefinitionCard({
           onChangeText={(t) => setFilter(d.key, t ? Number(t) : null)}
         />
       ) : null}
-      {d.control === 'range' ? (
-        <View style={styles.rangeRow}>
-          <AppTextInput
-            style={[styles.input, { flex: 1 }]}
-            keyboardType="number-pad"
-            placeholder="Min"
-            placeholderTextColor={colors.textDarkFaint}
-            focusScrollAnchorRef={anchorRef}
-            value={
-              filters[d.key] && typeof filters[d.key] === 'object'
-                ? String((filters[d.key] as { min?: number }).min ?? '')
-                : ''
-            }
-            onChangeText={(t) => {
-              const cur = (filters[d.key] as { min?: number; max?: number }) ?? {};
-              setFilter(d.key, { ...cur, min: t ? Number(t) : undefined });
-            }}
-          />
-          <AppTextInput
-            style={[styles.input, { flex: 1 }]}
-            keyboardType="number-pad"
-            placeholder="Max"
-            placeholderTextColor={colors.textDarkFaint}
-            focusScrollAnchorRef={anchorRef}
-            value={
-              filters[d.key] && typeof filters[d.key] === 'object'
-                ? String((filters[d.key] as { max?: number }).max ?? '')
-                : ''
-            }
-            onChangeText={(t) => {
-              const cur = (filters[d.key] as { min?: number; max?: number }) ?? {};
-              setFilter(d.key, { ...cur, max: t ? Number(t) : undefined });
-            }}
-          />
-        </View>
+      {d.control === 'range' && d.minValue != null && d.maxValue != null ? (
+        <RangeFilter d={d} filters={filters} setFilter={setFilter} />
       ) : null}
       {d.control === 'multi' && d.optionCategory ? (
         <View style={styles.chips}>
@@ -320,7 +330,9 @@ const styles = StyleSheet.create({
     fontSize: 14,
     color: colors.white,
   },
-  rangeRow: { flexDirection: 'row', gap: 8 },
+  rangeLabelRow: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' },
+  rangeScale: { fontFamily: fonts.body, fontSize: 11, color: colors.textDarkMuted },
+  rangeValue: { fontFamily: fonts.bodyBold, fontSize: 13, color: colors.accentDog },
   rankingHeader: { flexDirection: 'row', alignItems: 'flex-start', justifyContent: 'space-between', marginTop: 8 },
   resetLink: { fontFamily: fonts.bodyBold, fontSize: 13, color: colors.accentDog, paddingTop: 4 },
   specificRow: {

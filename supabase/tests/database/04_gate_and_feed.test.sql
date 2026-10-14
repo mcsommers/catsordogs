@@ -3,7 +3,7 @@
 -- locations, and who can read what.
 -- (Followed-first ordering and its cap are in 05_feed_followed_cap.test.sql.)
 begin;
-select plan(142);
+select plan(146);
 
 delete from public.answers;
 delete from public.videos;
@@ -283,6 +283,12 @@ select is(pg_temp.filtered('{"show_me":"Men"}'), array['M1'], 'filter: show me m
 select is(pg_temp.filtered('{"show_me":"Everyone"}'), array['M1', 'N1', 'W1', 'W2', 'X1', 'X2', 'X3'], 'filter: everyone shows all');
 select is(pg_temp.filtered('{"age_range":{"min":26,"max":32}}'), array['N1', 'W1', 'X1', 'X2'], 'filter: age range');
 select is(pg_temp.filtered('{"height_range":{"min":71,"max":79}}'), array['M1'], 'filter: height range (inches)');
+select is(pg_temp.filtered('{"age_range":{"min":18,"max":32}}'), array['N1', 'W1', 'W2', 'X1', 'X2'], 'filter: age range with the minimum handle on the end has no lower limit');
+update public.profiles set birthday = birthday - interval '40 years' where id = pg_temp.uid(4);
+select is(pg_temp.filtered('{"age_range":{"min":30,"max":70}}'), array['M1', 'W1', 'X1', 'X2', 'X3'], 'filter: age range 70 is "70+" (a 75-year-old still passes)');
+update public.profiles set birthday = birthday + interval '40 years' where id = pg_temp.uid(4);
+select is(pg_temp.filtered('{"age_range":{"min":18,"max":70},"height_range":{"min":24,"max":84}}'), array['M1', 'N1', 'W1', 'W2', 'X1', 'X2', 'X3'], 'both handles on the ends is the same as Any');
+select is((select count(*) from public.filter_definitions where key = 'relationship_goals' and active), 0::bigint, 'the Relationship goals filter is gone (the ranking signal stays)');
 select is(pg_temp.filtered('{"occupation":["nurse","chef"]}'), array['M1', 'W1'], 'filter: occupation (any match, ignoring case)');
 select is(pg_temp.filtered('{"occupation":["Nurse","Chef"]}'), array['M1', 'W1'], 'filter: occupation');
 select is((select count(*) from public.filter_definitions where key = 'max_distance' and active), 0::bigint, 'the Maximum distance filter is gone (distance only changes the order)');

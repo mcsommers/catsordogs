@@ -130,12 +130,12 @@ Jordan must actually speak the long line. Sam must say only "Yeah."
 Stay as Alex unless a step says otherwise. Alex has answered, so the Feed is unlocked (06).
 
 - [ ] **M-19 Alex does not see herself.** Swipe the whole feed. Alex's own video is not in it. The other seven names can appear: Jordan, Sam, Riley, Morgan, Quinn, Casey, Drew. Taylor and Parker do not, because they have not answered.
-- [ ] **M-20 Jordan ranks ahead of Sam.** With filters still cleared (no Show me chip selected, Age range empty) and ranking still on the defaults, Jordan appears before Sam. Jordan is in Brooklyn, shares Hiking and Coffee and the Long-term relationship goal. Sam is in Austin and shares none of that. (Answer length does not affect the order.) You do not need a perfect order of all seven. Jordan-before-Sam is the check.
+- [ ] **M-20 Jordan ranks ahead of Sam.** With filters still cleared (no Show me chip selected, Age range handles on the ends) and ranking still on the defaults, Jordan appears before Sam. Jordan is in Brooklyn, shares Hiking and Coffee and the Long-term relationship goal. Sam is in Austin and shares none of that. (Answer length does not affect the order.) You do not need a perfect order of all seven. Jordan-before-Sam is the check.
 - [ ] **M-21 A view counts only after a real watch.** As Alex, let Jordan's clip play at least 3 seconds, then swipe away from Sam in the first second. Log in as Jordan. On Profile, that answer's eye count includes Alex (the count only, never Alex's name). Log in as Sam. Sam's eye count does not include that instant swipe. Log back in as Alex. Open Jordan's profile once, then open it again. As Jordan, the profile-view count went up by 1, not by 2, and it does not say who.
 - [ ] **M-22 Follow three people.** As Alex, on Jordan's feed video tap **⋯**. The menu is Follow, Not Interested, Report, Block, Cancel. Follow. The dialog is "Follow Jordan?" and says he won't know you're following him, and that his answer will show up at the top of your feed every day he posts. Confirm **Yes, Follow**. Follow Riley and Morgan the same way. Their videos show an orange **Following** tag. As Jordan, the follower count on his own profile goes up, and the profile says identities stay private. Jordan is not told that Alex followed him. There is no email that names Alex.
 - [ ] **M-23 Tighten the feed, then save.** As Alex, open Feed Settings (06i) from the settings control on the feed or from Profile. Set:
   - Show me: **Men**
-  - Age range: min **25**, max **40**
+  - Age range: drag the handles to **25** and **40**
   - Leave the other filter chips on Any (none selected).
   - Leave ranking at Medium. Save. Expected: "Your feed settings were updated."
   Reopen the Feed and swipe from the top.
@@ -147,7 +147,7 @@ Stay as Alex unless a step says otherwise. Alex has answered, so the Feed is unl
   - **Sam and Casey** are men inside the age range, so they now also appear, after the four above, with no Following tag (Sam last, since Austin is far away).
   - Alex, Taylor, Parker, and Avery are absent.
   If a stranger's name is in this list, the pool was not limited to the cast. Stop and ask the agent.
-- [ ] **M-25 Clearing filters brings people back.** As Alex, clear Show me, clear both age boxes, and save. Reopen the feed. Morgan can appear again and still has the Following tag. Jordan still comes first.
+- [ ] **M-25 Clearing filters brings people back.** As Alex, clear Show me, drag both Age range handles back to the ends (18 and 70+), and save. Reopen the feed. Morgan can appear again and still has the Following tag. Jordan still comes first.
 - [ ] **M-26 Unfollow.** On Morgan, **⋯** now says **Unfollow** instead of Follow. Confirm. The dialog says Morgan won't be notified, his answers will no longer show up at the top, and you won't be able to nudge him. After you confirm, Morgan's Following tag is gone. As Morgan, nothing tells him he was unfollowed. Alex still follows Jordan and Riley.
 
 - [ ] **M-27 Drew follows Jordan.** Log in as Drew. On Jordan's video, **⋯** → **Follow** → **Yes, Follow**. Log out. This is what lets Drew nudge Jordan on Day 2. Drew's follow does not change the order checks you already did as Alex.
