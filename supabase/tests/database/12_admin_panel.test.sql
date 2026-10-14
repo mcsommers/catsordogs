@@ -171,9 +171,9 @@ select lives_ok($$update public.profile_options set active = false where categor
   'an admin can retire a choice');
 select throws_ok($$insert into public.profile_options (category, value) values ('not_a_question', 'Nope')$$,
   '23514', 'That list is not used by a profile question.', 'a choice has to belong to a real question');
-select lives_ok($$update public.profile_field_defs set max_selected = 4 where field = 'interests'$$,
+select lives_ok($$update public.profile_field_defs set max_selected = 2 where field = 'interested_in'$$,
   'an admin can change how many choices a question allows');
-select is((select max_selected from public.profile_field_defs where field = 'interests'), 4, 'the new limit is stored');
+select is((select max_selected from public.profile_field_defs where field = 'interested_in'), 2, 'the new limit is stored');
 
 select is((select public.admin_queue_item_content((select id from queue_ids where label = 'hidden_tomorrow')) ->> 'caption_text'),
   'live caption', 'an admin can open a hidden video from the queue');

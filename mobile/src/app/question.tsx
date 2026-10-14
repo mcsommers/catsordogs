@@ -101,16 +101,21 @@ export default function TodaysQuestion() {
     if (!cameraReady) return setMessage('The camera is still starting. Try again in a second.');
 
     setPhase('starting');
-    const started = await startUpload();
-    if (!started.ok) {
+    try {
+      const started = await startUpload();
+      if (!started.ok) {
+        setPhase('ready');
+        const r = started.refusal;
+        if (r.kind === 'daily_limit') return setLimit(r.limit);
+        if (r.kind === 'no_question_today' || r.kind === 'already_answered') return router.replace('/feed');
+        if (r.kind === 'profile_incomplete') return router.replace('/build-profile');
+        return setMessage(r.message);
+      }
+      runCountdown(started.upload);
+    } catch {
       setPhase('ready');
-      const r = started.refusal;
-      if (r.kind === 'daily_limit') return setLimit(r.limit);
-      if (r.kind === 'no_question_today' || r.kind === 'already_answered') return router.replace('/feed');
-      if (r.kind === 'profile_incomplete') return router.replace('/build-profile');
-      return setMessage(r.message);
+      setMessage('We couldn\u2019t start the recording. Please try again.');
     }
-    runCountdown(started.upload);
   }
 
   function runCountdown(upload: StartedUpload) {
@@ -259,7 +264,7 @@ export default function TodaysQuestion() {
 
       <Dialog
         visible={skipOpen}
-        icon={TriangleAlert}
+        hero={{ type: 'icon', icon: TriangleAlert, iconTone: 'warning' }}
         title="Skip today's question?"
         body="You won't be able to see today's responses in the feed until you answer. Your matches and chats stay available."
         primary={{ label: 'Return to Question', onPress: () => setSkipOpen(false) }}
@@ -273,7 +278,7 @@ export default function TodaysQuestion() {
       />
       <Dialog
         visible={limit !== null}
-        icon={Timer}
+        hero={{ type: 'icon', icon: Timer, iconTone: 'warning' }}
         title="Recording limit reached"
         body={`You've used all ${limit ?? ''} of today's recordings. The limit resets with tomorrow's question. Your matches and chats stay available.`}
         primary={{ label: 'Got It', onPress: () => setLimit(null) }}

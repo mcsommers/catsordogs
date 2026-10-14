@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useRef, useState } from 'react';
+import { useCallback, useRef, useState } from 'react';
 import {
   Image,
   Pressable,
@@ -12,7 +12,7 @@ import {
 } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 import { StatusBar } from 'expo-status-bar';
-import { router } from 'expo-router';
+import { router, useFocusEffect } from 'expo-router';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import {
   Briefcase,
@@ -24,7 +24,6 @@ import {
   MapPin,
   Ruler,
   Target,
-  User,
   Users,
 } from 'lucide-react-native';
 import {
@@ -42,20 +41,30 @@ import {
   formatProfileLocation,
   formatStreakBadge,
 } from '../../lib/format';
-import { BackButton, CenteredSpinner, TextLink } from '../ui';
+import { BackButton, CenteredSpinner, ErrorBanner, TextLink } from '../ui';
 import { colors, fonts } from '../../theme';
 import { ProfileAccountSection } from './ProfileAccountSection';
 import { ProfileAnswerPreviewThumb } from './ProfileAnswerPreviewThumb';
 import { ProfileArchiveCard } from './ProfileArchiveCard';
 import { ProfileHeroIconButton } from './ProfileHeroIconButton';
 import { ProfileInfoChip } from './ProfileInfoChip';
+import { pickAndAddGalleryPhoto } from '../../lib/addGalleryPhoto';
+import { avatarPhoto } from '../../lib/profilePhotos';
 import { ProfilePhotoGrid } from './ProfilePhotoGrid';
 import { ProfileStatBadge } from './ProfileStatBadge';
 import { ProfileTagChip } from './ProfileTagChip';
 import { HERO_HEIGHT_OTHER, HERO_HEIGHT_SELF, PROFILE_PAD, PROFILE_SCROLL_BOTTOM } from './profileLayout';
 import { profileType } from './profileTypography';
-import { showMatchingPlaceholder, showMoreOptionsPlaceholder, showPhaseDPlaceholder } from './phaseDPlaceholder';
+import { signOutToWelcome } from '../../lib/signOut';
 import { supabase } from '../../lib/supabase';
+import { acceptMatchRequest, getFollowState, nudgeUser } from '../../lib/social';
+import type { FeedMatchState } from '../../lib/feed';
+import { MoreOptionsMenu } from '../social/MoreOptionsMenu';
+import { MatchRequestSentBanner } from '../social/MatchRequestSentBanner';
+import { NudgeCard } from '../social/NudgeCard';
+import { confirmNudge } from '../social/confirmations';
+import { useSocialActions, type SocialSubject } from '../social/useSocialActions';
+import { PrimaryButton } from '../ui';
 
 const PREVIEW_COUNT = 3;
 
@@ -71,13 +80,21 @@ export function ProfileView({ userId, showBack }: Props) {
   const [loading, setLoading] = useState(true);
   const [loadingMore, setLoadingMore] = useState(false);
   const [failed, setFailed] = useState(false);
+  const [isFollowed, setIsFollowed] = useState(false);
+  const [canNudge, setCanNudge] = useState(false);
+  const [alreadyNudged, setAlreadyNudged] = useState(false);
+  const [matchState, setMatchState] = useState<FeedMatchState>('none');
+  const [matchSentBanner, setMatchSentBanner] = useState(false);
+  const [galleryPhotoBusy, setGalleryPhotoBusy] = useState(false);
+  const [galleryPhotoBanner, setGalleryPhotoBanner] = useState<string | null>(null);
   const loadingMoreRef = useRef(false);
+  const loadedOnceRef = useRef(false);
   const insets = useSafeAreaInsets();
   const { width: screenW } = useWindowDimensions();
 
-  const loadProfile = useCallback(async () => {
+  const loadProfile = useCallback(async (opts?: { silent?: boolean }) => {
     setFailed(false);
-    setLoading(true);
+    if (!opts?.silent) setLoading(true);
     try {
       const p = await fetchUserProfile(userId ?? null);
       if (!p) {
@@ -85,7 +102,15 @@ export function ProfileView({ userId, showBack }: Props) {
         return;
       }
       setProfile(p);
-      if (!p.isSelf) await recordProfileView(p.userId);
+      setMatchState((p.matchState as FeedMatchState) || 'none');
+      setMatchSentBanner(false);
+      if (!p.isSelf) {
+        await recordProfileView(p.userId);
+        const fs = await getFollowState(p.userId);
+        setIsFollowed(fs.following);
+        setCanNudge(fs.canNudge);
+        setAlreadyNudged(fs.alreadyNudged);
+      }
       const page = await fetchUserAnswersPage(userId ?? null, 0, PROFILE_ANSWER_PAGE_SIZE);
       setAnswers(page.items);
       setTotalAnswers(page.totalCount);
@@ -93,12 +118,15 @@ export function ProfileView({ userId, showBack }: Props) {
       setFailed(true);
     } finally {
       setLoading(false);
+      loadedOnceRef.current = true;
     }
   }, [userId]);
 
-  useEffect(() => {
-    loadProfile();
-  }, [loadProfile]);
+  useFocusEffect(
+    useCallback(() => {
+      loadProfile({ silent: loadedOnceRef.current });
+    }, [loadProfile])
+  );
 
   const loadMoreAnswers = useCallback(async () => {
     if (loadingMoreRef.current || answers.length >= totalAnswers) return;
@@ -123,6 +151,49 @@ export function ProfileView({ userId, showBack }: Props) {
     if (!profile) return;
     router.push({ pathname: '/user/[id]/photos', params: { id: profile.userId, start: String(displayIndex) } });
   };
+
+  const onAddGalleryPhoto = useCallback(async () => {
+    if (!profile?.isSelf || galleryPhotoBusy) return;
+    setGalleryPhotoBanner(null);
+    setGalleryPhotoBusy(true);
+    try {
+      const result = await pickAndAddGalleryPhoto(profile.userId, profile.photos);
+      if (result.ok) {
+        setProfile((p) => (p ? { ...p, photos: result.photos } : p));
+      } else if (!result.canceled) {
+        setGalleryPhotoBanner(result.banner);
+      }
+    } finally {
+      setGalleryPhotoBusy(false);
+    }
+  }, [profile, galleryPhotoBusy]);
+
+  const socialSubject: SocialSubject | null =
+    profile && !profile.isSelf
+      ? {
+          userId: profile.userId,
+          firstName: profile.firstName,
+          gender: profile.gender,
+          avatarUri: avatarPhoto(profile.photos)?.url,
+          isFollowed,
+          matchState,
+          surface: 'profile',
+        }
+      : null;
+
+  const social = useSocialActions(socialSubject, {
+    onStateChange: (patch) => {
+      if (patch.isFollowed != null) setIsFollowed(patch.isFollowed);
+      if (patch.matchState != null) setMatchState(patch.matchState);
+    },
+    onMatchSent: (result) => {
+      if (result === 'sent') setMatchSentBanner(true);
+    },
+    onBlocked: () => router.back(),
+    onNotInterested: () => router.back(),
+  });
+
+  const heartOn = matchState === 'sent' || matchState === 'matched';
 
   const openAnswer = (answer: ProfileAnswer) => {
     if (!profile) return;
@@ -154,7 +225,7 @@ export function ProfileView({ userId, showBack }: Props) {
     );
   }
 
-  const heroUrl = profile.photos[0]?.url;
+  const heroUrl = avatarPhoto(profile.photos)?.url;
   const streak = formatStreakBadge(profile.streakDays ?? 0);
   const locationLine = formatProfileLocation(profile.city, profile.distanceMiles);
   const previewAnswers = profile.isSelf ? answers.slice(0, PREVIEW_COUNT) : answers;
@@ -165,6 +236,14 @@ export function ProfileView({ userId, showBack }: Props) {
   return (
     <View style={styles.root}>
       <StatusBar style="light" />
+      {!profile.isSelf ? (
+        <MoreOptionsMenu
+          visible={social.menuOpen}
+          isFollowed={isFollowed}
+          onDismiss={social.closeMenu}
+          onSelect={social.runMenuAction}
+        />
+      ) : null}
       <ScrollView
         onScroll={profile.isSelf ? undefined : onScrollEnd}
         scrollEventThrottle={400}
@@ -202,11 +281,11 @@ export function ProfileView({ userId, showBack }: Props) {
               </View>
             ) : null}
             <View style={[styles.heroActionsRow, contentPad]}>
-              <ProfileHeroIconButton onPress={showMoreOptionsPlaceholder} accessibilityLabel="More options">
+              <ProfileHeroIconButton onPress={social.openMenu} accessibilityLabel="More options">
                 <EllipsisVertical size={20} color={colors.white} />
               </ProfileHeroIconButton>
-              <ProfileHeroIconButton onPress={showMatchingPlaceholder} accessibilityLabel="Match">
-                <Heart size={20} color={colors.white} />
+              <ProfileHeroIconButton onPress={social.onHeartPress} accessibilityLabel="Match">
+                <Heart size={20} color={colors.white} fill={heartOn ? colors.white : 'transparent'} />
               </ProfileHeroIconButton>
             </View>
             <View style={[styles.heroNameBlock, contentPad]}>
@@ -265,24 +344,54 @@ export function ProfileView({ userId, showBack }: Props) {
               </View>
 
               <View style={styles.section}>
-                <View style={styles.sectionHeader}>
-                  <Text style={styles.sectionTitle}>Your Photos</Text>
-                  <TextLink label="Edit" onPress={() => showPhaseDPlaceholder('Edit Profile')} color={colors.accentDog} size={12} />
-                </View>
+                <Text style={styles.sectionTitle}>Your Photos</Text>
+                {galleryPhotoBanner ? <ErrorBanner message={galleryPhotoBanner} /> : null}
                 <ProfilePhotoGrid
                   photos={profile.photos}
                   onPhotoPress={openPhotos}
                   ownProfile
-                  onAddPhotoPress={() => showPhaseDPlaceholder('Edit Profile')}
+                  onAddPhotoPress={() => void onAddGalleryPhoto()}
+                  addPhotoDisabled={galleryPhotoBusy}
                 />
               </View>
 
               <ProfileAccountSection
-                onLogOut={() => supabase.auth.signOut().then(() => router.replace('/welcome'))}
+                onLogOut={() => signOutToWelcome(router)}
               />
             </>
           ) : (
             <>
+              {matchSentBanner ? <MatchRequestSentBanner firstName={profile.firstName} /> : null}
+              {matchState === 'incoming' ? (
+                <PrimaryButton
+                  label="Accept"
+                  onPress={async () => {
+                    const matchId = await acceptMatchRequest(profile.userId);
+                    setMatchState('matched');
+                    if (matchId) router.push({ pathname: '/chat/[matchId]', params: { matchId } });
+                  }}
+                />
+              ) : null}
+              {canNudge ? (
+                <NudgeCard
+                  firstName={profile.firstName}
+                  alreadyNudged={alreadyNudged}
+                  onNudge={() =>
+                    confirmNudge(
+                      {
+                        firstName: profile.firstName,
+                        gender: profile.gender,
+                        avatarUri: avatarPhoto(profile.photos)?.url,
+                      },
+                      async () => {
+                        await nudgeUser(profile.userId);
+                        setAlreadyNudged(true);
+                        setCanNudge(false);
+                      }
+                    )
+                  }
+                />
+              ) : null}
               <View style={styles.statsRow}>
                 {streak ? <ProfileStatBadge icon={<Flame size={12} color={colors.accentDog} />} label={streak} /> : null}
                 <ProfileStatBadge
@@ -306,9 +415,6 @@ export function ProfileView({ userId, showBack }: Props) {
 
               <View style={styles.infoSection}>
                 <View style={styles.chipRow}>
-                  {profile.pronouns[0] ? (
-                    <ProfileInfoChip icon={<User size={13} color={colors.textDarkMuted} />} label={profile.pronouns[0]} />
-                  ) : null}
                   {profile.heightInches ? (
                     <ProfileInfoChip
                       icon={<Ruler size={13} color={colors.textDarkMuted} />}
@@ -316,11 +422,11 @@ export function ProfileView({ userId, showBack }: Props) {
                     />
                   ) : null}
                 </View>
-                {profile.jobTitle ? (
+                {profile.occupation ? (
                   <View style={styles.chipRow}>
                     <ProfileInfoChip
                       icon={<Briefcase size={13} color={colors.textDarkMuted} />}
-                      label={profile.jobTitle}
+                      label={profile.occupation}
                     />
                   </View>
                 ) : null}
@@ -330,11 +436,6 @@ export function ProfileView({ userId, showBack }: Props) {
                       icon={<GraduationCap size={13} color={colors.textDarkMuted} />}
                       label={profile.school}
                     />
-                  </View>
-                ) : null}
-                {profile.languages.length > 0 ? (
-                  <View style={styles.chipRow}>
-                    <ProfileInfoChip label={profile.languages.join(', ')} />
                   </View>
                 ) : null}
               </View>
@@ -348,11 +449,11 @@ export function ProfileView({ userId, showBack }: Props) {
                 </View>
               ) : null}
 
-              {profile.interests.length > 0 ? (
+              {profile.interestedIn.length > 0 ? (
                 <View style={styles.section}>
-                  <Text style={styles.sectionTitle}>Interests</Text>
+                  <Text style={styles.sectionTitle}>Interested in</Text>
                   <View style={styles.chipRow}>
-                    {profile.interests.map((t) => <ProfileTagChip key={t} label={t} />)}
+                    {profile.interestedIn.map((t) => <ProfileTagChip key={t} label={t} />)}
                   </View>
                 </View>
               ) : null}

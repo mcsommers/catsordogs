@@ -1,6 +1,7 @@
 import {
   forwardRef,
   useEffect,
+  useRef,
   useState,
   type ComponentType,
   type ReactNode,
@@ -9,6 +10,7 @@ import {
 } from 'react';
 import {
   ActivityIndicator,
+  Image,
   Keyboard,
   KeyboardAvoidingView,
   Modal,
@@ -19,12 +21,30 @@ import {
   Text,
   TextInput,
   View,
+  type NativeScrollEvent,
+  type NativeSyntheticEvent,
   type TextInputProps,
   type ViewStyle,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { router } from 'expo-router';
-import { ArrowLeft, CircleAlert, Globe, Apple, type LucideProps } from 'lucide-react-native';
+import {
+  ArrowLeft,
+  Ban,
+  Bell,
+  CircleAlert,
+  EyeOff,
+  Flag,
+  Globe,
+  Apple,
+  Heart,
+  HeartOff,
+  UserCheck,
+  UserPlus,
+  UserMinus,
+  type LucideProps,
+} from 'lucide-react-native';
+import { FormScrollContext, useScrollOnFieldFocus } from '../lib/formScroll';
 import { colors, fonts } from '../theme';
 
 type Icon = ComponentType<LucideProps>;
@@ -37,6 +57,7 @@ export function Screen({
   edges = ['top', 'bottom'],
   scrollRef,
   scrollContentRef,
+  onScroll,
 }: {
   children: ReactNode;
   dark?: boolean;
@@ -48,6 +69,7 @@ export function Screen({
   scrollRef?: RefObject<ScrollView | null>;
   /** When `scroll` is true, attach to the content wrapper (for scroll-to-field on validation). */
   scrollContentRef?: RefObject<View | null>;
+  onScroll?: (event: NativeSyntheticEvent<NativeScrollEvent>) => void;
 }) {
   const [keyboardHeight, setKeyboardHeight] = useState(0);
   const bg = { backgroundColor: dark ? colors.bgDark : colors.bg };
@@ -76,20 +98,27 @@ export function Screen({
     </View>
   );
 
+  const formScrollValue =
+    scroll && scrollRef && scrollContentRef ? { scrollRef, contentRef: scrollContentRef } : null;
+
   return (
     <SafeAreaView style={[styles.flex, bg]} edges={edges}>
       {scroll ? (
-        <KeyboardAvoidingView style={styles.flex} behavior={Platform.OS === 'ios' ? 'padding' : undefined}>
-          <ScrollView
-            ref={scrollRef}
-            contentContainerStyle={scrollContentStyle}
-            keyboardShouldPersistTaps="handled"
-            automaticallyAdjustKeyboardInsets
-            showsVerticalScrollIndicator={false}
-          >
-            {scrollInner}
-          </ScrollView>
-        </KeyboardAvoidingView>
+        <FormScrollContext.Provider value={formScrollValue}>
+          <KeyboardAvoidingView style={styles.flex} behavior={Platform.OS === 'ios' ? 'padding' : undefined}>
+            <ScrollView
+              ref={scrollRef}
+              contentContainerStyle={scrollContentStyle}
+              keyboardShouldPersistTaps="handled"
+              automaticallyAdjustKeyboardInsets
+              showsVerticalScrollIndicator={false}
+              scrollEventThrottle={onScroll ? 16 : undefined}
+              onScroll={onScroll}
+            >
+              {scrollInner}
+            </ScrollView>
+          </KeyboardAvoidingView>
+        </FormScrollContext.Provider>
       ) : (
         <View style={[styles.flex, flush ? undefined : styles.content]}>{children}</View>
       )}
@@ -97,7 +126,50 @@ export function Screen({
   );
 }
 
-export { scrollScreenToEnd, scrollToFieldInScreen } from '../lib/formScroll';
+export { scrollScreenToEnd, scrollToFieldInScreen, restoreScrollY, FormScrollContext } from '../lib/formScroll';
+
+export type AppTextInputProps = TextInputProps & {
+  /** View whose top should align with the label scroll offset (defaults to none). */
+  focusScrollAnchorRef?: RefObject<View | null>;
+  /** Chat and other special cases: keep placeholder on focus and skip auto-scroll. */
+  disableFieldFocusBehavior?: boolean;
+};
+
+export const AppTextInput = forwardRef(function AppTextInput(
+  {
+    placeholder,
+    onFocus,
+    onBlur,
+    focusScrollAnchorRef,
+    disableFieldFocusBehavior = false,
+    ...rest
+  }: AppTextInputProps,
+  ref: Ref<TextInput>
+) {
+  const [focused, setFocused] = useState(false);
+  const noopAnchor = useRef<View>(null);
+  const scrollOnFocus = useScrollOnFieldFocus(focusScrollAnchorRef ?? noopAnchor);
+
+  return (
+    <TextInput
+      ref={ref}
+      placeholder={disableFieldFocusBehavior || !focused ? placeholder : undefined}
+      placeholderTextColor={colors.textSecondary}
+      onFocus={(e) => {
+        if (!disableFieldFocusBehavior) {
+          setFocused(true);
+          if (focusScrollAnchorRef) scrollOnFocus();
+        }
+        onFocus?.(e);
+      }}
+      onBlur={(e) => {
+        if (!disableFieldFocusBehavior) setFocused(false);
+        onBlur?.(e);
+      }}
+      {...rest}
+    />
+  );
+});
 
 export function PrimaryButton({
   label,
@@ -205,20 +277,45 @@ export const TextField = forwardRef(function TextField(
     icon: IconComponent,
     error = false,
     requirement,
+    focusScrollAnchorRef,
+    placeholder,
+    onFocus,
+    onBlur,
     ...input
-  }: { label: string; icon: Icon; error?: boolean; requirement?: FieldRequirement } & TextInputProps,
+  }: {
+    label: string;
+    icon: Icon;
+    error?: boolean;
+    requirement?: FieldRequirement;
+    focusScrollAnchorRef?: RefObject<View | null>;
+  } & TextInputProps,
   ref: Ref<TextInput>
 ) {
+  const containerRef = useRef<View>(null);
+  const scrollAnchor = focusScrollAnchorRef ?? containerRef;
+  const scrollOnFocus = useScrollOnFieldFocus(scrollAnchor);
+  const [focused, setFocused] = useState(false);
+
   return (
-    <View style={{ gap: 6 }}>
+    <View ref={containerRef} collapsable={false} style={{ gap: 6 }}>
       <FieldLabelRow label={label} requirement={requirement} />
       <View style={[styles.inputBox, error && { borderColor: colors.danger }]}>
         <IconComponent size={18} color={error ? colors.danger : colors.textSecondary} />
         <TextInput
           ref={ref}
           style={styles.input}
+          placeholder={focused ? undefined : placeholder}
           placeholderTextColor={colors.textSecondary}
           accessibilityLabel={label}
+          onFocus={(e) => {
+            setFocused(true);
+            scrollOnFocus();
+            onFocus?.(e);
+          }}
+          onBlur={(e) => {
+            setFocused(false);
+            onBlur?.(e);
+          }}
           {...input}
         />
       </View>
@@ -379,38 +476,118 @@ export function SectionHeader({
   );
 }
 
-/** The dark centered dialog used on the recording and review screens (04c, 04f, 05c). */
+/** Small badge on profile-photo confirmations (Pencil 06b, 06f–06h, 06l, 06o, 07d–07n). */
+export type DialogBadgeKind =
+  | 'heart'
+  | 'follow'
+  | 'flag'
+  | 'block'
+  | 'unblock'
+  | 'unmatch'
+  | 'mute'
+  | 'hide'
+  | 'unfollow';
+
+export type DialogHero =
+  | { type: 'icon'; icon: Icon; iconTone?: 'warning' | 'success' }
+  | { type: 'avatar'; uri?: string | null; name: string; badge: DialogBadgeKind };
+
+const DIALOG_BADGE: Record<
+  DialogBadgeKind,
+  { icon: Icon; bg: string; iconColor: string; borderColor?: string }
+> = {
+  heart: { icon: Heart, bg: colors.accentDog, iconColor: colors.white },
+  follow: { icon: UserPlus, bg: colors.surfaceDark, iconColor: colors.white, borderColor: colors.borderDark },
+  flag: { icon: Flag, bg: colors.accentDog, iconColor: colors.white },
+  block: { icon: Ban, bg: colors.danger, iconColor: colors.white },
+  unblock: { icon: UserCheck, bg: colors.surfaceDark, iconColor: colors.white, borderColor: colors.borderDark },
+  unmatch: { icon: HeartOff, bg: colors.surfaceDark, iconColor: colors.white, borderColor: colors.borderDark },
+  mute: { icon: Bell, bg: colors.surfaceDark, iconColor: colors.white, borderColor: colors.borderDark },
+  hide: { icon: EyeOff, bg: colors.surfaceDark, iconColor: colors.white, borderColor: colors.borderDark },
+  unfollow: { icon: UserMinus, bg: colors.surfaceDark, iconColor: colors.white, borderColor: colors.borderDark },
+};
+
+function DialogAvatarHero({ uri, name, badge }: { uri?: string | null; name: string; badge: DialogBadgeKind }) {
+  const initial = (name.trim()[0] || '?').toUpperCase();
+  const b = DIALOG_BADGE[badge];
+  const BadgeIcon = b.icon;
+  return (
+    <View style={styles.dialogAvatarWrap}>
+      {uri ? (
+        <Image source={{ uri }} style={styles.dialogAvatar} accessibilityLabel={name} />
+      ) : (
+        <View style={[styles.dialogAvatar, styles.dialogAvatarPlaceholder]}>
+          <Text style={styles.dialogAvatarInitial}>{initial}</Text>
+        </View>
+      )}
+      <View
+        style={[
+          styles.dialogAvatarBadge,
+          { backgroundColor: b.bg },
+          b.borderColor ? { borderWidth: 1.5, borderColor: b.borderColor } : null,
+        ]}
+      >
+        <BadgeIcon size={14} color={b.iconColor} />
+      </View>
+    </View>
+  );
+}
+
+/** The dark centered dialog used on the recording and review screens (04c, 04f, 05c) and social confirmations. */
 export function Dialog({
   visible,
-  icon: IconComponent,
-  iconTone = 'warning',
+  variant = 'dark',
+  hero,
   title,
   body,
   primary,
   secondary,
+  primaryDestructive = false,
 }: {
   visible: boolean;
-  icon: Icon;
-  iconTone?: 'warning' | 'success';
+  variant?: 'dark' | 'light';
+  hero: DialogHero;
   title: string;
   body: string;
   primary: { label: string; onPress: () => void };
   secondary?: { label: string; onPress: () => void };
+  /** Red primary button for Block, Report, Delete, etc. */
+  primaryDestructive?: boolean;
 }) {
-  const success = iconTone === 'success';
+  const light = variant === 'light';
+  const iconHero = hero.type === 'icon' ? hero : null;
+  const success = iconHero?.iconTone === 'success';
+  const IconComponent = iconHero?.icon;
   return (
-    <Modal visible={visible} transparent animationType="fade" onRequestClose={secondary?.onPress ?? primary.onPress}>
-      <View style={styles.scrim}>
-        <View style={styles.dialog} accessibilityViewIsModal>
-          <View style={[styles.dialogIcon, success && { backgroundColor: colors.accentDog }]}>
-            <IconComponent size={success ? 26 : 22} color={success ? colors.white : colors.accentDog} />
-          </View>
-          <Text style={styles.dialogTitle}>{title}</Text>
-          <Text style={styles.dialogBody}>{body}</Text>
-          <PrimaryButton label={primary.label} onPress={primary.onPress} style={{ alignSelf: 'stretch', marginTop: 8 }} />
+    <Modal
+      visible={visible}
+      transparent
+      animationType="fade"
+      onRequestClose={secondary?.onPress ?? primary.onPress}
+    >
+      <View style={[styles.scrim, light && styles.scrimLight]}>
+        <View style={[styles.dialog, light && styles.dialogLight]} accessibilityViewIsModal>
+          {hero.type === 'avatar' ? (
+            <DialogAvatarHero uri={hero.uri} name={hero.name} badge={hero.badge} />
+          ) : IconComponent ? (
+            <View style={[styles.dialogIcon, success && { backgroundColor: colors.accentDog }]}>
+              <IconComponent size={success ? 26 : 22} color={success ? colors.white : colors.accentDog} />
+            </View>
+          ) : null}
+          <Text style={[styles.dialogTitle, light && styles.dialogTitleLight]}>{title}</Text>
+          <Text style={[styles.dialogBody, light && styles.dialogBodyLight]}>{body}</Text>
+          <PrimaryButton
+            label={primary.label}
+            onPress={primary.onPress}
+            style={{
+              alignSelf: 'stretch',
+              marginTop: 8,
+              ...(primaryDestructive ? { backgroundColor: colors.danger } : null),
+            }}
+          />
           {secondary ? (
             <Pressable accessibilityRole="button" onPress={secondary.onPress} hitSlop={8} style={{ paddingVertical: 6 }}>
-              <Text style={styles.dialogSecondary}>{secondary.label}</Text>
+              <Text style={[styles.dialogSecondary, light && styles.dialogSecondaryLight]}>{secondary.label}</Text>
             </Pressable>
           ) : null}
         </View>
@@ -563,6 +740,7 @@ export const styles = StyleSheet.create({
   sectionTitle: { fontFamily: fonts.heading, fontSize: 18, color: colors.textPrimary },
   sectionHelper: { fontFamily: fonts.body, fontSize: 12, color: colors.textSecondary },
   scrim: { flex: 1, backgroundColor: '#000000B3', alignItems: 'center', justifyContent: 'center', padding: 32 },
+  scrimLight: { backgroundColor: '#00000066' },
   dialog: {
     alignSelf: 'stretch',
     backgroundColor: colors.surfaceDark,
@@ -573,6 +751,7 @@ export const styles = StyleSheet.create({
     gap: 12,
     alignItems: 'center',
   },
+  dialogLight: { backgroundColor: colors.surface, borderColor: colors.borderSubtle },
   dialogIcon: {
     width: 52,
     height: 52,
@@ -582,8 +761,29 @@ export const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   dialogTitle: { fontFamily: fonts.heading, fontSize: 22, color: colors.white, textAlign: 'center' },
+  dialogTitleLight: { fontSize: 20, color: colors.textPrimary },
   dialogBody: { fontFamily: fonts.body, fontSize: 14, lineHeight: 20, color: colors.textDarkMuted, textAlign: 'center' },
-  dialogSecondary: { fontFamily: fonts.bodyBold, fontSize: 14, color: colors.white, textAlign: 'center' },
+  dialogBodyLight: { lineHeight: 20, color: colors.textSecondary },
+  dialogSecondary: { fontFamily: fonts.bodyBold, fontSize: 15, color: colors.white, textAlign: 'center' },
+  dialogSecondaryLight: { color: colors.textSecondary },
+  dialogAvatarWrap: { width: 72, height: 72, marginBottom: 4 },
+  dialogAvatar: { width: 72, height: 72, borderRadius: 36 },
+  dialogAvatarPlaceholder: {
+    backgroundColor: colors.accentDogTint,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  dialogAvatarInitial: { fontFamily: fonts.heading, fontSize: 28, color: colors.accentDog },
+  dialogAvatarBadge: {
+    position: 'absolute',
+    right: -2,
+    bottom: -2,
+    width: 28,
+    height: 28,
+    borderRadius: 14,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
   badge: {
     backgroundColor: '#FF6B3526',
     borderRadius: 9999,

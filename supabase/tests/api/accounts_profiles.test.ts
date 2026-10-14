@@ -62,7 +62,7 @@ test('minimum age is enforced through the API', async () => {
 test('a user can build and finish a profile with a photo upload', async () => {
   const { error: e1 } = await alice.client
     .from('profiles')
-    .update({ first_name: 'Alex', birthday: eighteenYearsAgo(), gender: 'Woman', interests: ['Hiking', 'Coffee'] })
+    .update({ first_name: 'Alex', birthday: eighteenYearsAgo(), gender: 'Woman', interested_in: ['Women'] })
     .eq('id', alice.id);
   assert.ifError(e1);
 

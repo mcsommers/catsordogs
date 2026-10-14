@@ -3,6 +3,19 @@
 A record of questions asked while planning the phone app, the options offered,
 and Mike's answer. Newest phase first.
 
+## Notification defaults at sign-up (Mike, Oct 13, 2026)
+
+When someone creates an account, the server seeds **notification_preferences** with **push on** and **email on** for all four types (daily question, matches, messages, nudges). They can turn channels off in **08c**. Older accounts without stored rows still use the legacy fallbacks (email on only for matches).
+
+## Text fields — focus scroll and placeholder (Mike, Oct 13, 2026)
+
+On every text input in the mobile app **except chat**, when the user focuses the field:
+
+1. **Placeholder / helper text inside the field clears** until they leave the field (even if the value is still empty).
+2. **The screen scrolls** so the **label above the field** sits **30px** below the top of the scroll viewport (keyboard-aware when needed).
+
+Implemented in shared `TextField`, `AppTextInput`, and `LocationField` via `FIELD_LABEL_VIEWPORT_TOP` in `mobile/src/lib/formScroll.ts`. Chat (`09` / `chat/[matchId]`) is unchanged until Mike specifies chat behavior.
+
 ## Phase C: Profile and archive (asked Oct 12, 2026)
 
 Planning read-through: Build Plan Phase C, MVP requirements (profile / archive / 06j / 06k / 08), Concept doc, UAT placeholders, Pencil frames **06j**, **06n**, **06k**, **08**, and existing backend RPCs (`get_my_answers`, `get_my_profile_view_count`, `record_profile_view`, `get_answer_for_playback`, etc.).
@@ -33,11 +46,15 @@ Answer: **Remove** the verified badge. That feature does not exist. (Design file
 
 Options:
 
-- **Up to 6 photos**, shown as **2 rows × 3 equal thumbnails** on every profile (own **08** and others’ **06j** / **06n**).
+- **Up to 6 gallery photos** (plus a separate **profile photo** in the hero), shown as **2 rows × 3 equal thumbnails** in **Your Photos** / **Photos** on **08** and **06j** / **06n** (avatar not in the grid).
 - Asymmetric grid or “+N more” on the sixth cell (old Pencil).
 - More than 6 photos (e.g. “9 photos” in old Pencil).
 
-Answer: **At most 6 photos** per person, displayed as **two rows of three** equal photos. No “+3” overflow tile. (Design file and requirements updated.)
+Answer: **One profile photo (avatar)** plus **at most 6 gallery photos**, displayed as **two rows of three** equal thumbnails in the grid. No “+3” overflow tile. (Design file and requirements updated.)
+
+#### Build / Edit Profile photo entry (03 / 08d, Oct 2026)
+
+On **Build Profile** and **Edit Profile**, photo entry is split: a required **Profile photo** (circular avatar, position 1) at the top, and optional **More photos** (2×3 grid for gallery positions 2–7) above the primary button. Viewing profiles (**06j**, **08**) shows the avatar in the hero and **only gallery photos** in the grid.
 
 #### Photo count row on **06j** and **06n** (removed)
 
@@ -85,7 +102,7 @@ Answer: **Update the backend** so profile photos are **visible to other users** 
 
 ---
 
-### Scope and behavior (agent questions — answers pending unless noted)
+### Scope and behavior (agent questions — answered Oct 12, 2026)
 
 Reply with the **question number and option letter**, e.g. **1A**, **3B**. For question **2**, you can pick one letter for heart/⋯ and one for nudge (e.g. **2A** and **2D**).
 
@@ -163,6 +180,161 @@ Options:
 Answer: **7A.**
 
 **Implementation note:** Phase C checkboxes are in `docs/UAT-flows.md` (updated when Mike answered these questions).
+
+---
+
+## Phase D: Social screens (asked Oct 12, 2026)
+
+Planning read-through: Build Plan Phase D (“Follow, nudge, match, messages, filters, settings, the more-options menu … Blocked and Not Interested list with Unblock and Undo, flagging”), MVP requirements (matching, messaging, follow/nudge, moderation menus, Feed Settings **06i**, Account **08b–08g** / **08d** / **08c**, per-video flag vs profile/message report), Pencil frames **07** (Incoming / Outgoing / Chats segments), **07b–07n**, **07h**, social confirmations **06b**, **06e–06w**, **06i**, **06n** / **06o**, **06z**, and Account **08b–08g** / **08d** / **08c**.
+
+**Code today:** The Matches tab is still a placeholder (`mobile/src/app/(tabs)/matches.tsx`). Heart and ⋯ on the feed, **06j** / **06n**, and **06k** call `phaseDPlaceholder.ts`. **08** Account rows use the same placeholder. The feed already loads `matchState` / `isFollowed` on items; profiles use `get_user_profile` (includes `matchState`). Server RPCs for follow, nudge, match, chat, block, Not Interested, flag, report, filters, ranking, notification prefs, and blocked lists are already in Supabase with tests — the mobile app has not wired them yet. There is no Expo push token registration in the app yet (notifications are queued on the server).
+
+Reply with the **question number and option letter**, e.g. **1A**, **4B**.
+
+**Mike (Oct 12, 2026):** **1A**, **2A**, **3A**, **4A**, **5A**, **6A**, **7A**, **8A**, **9A**, **10A**, **11A**, **12A**.
+
+### 1. How much should Phase D ship in one pull request?
+
+The Build Plan names one mobile Phase D with “every remaining user-facing screen” before Polish (Phase E). That is a large surface (matches, chat, menus, Feed Settings, full Account section, flag/report).
+
+Options:
+
+- **A.** **One Phase D PR** on branch `phase-d-social`: everything in Build Plan Phase D in a single phase (matches through Account), then UAT for all of it together. *(Recommended if you want one big test pass.)*
+- **B.** **Two PRs:** **D1** — heart, ⋯ menus, follow/nudge (**06n** / **06o**), match flow, **07** tab, chat, and confirmations; **D2** — **06i** Feed Settings, **08d** / **08b** / **08c** / **08e–08g**, Help & Support, delete account.
+- **C.** **Three PRs:** match/chat first, then social menus + follow/nudge, then settings + Account.
+
+Answer: **1A.**
+
+### 2. Matches tab layout (Pencil **07**, **07b**, **07e**)
+
+Pencil shows one **Matches** screen title with three segments at the top: **Incoming**, **Outgoing**, and **Chats** (with separate frames for Incoming vs Outgoing list content and **07b** for Chats).
+
+Options:
+
+- **A.** **Match Pencil:** one Matches tab route with those three segments; switching segments swaps the list (Incoming requests, Outgoing requests, or Chats). *(Recommended.)*
+- **B.** **Chats only** on the Matches tab; Incoming and Outgoing live only inside notifications / deep links (not in Pencil).
+- **C.** **Something else** — describe in your reply.
+
+Answer: **2A.**
+
+### 3. Where should Accept and Decline live?
+
+Requirements: the recipient can **View Profile**, **Accept (on the sender’s profile, 07h)**, or **Decline**. Pencil **07** Incoming rows include **Decline** (with **07g**); **07h** shows **Accept**.
+
+Options:
+
+- **A.** **Both places as designed:** Decline from the Incoming row (confirmation **07g**); Accept only on **07h** (and heart/send rules unchanged elsewhere). *(Recommended.)*
+- **B.** Accept and Decline both on the Incoming row; profile is view-only.
+- **C.** Accept and Decline only on **07h** after tapping the row.
+
+Answer: **3A.**
+
+### 4. After sending a match request from a **profile** (heart on **06j** / **06n**)
+
+Pencil has **07i Match Confirmation** and a separate frame **06z Profile Request Sent** (in addition to feed **06b** for “Match with [name]?” before send).
+
+Options:
+
+- **A.** **Before send:** same pattern as the feed — confirmation dialog (**07i** on profile, **06b** on feed / **06k**). **After** a successful send, show **06z** (or equivalent success state on the profile), then selected heart everywhere.
+- **B.** **Before send only** (07i / 06b); no **06z** — heart state alone shows “request sent”.
+- **C.** **06z only** after send; no separate pre-send dialog on profile (feed still uses **06b**).
+
+Answer: **4A.**
+
+### 5. Expo push registration and **08c Notifications**
+
+Match requests, messages, nudges, and daily question pushes need a device token. The server queue and worker already exist; the app does not register for push yet.
+
+Options:
+
+- **A.** **Include in Phase D:** request OS permission when appropriate, register the Expo push token with Supabase, and build **08c** so push/email toggles call `get_notification_preferences` / `update_notification_preferences`. *(Recommended for testing real notifications.)*
+- **B.** **Build 08c toggles only** (server prefs) but **defer** device registration and OS permission to Phase E; you test social flows without push on the phone.
+- **C.** **Defer all of 08c** to Phase E; Phase D is in-app only.
+
+Answer: **5A.**
+
+### 6. Feed Settings (**06i**) — how complete in Phase D?
+
+Requirements: full **Filters** (driven by `filter_definitions`, not hard-coded) plus **Ranking** weights and **reset**, and saving must affect `get_feed` / ranking on the server.
+
+Options:
+
+- **A.** **Full 06i in Phase D** — every filter and all six ranking sliders, wired to `filter_preferences`, `feed_settings`, and `reset_feed_settings`, opened from the feed settings control and from **08** Account. *(Recommended; matches MVP.)*
+- **B.** **Ranking section first** in one PR, Filters in a follow-up (same phase, two steps).
+- **C.** **Filters only** in Phase D; Ranking stays at server defaults until a follow-up.
+
+Answer: **6A.**
+
+### 7. Account screens beyond placeholders
+
+**08** already lists Edit Profile, Feed Settings, Notifications, Privacy & Safety, Blocked and Not Interested, and Help & Support (all placeholder except Log Out).
+
+Options:
+
+- **A.** **Wire every Account row in Phase D** per MVP: **08d** Edit Profile (reuse Build Profile fields + Save Changes), **08b** Privacy & Safety (Allow followers + Delete account), **08c** Notifications, **08e–08g** Blocked and Not Interested list, **06i** from Feed Settings row, Help & Support opens the admin **Help URL** when set. *(Recommended.)*
+- **B.** **Social + 06i + Blocked list only**; defer **08d**, **08b** (delete account), and **08c** to Phase E.
+- **C.** **Delete account** and **Help & Support** only after you approve copy/design for delete (superseded by **8A** / **08h**).
+
+Answer: **7A.**
+
+### 8. Delete account confirmation (**08h**)
+
+MVP requires immediate permanent deletion after a single confirmation step on screen **08h** (designed in Pencil to the right of **08g**).
+
+Options:
+
+- **A.** **Add a simple frame to Pencil** (e.g. next to **08b**) as part of Phase D, then build it to match.
+- **B.** **Build from requirements copy** in a minimal alert/full-screen flow **without** a new Pencil frame for now.
+- **C.** **Defer delete account** to Phase E; Privacy & Safety ships **Allow followers** only in Phase D.
+
+Answer: **8A.** New Pencil frame **08h Delete Account Confirmation** (to the right of **08g**).
+
+### 9. Feed ⋯ menu: **Report** on a video vs a profile
+
+The menu label is always **Report**, but MVP distinguishes **per-video flagging** on feed / answer view (flag copy about the **response**) from **profile report** on **06p** (profile report queue).
+
+Options:
+
+- **A.** **Context-specific behavior (recommended):** on feed **06e** and **06k**, **Report** calls `flag_answer` and uses the flag confirmation copy; on **06p** (profile), **Report** calls `report_profile` and uses the profile report copy. Menu order stays Follow / Not Interested / Report / Block / Cancel everywhere.
+- **B.** **One Report path** for both (always profile report) — only if you intend to change MVP.
+- **C.** **Rename** feed menu item to “Flag” while keeping “Report” on profiles (would diverge from Pencil **06e**).
+
+Answer: **9A.**
+
+### 10. Per-chat mute (**07d**) and message report (**07m**)
+
+Pencil includes **07d Mute Notifications Confirmation** (chat header bell) and **07m Report Message Confirmation** (flag icon in header).
+
+Options:
+
+- **A.** **Build both in Phase D** with the server behavior that matches chat notification prefs / `report_message`. *(Recommended.)*
+- **B.** **Chat text + Realtime first**; mute and message report in a fast follow-up before you call Phase D done.
+- **C.** **Skip 07d** in v1 (always notify for messages when prefs allow).
+
+Answer: **10A.**
+
+### 11. Git branch for Phase D
+
+Options:
+
+- **A.** **`phase-d-social`** branch and one PR into `main` when the scope you chose in question **1** is complete. *(Recommended.)*
+- **B.** Use a different branch name (say which in your reply).
+
+Answer: **11A** — use git branch **`phase-d-social`** and one pull request into `main` when Phase D is complete.
+
+### 12. What should you UAT first on your phone?
+
+Once implementation starts, order affects what you can validate early.
+
+Options:
+
+- **A.** **Menus + heart first** (follow, block, Not Interested, report/flag, match send/cancel), then Matches tab + chat, then **06i** + Account.
+- **B.** **Matches + chat first**, then menus and settings.
+- **C.** **No preference** — agent orders by dependency and documents the sequence in the Phase D UAT section.
+
+Answer: **12A** — test **menus + heart** first (follow, block, Not Interested, report/flag, match send/cancel), then **Matches tab + chat**, then **06i** + Account. Checklist: `docs/UAT-flows.md` (**D-01** through **D-38** in that order).
+
+**Implementation note:** Phase D builds on branch **`phase-d-social`** (**11A**), one PR (**1A**). Exact button copy in UAT is verified against the app when Phase D is implemented.
 
 ---
 

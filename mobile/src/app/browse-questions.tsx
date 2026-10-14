@@ -1,11 +1,11 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
-import { FlatList, Pressable, StyleSheet, Text, TextInput, View } from 'react-native';
+import { FlatList, Pressable, StyleSheet, Text, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { router } from 'expo-router';
 import { Search, X } from 'lucide-react-native';
 import { fetchBrowseQuestions, type BrowseQuestion } from '../lib/feed';
 import { shortQuestionDate } from '../lib/format';
-import { BackButton, CenteredSpinner, Screen } from '../components/ui';
+import { AppTextInput, BackButton, CenteredSpinner, Screen } from '../components/ui';
 import { colors, fonts } from '../theme';
 
 const PAGE = 30;
@@ -56,7 +56,7 @@ export default function BrowseQuestions() {
       </View>
       <View style={styles.search}>
         <Search size={18} color={colors.textDarkMuted} />
-        <TextInput
+        <AppTextInput
           style={styles.input}
           placeholder="Search questions"
           placeholderTextColor={colors.textDarkMuted}

@@ -109,6 +109,14 @@ textarea { min-height: 72px; resize: vertical; }
 
 .muted { color: #57534e; }
 .error { color: #9f1239; }
+.notice-success {
+  color: #14532d;
+  background: #ecfdf5;
+  border: 1px solid #86efac;
+  border-radius: 12px;
+  padding: 12px 14px;
+  margin: 0;
+}
 .banner {
   background: #fff7ed;
   border: 1px solid #fdba74;

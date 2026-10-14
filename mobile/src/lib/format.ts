@@ -75,6 +75,37 @@ export function formatJoinedShort(isoTimestamp: string): string {
   return `${SHORT_MONTHS[d.getMonth()]} ${d.getFullYear()}`;
 }
 
+/** Relative time for match/chat rows, e.g. "2h ago", "Yesterday". */
+export function formatRelativeTime(isoTimestamp: string): string {
+  const then = new Date(isoTimestamp).getTime();
+  const now = Date.now();
+  const diffSec = Math.max(0, Math.floor((now - then) / 1000));
+  if (diffSec < 60) return 'Just now';
+  const mins = Math.floor(diffSec / 60);
+  if (mins < 60) return `${mins}m ago`;
+  const hours = Math.floor(mins / 60);
+  if (hours < 24) return `${hours}h ago`;
+  const days = Math.floor(hours / 24);
+  if (days === 1) return 'Yesterday';
+  if (days < 7) return `${days}d ago`;
+  const d = new Date(isoTimestamp);
+  return `${SHORT_MONTHS[d.getMonth()]} ${d.getDate()}`;
+}
+
+/** Outgoing match row: "Waiting for a response · Sent yesterday" */
+export function formatOutgoingMatchLine(requestedAt: string): string {
+  const rel = formatRelativeTime(requestedAt);
+  const sent =
+    rel === 'Yesterday'
+      ? 'Sent yesterday'
+      : rel === 'Just now'
+        ? 'Sent just now'
+        : rel.endsWith(' ago')
+          ? `Sent ${rel.replace(' ago', '')} ago`
+          : `Sent ${rel}`;
+  return `Waiting for a response · ${sent}`;
+}
+
 /** Archive row day label: Today, Yesterday, or "Sep 28". */
 export function formatAnswerDayLabel(isoDate: string): string {
   const today = toIsoDate(new Date());

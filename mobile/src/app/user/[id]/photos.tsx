@@ -13,6 +13,7 @@ import {
 import { useLocalSearchParams, router } from 'expo-router';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { fetchUserProfile, type ProfilePhoto } from '../../../lib/profile';
+import { galleryPhotos } from '../../../lib/profilePhotos';
 import { BackButton, CenteredSpinner, Screen } from '../../../components/ui';
 import { colors, fonts } from '../../../theme';
 
@@ -45,7 +46,7 @@ export default function ProfilePhotosScreen() {
     })();
   }, [id]);
 
-  const data = useMemo(() => photos.filter((p) => p.url), [photos]);
+  const data = useMemo(() => galleryPhotos(photos).filter((p) => p.url), [photos]);
 
   const startIndex = useMemo(() => {
     const raw = Math.max(0, Number(start ?? 0));

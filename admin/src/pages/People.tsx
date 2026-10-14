@@ -10,8 +10,8 @@ type Person = {
   birthday: string | null;
   age: number | null;
   gender: string | null;
-  pronouns: string[];
   sexual_orientation: string[];
+  interested_in: string[];
   height_inches: number | null;
   city: string | null;
   latitude: number | null;
@@ -184,8 +184,8 @@ export default function People() {
                             : <p className="muted">No About Me</p>}
                           <p>
                             {line('Gender', person.gender)}
-                            {line('Pronouns', (person.pronouns ?? []).join(', '))}
                             {line('Orientation', (person.sexual_orientation ?? []).join(', '))}
+                            {line('Interested in', (person.interested_in ?? []).join(', '))}
                             {line(
                               'Height',
                               person.height_inches != null
@@ -194,11 +194,9 @@ export default function People() {
                             )}
                             {line('City', person.city)}
                             {line('Location lookup', person.latitude != null && person.longitude != null ? `${person.latitude}, ${person.longitude}` : null)}
-                            {line('Job', [person.job_title, person.company].filter(Boolean).join(' at ') || null)}
+                            {line('Occupation', person.job_title)}
                             {line('School', person.school)}
                             {line('Lifestyle', (person.lifestyle_tags ?? []).join(', '))}
-                            {line('Languages', (person.languages ?? []).join(', '))}
-                            {line('Interests', (person.interests ?? []).join(', '))}
                             {line('Relationship goal', person.relationship_goal)}
                             {line('Allow followers', person.allow_followers ? 'Yes' : 'No')}
                             {line('Time zone', person.time_zone)}

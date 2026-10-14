@@ -1,12 +1,12 @@
 import { Image, Pressable, StyleSheet, Text, View, useWindowDimensions } from 'react-native';
-import { Plus, Star } from 'lucide-react-native';
+import { Plus } from 'lucide-react-native';
 import type { ProfilePhoto } from '../../lib/profile';
+import { MAX_GALLERY_PHOTOS, galleryPhotos } from '../../lib/profilePhotos';
 import { PROFILE_PAD } from './profileLayout';
 import { colors, fonts } from '../../theme';
 
 const GRID_GAP = 6;
 const COLS = 3;
-const MAX_PHOTOS = 6;
 
 type Props = {
   photos: ProfilePhoto[];
@@ -14,15 +14,16 @@ type Props = {
   onPhotoPress: (displayIndex: number) => void;
   ownProfile?: boolean;
   onAddPhotoPress?: () => void;
+  addPhotoDisabled?: boolean;
 };
 
-export function ProfilePhotoGrid({ photos, onPhotoPress, ownProfile, onAddPhotoPress }: Props) {
+export function ProfilePhotoGrid({ photos, onPhotoPress, ownProfile, onAddPhotoPress, addPhotoDisabled }: Props) {
   const { width: screenW } = useWindowDimensions();
   const cellW = (screenW - PROFILE_PAD * 2 - GRID_GAP * (COLS - 1)) / COLS;
   const cellH = 115;
 
-  const withUrls = [...photos].filter((p) => p.url).sort((a, b) => a.position - b.position);
-  const showAdd = ownProfile && withUrls.length < MAX_PHOTOS;
+  const withUrls = galleryPhotos(photos).filter((p) => p.url);
+  const showAdd = ownProfile && withUrls.length < MAX_GALLERY_PHOTOS;
 
   return (
     <View style={styles.grid}>
@@ -34,18 +35,13 @@ export function ProfilePhotoGrid({ photos, onPhotoPress, ownProfile, onAddPhotoP
           accessibilityRole="button"
         >
           <Image source={{ uri: ph.url! }} style={styles.image} resizeMode="cover" />
-          {ownProfile && index === 0 ? (
-            <View style={styles.mainBadge}>
-              <Star size={11} color={colors.white} />
-              <Text style={styles.mainLabel}>Main</Text>
-            </View>
-          ) : null}
         </Pressable>
       ))}
       {showAdd ? (
         <Pressable
-          style={[styles.cell, styles.addCell, { width: cellW, height: cellH }]}
+          style={[styles.cell, styles.addCell, { width: cellW, height: cellH }, addPhotoDisabled && styles.addCellDisabled]}
           onPress={onAddPhotoPress}
+          disabled={addPhotoDisabled}
           accessibilityRole="button"
           accessibilityLabel="Add photo"
         >
@@ -67,20 +63,8 @@ const styles = StyleSheet.create({
     backgroundColor: colors.surfaceDark,
   },
   addCell: { alignItems: 'center', justifyContent: 'center' },
+  addCellDisabled: { opacity: 0.5 },
   image: { width: '100%', height: '100%' },
-  mainBadge: {
-    position: 'absolute',
-    top: 6,
-    left: 6,
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 4,
-    backgroundColor: '#000000A0',
-    paddingHorizontal: 8,
-    paddingVertical: 4,
-    borderRadius: 6,
-  },
-  mainLabel: { fontFamily: fonts.bodySemi, fontSize: 11, color: colors.white },
   addCircle: {
     width: 32,
     height: 32,

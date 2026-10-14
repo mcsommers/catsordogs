@@ -78,6 +78,17 @@ describe('Build Profile save errors (03c)', () => {
     expect(profileSaveProblem(err, 'details')).toEqual({ field: null, banner: 'Choose up to 5 for Interests.' });
   });
 
+  it('shows Finish Setup server errors even when the code is not 23514', () => {
+    const err = {
+      code: 'P0001',
+      message: 'Profile is not finished. Still needed: at least 1 photo.',
+    };
+    expect(profileSaveProblem(err, 'finish')).toEqual({
+      field: null,
+      banner: 'Profile is not finished. Still needed: at least 1 photo.',
+    });
+  });
+
   it('shows nothing when there is no error', () => {
     expect(profileSaveProblem(null, 'finish')).toEqual({ field: null, banner: null });
   });

@@ -48,7 +48,7 @@ export function firstProfileFinishIssue(args: {
   heightInches: string;
 }): { field: ProfileFinishField; banner: string; birthdayError: boolean; heightError: boolean } | null {
   const missing: { field: ProfileFinishField; part: string }[] = [];
-  if (args.photoCount === 0) missing.push({ field: 'photos', part: 'a photo' });
+  if (args.photoCount === 0) missing.push({ field: 'photos', part: 'a profile photo' });
   if (!args.firstName.trim()) missing.push({ field: 'first_name', part: 'your first name' });
   if (!args.birthday) missing.push({ field: 'birthday', part: 'your birthday' });
   if (!args.gender) missing.push({ field: 'gender', part: 'your gender' });
@@ -87,8 +87,11 @@ export function profileSaveProblem(
 ): { field: 'birthday' | null; banner: string | null } {
   if (!error) return { field: null, banner: null };
   if (isNetworkError(error)) return { field: null, banner: SAVE_ERROR };
-  if (step === 'birthday' && error.code === '23514') return { field: 'birthday', banner: null };
-  if (error.code === '23514' && error.message) return { field: null, banner: error.message };
+  const message = error.message?.trim();
+  if (step === 'birthday' && error.code === '23514' && message) {
+    return { field: 'birthday', banner: null };
+  }
+  if (message) return { field: null, banner: message };
   return { field: null, banner: SAVE_ERROR };
 }
 

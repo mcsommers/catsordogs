@@ -1,7 +1,3 @@
-import 'react-native-get-random-values';
+import './src/lib/ensureWebCrypto';
 import 'react-native-url-polyfill/auto';
-import { polyfillWebCrypto } from 'expo-standard-web-crypto';
-
-polyfillWebCrypto();
-
 import 'expo-router/entry';
