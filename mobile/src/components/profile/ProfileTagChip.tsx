@@ -2,7 +2,7 @@ import { StyleSheet, Text, View } from 'react-native';
 import { colors } from '../../theme';
 import { profileType } from './profileTypography';
 
-/** 06j Lifestyle / Interests — filled accent-dog pill (Pencil Tag Chip instance). */
+/** 06j Interests — filled accent-dog pill (Pencil Tag Chip instance). */
 export function ProfileTagChip({ label }: { label: string }) {
   return (
     <View style={styles.chip}>

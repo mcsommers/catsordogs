@@ -440,11 +440,11 @@ export function ProfileView({ userId, showBack }: Props) {
                 ) : null}
               </View>
 
-              {profile.lifestyleTags.length > 0 ? (
+              {profile.interests.length > 0 ? (
                 <View style={styles.section}>
-                  <Text style={styles.sectionTitle}>Lifestyle</Text>
+                  <Text style={styles.sectionTitle}>Interests</Text>
                   <View style={styles.chipRow}>
-                    {profile.lifestyleTags.map((t) => <ProfileTagChip key={t} label={t} />)}
+                    {profile.interests.map((t) => <ProfileTagChip key={t} label={t} />)}
                   </View>
                 </View>
               ) : null}

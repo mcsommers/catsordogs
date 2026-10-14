@@ -77,7 +77,7 @@ grant select on ids to public;
 --  13 U unfinished       14 OLD answered 10 days ago                 15 D3 answered 3 days ago
 -- ---------------------------------------------------------------------------
 select pg_temp.person(1, 'V', 'Woman', 29, 65, array['Hiking', 'Coffee'], 'Designer', 40.7128, -74.0060);
-update public.profiles set relationship_goal = 'Long-term relationship', lifestyle_tags = array['Dog lover'] where id = pg_temp.uid(1);
+update public.profiles set relationship_goal = 'Long-term relationship' where id = pg_temp.uid(1);
 select pg_temp.person(2, 'W1', 'Woman', 30, 67, array['Hiking', 'Coffee'], 'Nurse', 40.73, -73.99);
 select pg_temp.person(3, 'W2', 'Woman', 25, 63, array['Movies'], 'Teacher', 42.36, -71.06);
 select pg_temp.person(4, 'M1', 'Man', 35, 73, array['Hiking'], 'Chef', null, null);
@@ -301,7 +301,7 @@ update public.answers set caption_text = 'one two three four five six seven eigh
   where user_id = pg_temp.uid(5);
 set local role authenticated;
 update public.feed_settings set shared_interests = 'high', relationship_goals = 'low', response_depth = 'low',
-  lifestyle_compatibility = 'low', distance = 'low', recency = 'low';
+  distance = 'low', recency = 'low';
 select is((select first_name from public.get_feed(50, 0, public.utc_today()) limit 1), 'W1', 'ranking: high weight on shared interests puts the best interest match first');
 update public.feed_settings set shared_interests = 'low', response_depth = 'high';
 select is((select first_name from public.get_feed(50, 0, public.utc_today()) limit 1), 'N1', 'ranking: high weight on response depth puts the longest answer first');

@@ -265,7 +265,7 @@ function ReviewPane({
           {line('City', content.city)}
           {line('Occupation', content.job_title)}
           {line('School', content.school)}
-          {line('Lifestyle', (content.lifestyle_tags ?? []).join(', '))}
+          {line('Interests', (content.interests ?? []).join(', '))}
           {line('Relationship goal', content.relationship_goal)}
           {line('Allow followers', content.allow_followers == null ? null : content.allow_followers ? 'Yes' : 'No')}
           {line('Birthday', content.birthday)}

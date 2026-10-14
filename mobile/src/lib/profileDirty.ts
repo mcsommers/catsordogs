@@ -3,14 +3,16 @@ export type ProfileDraft = {
   first_name: string;
   birthday: string | null;
   gender: string | null;
+  show_gender: boolean;
   sexual_orientation: string[];
+  show_orientation: boolean;
   height_feet: string;
   height_inches: string;
   city: string;
   occupation: string;
   school: string;
   about_me: string;
-  lifestyle_tags: string[];
+  interests: string[];
   interested_in: string[];
   relationship_goal: string | null;
 };
@@ -32,14 +34,16 @@ export function snapshotProfileForm(form: ProfileDraft): string {
     first_name: form.first_name.trim(),
     birthday: form.birthday,
     gender: form.gender,
+    show_gender: form.show_gender,
     sexual_orientation: sortedStrings(form.sexual_orientation),
+    show_orientation: form.show_orientation,
     height_feet: form.height_feet.trim(),
     height_inches: form.height_inches.trim(),
     city: form.city.trim(),
     occupation: form.occupation.trim(),
     school: form.school.trim(),
     about_me: form.about_me.trim(),
-    lifestyle_tags: sortedStrings(form.lifestyle_tags),
+    interests: sortedStrings(form.interests),
     interested_in: sortedStrings(form.interested_in),
     relationship_goal: form.relationship_goal,
   });

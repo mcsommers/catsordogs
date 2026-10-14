@@ -139,7 +139,6 @@ for (const person of people) {
     city: person.city,
     about_me: person.about,
     sexual_orientation: person.done ? ['Straight'] : [],
-    lifestyle_tags: person.done ? ['Non-smoker'] : [],
     languages: person.done ? ['English'] : [],
     interests: person.done ? ['Coffee', 'Movies'] : [],
     relationship_goal: person.done ? 'Long-term relationship' : null,
@@ -149,14 +148,6 @@ for (const person of people) {
     school: person.done ? 'State University' : null,
     profile_completed_at: person.done ? new Date().toISOString() : null,
   }).eq('id', person.id));
-}
-
-// Coffee is not a lifestyle tag. Fix tags to real options.
-await must('alice lifestyle', await db.from('profiles').update({
-  lifestyle_tags: ['Cat lover', 'Night owl'],
-}).eq('id', ids.alice));
-for (const id of [ids.admin, ids.visitor, ids.bo, ids.carol, ids.eli, ids.fay, ids.gina, ids.hank]) {
-  await must('lifestyle', await db.from('profiles').update({ lifestyle_tags: ['Non-smoker'] }).eq('id', id));
 }
 
 for (const person of people) {
