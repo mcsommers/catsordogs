@@ -35,14 +35,19 @@ Within one multi-select filter, a person passes if **any** chosen value appears 
 | `age_range` | Age range | `profiles.birthday` | Age is `extract(year from age(current_date, birthday))`. Compared with the saved `min` and `max`. A bound that was not saved is not applied. A missing birthday fails the filter when the filter is set. |
 | `max_distance` | Maximum distance | `profiles.latitude`, `profiles.longitude` on both people | Miles are the haversine distance with an Earth radius of 3958.8. If the **viewer** has no latitude, this filter is skipped. If the viewer has a location and this filter is set, a person with no coordinates fails, and a person farther than the saved number of miles fails. A distance equal to the number passes. |
 | `height_range` | Height | `profiles.height_inches` | Same min/max rule as age. A missing height fails when the filter is set. The column is total inches (35 to 99). |
-| `sexual_orientation` | Sexual orientation | `profiles.sexual_orientation` | Any overlap with the viewer's chosen values. |
+| `sexual_orientation` | Sexual orientation | `profiles.sexual_orientation` | Any overlap with the viewer's chosen values (fixed list from `profile_options`; no custom entries on the profile). |
 | `occupation` | Occupation | `profiles.job_title` | The job title is one string. It passes when it equals one of the chosen values, ignoring case. |
 | `smoking` | Smoking | `profiles.lifestyle_tags` | Any overlap with the chosen lifestyle tags. |
 | `drinking` | Drinking | `profiles.lifestyle_tags` | A second filter on the same tags. If both smoking and drinking are set, the person must overlap each list. |
 | `relationship_goals` | Relationship goals | `profiles.relationship_goal` | The profile stores one goal. It passes when that goal is one of the chosen values, ignoring case. |
-| `interests` | Interests | `profiles.interests` | Any overlap with the chosen interests. |
+| `interests` | Interests | `profiles.interests` | Any overlap with the chosen interests. Build / Edit Profile no longer edit this field (see below); new accounts usually have an empty array, so this filter only affects people with legacy or backfilled data until feed settings change. |
 
-These profile fields are not filters and are not ranking signals: first name, school, about me, photos (beyond what filters use), interested-in (who you want to meet), and the allow-followers switch.
+### Profile fields vs feed (Oct 2026)
+
+- **`interested_in`** (Men, Women, Non-Binary on the profile) is **not** a filter and **not** a ranking signal. It does not appear in `passes_filters` or `rank_score`.
+- **`interests`** (hobby tags on `profiles.interests`) is still what the **Interests** filter and **Shared interests** ranking use. The app replaced hobby **Interests** on Build / Edit Profile with **Interested in**; the `interests` column remains for old rows. Do not confuse the two names.
+
+These profile fields are also not filters and not ranking signals: first name, school, about me, profile photos (avatar and gallery), **`interested_in`**, **`languages`** and **`pronouns`** (legacy columns, not edited in the app), and the allow-followers switch.
 
 Followed people are exempt from this section, up to the cap described below. Block, Not Interested, a hidden video, and an unfinished profile are not exempt.
 
@@ -70,9 +75,9 @@ Raising one weight also shrinks the share of the other five, because they all di
 
 **1. Shared interests** (`feed_settings.shared_interests`)
 
-Fields: `profiles.interests` on the viewer and on the other person.
+Fields: `profiles.interests` on the viewer and on the other person (hobby tags, **not** `interested_in`).
 
-Score = (how many of the **viewer's** interests also appear on the other person) / (how many interests the viewer has), capped at 1. Extra interests that only the other person has do not help. If the viewer has none, the score is 0.
+Score = (how many of the **viewer's** interests also appear on the other person) / (how many interests the viewer has), capped at 1. Extra interests that only the other person has do not help. If the viewer has none, the score is 0. Because new profiles no longer fill `interests`, this signal is often 0 for everyone until feed settings or the server are updated.
 
 **2. Relationship goals** (`feed_settings.relationship_goals`)
 
