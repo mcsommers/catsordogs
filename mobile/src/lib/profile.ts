@@ -11,14 +11,13 @@ export type UserProfile = {
   distanceMiles: number | null;
   heightInches: number | null;
   gender: string | null;
-  pronouns: string[];
   sexualOrientation: string[];
-  jobTitle: string | null;
-  company: string | null;
+  occupation: string | null;
   school: string | null;
   aboutMe: string | null;
   lifestyleTags: string[];
   languages: string[];
+  interestedIn: string[];
   interests: string[];
   relationshipGoal: string | null;
   joinedAt: string;
@@ -62,14 +61,18 @@ function mapProfile(row: ProfileRow): UserProfile {
     distanceMiles: row.distance_miles == null ? null : Number(row.distance_miles),
     heightInches: row.height_inches == null ? null : Number(row.height_inches),
     gender: row.gender ? String(row.gender) : null,
-    pronouns: (row.pronouns as string[]) ?? [],
     sexualOrientation: (row.sexual_orientation as string[]) ?? [],
-    jobTitle: row.job_title ? String(row.job_title) : null,
-    company: row.company ? String(row.company) : null,
+    occupation: (() => {
+      const job = row.job_title ? String(row.job_title) : '';
+      const co = row.company ? String(row.company) : '';
+      const merged = [job, co].filter(Boolean).join(' at ');
+      return merged || null;
+    })(),
     school: row.school ? String(row.school) : null,
     aboutMe: row.about_me ? String(row.about_me) : null,
     lifestyleTags: (row.lifestyle_tags as string[]) ?? [],
     languages: (row.languages as string[]) ?? [],
+    interestedIn: (row.interested_in as string[]) ?? [],
     interests: (row.interests as string[]) ?? [],
     relationshipGoal: row.relationship_goal ? String(row.relationship_goal) : null,
     joinedAt: String(row.joined_at),

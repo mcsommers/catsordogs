@@ -2,7 +2,7 @@
 -- block ending a match, avatars, and that the app cannot read who requested
 -- whom except through the Incoming / Outgoing lists.
 begin;
-select plan(104);
+select plan(110);
 
 delete from public.answers;
 delete from public.videos;
@@ -181,11 +181,13 @@ set local role authenticated;
 select is(public.send_match_request(pg_temp.uid(1)), 'matched', 'C sending back creates the match');
 select is((select state from public.get_match_state(pg_temp.uid(1))), 'matched', 'C sees matched');
 reset role;
+update public.profiles set city = 'Brooklyn, NY' where id = pg_temp.uid(3);
 select pg_temp.become(1);
 set local role authenticated;
 select is((select state from public.get_match_state(pg_temp.uid(3))), 'matched', 'A sees matched');
 select is(public.get_my_match_count(), 1::bigint, 'A has one match');
 select is((select first_name from public.get_conversations()), 'C', 'the new match appears on the Chats tab');
+select is((select city from public.get_conversations()), 'Brooklyn, NY', 'Chats includes the peer city for the chat header');
 select is((select last_message_body from public.get_conversations()), null, 'with no messages yet');
 select is((select photo_path from public.get_conversations()), pg_temp.uid(3)::text || '/1.jpg',
   'Chats includes C''s avatar path');
@@ -233,6 +235,23 @@ select pg_temp.become(3);
 set local role authenticated;
 select is((select muted from public.get_conversations()), false, 'C is not told and is not muted');
 select is((select last_message_is_mine from public.get_conversations()), false, 'C sees the last message as A''s');
+select is((select unread_count from public.get_conversations()), 1::bigint, 'C has one unread message from A');
+select lives_ok(format($$select public.send_message(%L, 'got it')$$,
+  (select match_id from public.get_conversations())), 'C can reply while unread');
+select is((select last_message_is_mine from public.get_conversations()), true, 'C sent the last message');
+select is((select unread_count from public.get_conversations()), 0::bigint,
+  'unread is zero when your message is last (peer messages only)');
+reset role;
+select pg_temp.become(1);
+set local role authenticated;
+select lives_ok(format($$select public.send_message(%L, 'again')$$,
+  (select match_id from public.get_conversations())), 'A sends another line');
+reset role;
+select pg_temp.become(3);
+set local role authenticated;
+select is((select unread_count from public.get_conversations()), 1::bigint, 'C has unread again after A''s new message');
+select public.mark_conversation_read((select match_id from public.get_conversations()));
+select is((select unread_count from public.get_conversations()), 0::bigint, 'mark read clears the unread count');
 
 -- ---------------------------------------------------------------------------
 -- Not Interested does not end a match

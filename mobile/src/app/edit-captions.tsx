@@ -1,5 +1,5 @@
-import { useEffect, useState, type ReactNode } from 'react';
-import { KeyboardAvoidingView, Platform, Pressable, ScrollView, StyleSheet, Text, TextInput, View } from 'react-native';
+import { useEffect, useRef, useState, type ReactNode } from 'react';
+import { KeyboardAvoidingView, Platform, Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
 import { router } from 'expo-router';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { VideoView, useVideoPlayer } from 'expo-video';
@@ -13,7 +13,7 @@ import {
   splitCaptionForSegments,
   type CaptionSegment,
 } from '../lib/recording';
-import { CenteredSpinner, PrimaryButton } from '../components/ui';
+import { AppTextInput, CenteredSpinner, FormScrollContext, PrimaryButton } from '../components/ui';
 import { colors, fonts } from '../theme';
 
 function leaveReview() {
@@ -26,6 +26,9 @@ type EditCaptionsFormProps = {
 };
 
 function EditCaptionsForm({ recording, previewAboveCaptions }: EditCaptionsFormProps) {
+  const scrollRef = useRef<ScrollView>(null);
+  const contentRef = useRef<View>(null);
+  const captionAnchorRef = useRef<View>(null);
   const [segments, setSegments] = useState<CaptionSegment[] | null>(null);
   const [text, setText] = useState('');
   const [duration, setDuration] = useState<number | null>(null);
@@ -98,32 +101,41 @@ function EditCaptionsForm({ recording, previewAboveCaptions }: EditCaptionsFormP
         <View style={styles.headerSpacer} />
       </View>
       <KeyboardAvoidingView style={{ flex: 1 }} behavior={Platform.OS === 'ios' ? 'padding' : undefined}>
-        <ScrollView contentContainerStyle={styles.content} keyboardShouldPersistTaps="handled">
-          {previewAboveCaptions ?? durationBanner}
+        <FormScrollContext.Provider value={{ scrollRef, contentRef }}>
+          <ScrollView
+            ref={scrollRef}
+            contentContainerStyle={styles.content}
+            keyboardShouldPersistTaps="handled"
+          >
+            <View ref={contentRef} collapsable={false}>
+              {previewAboveCaptions ?? durationBanner}
 
-          <View style={styles.sectionHeader}>
-            <Text style={styles.section}>Caption</Text>
-            <Pressable accessibilityRole="button" onPress={reset} hitSlop={8}>
-              <Text style={styles.reset}>Reset to auto</Text>
-            </Pressable>
-          </View>
+              <View ref={captionAnchorRef} collapsable={false} style={styles.sectionHeader}>
+                <Text style={styles.section}>Caption</Text>
+                <Pressable accessibilityRole="button" onPress={reset} hitSlop={8}>
+                  <Text style={styles.reset}>Reset to auto</Text>
+                </Pressable>
+              </View>
 
-          <TextInput
-            accessibilityLabel="Caption"
-            value={text}
-            onChangeText={setText}
-            multiline
-            maxLength={maxLen}
-            placeholder="Your caption"
-            placeholderTextColor={colors.textDarkFaint}
-            style={styles.box}
-            textAlignVertical="top"
-          />
+              <AppTextInput
+                accessibilityLabel="Caption"
+                value={text}
+                onChangeText={setText}
+                multiline
+                maxLength={maxLen}
+                placeholder="Your caption"
+                placeholderTextColor={colors.textDarkFaint}
+                focusScrollAnchorRef={captionAnchorRef}
+                style={styles.box}
+                textAlignVertical="top"
+              />
 
-          <Text style={styles.tip}>Tip: keep it short and true to what you said.</Text>
-          {message ? <Text style={styles.error}>{message}</Text> : null}
-          <PrimaryButton label="Save Captions" onPress={save} loading={busy} />
-        </ScrollView>
+              <Text style={styles.tip}>Tip: keep it short and true to what you said.</Text>
+              {message ? <Text style={styles.error}>{message}</Text> : null}
+              <PrimaryButton label="Save Captions" onPress={save} loading={busy} />
+            </View>
+          </ScrollView>
+        </FormScrollContext.Provider>
       </KeyboardAvoidingView>
     </SafeAreaView>
   );

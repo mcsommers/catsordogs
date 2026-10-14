@@ -21,7 +21,10 @@ import {
 } from '../../lib/profile';
 import { BackButton, CenteredSpinner } from '../../components/ui';
 import { AnswerDetailOverlay } from '../../components/AnswerDetailOverlay';
-import { showMatchingPlaceholder, showMoreOptionsPlaceholder } from '../../components/profile/phaseDPlaceholder';
+import { getFollowState } from '../../lib/social';
+import type { FeedMatchState } from '../../lib/feed';
+import { MoreOptionsMenu } from '../../components/social/MoreOptionsMenu';
+import { useSocialActions, type SocialSubject } from '../../components/social/useSocialActions';
 import {
   hlsSource,
   safePause,
@@ -61,6 +64,11 @@ export default function AnswerDetailScreen() {
 
   const [answers, setAnswers] = useState<ProfileAnswer[]>([]);
   const [subject, setSubject] = useState(EMPTY_SUBJECT);
+  const [subjectUserId, setSubjectUserId] = useState<string | null>(null);
+  const [subjectGender, setSubjectGender] = useState<string | null>(null);
+  const [subjectAvatarUri, setSubjectAvatarUri] = useState<string | null>(null);
+  const [isFollowed, setIsFollowed] = useState(false);
+  const [matchState, setMatchState] = useState<FeedMatchState>('none');
   const [loading, setLoading] = useState(true);
   const [gateOpen, setGateOpen] = useState(true);
   const [activeIndex, setActiveIndex] = useState(0);
@@ -118,6 +126,14 @@ export default function AnswerDetailScreen() {
             distanceMiles: profile.distanceMiles,
             streakDays: profile.streakDays,
           });
+          if (!isSelf && profile.userId) {
+            setSubjectUserId(profile.userId);
+            setSubjectGender(profile.gender);
+            setSubjectAvatarUri(profile.photos[0]?.url ?? null);
+            setMatchState((profile.matchState as FeedMatchState) || 'none');
+            const fs = await getFollowState(profile.userId);
+            setIsFollowed(fs.following);
+          }
         } else {
           setSubject(EMPTY_SUBJECT);
         }
@@ -161,6 +177,29 @@ export default function AnswerDetailScreen() {
   }, [loading, answers.length, pageHeight, isFocused]);
 
   const active = answers[activeIndex] ?? null;
+
+  const socialSubject: SocialSubject | null =
+    !isSelf && subjectUserId
+      ? {
+          userId: subjectUserId,
+          firstName: subject.firstName,
+          gender: subjectGender,
+          avatarUri: subjectAvatarUri,
+          isFollowed,
+          matchState,
+          answerId: active?.answerId ?? answerId,
+          surface: 'answer',
+        }
+      : null;
+
+  const social = useSocialActions(socialSubject, {
+    onStateChange: (patch) => {
+      if (patch.isFollowed != null) setIsFollowed(patch.isFollowed);
+      if (patch.matchState != null) setMatchState(patch.matchState);
+    },
+    onBlocked: () => leaveScreen(),
+    onNotInterested: () => leaveScreen(),
+  });
 
   useEffect(() => {
     if (!active || active.status !== 'live') {
@@ -242,8 +281,9 @@ export default function AnswerDetailScreen() {
             muted={muted}
             onToggleMute={toggleMute}
             onBack={leaveScreen}
-            onMoreOptions={showMoreOptionsPlaceholder}
-            onHeart={showMatchingPlaceholder}
+            onMoreOptions={isSelf ? () => {} : social.openMenu}
+            onHeart={isSelf ? () => {} : social.onHeartPress}
+            matchState={isSelf ? 'none' : matchState}
             videoProgress={isActive ? videoProgress : 0}
             showProgress={isActive}
             playbackError={isActive ? playbackError : null}
@@ -251,7 +291,7 @@ export default function AnswerDetailScreen() {
         </View>
       );
     },
-    [activeIndex, leaveScreen, muted, pageHeight, playbackError, subject, toggleMute, videoProgress]
+    [activeIndex, isSelf, leaveScreen, matchState, muted, pageHeight, playbackError, social.onHeartPress, social.openMenu, subject, toggleMute, videoProgress]
   );
 
   const reportViewIfNeeded = useCallback(() => {
@@ -300,6 +340,14 @@ export default function AnswerDetailScreen() {
 
   return (
     <View style={styles.root} onLayout={onPageLayout}>
+      {!isSelf ? (
+        <MoreOptionsMenu
+          visible={social.menuOpen}
+          isFollowed={isFollowed}
+          onDismiss={social.closeMenu}
+          onSelect={social.runMenuAction}
+        />
+      ) : null}
       {videoBackdrop}
       {answers.length === 1 ? (
         renderRow({ item: answers[0], index: 0 })

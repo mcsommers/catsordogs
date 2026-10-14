@@ -50,10 +50,10 @@ set local role authenticated;
 select is((select array_agg(type) from public.get_notification_preferences()), array['daily_question', 'matches', 'messages', 'nudges'],
   'there are four notification types');
 select is((select array_agg(push_enabled) from public.get_notification_preferences()), array[true, true, true, true], 'push is on for every type by default');
-select is((select array_agg(email_enabled) from public.get_notification_preferences()), array[false, true, false, false], 'email is on only for matches by default');
+select is((select array_agg(email_enabled) from public.get_notification_preferences()), array[true, true, true, true], 'email is on for every type when the account is created');
 select lives_ok($$select public.set_notification_preference('nudges', 'push', false)$$, 'a user can turn off push for one type');
-select is((select push_enabled || '/' || email_enabled from public.get_notification_preferences() where type = 'nudges'), 'false/false',
-  'the other channel keeps its default');
+select is((select push_enabled || '/' || email_enabled from public.get_notification_preferences() where type = 'nudges'), 'false/true',
+  'turning off push leaves email on');
 select lives_ok($$select public.set_notification_preference('daily_question', 'email', true)$$, 'and turn email on for another');
 select is((select push_enabled || '/' || email_enabled from public.get_notification_preferences() where type = 'daily_question'), 'true/true', 'push stays on');
 select lives_ok($$select public.set_notification_preference('nudges', 'email', true)$$, 'both channels can be set separately for one type');
@@ -63,12 +63,12 @@ select throws_ok($$select public.set_notification_preference('nudges', 'sms', tr
 select throws_ok($$select public.set_notification_preference('nudges', 'push', null)$$, '23514', null, 'on or off is required');
 select throws_ok($$insert into public.notification_preferences (user_id, type, push_enabled, email_enabled) values (auth.uid(), 'nudges', true, true)$$,
   '42501', null, 'preferences cannot be written directly');
-select is((select count(*) from public.notification_preferences), 2::bigint, 'a user can read their own stored preferences');
+select is((select count(*) from public.notification_preferences), 4::bigint, 'all four types are stored after sign-up');
 
 reset role;
 select set_config('request.jwt.claims', pg_temp.claims(4), true);
 set local role authenticated;
-select is((select array_agg(email_enabled) from public.get_notification_preferences()), array[false, true, false, false], 'another user''s settings are not affected');
+select is((select array_agg(email_enabled) from public.get_notification_preferences()), array[true, true, true, true], 'another new user also has email on for all types');
 select is((select count(*) from public.notification_preferences), 0::bigint, 'and cannot be read');
 
 -- ---------------------------------------------------------------------------
@@ -127,8 +127,8 @@ select throws_ok($$select * from private.worker_config$$, '42501', null, 'and ca
 
 reset role;
 set local role service_role;
-select is(public.enqueue_daily_question_notifications(pg_temp.at(12)), 4, 'everyone with a finished profile is queued (not the unfinished one)');
-select is(public.enqueue_daily_question_notifications(pg_temp.at(12)), 0, 'running it again queues nobody twice');
+select is(public.enqueue_daily_question_notifications(pg_temp.at(12, 3)), 4, 'everyone with a finished profile is queued (not the unfinished one)');
+select is(public.enqueue_daily_question_notifications(pg_temp.at(12, 3)), 0, 'running it again queues nobody twice');
 create temp table work as select * from public.claim_notifications(200);
 grant select on work to public;
 select is((select count(*) from work), 2::bigint, 'the worker gets 2 of the 4: people with no channel are skipped');
@@ -228,13 +228,13 @@ reset role;
 update public.profiles set time_zone = 'Australia/Sydney' where id = pg_temp.uid(3);
 update public.profiles set time_zone = 'Pacific/Honolulu' where id = pg_temp.uid(4);
 
-select is((select daily_question_notify_time from public.app_settings), '09:00'::time, 'the default send time is 9:00 AM');
+select is((select daily_question_notify_time from public.app_settings), '12:03'::time, 'the default send time is 12:03 PM');
 set local role service_role;
-select is(public.enqueue_daily_question_notifications(pg_temp.at(0)), 1, '00:00 UTC: only Sydney (10 or 11 AM there) is past 9 AM on the question''s date');
+select is(public.enqueue_daily_question_notifications(pg_temp.at(2, 3)), 1, '02:03 UTC: Sydney is past 12:03 on the question''s date');
 select is((select user_id from public.notification_outbox where dedupe_key like 'daily:%'), pg_temp.uid(3), 'that is the person in Sydney');
-select is(public.enqueue_daily_question_notifications(pg_temp.at(9)), 1, '09:00 UTC: the person with no time zone (UTC) is next, exactly at 9:00');
-select is(public.enqueue_daily_question_notifications(pg_temp.at(14, 30)), 1, '14:30 UTC: New York is past 9 AM (summer or winter time)');
-select is(public.enqueue_daily_question_notifications(pg_temp.at(19)), 1, '19:00 UTC: Honolulu reaches 9 AM');
+select is(public.enqueue_daily_question_notifications(pg_temp.at(12, 3)), 1, '12:03 UTC: the person with no time zone (UTC) is next, exactly at 12:03');
+select is(public.enqueue_daily_question_notifications(pg_temp.at(16, 30)), 1, '16:30 UTC: New York is past 12:03 (summer or winter time)');
+select is(public.enqueue_daily_question_notifications(pg_temp.at(22, 3)), 1, '22:03 UTC: Honolulu reaches 12:03');
 select is(public.enqueue_daily_question_notifications(pg_temp.at(19)), 0, 'running again queues nobody twice');
 select is(public.enqueue_daily_question_notifications(pg_temp.at(23, 59)), 0, 'and a late run does not queue Sydney again for its next morning');
 select is((select count(*) from public.notification_outbox where dedupe_key like 'daily:%'), 4::bigint, 'each of the four finished profiles got exactly one');
@@ -255,7 +255,7 @@ select is(public.enqueue_daily_question_notifications(pg_temp.at(17, 59)), 0, 'w
 select is(public.enqueue_daily_question_notifications(pg_temp.at(18)), 1, 'at 18:00 UTC the UTC person is queued');
 select is((select user_id from public.notification_outbox), pg_temp.uid(1), 'and it is them');
 reset role;
-update public.app_settings set daily_question_notify_time = '09:00';
+update public.app_settings set daily_question_notify_time = '12:03';
 
 -- people who already answered today are not reminded
 -- 1 has a live answer  2 a disabled one (still counts as answered)  3 a removed one (does not)  4 none
@@ -266,7 +266,7 @@ select pg_temp.answer_today(1, 'live');
 select pg_temp.answer_today(2, 'disabled');
 select pg_temp.answer_today(3, 'removed');
 set local role service_role;
-select is(public.enqueue_daily_question_notifications(pg_temp.at(12)), 2, 'only the two people without a live or disabled answer are queued');
+select is(public.enqueue_daily_question_notifications(pg_temp.at(12, 3)), 2, 'only the two people without a live or disabled answer are queued');
 select is((select array_agg(user_id order by user_id) from public.notification_outbox), array[pg_temp.uid(3), pg_temp.uid(4)], 'those are 3 and 4');
 select is((select count(*) from public.notification_outbox where user_id in (pg_temp.uid(1), pg_temp.uid(2))), 0::bigint, 'nobody who has answered is reminded');
 reset role;

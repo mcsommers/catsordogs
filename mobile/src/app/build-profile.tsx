@@ -1,24 +1,22 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
-import { Image, Modal, Platform, Pressable, ScrollView, StyleSheet, Text, TextInput, View } from 'react-native';
+import { Keyboard, Modal, Platform, Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
 import { router } from 'expo-router';
 import * as ImagePicker from 'expo-image-picker';
 import DateTimePicker from '@react-native-community/datetimepicker';
+import { Briefcase, Cake, GraduationCap, MapPin, Ruler, User } from 'lucide-react-native';
+import { attachPhotoUrls } from '../lib/profile';
+import { MAX_GALLERY_PHOTOS, galleryPhotoCount, nextGalleryPosition } from '../lib/profilePhotos';
 import {
-  Briefcase,
-  Building2,
-  Cake,
-  GraduationCap,
-  ImagePlus,
-  MapPin,
-  Plus,
-  Ruler,
-  User,
-  X,
-} from 'lucide-react-native';
+  PROFILE_PHOTO_CONTENT_TYPE,
+  PROFILE_PHOTO_EXT,
+  profilePhotoPreviewUri,
+  readProfilePhotoBytes,
+} from '../lib/profilePhotoUpload';
+import { signOutToWelcome } from '../lib/signOut';
 import { supabase } from '../lib/supabase';
 import { useSession } from '../lib/session';
 import { longDate, splitHeightInches, toIsoDate } from '../lib/format';
-import { scrollToFieldInScreen } from '../lib/formScroll';
+import { restoreScrollY, scrollToFieldInScreen } from '../lib/formScroll';
 import {
   BIRTHDAY_ERROR,
   SAVE_ERROR,
@@ -28,8 +26,12 @@ import {
   profileSaveProblem,
   toggleChoice,
 } from '../lib/profileForm';
+import { DiscardProfileChangesDialog } from '../components/profile/DiscardProfileChangesDialog';
+import { ProfileBuildPhotos } from '../components/profile/ProfileBuildPhotos';
 import { LocationField } from '../components/LocationField';
+import { useProfileLeaveGuard } from '../hooks/useProfileLeaveGuard';
 import {
+  AppTextInput,
   BackButton,
   CenteredSpinner,
   Chip,
@@ -54,18 +56,15 @@ type Form = {
   first_name: string;
   birthday: string | null;
   gender: string | null;
-  pronouns: string[];
   sexual_orientation: string[];
   height_feet: string;
   height_inches: string;
   city: string;
-  job_title: string;
-  company: string;
+  occupation: string;
   school: string;
   about_me: string;
   lifestyle_tags: string[];
-  languages: string[];
-  interests: string[];
+  interested_in: string[];
   relationship_goal: string | null;
 };
 
@@ -73,27 +72,23 @@ const EMPTY: Form = {
   first_name: '',
   birthday: null,
   gender: null,
-  pronouns: [],
   sexual_orientation: [],
   height_feet: '',
   height_inches: '',
   city: '',
-  job_title: '',
-  company: '',
+  occupation: '',
   school: '',
   about_me: '',
   lifestyle_tags: [],
-  languages: [],
-  interests: [],
+  interested_in: [],
   relationship_goal: null,
 };
 
 const ABOUT_MAX = 500;
-const MAX_PHOTOS = 6;
 const PROFILE_SUBTITLE =
-  'Required: at least one photo, first name, birthday, and gender. Everything else is optional.';
+  'Required: profile photo, first name, birthday, and gender. Everything else is optional.';
 
-type MultiField = 'pronouns' | 'sexual_orientation' | 'lifestyle_tags' | 'languages' | 'interests';
+type MultiField = 'sexual_orientation' | 'lifestyle_tags' | 'interested_in';
 
 export default function BuildProfile() {
   const { session } = useSession();
@@ -119,16 +114,32 @@ export default function BuildProfile() {
   const birthdayRef = useRef<View>(null);
   const genderRef = useRef<View>(null);
   const heightRef = useRef<View>(null);
+  const locationRef = useRef<View>(null);
+  const occupationRef = useRef<View>(null);
+  const morePhotosRef = useRef<View>(null);
+  const schoolRef = useRef<View>(null);
+  const aboutRef = useRef<View>(null);
+  const addRowRef = useRef<View>(null);
+  const scrollOffsetRef = useRef(0);
+
+  const leaveBuildProfile = useCallback(() => signOutToWelcome(router), []);
+  const leaveGuard = useProfileLeaveGuard({
+    ready: !loading,
+    form,
+    photos,
+    onLeave: leaveBuildProfile,
+  });
 
   const loadPhotos = useCallback(async () => {
     const { data, error } = await supabase.from('profile_photos').select('id, position, storage_path').order('position');
     if (error) return setBanner(SAVE_ERROR);
     const rows = (data ?? []) as Photo[];
-    if (rows.length) {
-      const signed = await supabase.storage.from('profile-photos').createSignedUrls(rows.map((r) => r.storage_path), 3600);
-      rows.forEach((r, i) => (r.url = signed.data?.[i]?.signedUrl ?? undefined));
+    try {
+      const withUrls = rows.length ? await attachPhotoUrls(rows) : [];
+      setPhotos(rows.map((row, i) => ({ ...row, url: withUrls[i]?.url })));
+    } catch {
+      setBanner(SAVE_ERROR);
     }
-    setPhotos(rows);
   }, []);
 
   useEffect(() => {
@@ -146,18 +157,15 @@ export default function BuildProfile() {
           first_name: p.first_name ?? '',
           birthday: p.birthday,
           gender: p.gender,
-          pronouns: p.pronouns ?? [],
           sexual_orientation: p.sexual_orientation ?? [],
           height_feet: p.height_inches != null ? String(splitHeightInches(p.height_inches).feet) : '',
           height_inches: p.height_inches != null ? String(splitHeightInches(p.height_inches).inches) : '',
           city: p.city ?? '',
-          job_title: p.job_title ?? '',
-          company: p.company ?? '',
+          occupation: [p.job_title, p.company].filter(Boolean).join(' at ') || '',
           school: p.school ?? '',
           about_me: p.about_me ?? '',
           lifestyle_tags: p.lifestyle_tags ?? [],
-          languages: p.languages ?? [],
-          interests: p.interests ?? [],
+          interested_in: p.interested_in ?? [],
           relationship_goal: p.relationship_goal,
         });
         setSavedCity(p.city ?? '');
@@ -184,33 +192,62 @@ export default function BuildProfile() {
     setCustomText('');
   }
 
-  async function addPhoto() {
-    if (!userId || photos.length >= MAX_PHOTOS) return;
-    const picked = await ImagePicker.launchImageLibraryAsync({ mediaTypes: ['images'], quality: 0.8, allowsEditing: true, aspect: [4, 5] });
-    if (picked.canceled) return;
+  async function addPhotoAt(position: number, aspect: [number, number]) {
+    if (!userId || photos.some((p) => p.position === position)) return;
+    if (position > 1 && galleryPhotoCount(photos) >= MAX_GALLERY_PHOTOS) return;
+    const perm = await ImagePicker.requestMediaLibraryPermissionsAsync();
+    if (!perm.granted) return;
+    const restoreScrollYAfter = position > 1 ? scrollOffsetRef.current : null;
+    Keyboard.dismiss();
+    const picked = await ImagePicker.launchImageLibraryAsync({
+      mediaTypes: ['images'],
+      quality: 0.8,
+      allowsEditing: true,
+      aspect,
+      base64: true,
+    });
+    if (picked.canceled || !picked.assets[0]) return;
     setPhotoBusy(true);
     setBanner(null);
     const asset = picked.assets[0];
-    const used = new Set(photos.map((p) => p.position));
-    const position = [1, 2, 3, 4, 5, 6].find((n) => !used.has(n))!;
-    const ext = asset.mimeType === 'image/png' ? 'png' : 'jpg';
-    const path = `${userId}/${Date.now()}.${ext}`;
+    const path = `${userId}/${Date.now()}.${PROFILE_PHOTO_EXT}`;
+    const previewUri = profilePhotoPreviewUri(asset);
+    setPhotos((prev) => [...prev, { id: `pending-${position}`, position, storage_path: path, url: previewUri }]);
     try {
-      const bytes = await (await fetch(asset.uri)).arrayBuffer();
-      const up = await supabase.storage.from('profile-photos').upload(path, bytes, { contentType: asset.mimeType ?? 'image/jpeg' });
+      const bytes = await readProfilePhotoBytes(asset);
+      const up = await supabase.storage
+        .from('profile-photos')
+        .upload(path, bytes, { contentType: PROFILE_PHOTO_CONTENT_TYPE, upsert: false });
       if (up.error) throw up.error;
       const ins = await supabase.from('profile_photos').insert({ user_id: userId, position, storage_path: path });
       if (ins.error) throw ins.error;
       await loadPhotos();
     } catch (e) {
+      setPhotos((prev) => prev.filter((p) => p.storage_path !== path && p.id !== `pending-${position}`));
       setBanner(profileSaveProblem(e as Error, 'photo').banner);
     } finally {
       setPhotoBusy(false);
+      if (restoreScrollYAfter != null) {
+        restoreScrollY(scrollRef, restoreScrollYAfter);
+      }
     }
+  }
+
+  function addAvatarPhoto() {
+    void addPhotoAt(1, [1, 1]);
+  }
+
+  function addMorePhoto() {
+    const position = nextGalleryPosition(photos);
+    if (position) void addPhotoAt(position, [4, 5]);
   }
 
   async function removePhoto(photo: Photo) {
     setBanner(null);
+    if (String(photo.id).startsWith('pending-')) {
+      setPhotos((prev) => prev.filter((p) => p.id !== photo.id));
+      return;
+    }
     const { error } = await supabase.from('profile_photos').delete().eq('id', photo.id);
     if (error) return setBanner(profileSaveProblem(error, 'photo').banner);
     await supabase.storage.from('profile-photos').remove([photo.storage_path]);
@@ -233,8 +270,11 @@ export default function BuildProfile() {
     setBanner(null);
     setBirthdayError(false);
     setHeightError(false);
+    const hasAvatar = photos.some(
+      (p) => p.position === 1 && !String(p.id).startsWith('pending-')
+    );
     const issue = firstProfileFinishIssue({
-      photoCount: photos.length,
+      photoCount: hasAvatar ? 1 : 0,
       firstName: form.first_name,
       birthday: form.birthday,
       gender: form.gender,
@@ -265,17 +305,15 @@ export default function BuildProfile() {
         .update({
           first_name: form.first_name.trim(),
           gender: form.gender,
-          pronouns: form.pronouns,
           sexual_orientation: form.sexual_orientation,
           height_inches: height,
           city: form.city.trim() || null,
-          job_title: form.job_title.trim() || null,
-          company: form.company.trim() || null,
+          job_title: form.occupation.trim() || null,
+          company: null,
           school: form.school.trim() || null,
           about_me: form.about_me.trim() || null,
           lifestyle_tags: form.lifestyle_tags,
-          languages: form.languages,
-          interests: form.interests,
+          interested_in: form.interested_in,
           relationship_goal: form.relationship_goal,
         })
         .eq('id', userId);
@@ -284,15 +322,20 @@ export default function BuildProfile() {
 
       const done = await supabase.rpc('complete_profile');
       problem = profileSaveProblem(done.error, 'finish');
-      if (problem.banner) return setBanner(problem.banner);
+      if (problem.banner) {
+        if (/photo/i.test(problem.banner)) scrollToFinishField('photos');
+        return setBanner(problem.banner);
+      }
 
       if (form.city.trim() && form.city.trim() !== savedCity) {
         // Looks up the city for distance. Not needed to continue, so a failure is ignored.
         supabase.functions.invoke('update-location').catch(() => {});
       }
+      leaveGuard.permitSavedNavigation();
       router.replace('/how-it-works');
-    } catch {
-      setBanner(SAVE_ERROR);
+    } catch (e) {
+      const problem = profileSaveProblem(e as { message?: string }, 'finish');
+      setBanner(problem.banner ?? SAVE_ERROR);
     } finally {
       setSaving(false);
     }
@@ -300,7 +343,6 @@ export default function BuildProfile() {
 
   if (loading) return <CenteredSpinner />;
 
-  const interestsMax = defs.interests?.max_selected ?? null;
   const multiSection = (field: MultiField, title: string, helper?: string) => {
     const def = defs[field];
     if (!def) return null;
@@ -316,8 +358,8 @@ export default function BuildProfile() {
           {def.allow_custom ? <Chip label="+ Add" selected={false} onPress={() => setAdding(field)} /> : null}
         </View>
         {adding === field ? (
-          <View style={styles.addRow}>
-            <TextInput
+          <View ref={addRowRef} collapsable={false} style={styles.addRow}>
+            <AppTextInput
               autoFocus
               value={customText}
               onChangeText={setCustomText}
@@ -325,6 +367,7 @@ export default function BuildProfile() {
               placeholder={`Add your own (${def.label.toLowerCase()})`}
               placeholderTextColor={colors.textSecondary}
               style={styles.addInput}
+              focusScrollAnchorRef={addRowRef}
               onSubmitEditing={addCustom}
               returnKeyType="done"
             />
@@ -338,53 +381,35 @@ export default function BuildProfile() {
   };
 
   return (
-    <Screen scroll scrollRef={scrollRef} scrollContentRef={contentRef}>
+    <Screen
+      scroll
+      scrollRef={scrollRef}
+      scrollContentRef={contentRef}
+      onScroll={(e) => {
+        scrollOffsetRef.current = e.nativeEvent.contentOffset.y;
+      }}
+    >
+      <DiscardProfileChangesDialog
+        visible={leaveGuard.discardVisible}
+        onKeepEditing={leaveGuard.keepEditing}
+        onLeave={leaveGuard.confirmLeave}
+      />
       <View style={ui.header}>
-        <BackButton onPress={() => supabase.auth.signOut().then(() => router.replace('/welcome'))} />
+        <BackButton onPress={leaveGuard.attemptLeave} />
         <Text style={ui.step}>Step 2 of 2</Text>
       </View>
       <TitleGroup title="Build your profile" subtitle={PROFILE_SUBTITLE} />
       {banner ? <ErrorBanner message={banner} /> : null}
 
-      <View ref={photosRef} collapsable={false} style={{ gap: 10 }}>
-        <SectionHeader title="Photos" requirement="required" />
-        {[0, 1].map((row) => (
-          <View key={row} style={{ flexDirection: 'row', gap: 10 }}>
-            {[0, 1, 2].map((col) => {
-              const index = row * 3 + col;
-              const photo = photos[index];
-              if (photo) {
-                return (
-                  <View key={index} style={styles.tile}>
-                    {photo.url ? <Image source={{ uri: photo.url }} style={StyleSheet.absoluteFill} /> : null}
-                    <Pressable
-                      accessibilityRole="button"
-                      accessibilityLabel="Remove photo"
-                      onPress={() => removePhoto(photo)}
-                      style={styles.removePhoto}
-                      hitSlop={8}
-                    >
-                      <X size={14} color={colors.white} />
-                    </Pressable>
-                  </View>
-                );
-              }
-              const first = index === photos.length;
-              return (
-                <Pressable
-                  key={index}
-                  accessibilityRole="button"
-                  accessibilityLabel="Add a photo"
-                  onPress={addPhoto}
-                  disabled={photoBusy}
-                  style={[styles.tile, styles.emptyTile, first && styles.primaryTile]}
-                >
-                  {first ? <ImagePlus size={26} color={colors.accentDog} /> : <Plus size={22} color={colors.textSecondary} />}
-                </Pressable>
-              );
-            })}
-          </View>
-        ))}
+      <View ref={photosRef} collapsable={false}>
+        <ProfileBuildPhotos
+          section="avatar"
+          photos={photos}
+          photoBusy={photoBusy}
+          onAddAvatar={addAvatarPhoto}
+          onAddMore={addMorePhoto}
+          onRemove={removePhoto}
+        />
       </View>
 
       <View style={{ gap: 16 }}>
@@ -428,8 +453,6 @@ export default function BuildProfile() {
           ))}
         </View>
       </View>
-      {multiSection('pronouns', 'Pronouns')}
-      {multiSection('sexual_orientation', 'Sexual Orientation', 'Select all that apply')}
 
       <View style={{ gap: 16 }}>
         <View ref={heightRef} collapsable={false} style={{ gap: 6 }}>
@@ -448,6 +471,7 @@ export default function BuildProfile() {
                 }}
                 maxLength={1}
                 error={heightError}
+                focusScrollAnchorRef={heightRef}
               />
             </View>
             <View style={{ flex: 1 }}>
@@ -463,59 +487,53 @@ export default function BuildProfile() {
                 }}
                 maxLength={2}
                 error={heightError}
+                focusScrollAnchorRef={heightRef}
               />
             </View>
           </View>
         </View>
-        <LocationField
-          label="Location"
-          icon={MapPin}
+        <View ref={locationRef} collapsable={false}>
+          <LocationField
+            label="Location"
+            icon={MapPin}
+            requirement="optional"
+            value={form.city}
+            onChangeText={(t) => set('city', t)}
+            focusScrollAnchorRef={locationRef}
+          />
+        </View>
+      </View>
+      <View ref={occupationRef} collapsable={false}>
+        <TextField
+          label="Occupation"
+          icon={Briefcase}
           requirement="optional"
-          value={form.city}
-          onChangeText={(t) => set('city', t)}
+          placeholder="Product Designer at Acme Co."
+          value={form.occupation}
+          onChangeText={(t) => set('occupation', t)}
+          maxLength={100}
         />
       </View>
-      <View style={{ flexDirection: 'row', gap: 12 }}>
-        <View style={{ flex: 1 }}>
-          <TextField
-            label="Job Title"
-            icon={Briefcase}
-            requirement="optional"
-            placeholder="Product Designer"
-            value={form.job_title}
-            onChangeText={(t) => set('job_title', t)}
-            maxLength={100}
-          />
-        </View>
-        <View style={{ flex: 1 }}>
-          <TextField
-            label="Company"
-            icon={Building2}
-            requirement="optional"
-            placeholder="Acme Co."
-            value={form.company}
-            onChangeText={(t) => set('company', t)}
-            maxLength={100}
-          />
-        </View>
+      <View ref={schoolRef} collapsable={false}>
+        <TextField
+          label="School"
+          icon={GraduationCap}
+          requirement="optional"
+          placeholder="University of Michigan"
+          value={form.school}
+          onChangeText={(t) => set('school', t)}
+          maxLength={100}
+        />
       </View>
-      <TextField
-        label="School"
-        icon={GraduationCap}
-        requirement="optional"
-        placeholder="University of Michigan"
-        value={form.school}
-        onChangeText={(t) => set('school', t)}
-        maxLength={100}
-      />
 
-      <View style={{ gap: 6 }}>
+      <View ref={aboutRef} collapsable={false} style={{ gap: 6 }}>
         <FieldLabelRow label="About Me" requirement="optional" />
-        <TextInput
+        <AppTextInput
           multiline
           accessibilityLabel="About Me"
           value={form.about_me}
           onChangeText={(t) => set('about_me', t)}
+          focusScrollAnchorRef={aboutRef}
           maxLength={ABOUT_MAX}
           placeholder="Tell people about yourself — your pets, hobbies, what you're looking for..."
           placeholderTextColor={colors.textSecondary}
@@ -525,9 +543,9 @@ export default function BuildProfile() {
         <Text style={[ui.hint, { textAlign: 'right' }]}>{`${form.about_me.length} / ${ABOUT_MAX}`}</Text>
       </View>
 
+      {multiSection('sexual_orientation', 'Sexual Orientation', 'Select all that apply')}
+      {multiSection('interested_in', 'Interested in', 'Select all that apply')}
       {multiSection('lifestyle_tags', 'Lifestyle')}
-      {multiSection('languages', 'Languages')}
-      {multiSection('interests', 'Interests', interestsMax ? `${form.interests.length} of ${interestsMax} selected` : undefined)}
 
       <View style={{ gap: 12 }}>
         <SectionHeader title="Relationship Goals" requirement="optional" />
@@ -542,7 +560,25 @@ export default function BuildProfile() {
         ))}
       </View>
 
-      <PrimaryButton label="Finish Setup" onPress={finish} loading={saving} disabled={!photos.length || photoBusy} />
+      <View ref={morePhotosRef} collapsable={false}>
+        <ProfileBuildPhotos
+          section="more"
+          photos={photos}
+          photoBusy={photoBusy}
+          onAddAvatar={addAvatarPhoto}
+          onAddMore={addMorePhoto}
+          onRemove={removePhoto}
+        />
+      </View>
+
+      <PrimaryButton
+        label="Finish Setup"
+        onPress={finish}
+        loading={saving}
+        disabled={
+          !photos.some((p) => p.position === 1 && !String(p.id).startsWith('pending-')) || photoBusy
+        }
+      />
 
       {pickingBirthday ? (
         <BirthdayPicker
@@ -595,20 +631,6 @@ function BirthdayPicker({ value, onDone }: { value: string | null; onDone: (iso:
 
 const styles = StyleSheet.create({
   chips: { flexDirection: 'row', flexWrap: 'wrap', gap: 8 },
-  tile: { flex: 1, height: 112, borderRadius: 16, overflow: 'hidden', backgroundColor: colors.surface },
-  emptyTile: { borderWidth: 1.5, borderColor: colors.borderSubtle, alignItems: 'center', justifyContent: 'center' },
-  primaryTile: { backgroundColor: colors.accentDogTint, borderWidth: 0 },
-  removePhoto: {
-    position: 'absolute',
-    top: 6,
-    right: 6,
-    width: 24,
-    height: 24,
-    borderRadius: 12,
-    backgroundColor: '#00000088',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
   bio: {
     minHeight: 112,
     backgroundColor: colors.surface,

@@ -1,5 +1,7 @@
 import { Pressable, StyleSheet, Text, View } from 'react-native';
 import { Hourglass, Lock } from 'lucide-react-native';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import { tabBarOverlayHeight } from '../lib/tabBarLayout';
 import { PrimaryButton, QuestionBadge } from './ui';
 import { colors, fonts } from '../theme';
 
@@ -24,8 +26,9 @@ export function NoQuestionToday({ onCheckAgain, checking }: { onCheckAgain: () =
 
 /** 06m: the Feed tab before today's answer is in. */
 export function FeedLocked({ question, onAnswer }: { question: string; onAnswer: () => void }) {
+  const insets = useSafeAreaInsets();
   return (
-    <View style={[styles.center, { paddingHorizontal: 12 }]}>
+    <View style={[styles.center, { paddingHorizontal: 12, paddingBottom: tabBarOverlayHeight(insets.bottom) }]}>
       <View style={[styles.iconBadge, { width: 84, height: 84, borderRadius: 42 }]}>
         <Lock size={34} color={colors.accentDog} />
       </View>
@@ -40,7 +43,11 @@ export function FeedLocked({ question, onAnswer }: { question: string; onAnswer:
         <Text style={styles.eyebrow}>TODAY&apos;S QUESTION</Text>
         <Text style={styles.cardQuestion}>{question}</Text>
       </View>
-      <PrimaryButton label="Answer Today's Question" onPress={onAnswer} style={{ alignSelf: 'stretch' }} />
+      <PrimaryButton
+        label="Answer Today's Question"
+        onPress={onAnswer}
+        style={{ alignSelf: 'stretch', marginTop: 20 }}
+      />
     </View>
   );
 }

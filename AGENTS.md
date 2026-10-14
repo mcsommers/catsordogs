@@ -25,6 +25,27 @@ chat. This is as important as the “rules that must never break” below.
 Skipping this step is how extra buttons, wrong copy, and layout drift get into
 the app. After implementation, keep docs and Pencil in sync (see below).
 
+**Design file changes ship end-to-end (standing instruction from Mike):**
+Whenever Mike asks you to change **docs/pencil-new.pen** (or to implement
+something because the design file was updated), treat that as a full product
+change unless his **same prompt** explicitly narrows scope (for example “Pencil
+only” or “docs only”). In the default case, in **one piece of work**:
+
+1. **Design file** — make the Pencil edits (via Pencil MCP tools only).
+2. **docs/** — update every relevant doc (at minimum MVP, Build Plan, UAT-flows,
+   mobile-questions, README, feed-rules, master-test when applicable; see list
+   below).
+3. **Database** — update schema, grants, RPCs, seeds, and **migrations** under
+   `supabase/migrations/`; add or adjust automated tests under `supabase/tests/`
+   when server rules change.
+4. **Code** — update **mobile** and the **admin panel** so behavior, copy, and
+   layout match the design and docs.
+
+Do not stop at Pencil or docs alone and leave migrations or app code for a
+follow-up unless Mike’s prompt clearly limits the work. Say in the summary what
+Mike must run on Supabase (for example `db push` on staging) when migrations
+land.
+
 Stack: Expo (React Native) for iOS and Android, Supabase (Postgres,
 auth, server functions), a hosted video service, Expo push, an email service.
 
@@ -34,6 +55,27 @@ to both Android and iOS — same screens, copy, and behavior. If one
 platform truly needs a different implementation (for example an OS bug
 workaround), say why in the summary and note it in docs/UAT-flows.md when
 it affects what Mike should test on each phone.
+
+Mobile testing environment (standing instruction from Mike):
+Mike runs the app on a **real phone in Expo Go**, not a custom development
+build or store build, unless he says otherwise. Assume **staging** (`mobile/.env`
+points at Cats or Dogs - Staging). He starts the app with `cd mobile && npm run phone`
+(not `npm start`). When giving test steps or troubleshooting:
+
+- Do **not** tell him to rebuild the native app or run `expo prebuild` unless he
+  explicitly wants to leave Expo Go or you have confirmed a feature cannot work
+  in Expo Go at all.
+- **Expo Go limits that are normal for this project:** remote push on Android
+  (SDK 53+) does not work in Expo Go — use email for notification UAT; a yellow
+  **"WebCrypto API is not supported"** warning after sign-up is expected in Expo Go
+  (Supabase still completes email sign-up); native modules not in the Expo SDK
+  (for example `react-native-quick-crypto`) are unavailable until a dev build exists.
+- Email confirmation and password-reset links must be opened on the **same phone**
+  running Expo Go, after a fresh `npm run phone` if the dev server restarted.
+- Admin UAT uses `npm run admin` on the Mac; it is separate from Expo Go.
+
+If a change requires a development build, say so plainly, explain what breaks
+in Expo Go today, and offer an Expo Go–compatible path when one exists.
 
 Mobile forms (standing instruction from Mike):
 Show field-level errors as soon as the rule is knowable (for example an
@@ -47,7 +89,8 @@ Rules that must never break:
 2. The daily gate, nudge limits, recording length, and moderation
    thresholds are enforced on the server, never only in the app.
 3. Admin-editable settings (recording length, minimum watch time,
-   onboarding mode, followed-content cap, feed look-back days, flag threshold) come from
+   onboarding mode, followed-content cap, feed look-back days, flag threshold,
+   nudge notification delay) come from
    the app_settings table. Never hard-code them.
 4. A flag disables one video, never an account.
 5. Every server rule gets an automated test.
@@ -57,10 +100,12 @@ Rules that must never break:
    `docs/mobile-feed-scroll.md` before any feed touch or layout change.
 
 Docs and designs stay in sync with the code — after you implement (standing instruction from Mike):
-Any time you change app code (mobile, admin, or anything that changes what
-users see or do), update the relevant files under docs/ and update
-docs/pencil-new.pen in the same piece of work. Do not wait to be asked and
-do not treat docs or Pencil as optional follow-ups.
+Any time you change app code (mobile, admin, database behavior, or anything
+that changes what users see or do), update the relevant files under docs/ and
+update docs/pencil-new.pen in the same piece of work. The design-file rule
+above is the mirror image: design-led changes must also reach docs, database,
+and code. Do not wait to be asked and do not treat any of these as optional
+follow-ups.
 
 Under docs/, keep in sync at minimum:
 - `docs/mobile-feed-scroll.md` when feed paging, touch handling, or chrome layout changes

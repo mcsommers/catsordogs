@@ -39,8 +39,8 @@ type ProfileContent = {
   birthday: string | null;
   age: number | null;
   gender: string | null;
-  pronouns: string[] | null;
   sexual_orientation: string[] | null;
+  interested_in: string[] | null;
   height_inches: number | null;
   city: string | null;
   job_title: string | null;
@@ -254,8 +254,8 @@ function ReviewPane({
           : <p className="muted">No About Me</p>}
         <p>
           {line('Gender', content.gender)}
-          {line('Pronouns', (content.pronouns ?? []).join(', '))}
           {line('Orientation', (content.sexual_orientation ?? []).join(', '))}
+          {line('Interested in', (content.interested_in ?? []).join(', '))}
           {line(
             'Height',
             content.height_inches != null
@@ -263,11 +263,9 @@ function ReviewPane({
               : null
           )}
           {line('City', content.city)}
-          {line('Job', [content.job_title, content.company].filter(Boolean).join(' at ') || null)}
+          {line('Occupation', content.job_title)}
           {line('School', content.school)}
           {line('Lifestyle', (content.lifestyle_tags ?? []).join(', '))}
-          {line('Languages', (content.languages ?? []).join(', '))}
-          {line('Interests', (content.interests ?? []).join(', '))}
           {line('Relationship goal', content.relationship_goal)}
           {line('Allow followers', content.allow_followers == null ? null : content.allow_followers ? 'Yes' : 'No')}
           {line('Birthday', content.birthday)}

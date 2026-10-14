@@ -1,8 +1,8 @@
-import { useEffect, useRef, useState } from 'react';
-import { Pressable, Text, TextInput, View } from 'react-native';
+import { useEffect, useRef, useState, type RefObject } from 'react';
+import { Pressable, Text, View } from 'react-native';
 import type { LucideIcon } from 'lucide-react-native';
 import { fetchLocationSuggestions } from '../lib/locationSearch';
-import { FieldLabelRow, styles as ui, type FieldRequirement } from './ui';
+import { AppTextInput, FieldLabelRow, styles as ui, type FieldRequirement } from './ui';
 import { colors, fonts } from '../theme';
 
 const DEBOUNCE_MS = 280;
@@ -15,6 +15,7 @@ type Props = {
   placeholder?: string;
   requirement?: FieldRequirement;
   maxLength?: number;
+  focusScrollAnchorRef?: RefObject<View | null>;
 };
 
 export function LocationField({
@@ -25,12 +26,15 @@ export function LocationField({
   placeholder = 'Brooklyn, NY',
   requirement,
   maxLength = 100,
+  focusScrollAnchorRef,
 }: Props) {
   const [suggestions, setSuggestions] = useState<string[]>([]);
   const [searching, setSearching] = useState(false);
   const [open, setOpen] = useState(false);
   const debounceRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const requestId = useRef(0);
+  const containerRef = useRef<View>(null);
+  const scrollAnchor = focusScrollAnchorRef ?? containerRef;
 
   useEffect(() => {
     return () => {
@@ -68,14 +72,14 @@ export function LocationField({
   const showList = open && suggestions.length > 0;
 
   return (
-    <View style={{ gap: 6, zIndex: showList ? 2 : 0 }}>
+    <View ref={containerRef} collapsable={false} style={{ gap: 6, zIndex: showList ? 2 : 0 }}>
       <FieldLabelRow label={label} requirement={requirement} />
       <View style={ui.inputBox}>
         <IconComponent size={18} color={colors.textSecondary} />
-        <TextInput
+        <AppTextInput
           style={ui.input}
+          focusScrollAnchorRef={scrollAnchor}
           placeholder={placeholder}
-          placeholderTextColor={colors.textSecondary}
           accessibilityLabel={label}
           value={value}
           maxLength={maxLength}

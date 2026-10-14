@@ -14,7 +14,6 @@ import {
   OrDivider,
   PrimaryButton,
   Screen,
-  scrollScreenToEnd,
   TextField,
   TitleGroup,
   styles,
@@ -39,7 +38,7 @@ export default function SignUp() {
       setFieldErrors(errors);
       setProblem(errors[firstKey]!);
       if (firstKey === 'email') scrollToFieldInScreen(scrollRef, contentRef, emailAnchorRef);
-      else scrollScreenToEnd(scrollRef);
+      else scrollToFieldInScreen(scrollRef, contentRef, passwordAnchorRef);
       return;
     }
     setFieldErrors({});
@@ -82,7 +81,6 @@ export default function SignUp() {
               setEmail(t);
               if (fieldErrors.email) setFieldErrors((e) => ({ ...e, email: undefined }));
             }}
-            onFocus={() => scrollScreenToEnd(scrollRef)}
             onSubmitEditing={() => passwordRef.current?.focus()}
           />
         </View>
@@ -102,7 +100,6 @@ export default function SignUp() {
               setPassword(t);
               if (fieldErrors.password) setFieldErrors((e) => ({ ...e, password: undefined }));
             }}
-            onFocus={() => scrollScreenToEnd(scrollRef)}
             onSubmitEditing={() => submit()}
           />
         </View>

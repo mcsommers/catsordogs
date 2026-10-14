@@ -5,6 +5,14 @@
 set -euo pipefail
 cd "$(dirname "$0")/.."
 
+# Metro must use 8081 — cloudflared forwards that port. A leftover server on 8081
+# makes Expo offer 8082 while the tunnel still hits the stale process (packager errors).
+if lsof -ti :8081 >/dev/null 2>&1; then
+  echo "Stopping an old dev server on port 8081..."
+  lsof -ti :8081 | xargs kill 2>/dev/null || true
+  sleep 1
+fi
+
 if ! command -v cloudflared >/dev/null; then
   echo "cloudflared is missing. Install it once with: brew install cloudflared"
   exit 1
@@ -33,4 +41,4 @@ open_url="exp://${host}/--/"
 echo
 echo "Open in Expo Go: $open_url"
 echo
-EXPO_PACKAGER_PROXY_URL="$url" npx expo start
+EXPO_PACKAGER_PROXY_URL="$url" npx expo start --port 8081

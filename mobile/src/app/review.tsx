@@ -156,8 +156,7 @@ export default function ReviewAndSubmit() {
 
       <Dialog
         visible={submitted}
-        icon={Check}
-        iconTone="success"
+        hero={{ type: 'icon', icon: Check, iconTone: 'success' }}
         title="Answer Submitted!"
         body="Your response is live. You can now see what everyone else said today."
         primary={{ label: "View Today's Feed", onPress: () => leave('/feed') }}

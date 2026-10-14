@@ -1,4 +1,5 @@
 import type { CaptionSegment } from './recording';
+import { signPhotoPaths } from './profile';
 import { supabase } from './supabase';
 
 export type FeedMatchState = 'none' | 'sent' | 'incoming' | 'matched';
@@ -19,6 +20,7 @@ export type FeedItem = {
   submittedAt: string;
   streakDays: number;
   matchState: FeedMatchState;
+  avatarUrl?: string;
 };
 
 export type BrowseQuestion = {
@@ -51,6 +53,7 @@ type FeedRow = {
   streak_days: number;
   match_state: string;
   total_count: number;
+  profile_photo_path: string | null;
 };
 
 function mapFeedRow(row: FeedRow): FeedItem {
@@ -81,7 +84,12 @@ export async function fetchFeedPage(offset: number, limit: number, questionDate?
   });
   if (error) throw error;
   const rows = (data ?? []) as FeedRow[];
-  const items = rows.map(mapFeedRow);
+  const paths = [...new Set(rows.map((r) => r.profile_photo_path).filter(Boolean))] as string[];
+  const signed = paths.length ? await signPhotoPaths(paths) : new Map<string, string>();
+  const items = rows.map((row) => ({
+    ...mapFeedRow(row),
+    avatarUrl: row.profile_photo_path ? signed.get(row.profile_photo_path) : undefined,
+  }));
   const totalCount = rows[0]?.total_count != null ? Number(rows[0].total_count) : items.length;
   return { items, totalCount };
 }

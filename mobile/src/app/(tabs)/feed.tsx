@@ -1,6 +1,5 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import {
-  Alert,
   FlatList,
   Platform,
   StyleSheet,
@@ -25,9 +24,20 @@ import { FeedEndScreen } from '../../components/FeedEndScreen';
 import { FeedOverlay } from '../../components/FeedOverlay';
 import { FeedLocked, NoQuestionToday } from '../../components/QuestionStates';
 import { CenteredSpinner, PrimaryButton, Screen } from '../../components/ui';
-import { hlsSource, safePause, safePlay } from '../../lib/videoPlayer';
+import {
+  hlsSource,
+  safePause,
+  safePlay,
+  safePlayerDuration,
+  safePlayerTime,
+  safeRemoveListener,
+  safeSetMuted,
+  safeTimeUpdateInterval,
+} from '../../lib/videoPlayer';
 import { useSession } from '../../lib/session';
 import { colors, fonts } from '../../theme';
+import { MoreOptionsMenu } from '../../components/social/MoreOptionsMenu';
+import { useSocialActions, type SocialSubject } from '../../components/social/useSocialActions';
 
 /**
  * Feed tab (Pencil 06). UX invariant: unified vertical page scroll — see
@@ -36,10 +46,6 @@ import { colors, fonts } from '../../theme';
  */
 const PAGE_SIZE = 12;
 const FEED_END_KEY = '__feed_caught_up__';
-
-function phaseDAlert(feature: string) {
-  Alert.alert('Coming soon', `${feature} arrives in the next update.`);
-}
 
 export default function Feed() {
   const { session, loading: sessionLoading } = useSession();
@@ -104,14 +110,51 @@ export default function Feed() {
   const activeItem = !onEndPage ? items[activeIndex] ?? null : null;
   const feedActiveRef = useRef(true);
 
+  const patchFeedUser = useCallback((userId: string, patch: Partial<Pick<FeedItem, 'isFollowed' | 'matchState'>>) => {
+    setItems((prev) => prev.map((it) => (it.userId === userId ? { ...it, ...patch } : it)));
+  }, []);
+
+  const socialSubject: SocialSubject | null = activeItem
+    ? {
+        userId: activeItem.userId,
+        firstName: activeItem.firstName,
+        avatarUri: activeItem.avatarUrl,
+        isFollowed: activeItem.isFollowed,
+        matchState: activeItem.matchState,
+        answerId: activeItem.answerId,
+        surface: 'feed',
+      }
+    : null;
+
+  const social = useSocialActions(socialSubject, {
+    onStateChange: (patch) => {
+      if (activeItem) patchFeedUser(activeItem.userId, patch);
+    },
+    onBlocked: () => {
+      if (activeItem) setItems((prev) => prev.filter((it) => it.userId !== activeItem.userId));
+    },
+    onNotInterested: () => {
+      if (activeItem) setItems((prev) => prev.filter((it) => it.userId !== activeItem.userId));
+    },
+  });
+
+  const openFeedSettings = useCallback(() => router.push('/feed-settings'), []);
+
   const player = useVideoPlayer(hlsSource(playbackUrl), (p) => {
     p.loop = true;
     p.muted = true;
   });
 
   useEffect(() => {
-    player.muted = muted;
+    safeSetMuted(player, muted);
   }, [muted, player]);
+
+  useEffect(() => {
+    if (!session) {
+      setPlaybackUrl(null);
+      safePause(player);
+    }
+  }, [session, player]);
 
   useFocusEffect(
     useCallback(() => {
@@ -135,7 +178,7 @@ export default function Feed() {
     const sub = player.addListener('statusChange', ({ status }) => {
       if (status === 'readyToPlay') playIfActive();
     });
-    return () => sub.remove();
+    return () => safeRemoveListener(sub);
   }, [playbackUrl, player]);
 
   const loadGate = useCallback(async () => {
@@ -230,9 +273,9 @@ export default function Feed() {
     }
 
     const syncPlayback = () => {
-      const t = player.currentTime ?? 0;
-      const dur =
-        player.duration > 0 ? player.duration : activeItem.durationSeconds > 0 ? activeItem.durationSeconds : 0;
+      if (!feedActiveRef.current) return;
+      const t = safePlayerTime(player);
+      const dur = safePlayerDuration(player, activeItem.durationSeconds);
       setWatchedSeconds(t);
       setVideoProgress(dur > 0 ? Math.min(1, t / dur) : 0);
       // Minimum watch is for view counts only — never blocks swiping to the next clip.
@@ -242,7 +285,7 @@ export default function Feed() {
       }
     };
 
-    player.timeUpdateEventInterval = 0.1;
+    safeTimeUpdateInterval(player, 0.1);
     syncPlayback();
     const onTime = player.addListener('timeUpdate', syncPlayback);
     const onStatus = player.addListener('statusChange', ({ status }) => {
@@ -251,10 +294,11 @@ export default function Feed() {
     const tick = setInterval(syncPlayback, 250);
 
     return () => {
-      onTime.remove();
-      onStatus.remove();
+      safeRemoveListener(onTime);
+      safeRemoveListener(onStatus);
       clearInterval(tick);
-      player.timeUpdateEventInterval = 0;
+      safeTimeUpdateInterval(player, 0);
+      safePause(player);
     };
   }, [activeItem?.answerId, activeItem?.durationSeconds, playbackUrl, minWatch, player]);
 
@@ -294,7 +338,7 @@ export default function Feed() {
             <FeedEndScreen
               lookbackDays={lookbackDays}
               onBrowse={() => router.push('/browse-questions')}
-              onFeedSettings={() => phaseDAlert('Feed Settings')}
+              onFeedSettings={openFeedSettings}
             />
           </View>
         );
@@ -308,9 +352,9 @@ export default function Feed() {
             onToggleMute={() => setMuted((m) => !m)}
             onOpenProfile={() => router.push({ pathname: '/user/[id]', params: { id: item.userId } })}
             onBrowse={() => router.push('/browse-questions')}
-            onFeedSettings={() => phaseDAlert('Feed Settings')}
-            onMoreOptions={() => phaseDAlert('More options')}
-            onHeart={() => phaseDAlert('Matching')}
+            onFeedSettings={openFeedSettings}
+            onMoreOptions={social.openMenu}
+            onHeart={social.onHeartPress}
             showDayBanner={isActive ? dayBanner : null}
             onDismissDayBanner={() => {
               setDismissedBanners((s) => new Set(s).add(item.questionDate));
@@ -321,8 +365,10 @@ export default function Feed() {
         </View>
       );
     },
-    [activeItem?.answerId, dayBanner, lookbackDays, muted, pageHeight, videoProgress]
+    [activeItem?.answerId, dayBanner, lookbackDays, muted, openFeedSettings, pageHeight, social.onHeartPress, social.openMenu, videoProgress]
   );
+
+  const showVideo = !!session && !!playbackUrl && gate?.state === 'open';
 
   if (sessionLoading || !session) return <CenteredSpinner dark />;
 
@@ -381,7 +427,7 @@ export default function Feed() {
         <FeedEndScreen
           lookbackDays={lookbackDays}
           onBrowse={() => router.push('/browse-questions')}
-          onFeedSettings={() => phaseDAlert('Feed Settings')}
+          onFeedSettings={openFeedSettings}
         />
       </Screen>
     );
@@ -389,7 +435,13 @@ export default function Feed() {
 
   return (
     <View style={styles.root} onLayout={onFeedLayout}>
-      {playbackUrl ? (
+      <MoreOptionsMenu
+        visible={social.menuOpen}
+        isFollowed={activeItem?.isFollowed ?? false}
+        onDismiss={social.closeMenu}
+        onSelect={social.runMenuAction}
+      />
+      {showVideo ? (
         <VideoView
           player={player}
           style={[StyleSheet.absoluteFill, styles.videoLayer]}

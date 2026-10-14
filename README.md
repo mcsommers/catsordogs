@@ -114,6 +114,7 @@ If one doesn't arrive, check spam.
 | What you see | What to do |
 | --- | --- |
 | "Could not connect to Expo CLI" or the phone keeps loading | Check you started with `npm run phone` (not `npm start`) and scanned the QR code from this run. Don't use `npx expo start --tunnel`: Expo's built-in tunnel is currently broken (its old ngrok version is rejected). |
+| **"Packager is not running at"** a `trycloudflare.com` URL (often a *different* name than the QR code shows) | Expo Go is still trying an **old** tunnel from a previous run, or Metro started on the wrong port. In the terminal running `npm run phone`, press **Ctrl+C**. Start again with `cd mobile && npm run phone` (the script now stops stale servers on port 8081). In Expo Go, open the **new** QR from this run — do not reopen a saved project or an old link. On Android, you can remove the old project from Expo Go's recent list first. |
 | "cloudflared is missing" or "The Cloudflare tunnel didn't start" | Run `brew install cloudflared` once, check the Mac is online, and try again. |
 | Expo Go says the project needs a newer or different version | Update Expo Go from the App Store or Google Play. This app uses Expo SDK 57. |
 | "Cats or Dogs? needs your camera and microphone" | Allow both when asked. If you said no before, tap **Open Settings** in the app and turn them on for Expo Go. |
@@ -122,7 +123,13 @@ If one doesn't arrive, check spam.
 | The app opens but says it can't reach the server | Check `mobile/.env` has the staging URL and key, then stop and restart `npm run phone` (changes to `.env` are read only at start). |
 | A red error screen | Take a screenshot and send it to the agent. Shake the phone and tap **Reload** to try again. |
 | Yellow "Cannot connect to the Expo CLI" | Harmless while using `npm run phone` (the Cloudflare tunnel). It only means live hot-reload could not connect; shake the phone and tap **Reload** when you want the latest code. |
-| Yellow "WebCrypto API is not supported" | Fixed in the app entry file; reload the app. If it still appears after a reload, tell the agent. |
+| Yellow **"WebCrypto API is not supported"** (often right after sign-up) | **Expected in Expo Go.** The phone runtime does not provide full Web Crypto; Supabase falls back and sign-up / email links still work. You can dismiss the warning and continue. It should go away only in a **development build** (not required for everyday UAT on Expo Go). |
+| **"We could not start the upload. Please try again."** when you tap Record (staging) | `create-video-upload` failed talking to Mux (credentials, webhook, or Mux outage). Confirm **`MUX_TEST_MODE=false`** (or omitted) is in `supabase/functions/.env.staging` **and** pushed to Supabase with `npx supabase secrets set --env-file supabase/functions/.env.staging --project-ref pgwnqasselhstrechmsa`. In the [Mux dashboard](https://dashboard.mux.com/) (Staging environment), check for errors. Each failed tap can still add a row in the database and count toward the **recordings per day** limit even though no video was uploaded. |
+| Record on iOS looks dead (button stuck on "Starting…") | Reload the app. A failed upload should show the red error above the button; if it does not, shake and **Reload**, then try again after upload errors are fixed (see row above). |
+| **expo-notifications** error on Android in Expo Go | Expected: **remote push is not supported in Expo Go** (SDK 53+). The app skips push registration in Expo Go so you can keep testing everything else. To test real push (UAT **D-33**), use a **development build** ([Expo docs](https://docs.expo.dev/develop/development-builds/introduction/)). |
+| **"Recording limit reached"** right after midnight or on your first try today | The limit is per **daily question**, not per clock tick. Failed starts and re-records without submitting all count. Ask the agent to check your account on staging, or wait for the next question. Also confirm the app has synced your time zone (open the app while online); until it does, "today" follows **UTC** (for US Eastern, that flips at 8 PM, not local midnight). |
+
+On **Profile**, your sign-in **email** is shown above **Log Out** so you can tell staging test accounts apart.
 
 The hands-on tests to run on the phone are in [`docs/UAT-flows.md`](docs/UAT-flows.md).
 
@@ -142,8 +149,7 @@ The hands-on tests to run on the phone are in [`docs/UAT-flows.md`](docs/UAT-flo
 
 ### Keep phone UAT on staging
 
-For [`docs/UAT-flows.md`](docs/UAT-flows.md), leave `mobile/.env` on **staging**. Staging uses Mux test mode (short,
-watermarked clips) and test data. Production stores real uploads and is meant for launch, not day-to-day experiments.
+For [`docs/UAT-flows.md`](docs/UAT-flows.md) and [`docs/master-test.md`](docs/master-test.md), leave `mobile/.env` on **staging**. Staging uses the **Mux Staging** environment with **`MUX_TEST_MODE=false`**: full-length clips (up to the admin recording cap), no test watermark, and assets stay until deleted. Production (Mux Production + Supabase Production) is for launch, not day-to-day experiments.
 The Build Plan also says not to record real users’ video in Mux Production until legal review is done.
 
 ### If you ever point Expo Go at production (usually don’t)
@@ -228,7 +234,7 @@ step with `npm run db:demo`.
 node --env-file=supabase/.env.scripts.staging supabase/seed-staging-feed.mjs
 ```
 
-Demo accounts use `@catsordogs.demo` emails. Videos use Mux test mode like any other staging upload; for playback UAT, your own submitted answer is the most reliable clip.
+Demo accounts use `@catsordogs.demo` emails. Staging uploads use normal Mux Staging assets (`MUX_TEST_MODE=false`); for playback UAT, your own submitted answer is the most reliable clip.
 
 Then open http://127.0.0.1:5173/admin/ and sign in as `admin@local.demo` with password
 `correct-horse-battery`. If you were already signed in as an older local admin, sign out first.
@@ -241,7 +247,7 @@ There are three separate Supabase projects so testing never touches real users' 
 | Environment | Supabase project | Mux environment | Video keys file | Used for |
 | --- | --- | --- | --- | --- |
 | Local | Docker, on your computer | A stand-in (automated tests only) | none | Day-to-day development. The app's keys go in `mobile/.env`. |
-| Staging | "Cats or Dogs - Staging" (`pgwnqasselhstrechmsa`) | Staging, with `MUX_TEST_MODE=true` | `supabase/functions/.env.staging` | Testing with real services before release |
+| Staging | "Cats or Dogs - Staging" (`pgwnqasselhstrechmsa`) | Staging, `MUX_TEST_MODE=false` | `supabase/functions/.env.staging` | Phone and admin UAT; full Mux assets on the paid plan |
 | Production | "Cats or Dogs - Production" (`fvnbcofflierdlnnglko`) | Production, test mode off | `supabase/functions/.env.production` | Real users. No real users' video until the legal review in the Build Plan is done. |
 
 Project IDs are not secret (they appear in the project's web address). Keys and secrets are.
@@ -290,9 +296,26 @@ npx supabase functions deploy --project-ref pgwnqasselhstrechmsa
 # and --project-ref fvnbcofflierdlnnglko
 ```
 
-`MUX_TEST_MODE=true` (staging only) makes Mux create free test videos: watermarked, 10 seconds at most, deleted after 24 hours.
-Leave it out of the production file. In each Mux environment, the webhook URL must point at that environment's own Supabase project:
+**`MUX_TEST_MODE`** is read by `create-video-upload` when it asks Mux for an upload link. Only the literal string `true`
+turns Mux **test** assets on (watermarked, about 10 seconds max, auto-deleted after about 24 hours). This project keeps
+**`MUX_TEST_MODE=false` on staging** so the master test and UAT can record without the old free-tier asset cap. Staging
+still uses the **Mux Staging** API keys in `.env.staging`, not Mux Production. Leave `MUX_TEST_MODE` out of the
+production file (or set it false there too). After you change the file, push secrets to Supabase (command above); the
+running functions pick up the new value on the next cold start.
+
+In each Mux environment, the webhook URL must point at that environment's own Supabase project:
 `https://<project id>.supabase.co/functions/v1/mux-webhook`.
+
+### Cleaning up staging video
+
+Staging assets are **not** auto-deleted. Old cast recordings, failed uploads, and deleted accounts can leave clips in
+Mux and rows in Supabase. When the feed looks wrong or you want to reset, open **Video → Assets** in the Mux dashboard
+(Staging environment) and delete what you no longer need. Prefer keeping assets that still back a **live** answer in
+Supabase staging.
+
+**For agents:** Compare asset count in Mux with `videos.mux_asset_id` in the staging database. Assets with no live answer
+are the safest to delete from Mux. Orphan or failed `videos` rows for a test user can be removed in the database when
+they are blocking the **recordings per day** limit; never do this on production without an explicit request.
 
 Never paste these values into chat, an issue, or a commit.
 
@@ -302,7 +325,7 @@ Notifications go through a queue in the database. A worker (the `process-notific
 push through Expo, email through [Resend](https://resend.com), honoring each person's settings (push on for everything;
 email on only for matches, by default). Every email has an unsubscribe link (the `unsubscribe` Edge Function), and a
 scheduled job (every 5 minutes) queues "today's question is live" for each person when their own local clock reaches
-the send time (default 9:00 AM, changeable by an admin in the admin website). A separate hourly check
+the send time (default 12:03 PM in each person's own time zone, changeable as Daily Question Send Time in the admin website). A separate hourly check
 emails every admin if the next day has no question. The phone reports its time zone with `set_time_zone`; until it does, a person is treated as UTC. Anyone who has already answered today's
 question is skipped.
 

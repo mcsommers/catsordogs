@@ -2,7 +2,7 @@
 -- notification-a-day limit, and that nobody using the app can ever learn who
 -- follows or nudged them.
 begin;
-select plan(75);
+select plan(88);
 
 delete from public.answers;
 delete from public.videos;
@@ -144,19 +144,18 @@ reset role;
 select is((select count(*) from public.nudges where target_id = pg_temp.uid(1)), 3::bigint, 'all three nudges are recorded');
 select is((select count(*) from public.notification_outbox where user_id = pg_temp.uid(1) and kind = 'nudge'), 1::bigint,
   'but A has just one nudge notification for the day, however many followers nudge');
+select is((select nudge_delay_minutes from public.app_settings), 0, 'the default nudge delay is 0 minutes');
+select is((select send_after from public.notification_outbox where user_id = pg_temp.uid(1) and kind = 'nudge'),
+  now(), 'the default sends the notification immediately');
 
--- the notification waits a few minutes so it can say how many
-set local role service_role;
-select is((select count(*) from public.claim_notifications() where user_id = pg_temp.uid(1)), 0::bigint, 'the nudge notification is not sent immediately');
-reset role;
-update public.notification_outbox set send_after = now() - interval '1 minute' where user_id = pg_temp.uid(1);
+-- all three nudges are already recorded, so the count includes them
 set local role service_role;
 create temp table claimed as select * from public.claim_notifications() where user_id = pg_temp.uid(1);
 grant select on claimed to public;
-select is((select count(*) from claimed), 1::bigint, 'once due, it is handed to the worker');
+select is((select count(*) from claimed), 1::bigint, 'it is handed to the worker immediately');
 select is((select body from claimed), '3 followers want to hear your answer to today''s question.', 'it says how many followers want to hear the answer');
 select is((select send_push from claimed), true, 'it goes by push (the default, and A has a phone registered)');
-select is((select send_email from claimed), false, 'and not by email (nudge email is off by default)');
+select is((select send_email from claimed), true, 'and by email (on for new accounts)');
 select ok((select to_jsonb(c)::text !~* 'e000000[234]' from claimed c), 'nothing handed to the worker names a follower');
 select lives_ok($$select public.complete_notification((select id from claimed), true)$$, 'the worker reports it sent');
 select is((select count(*) from public.claim_notifications() where user_id = pg_temp.uid(1)), 0::bigint, 'it is not sent twice');
@@ -252,6 +251,49 @@ select is((select count(*) from public.follows where follower_id = pg_temp.uid(3
 delete from auth.users where id = pg_temp.uid(4);
 select is((select count(*) from public.follows where follower_id = pg_temp.uid(4)), 0::bigint, 'deleting an account removes its follows');
 select is((select count(*) from public.nudges where sender_id = pg_temp.uid(4)), 0::bigint, 'and its nudges');
+
+-- Nudge delay is an admin setting: 0 to 60 minutes. 0 is due immediately.
+select pg_temp.person(14, 'Now');
+select pg_temp.person(15, 'Wait');
+insert into public.follows (follower_id, followed_id)
+  values (pg_temp.uid(2), pg_temp.uid(14)), (pg_temp.uid(2), pg_temp.uid(15));
+insert into public.device_tokens (user_id, token, platform) values
+  (pg_temp.uid(14), 'ExponentPushToken[now]', 'ios'),
+  (pg_temp.uid(15), 'ExponentPushToken[wait]', 'ios');
+insert into public.admin_users (user_id) values (pg_temp.uid(6));
+
+select set_config('request.jwt.claims', pg_temp.claims(2), true);
+set local role authenticated;
+select is_empty($$update public.app_settings set nudge_delay_minutes = 0 returning 1$$, 'a user cannot change the nudge delay');
+
+select set_config('request.jwt.claims', pg_temp.claims(6), true);
+select throws_ok($$update public.app_settings set nudge_delay_minutes = 61$$, '23514', null, 'a delay above 60 minutes is rejected');
+select throws_ok($$update public.app_settings set nudge_delay_minutes = -1$$, '23514', null, 'a negative delay is rejected');
+select lives_ok($$update public.app_settings set nudge_delay_minutes = 60$$, 'an admin can set a 60 minute delay');
+select lives_ok($$update public.app_settings set nudge_delay_minutes = 0$$, 'an admin can set the delay to 0');
+
+select set_config('request.jwt.claims', pg_temp.claims(2), true);
+select lives_ok($$select public.nudge_user('e0000014-0000-0000-0000-000000000000')$$, 'F1 nudges with no delay');
+reset role;
+select is((select send_after from public.notification_outbox where user_id = pg_temp.uid(14) and kind = 'nudge'),
+  now(), 'a delay of 0 is due immediately');
+set local role service_role;
+select is((select count(*) from public.claim_notifications() where user_id = pg_temp.uid(14)), 1::bigint,
+  'and the worker can send it without waiting');
+
+reset role;
+select set_config('request.jwt.claims', pg_temp.claims(6), true);
+set local role authenticated;
+select lives_ok($$update public.app_settings set nudge_delay_minutes = 7$$, 'an admin can set a 7 minute delay');
+select set_config('request.jwt.claims', pg_temp.claims(2), true);
+select lives_ok($$select public.nudge_user('e0000015-0000-0000-0000-000000000000')$$, 'F1 nudges with a 7 minute delay');
+reset role;
+select is((select send_after from public.notification_outbox where user_id = pg_temp.uid(15) and kind = 'nudge'),
+  now() + make_interval(mins => 7), 'the notification waits the admin-set number of minutes');
+set local role service_role;
+select is((select count(*) from public.claim_notifications() where user_id = pg_temp.uid(15)), 0::bigint,
+  'and it is not sent before that');
+reset role;
 
 -- No question today
 delete from public.answers; delete from public.videos; delete from public.notification_outbox;

@@ -5,6 +5,7 @@ import * as SplashScreen from 'expo-splash-screen';
 import { useFonts, Anton_400Regular } from '@expo-google-fonts/anton';
 import { FunnelSans_400Regular, FunnelSans_600SemiBold, FunnelSans_700Bold } from '@expo-google-fonts/funnel-sans';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
+import { ConfirmationProvider } from '../components/ConfirmationProvider';
 import { SessionProvider, useSession } from '../lib/session';
 import { needsSignIn } from '../lib/routing';
 import { colors } from '../theme';
@@ -27,6 +28,7 @@ export default function RootLayout() {
   return (
     <SafeAreaProvider>
       <SessionProvider>
+        <ConfirmationProvider>
         <StatusBar style="auto" />
         <SignedOutGuard>
           <Stack screenOptions={{ headerShown: false, contentStyle: { backgroundColor: colors.bg } }}>
@@ -38,8 +40,15 @@ export default function RootLayout() {
             <Stack.Screen name="user/[id]" options={{ contentStyle: { backgroundColor: colors.bgDark } }} />
             <Stack.Screen name="user/[id]/photos" options={{ contentStyle: { backgroundColor: colors.bgDark } }} />
             <Stack.Screen name="answer/[answerId]" options={{ contentStyle: { backgroundColor: colors.bgDark }, gestureEnabled: true }} />
+            <Stack.Screen name="feed-settings" options={{ contentStyle: { backgroundColor: colors.bgDark } }} />
+            <Stack.Screen name="edit-profile" options={{ contentStyle: { backgroundColor: colors.bg } }} />
+            <Stack.Screen name="notifications" options={{ contentStyle: { backgroundColor: colors.bgDark } }} />
+            <Stack.Screen name="privacy-safety" options={{ contentStyle: { backgroundColor: colors.bgDark } }} />
+            <Stack.Screen name="blocked-list" options={{ contentStyle: { backgroundColor: colors.bgDark } }} />
+            <Stack.Screen name="chat/[matchId]" options={{ contentStyle: { backgroundColor: colors.bgDark } }} />
           </Stack>
         </SignedOutGuard>
+        </ConfirmationProvider>
       </SessionProvider>
     </SafeAreaProvider>
   );

@@ -46,3 +46,20 @@ export function safeRemoveListener(subscription: { remove: () => void }) {
     // Listener may already be detached with the native player.
   }
 }
+
+export function safePlayerTime(player: VideoPlayer): number {
+  try {
+    return player.currentTime ?? 0;
+  } catch {
+    return 0;
+  }
+}
+
+export function safePlayerDuration(player: VideoPlayer, fallbackSeconds: number): number {
+  try {
+    if (player.duration > 0) return player.duration;
+  } catch {
+    // Native player may already be released.
+  }
+  return fallbackSeconds > 0 ? fallbackSeconds : 0;
+}

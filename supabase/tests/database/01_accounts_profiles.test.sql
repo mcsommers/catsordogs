@@ -1,6 +1,6 @@
 -- Phase 1 rules: accounts, profiles, photos, filters, and who can see what.
 begin;
-select plan(52);
+select plan(58);
 
 -- Two test users. The sign-up trigger should give each an empty profile.
 insert into auth.users (id, email, aud, role, instance_id) values
@@ -11,6 +11,10 @@ select is((select count(*) from public.profiles where id in ('aaaaaaaa-0000-0000
   'signing up creates an empty profile for each new account');
 select is((select count(*) from public.filter_preferences where user_id in ('aaaaaaaa-0000-0000-0000-000000000001', 'bbbbbbbb-0000-0000-0000-000000000002')), 2::bigint,
   'signing up creates empty filter preferences');
+select is(
+  (select bool_and(push_enabled and email_enabled) from public.notification_preferences where user_id = 'aaaaaaaa-0000-0000-0000-000000000001'),
+  true,
+  'signing up turns push and email on for every notification type');
 select is((select profile_completed_at from public.profiles where id = 'aaaaaaaa-0000-0000-0000-000000000001'), null,
   'a new profile is not finished');
 
@@ -42,37 +46,57 @@ select throws_ok(
 -- ---------------------------------------------------------------------------
 select lives_ok(
   $$update public.profiles set
-      first_name = 'Alex', gender = 'Woman', pronouns = '{"She/her","Xe/xem"}',
-      sexual_orientation = '{"Bisexual","Pansexual"}', languages = '{"English","Klingon"}',
-      interests = '{"Hiking","Coffee","Movies"}', lifestyle_tags = '{"Dog lover"}',
+      first_name = 'Alex', gender = 'Woman',
+      sexual_orientation = '{"Bi-Sexual","Gay"}',
+      interested_in = '{"Men","Women"}', lifestyle_tags = '{"Dog lover"}',
       relationship_goal = 'Long-term relationship', height_inches = 69, city = 'Brooklyn, NY',
       about_me = 'Hello'
     where id = 'aaaaaaaa-0000-0000-0000-000000000001'$$,
-  'a normal profile (with custom pronouns, orientation and language) is accepted');
+  'a normal profile with allowed choices is accepted');
+select throws_ok(
+  $$update public.profiles set sexual_orientation = '{"Pansexual"}' where id = 'aaaaaaaa-0000-0000-0000-000000000001'$$,
+  '23514', '"Pansexual" is not an allowed choice for Sexual orientation.',
+  'a custom sexual orientation is rejected');
+select is(
+  (select allow_custom from public.profile_field_defs where field = 'sexual_orientation'),
+  false,
+  'sexual orientation does not allow custom entries');
 select throws_ok(
   $$update public.profiles set gender = 'Wizard' where id = 'aaaaaaaa-0000-0000-0000-000000000001'$$,
   '23514', '"Wizard" is not an allowed choice for Gender.',
   'an unknown gender is rejected');
 select throws_ok(
+  $$update public.profiles set gender = 'More' where id = 'aaaaaaaa-0000-0000-0000-000000000001'$$,
+  '23514', '"More" is not an allowed choice for Gender.',
+  'gender More is not an allowed choice');
+select is(
+  (select count(*) from public.profile_options where category = 'gender' and value = 'More'),
+  0::bigint,
+  'gender option More is removed from profile_options');
+select throws_ok(
   $$update public.profiles set relationship_goal = 'Marriage by Friday' where id = 'aaaaaaaa-0000-0000-0000-000000000001'$$,
   '23514', '"Marriage by Friday" is not an allowed choice for Relationship goals.',
   'an unknown relationship goal is rejected');
 select throws_ok(
-  $$update public.profiles set interests = '{"Hiking","Coffee","Movies","Travel","Cooking","Yoga"}' where id = 'aaaaaaaa-0000-0000-0000-000000000001'$$,
-  '23514', 'Choose up to 5 for Interests.',
-  'more than 5 interests is rejected');
+  $$update public.profiles set interested_in = '{"Men","Women","Non-Binary","Men"}' where id = 'aaaaaaaa-0000-0000-0000-000000000001'$$,
+  '23514', 'Interested in contains duplicates.',
+  'duplicate interested-in values are rejected');
 select throws_ok(
-  $$update public.profiles set interests = '{"Skydiving"}' where id = 'aaaaaaaa-0000-0000-0000-000000000001'$$,
-  '23514', '"Skydiving" is not an allowed choice for Interests.',
-  'an interest outside the list is rejected (interests do not allow custom entries)');
+  $$update public.profiles set interested_in = '{"Everyone"}' where id = 'aaaaaaaa-0000-0000-0000-000000000001'$$,
+  '23514', '"Everyone" is not an allowed choice for Interested in.',
+  'an interested-in value outside the list is rejected');
+select is(
+  (select active from public.profile_field_defs where field = 'languages'),
+  false,
+  'languages is not collected on Build / Edit Profile');
 select throws_ok(
   $$update public.profiles set lifestyle_tags = '{"Dog lover","Dog lover"}' where id = 'aaaaaaaa-0000-0000-0000-000000000001'$$,
   '23514', 'Lifestyle contains duplicates.',
   'duplicate tags are rejected');
-select throws_ok(
-  $$update public.profiles set pronouns = '{"This is a ridiculously long pronoun that goes on and on"}' where id = 'aaaaaaaa-0000-0000-0000-000000000001'$$,
-  '23514', 'Pronouns entries must be 1 to 40 characters.',
-  'an over-long custom entry is rejected');
+select is(
+  (select active from public.profile_field_defs where field = 'pronouns'),
+  false,
+  'pronouns is not collected on Build / Edit Profile');
 select throws_ok(
   format($$update public.profiles set about_me = %L where id = 'aaaaaaaa-0000-0000-0000-000000000001'$$, repeat('x', 501)),
   '23514', null,
@@ -106,11 +130,15 @@ select throws_ok(
     values ('aaaaaaaa-0000-0000-0000-000000000001', 2, 'bbbbbbbb-0000-0000-0000-000000000002/sneaky.jpg')$$,
   '23514', null,
   'a photo path must be inside the owner''s own folder');
-select throws_ok(
+select lives_ok(
   $$insert into public.profile_photos (user_id, position, storage_path)
     values ('aaaaaaaa-0000-0000-0000-000000000001', 7, 'aaaaaaaa-0000-0000-0000-000000000001/7.jpg')$$,
+  'a sixth gallery photo (position 7) is allowed alongside the avatar at position 1');
+select throws_ok(
+  $$insert into public.profile_photos (user_id, position, storage_path)
+    values ('aaaaaaaa-0000-0000-0000-000000000001', 8, 'aaaaaaaa-0000-0000-0000-000000000001/8.jpg')$$,
   '23514', null,
-  'a seventh photo is rejected (up to 6)');
+  'an eighth slot is rejected (avatar plus six gallery photos max)');
 select throws_ok(
   $$insert into public.profile_photos (user_id, position, storage_path)
     values ('bbbbbbbb-0000-0000-0000-000000000002', 2, 'bbbbbbbb-0000-0000-0000-000000000002/2.jpg')$$,

@@ -19,6 +19,7 @@ type Props = {
   answer: ProfileAnswer;
   subject: Subject;
   muted: boolean;
+  matchState?: string;
   onToggleMute: () => void;
   onBack: () => void;
   onMoreOptions: () => void;
@@ -37,11 +38,13 @@ export function AnswerDetailOverlay({
   onBack,
   onMoreOptions,
   onHeart,
+  matchState = 'none',
   videoProgress,
   showProgress,
   playbackError,
 }: Props) {
   const insets = useSafeAreaInsets();
+  const heartOn = matchState === 'sent' || matchState === 'matched';
   const locationLine = formatProfileLocation(subject.city, subject.distanceMiles);
   const streak = formatStreakBadge(subject.streakDays ?? 0);
   const progress = showProgress ? Math.min(100, Math.max(0, videoProgress * 100)) : 0;
@@ -101,8 +104,12 @@ export function AnswerDetailOverlay({
             <Pressable style={styles.actionBtn} onPress={onMoreOptions} accessibilityLabel="More options">
               <EllipsisVertical size={22} color={colors.white} />
             </Pressable>
-            <Pressable style={styles.actionBtn} onPress={onHeart} accessibilityLabel="Match">
-              <Heart size={22} color={colors.white} />
+            <Pressable
+              style={[styles.actionBtn, heartOn && { backgroundColor: colors.accentDog }]}
+              onPress={onHeart}
+              accessibilityLabel="Match"
+            >
+              <Heart size={22} color={colors.white} fill={heartOn ? colors.white : 'transparent'} />
             </Pressable>
           </View>
         </View>
