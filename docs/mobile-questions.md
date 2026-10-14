@@ -279,7 +279,7 @@ Requirements: full **Filters** (driven by `filter_definitions`, not hard-coded) 
 
 Options:
 
-- **A.** **Full 06i in Phase D** — every filter and all five ranking sliders (six before Oct 2026), wired to `filter_preferences`, `feed_settings`, and `reset_feed_settings`, opened from the feed settings control and from **08** Account. *(Recommended; matches MVP.)*
+- **A.** **Full 06i in Phase D** — every filter and all three ranking sliders (six before Oct 2026), wired to `filter_preferences`, `feed_settings`, and `reset_feed_settings`, opened from the feed settings control and from **08** Account. *(Recommended; matches MVP.)*
 - **B.** **Ranking section first** in one PR, Filters in a follow-up (same phase, two steps).
 - **C.** **Filters only** in Phase D; Ranking stays at server defaults until a follow-up.
 

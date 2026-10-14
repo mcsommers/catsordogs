@@ -3,7 +3,7 @@
 -- locations, and who can read what.
 -- (Followed-first ordering and its cap are in 05_feed_followed_cap.test.sql.)
 begin;
-select plan(133);
+select plan(134);
 
 delete from public.answers;
 delete from public.videos;
@@ -297,20 +297,24 @@ select is(pg_temp.filtered('{}'), array['M1', 'N1', 'W1', 'W2', 'X1', 'X2', 'X3'
 -- ---------------------------------------------------------------------------
 -- Ranking: the viewer's Low / Medium / High weights change the order
 -- ---------------------------------------------------------------------------
-update public.answers set caption_text = 'one two three four five six seven eight nine ten eleven twelve thirteen fourteen fifteen sixteen seventeen eighteen nineteen twenty twentyone twentytwo twentythree twentyfour twentyfive twentysix twentyseven twentyeight twentynine thirty thirtyone thirtytwo thirtythree thirtyfour thirtyfive thirtysix thirtyseven thirtyeight thirtynine forty'
-  where user_id = pg_temp.uid(5);
 set local role authenticated;
-update public.feed_settings set shared_interests = 'high', relationship_goals = 'low', response_depth = 'low',
-  distance = 'low', recency = 'low';
+update public.feed_settings set shared_interests = 'high', relationship_goals = 'low', distance = 'low';
 select is((select first_name from public.get_feed(50, 0, public.utc_today()) limit 1), 'W1', 'ranking: high weight on shared interests puts the best interest match first');
-update public.feed_settings set shared_interests = 'low', response_depth = 'high';
-select is((select first_name from public.get_feed(50, 0, public.utc_today()) limit 1), 'N1', 'ranking: high weight on response depth puts the longest answer first');
-update public.feed_settings set response_depth = 'low', distance = 'high';
+select is(
+  (select count(*) from information_schema.columns
+    where table_schema = 'public' and table_name = 'feed_settings' and column_name in ('response_depth', 'recency')),
+  0::bigint, 'Response Depth and Recency are no longer ranking signals');
+select is(
+  (select count(*) from information_schema.columns
+    where table_schema = 'public' and table_name = 'feed_settings'
+      and column_name in ('shared_interests', 'relationship_goals', 'distance')),
+  3::bigint, 'ranking has three signals: shared interests, relationship goals, distance');
+update public.feed_settings set shared_interests = 'low', distance = 'high';
 select is((select first_name from public.get_feed(50, 0, public.utc_today()) offset 6 limit 1), 'W2', 'ranking: with high weight on distance, the farthest person is last');
 select lives_ok($$select public.reset_feed_settings()$$, 'ranking can be reset to the recommended weights');
-select is((select shared_interests || response_depth || distance from public.feed_settings), 'mediummediummedium', 'reset puts every signal back to Medium');
-select throws_ok($$update public.feed_settings set recency = 'extreme'$$, '23514', null, 'a weight must be low, medium or high');
-select is_empty($$update public.feed_settings set recency = 'high' where user_id = 'b0000002-0000-0000-0000-000000000000' returning 1$$,
+select is((select shared_interests || relationship_goals || distance from public.feed_settings), 'mediummediummedium', 'reset puts every signal back to Medium');
+select throws_ok($$update public.feed_settings set distance = 'extreme'$$, '23514', null, 'a weight must be low, medium or high');
+select is_empty($$update public.feed_settings set distance = 'high' where user_id = 'b0000002-0000-0000-0000-000000000000' returning 1$$,
   'a user cannot change someone else''s ranking settings');
 select is((select count(*) from public.feed_settings), 1::bigint, 'a user reads only their own ranking settings');
 

@@ -44,7 +44,8 @@ Within one multi-select filter, a person passes if **any** chosen value appears 
 
 - **`interested_in`** (Men, Women, Non-Binary on the profile) is **not** a filter and **not** a ranking signal. It does not appear in `passes_filters` or `rank_score`.
 - **`interests`** (up to 5 picks on `profiles.interests`, chosen on screen 03e) is what the **Interests** filter and the **Shared interests** ranking use. These picks replaced the older hobby list in the same column. Do not confuse it with **Interested in**.
-- **Lifestyle tags, Smoking, Drinking, and Lifestyle compatibility were removed (Oct 2026).** The `smoking` and `drinking` filters are inactive, and the old `lifestyle_tags` column is emptied and no longer edited. Ranking has five signals.
+- **Lifestyle tags, Smoking, Drinking, and Lifestyle compatibility were removed (Oct 2026).** The `smoking` and `drinking` filters are inactive, and the old `lifestyle_tags` column is emptied and no longer edited.
+- **Response depth and Recency were removed from ranking (Oct 2026).** Ranking has three signals: Shared interests, Relationship goals, and Distance. How long or detailed an answer is, and what time of day it was posted, do not affect the order.
 
 These profile fields are also not filters and not ranking signals: first name, school, about me, profile photos (avatar and gallery), **`interested_in`**, **`languages`**, **`pronouns`**, and **`lifestyle_tags`** (legacy columns, not edited in the app), and the **Show gender / Show orientation on my profile** switches (they only hide the value from other people's view), and the allow-followers switch.
 
@@ -52,7 +53,7 @@ Followed people are exempt from this section, up to the cap described below. Blo
 
 ## Ranking — the order of people who passed
 
-`rank_score` is a weighted average of five signals. Each signal is a number from 0 to 1. Each has a viewer setting of Low, Medium, or High, stored on `feed_settings`. Those words become weights:
+`rank_score` is a weighted average of three signals. Each signal is a number from 0 to 1. Each has a viewer setting of Low, Medium, or High, stored on `feed_settings`. Those words become weights:
 
 | Setting | Weight |
 | --- | --- |
@@ -60,17 +61,17 @@ Followed people are exempt from this section, up to the cap described below. Blo
 | Medium | 2 |
 | High | 3 |
 
-Every column defaults to Medium. Reset sets all five back to Medium.
+Every column defaults to Medium. Reset sets all three back to Medium.
 
 The score is:
 
 ```
-(w1*s1 + w2*s2 + w3*s3 + w4*s4 + w5*s5) / (w1 + w2 + w3 + w4 + w5)
+(w1*s1 + w2*s2 + w3*s3) / (w1 + w2 + w3)
 ```
 
-Raising one weight also shrinks the share of the other four, because they all divide by the same total. With every signal at Medium, each one is 2/10 of the score.
+Raising one weight also shrinks the share of the other two, because they all divide by the same total. With every signal at Medium, each one is 2/6 of the score.
 
-### The five signals
+### The three signals
 
 **1. Shared interests** (`feed_settings.shared_interests`)
 
@@ -88,15 +89,7 @@ Field: `profiles.relationship_goal` on each person. This is an exact match, and 
 | The goals are the same text | 1 |
 | The goals differ | 0 |
 
-**3. Response depth** (`feed_settings.response_depth`)
-
-Field: `answers.caption_text`.
-
-That text is saved when the answer is submitted. It is the caption segments' `text` values, trimmed and joined with spaces, in order. Edits made before submit are what get stored. The score does not use the timed `videos.caption_segments` after that, and it does not compare the words to the question.
-
-Score = min(1, word count / 40). Words are split on whitespace. An empty caption scores 0. A caption of 40 or more words scores 1.
-
-**4. Distance** (`feed_settings.distance`)
+**3. Distance** (`feed_settings.distance`)
 
 Fields: `profiles.latitude` and `profiles.longitude` on both people. The miles are the same haversine used by the distance filter.
 
@@ -109,15 +102,9 @@ Fields: `profiles.latitude` and `profiles.longitude` on both people. The miles a
 
 The formula is `max(0, 1 - miles / 100)`.
 
-**5. Recency** (`feed_settings.recency`)
-
-Fields: `answers.submitted_at`, and the question's `questions.question_date`.
-
-Score = the fraction of the UTC day between midnight UTC on the question date and the submit time, clamped to 0–1. A submit at UTC midnight scores 0. A submit 24 hours later, or any later, scores 1. This is not the viewer's local midnight, and it is not "who is closer to the top of the feed."
-
 ### Video fields that do not affect the score
 
-`get_feed` also reads `answers.duration_seconds` and `videos.caption_segments`, and it returns them to the phone. They are not passed into `rank_score` or `passes_filters`. Recording length, watch time, view count, and streak are not inputs either. Streak and match state are attached to each row **after** the order is chosen.
+`get_feed` also reads `answers.duration_seconds`, `answers.caption_text`, `answers.submitted_at`, and `videos.caption_segments`, and it returns them to the phone. They are not passed into `rank_score` or `passes_filters`. Recording length, watch time, view count, and streak are not inputs either. Streak and match state are attached to each row **after** the order is chosen.
 
 ## Followed people, and the cap
 
@@ -131,7 +118,7 @@ ceil(day_total * followed_content_cap_percent / 100)
 
 `followed_content_cap_percent` is one admin setting for the whole app (default 30, allowed 0 to 100). The count is rounded up.
 
-Followed rows are ordered by the same five-signal score. The ones inside the slot count are marked as top slots. They stay in the feed even when they fail the viewer's filters. Followed rows past the slot count stay only if they pass the filters. Otherwise they are dropped.
+Followed rows are ordered by the same three-signal score. The ones inside the slot count are marked as top slots. They stay in the feed even when they fail the viewer's filters. Followed rows past the slot count stay only if they pass the filters. Otherwise they are dropped.
 
 A followed person who fails the filters still counts toward `day_total`, which can make the slot count larger.
 
@@ -139,7 +126,7 @@ A followed person who fails the filters still counts toward `day_total`, which c
 
 1. Newer question date first. The feed therefore starts with the viewer's local today, then the previous day, and so on, until the look-back limit.
 2. Within a day, top-slot followed answers first.
-3. Then the five-signal score, highest first.
+3. Then the three-signal score, highest first.
 4. If the score ties, the answer id, descending.
 
 Opening the feed with no date always starts from today again. Choosing a past question (`p_date`) returns that day only, with the same filters, score, and follow cap.

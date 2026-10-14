@@ -232,7 +232,7 @@ Prerequisites: two test accounts for match/chat; staging seed optional. Decision
 
 ### Feed Settings and Account (test third)
 
-- [ ] **D-29 Feed Settings (06i).** Feed settings control or **08** → **Feed Settings**. Expected: **Filters** and **Ranking**; save changes what you see in the feed. The filters no longer include **Smoking** or **Drinking**, and Ranking has five signals (Shared Interests, Relationship Goals Match, Response Depth, Distance, Recency) — no **Lifestyle Compatibility**. Shared Interests reads "How much overlap in your chosen Interests matters."
+- [ ] **D-29 Feed Settings (06i).** Feed settings control or **08** → **Feed Settings**. Expected: **Filters** and **Ranking**; save changes what you see in the feed. The filters no longer include **Smoking** or **Drinking**, and Ranking has three signals (Shared Interests, Relationship Goals Match, Distance) — no **Lifestyle Compatibility**, **Response Depth**, or **Recency**. Shared Interests reads "How much overlap in your chosen Interests matters."
 - [ ] **D-30 Account rows (08).** Each Account row opens a real screen (not **Coming in the next update**).
 - [ ] **D-31 Edit Profile (08d).** Edit a field → **Save Changes**. Expected: updates on **08**.
 - [ ] **D-31c Edit Profile gender (08d / 03d).** Open **Edit Profile**. Expected: the Gender section matches Build Profile (**Woman**, **Man**, **More >**, and the **Show gender on my profile** switch), pre-filled with your saved choice. If your saved gender came from the More list, the More chip shows it as selected (cut off with an ellipsis if long). Tap it, pick a different option on **Gender (03d)**, then **Save Changes**. Expected: **08** shows the new gender, unless the switch is off.

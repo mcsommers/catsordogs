@@ -19,25 +19,19 @@ export type RankingWeight = 'low' | 'medium' | 'high';
 export type FeedRankingSettings = {
   sharedInterests: RankingWeight;
   relationshipGoals: RankingWeight;
-  responseDepth: RankingWeight;
   distance: RankingWeight;
-  recency: RankingWeight;
 };
 
 const RANKING_FIELDS: (keyof FeedRankingSettings)[] = [
   'sharedInterests',
   'relationshipGoals',
-  'responseDepth',
   'distance',
-  'recency',
 ];
 
 const RANKING_DB: Record<keyof FeedRankingSettings, string> = {
   sharedInterests: 'shared_interests',
   relationshipGoals: 'relationship_goals',
-  responseDepth: 'response_depth',
   distance: 'distance',
-  recency: 'recency',
 };
 
 function mapFilterDef(row: Record<string, unknown>): FilterDefinition {
@@ -58,9 +52,7 @@ function mapRanking(row: Record<string, unknown>): FeedRankingSettings {
   return {
     sharedInterests: String(row.shared_interests ?? 'medium') as RankingWeight,
     relationshipGoals: String(row.relationship_goals ?? 'medium') as RankingWeight,
-    responseDepth: String(row.response_depth ?? 'medium') as RankingWeight,
     distance: String(row.distance ?? 'medium') as RankingWeight,
-    recency: String(row.recency ?? 'medium') as RankingWeight,
   };
 }
 
@@ -99,14 +91,12 @@ export async function loadFeedRankingSettings(): Promise<FeedRankingSettings> {
     return {
       sharedInterests: 'medium',
       relationshipGoals: 'medium',
-      responseDepth: 'medium',
       distance: 'medium',
-      recency: 'medium',
     };
   }
   const { data, error } = await supabase
     .from('feed_settings')
-    .select('shared_interests, relationship_goals, response_depth, distance, recency')
+    .select('shared_interests, relationship_goals, distance')
     .eq('user_id', uid)
     .maybeSingle();
   if (error) throw error;
@@ -140,16 +130,8 @@ export const RANKING_LABELS: Record<keyof FeedRankingSettings, { title: string; 
     title: 'Relationship Goals',
     description: 'How much your relationship goals need to align.',
   },
-  responseDepth: {
-    title: 'Response Depth',
-    description: 'How much longer, thoughtful answers are favored.',
-  },
   distance: {
     title: 'Distance',
     description: 'How much closer profiles are favored.',
-  },
-  recency: {
-    title: 'Recency',
-    description: 'How much newer answers are favored within your look-back window.',
   },
 };
