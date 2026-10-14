@@ -255,8 +255,7 @@ select lives_ok(
       "show_me": "Women",
       "age_range": {"min": 24, "max": 35},
       "height_range": {"min": 60, "max": 76},
-      "sexual_orientation": ["Straight", "Gay"],
-      "occupation": ["Product Designer"]
+      "sexual_orientation": ["Straight", "Gay"]
     }' where user_id = 'aaaaaaaa-0000-0000-0000-000000000001'$$,
   'valid filters are accepted');
 select throws_ok(
@@ -284,8 +283,8 @@ select throws_ok(
   '23514', 'Invalid choice for Show me.',
   'an invalid "Show me" choice is rejected');
 select throws_ok(
-  $$update public.filter_preferences set filters = '{"occupation": "Designer"}' where user_id = 'aaaaaaaa-0000-0000-0000-000000000001'$$,
-  '23514', 'Occupation must be a list of up to 25 choices.',
+  $$update public.filter_preferences set filters = '{"sexual_orientation": "Gay"}' where user_id = 'aaaaaaaa-0000-0000-0000-000000000001'$$,
+  '23514', 'Sexual orientation must be a list of up to 25 choices.',
   'a list filter that is not a list is rejected');
 select is_empty(
   $$update public.filter_preferences set filters = '{}' where user_id = 'bbbbbbbb-0000-0000-0000-000000000002' returning 1$$,

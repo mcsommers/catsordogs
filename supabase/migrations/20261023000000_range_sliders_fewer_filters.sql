@@ -6,9 +6,17 @@
 --     a saved max equal to the top of the range has no upper bound, and a saved min equal
 --     to the bottom has no lower bound. Both handles at the ends is the same as Any.
 
+--   * The "Occupation" filter is removed too.
+--   * Sexual orientation moves above Age range.
+
 -- Saved values first: validate_filters rejects keys that are no longer active.
-update public.filter_preferences set filters = filters - 'relationship_goals' where filters ? 'relationship_goals';
-update public.filter_definitions set active = false where key = 'relationship_goals';
+update public.filter_preferences set filters = filters - 'relationship_goals' - 'occupation'
+where filters ? 'relationship_goals' or filters ? 'occupation';
+update public.filter_definitions set active = false where key in ('relationship_goals', 'occupation');
+
+-- Order on the screen: Show me, Sexual orientation, Age range, Height.
+update public.filter_definitions set sort_order = 2 where key = 'sexual_orientation';
+update public.filter_definitions set sort_order = 3 where key = 'age_range';
 
 update public.filter_definitions set min_value = 18, max_value = 70 where key = 'age_range';
 update public.filter_definitions set min_value = 24, max_value = 84 where key = 'height_range';

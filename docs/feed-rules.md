@@ -35,11 +35,12 @@ Within one multi-select filter, a person passes if **any** chosen value appears 
 | `age_range` | Age range | `profiles.birthday` | Two-handle slider, 18 to 70+. Age is `extract(year from age(current_date, birthday))`. Compared with the saved `min` and `max`. A handle on its end has no limit on that side: a saved max of 70 means 70 and older (a 75-year-old passes), and a saved min of 18 has no lower limit. Both handles on the ends is the same as Any (the filter is not saved). A missing birthday fails the filter when it is set. |
 | `height_range` | Height | `profiles.height_inches` | Two-handle slider, 2'0" (24 in) to 7'0"+ (84 in), same end-handle rule as age. A missing height fails when the filter is set, but not when both handles are on the ends. The column is total inches (35 to 99). |
 | `sexual_orientation` | Sexual orientation | `profiles.sexual_orientation` | Each profile now holds at most one orientation (single-select on Build/Edit Profile). The viewer can still pick several values in Feed Settings; a person passes if their one value is among them. Lesbian is not linked to Show me or Interested in. (fixed list from `profile_options`: Straight, Gay, Lesbian, Bisexual, Asexual, Demisexual, Pansexual, Queer, Questioning; no custom entries on the profile). A person who turned **Show orientation on my profile** off is still compared; that switch only controls whether other people can see it. |
-| `occupation` | Occupation | `profiles.job_title` | The job title is one string. It passes when it equals one of the chosen values, ignoring case. |
 
 ### Profile fields vs feed (Oct 2026)
 
 - **`interested_in`** (Men, Women, Non-Binary on the profile) is **not** a filter and **not** a ranking signal. It does not appear in `passes_filters` or `rank_score`.
+- **There is no Occupation filter (Oct 2026).** Job title is not used for filtering or ranking.
+- **Filter order on Feed Settings:** Show me, Sexual orientation, Age range, Height.
 - **There is no Relationship goals filter (Oct 2026).** Relationship goals only affect the order, through the Relationship Goals ranking signal.
 - **There is no Maximum distance filter (Oct 2026).** Distance only affects the order, through the Distance ranking signal. People with no location are never filtered out for it.
 - **There is no Interests filter (Oct 2026).** Interests only affect ranking (Shared Interests, below). **`interests`** (up to 5 picks on `profiles.interests`, chosen on screen 03e) is what the **Shared interests** ranking uses. These picks replaced the older hobby list in the same column. Do not confuse it with **Interested in**.

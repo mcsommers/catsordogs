@@ -3,7 +3,7 @@
 -- locations, and who can read what.
 -- (Followed-first ordering and its cap are in 05_feed_followed_cap.test.sql.)
 begin;
-select plan(146);
+select plan(147);
 
 delete from public.answers;
 delete from public.videos;
@@ -289,11 +289,14 @@ select is(pg_temp.filtered('{"age_range":{"min":30,"max":70}}'), array['M1', 'W1
 update public.profiles set birthday = birthday + interval '40 years' where id = pg_temp.uid(4);
 select is(pg_temp.filtered('{"age_range":{"min":18,"max":70},"height_range":{"min":24,"max":84}}'), array['M1', 'N1', 'W1', 'W2', 'X1', 'X2', 'X3'], 'both handles on the ends is the same as Any');
 select is((select count(*) from public.filter_definitions where key = 'relationship_goals' and active), 0::bigint, 'the Relationship goals filter is gone (the ranking signal stays)');
-select is(pg_temp.filtered('{"occupation":["nurse","chef"]}'), array['M1', 'W1'], 'filter: occupation (any match, ignoring case)');
-select is(pg_temp.filtered('{"occupation":["Nurse","Chef"]}'), array['M1', 'W1'], 'filter: occupation');
+update public.profiles set sexual_orientation = '{"Gay"}' where id = pg_temp.uid(4);
+update public.profiles set sexual_orientation = '{"Bisexual"}' where id = pg_temp.uid(2);
+select is(pg_temp.filtered('{"sexual_orientation":["gay","bisexual"]}'), array['M1', 'W1'], 'filter: sexual orientation (any match, ignoring case)');
+select is(pg_temp.filtered('{"sexual_orientation":["Gay"]}'), array['M1'], 'filter: sexual orientation');
+select is((select count(*) from public.filter_definitions where key = 'occupation' and active), 0::bigint, 'the Occupation filter is gone');
 select is((select count(*) from public.filter_definitions where key = 'max_distance' and active), 0::bigint, 'the Maximum distance filter is gone (distance only changes the order)');
-select is(pg_temp.filtered('{"show_me":"Women","age_range":{"min":26,"max":32},"occupation":["Nurse"]}'), array['W1'], 'filters combine');
-select is(pg_temp.filtered('{"occupation":[]}'), array['M1', 'N1', 'W1', 'W2', 'X1', 'X2', 'X3'], 'an empty pick-list means Any');
+select is(pg_temp.filtered('{"show_me":"Women","age_range":{"min":26,"max":32},"sexual_orientation":["Bisexual"]}'), array['W1'], 'filters combine');
+select is(pg_temp.filtered('{"sexual_orientation":[]}'), array['M1', 'N1', 'W1', 'W2', 'X1', 'X2', 'X3'], 'an empty pick-list means Any');
 select is(pg_temp.filtered('{}'), array['M1', 'N1', 'W1', 'W2', 'X1', 'X2', 'X3'], 'clearing the filters shows everyone again');
 
 -- ---------------------------------------------------------------------------
