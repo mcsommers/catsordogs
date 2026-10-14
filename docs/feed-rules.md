@@ -38,12 +38,11 @@ Within one multi-select filter, a person passes if **any** chosen value appears 
 | `sexual_orientation` | Sexual orientation | `profiles.sexual_orientation` | Each profile now holds at most one orientation (single-select on Build/Edit Profile). The viewer can still pick several values in Feed Settings; a person passes if their one value is among them. Lesbian is not linked to Show me or Interested in. (fixed list from `profile_options`: Straight, Gay, Lesbian, Bisexual, Asexual, Demisexual, Pansexual, Queer, Questioning; no custom entries on the profile). A person who turned **Show orientation on my profile** off is still compared; that switch only controls whether other people can see it. |
 | `occupation` | Occupation | `profiles.job_title` | The job title is one string. It passes when it equals one of the chosen values, ignoring case. |
 | `relationship_goals` | Relationship goals | `profiles.relationship_goal` | The profile stores one goal. It passes when that goal is one of the chosen values, ignoring case. |
-| `interests` | Interests | `profiles.interests` | Any overlap with the chosen interests. A profile holds up to 5 Interests picked from the 278-item list on screen 03e (alphabetical, from `profile_options`). |
 
 ### Profile fields vs feed (Oct 2026)
 
 - **`interested_in`** (Men, Women, Non-Binary on the profile) is **not** a filter and **not** a ranking signal. It does not appear in `passes_filters` or `rank_score`.
-- **`interests`** (up to 5 picks on `profiles.interests`, chosen on screen 03e) is what the **Interests** filter and the **Shared interests** ranking use. These picks replaced the older hobby list in the same column. Do not confuse it with **Interested in**.
+- **There is no Interests filter (Oct 2026).** Interests only affect ranking (Shared Interests, below). **`interests`** (up to 5 picks on `profiles.interests`, chosen on screen 03e) is what the **Shared interests** ranking uses. These picks replaced the older hobby list in the same column. Do not confuse it with **Interested in**.
 - **Lifestyle tags, Smoking, Drinking, and Lifestyle compatibility were removed (Oct 2026).** The `smoking` and `drinking` filters are inactive, and the old `lifestyle_tags` column is emptied and no longer edited.
 - **Response depth and Recency were removed from ranking (Oct 2026).** Ranking has three signals: Shared interests, Relationship goals, and Distance. How long or detailed an answer is, and what time of day it was posted, do not affect the order.
 
@@ -78,6 +77,11 @@ Raising one weight also shrinks the share of the other two, because they all div
 Fields: `profiles.interests` on the viewer and on the other person (the up-to-5 Interests picks, **not** `interested_in`).
 
 Score = (how many of the **viewer's** interests also appear on the other person) / (how many interests the viewer has), capped at 1. Extra interests that only the other person has do not help. If the viewer has none, the score is 0. A viewer who picked no Interests scores 0 with everyone.
+
+**Specific option (4th choice, Oct 2026).** Shared Interests offers **Low / Medium / High / Specific**. Low, Medium and High weigh 1, 2 and 3 and score on the viewer's own profile interests, as above. **Specific** (`feed_settings.shared_interests = 'specific'`) scores on the interests the viewer picked on screen 06ia (`feed_settings.specific_interests`, any number, no limit) instead, and weighs **6** (double High), because the viewer is saying exactly which interests matter.
+- Score = (how many of the viewer's specific picks also appear on the other person) / (the smaller of the number picked and 3), capped at 1. So matching any 3 of the picks is a full score, however many were picked; a person who has none of them scores 0.
+- Specific with nothing picked behaves like Medium (weight 2, scored on the viewer's own profile interests).
+- The picks are kept when the viewer switches back to Low / Medium / High, and are cleared by **Reset**.
 
 **2. Relationship goals** (`feed_settings.relationship_goals`)
 

@@ -71,7 +71,7 @@ Decided:
 - The **Lifestyle** section is now **Interests**. An empty section shows one **Select Interests >** pill; it opens screen **03e**, which lists all 278 interests as pills in strict alphabetical order. Up to 5 can be chosen, with a live "N of 5 selected" counter.
 - **Done** on 03e stays disabled until something on that screen has changed. Leaving 03e with unsaved changes shows the existing **Discard changes?** dialog.
 - After Done, the picks show as orange selected pills with an orange **Edit** link in the section header.
-- The 5 picks **replace** the old hobby list in the `interests` column, and feed the Interests filter and the Shared Interests ranking.
+- The 5 picks **replace** the old hobby list in the `interests` column, and feed the Shared Interests ranking (the Interests filter was removed; see below).
 - Lifestyle tags are removed. So are the **Smoking** and **Drinking** filters and the **Lifestyle Compatibility** ranking signal (Feed Settings, 06i, now has five ranking signals). Every screen that said "Lifestyle" now says "Interests".
 - The top row (back arrow and "N of 5 selected") is sticky, and the space above **Done** equals the space below it (Pencil 03e and 03e Edited updated). The top row has 12 points of space above and below it. On Android the gap above **Done** is 24 points and does not include the phone's navigation bar; on iPhone it matches the gap below (which includes the home indicator).
 - **Done** is always visible: it is pinned at the bottom of 03e while the pill list scrolls above it (Pencil 03e and 03e Edited now show a phone-height screen with the list clipped and Done fixed at the bottom). The list is strictly alphabetical, ignoring capitals, so acronyms sort by their letters (BBQ falls after Basketball and before Beach Bars; DIY after Diving; EDM after E-Sports); the order is stored in `profile_options.sort_order` and the Pencil pills match it. When 5 are chosen, tapping another unselected pill does nothing.
@@ -515,3 +515,8 @@ Options:
 - Show Mike each one before building it.
 
 Answer: Design simple versions in the design file, update the requirements doc, then build them.
+
+## Feed Settings: Specific shared interests (Oct 2026)
+- Shared Interests has a 4th option, **Specific**. Choosing it shows a **Choose specific interests** row (with "N selected") that opens screen **06ia**, a dark screen with all 278 interests as pills, no limit, a live "N selected" counter, and no Done button. Taps update Feed Settings straight away; they are saved with Feed Settings' **Save** button.
+- The long list of Interest pills is gone from Feed Settings, and so is the **Interests** filter (a hard filter on interests overlapped with this ranking choice). Interests now only affect ranking. *Assumption, confirm.*
+- Specific weighs 6 (Low 1, Medium 2, High 3). The score is matches / the smaller of (number picked, 3), capped at 1, so any 3 matches is a full score. Specific with nothing picked behaves like Medium. *Assumptions, confirm.*

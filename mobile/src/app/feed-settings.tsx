@@ -1,6 +1,8 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { Alert, Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
 import { router } from 'expo-router';
+import { ChevronRight } from 'lucide-react-native';
+import { setSpecificInterestsRequest } from '../lib/specificInterestsPicker';
 import {
   loadFeedRankingSettings,
   loadFilterDefinitions,
@@ -11,7 +13,7 @@ import {
   updateFeedRankingSettings,
   type FeedRankingSettings,
   type FilterDefinition,
-  type RankingWeight,
+  type SharedInterestsWeight,
 } from '../lib/feedSettings';
 import { supabase } from '../lib/supabase';
 import {
@@ -28,7 +30,8 @@ import { colors, fonts } from '../theme';
 
 type Option = { value: string };
 
-const WEIGHTS: RankingWeight[] = ['low', 'medium', 'high'];
+const WEIGHTS: SharedInterestsWeight[] = ['low', 'medium', 'high'];
+const SHARED_INTERESTS_WEIGHTS: SharedInterestsWeight[] = [...WEIGHTS, 'specific'];
 
 function FilterDefinitionCard({
   d,
@@ -143,7 +146,7 @@ export default function FeedSettingsScreen() {
       loadFilterDefinitions(),
       loadFilterPreferences(),
       loadFeedRankingSettings(),
-      supabase.from('profile_options').select('category, value').eq('active', true),
+      supabase.from('profile_options').select('category, value').eq('active', true).order('sort_order'),
     ]);
     setDefs(d);
     setFilters(f);
@@ -185,6 +188,16 @@ export default function FeedSettingsScreen() {
     }
   };
 
+  const openSpecificInterests = () => {
+    if (!ranking) return;
+    setSpecificInterestsRequest({
+      options: (options.interest ?? []).map((o) => o.value),
+      value: ranking.specificInterests,
+      onChange: (value) => setRanking((prev) => (prev ? { ...prev, specificInterests: value } : prev)),
+    });
+    router.push('/specific-interests');
+  };
+
   const onResetRanking = async () => {
     try {
       await resetFeedSettings();
@@ -223,12 +236,12 @@ export default function FeedSettingsScreen() {
           <Text style={styles.resetLink}>Reset</Text>
         </Pressable>
       </View>
-      {(Object.keys(RANKING_LABELS) as (keyof FeedRankingSettings)[]).map((key) => (
+      {(Object.keys(RANKING_LABELS) as (keyof typeof RANKING_LABELS)[]).map((key) => (
         <View key={key} style={styles.filterCard}>
           <Text style={styles.filterLabel}>{RANKING_LABELS[key].title}</Text>
           <Text style={styles.filterHint}>{RANKING_LABELS[key].description}</Text>
           <View style={styles.segment}>
-            {WEIGHTS.map((w) => (
+            {(key === 'sharedInterests' ? SHARED_INTERESTS_WEIGHTS : WEIGHTS).map((w) => (
               <Pressable
                 key={w}
                 style={[styles.segmentBtn, ranking[key] === w && styles.segmentBtnActive]}
@@ -240,6 +253,15 @@ export default function FeedSettingsScreen() {
               </Pressable>
             ))}
           </View>
+          {key === 'sharedInterests' && ranking.sharedInterests === 'specific' ? (
+            <Pressable style={styles.specificRow} onPress={openSpecificInterests}>
+              <Text style={styles.specificLabel}>Choose specific interests</Text>
+              <View style={styles.specificValue}>
+                <Text style={styles.specificCount}>{`${ranking.specificInterests.length} selected`}</Text>
+                <ChevronRight size={15} color={colors.textDarkFaint} />
+              </View>
+            </Pressable>
+          ) : null}
         </View>
       ))}
 
@@ -275,6 +297,18 @@ const styles = StyleSheet.create({
   rangeRow: { flexDirection: 'row', gap: 8 },
   rankingHeader: { flexDirection: 'row', alignItems: 'flex-start', justifyContent: 'space-between', marginTop: 8 },
   resetLink: { fontFamily: fonts.bodyBold, fontSize: 13, color: colors.accentDog, paddingTop: 4 },
+  specificRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    backgroundColor: '#00000040',
+    borderRadius: 12,
+    paddingHorizontal: 14,
+    paddingVertical: 12,
+  },
+  specificLabel: { fontFamily: fonts.bodyBold, fontSize: 13, color: colors.white },
+  specificValue: { flexDirection: 'row', alignItems: 'center', gap: 6 },
+  specificCount: { fontFamily: fonts.body, fontSize: 13, color: colors.textDarkMuted },
   segment: {
     flexDirection: 'row',
     backgroundColor: '#00000040',
