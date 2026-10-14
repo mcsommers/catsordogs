@@ -53,6 +53,7 @@ function FilterDefinitionCard({
         <View style={styles.chips}>
           {(options[d.optionCategory] ?? []).map((o) => (
             <Chip
+              dark
               key={o.value}
               label={o.value}
               selected={filters[d.key] === o.value}
@@ -115,6 +116,7 @@ function FilterDefinitionCard({
             const on = arr.includes(o.value);
             return (
               <Chip
+                dark
                 key={o.value}
                 label={o.value}
                 selected={on}

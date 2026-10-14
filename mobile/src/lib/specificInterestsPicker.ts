@@ -1,7 +1,7 @@
 /**
  * Hands the Specific interests choice between Feed Settings (06i) and the
  * Specific Interests screen (06ia). Feed Settings stays mounted underneath, so
- * unsaved changes there are kept; every tap on 06ia reports through `onChange`.
+ * unsaved changes there are kept; Done on 06ia reports the picks through `onChange`.
  */
 export type SpecificInterestsRequest = {
   options: string[];
