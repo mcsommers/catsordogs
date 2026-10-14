@@ -254,7 +254,6 @@ select lives_ok(
   $$update public.filter_preferences set filters = '{
       "show_me": "Women",
       "age_range": {"min": 24, "max": 35},
-      "max_distance": 25,
       "height_range": {"min": 60, "max": 76},
       "sexual_orientation": ["Straight", "Gay"],
       "occupation": ["Product Designer"]
@@ -277,9 +276,9 @@ select throws_ok(
   '23514', 'Age range is out of range.',
   'an age filter below the minimum age is rejected');
 select throws_ok(
-  $$update public.filter_preferences set filters = '{"max_distance": 5000}' where user_id = 'aaaaaaaa-0000-0000-0000-000000000001'$$,
-  '23514', 'Maximum distance is out of range.',
-  'a huge distance is rejected');
+  $$update public.filter_preferences set filters = '{"max_distance": 25}' where user_id = 'aaaaaaaa-0000-0000-0000-000000000001'$$,
+  '23514', 'Unknown filter "max_distance".',
+  'the Maximum distance filter is gone');
 select throws_ok(
   $$update public.filter_preferences set filters = '{"show_me": "Aliens"}' where user_id = 'aaaaaaaa-0000-0000-0000-000000000001'$$,
   '23514', 'Invalid choice for Show me.',

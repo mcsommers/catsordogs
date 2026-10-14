@@ -41,11 +41,11 @@ Create them in this order. Ages are as of October 2026. Use the birthday exactly
 | 1 | catsordogsapp+avery@gmail.com | Avery | January 1, 1986 | 40 | Woman | Brooklyn, NY | Admin. Never records a video. |
 | 2 | catsordogsapp+alex@gmail.com | Alex | March 15, 1998 | 28 | Woman | Brooklyn, NY | The person whose feed you judge. |
 | 3 | catsordogsapp+jordan@gmail.com | Jordan | June 1, 1996 | 30 | Man | Brooklyn, NY | Should rank first for Alex. Match and chat. Day 2 nudge target. He does not record on Day 2. |
-| 4 | catsordogsapp+sam@gmail.com | Sam | January 20, 1994 | 32 | Man | Austin, TX | Far away, little in common. Should rank behind Jordan, then disappear when distance is limited. |
+| 4 | catsordogsapp+sam@gmail.com | Sam | January 20, 1994 | 32 | Man | Austin, TX | Far away, little in common. Should rank behind Jordan. |
 | 5 | catsordogsapp+riley@gmail.com | Riley | August 8, 1999 | 27 | Woman | Brooklyn, NY | Followed by Alex, but outside "Show me: Men". Should still appear at the top. |
 | 6 | catsordogsapp+morgan@gmail.com | Morgan | April 4, 1971 | 55 | Man | Brooklyn, NY | Followed by Alex, but outside age 25–40. Should be left out once the follow cap is full. |
 | 7 | catsordogsapp+quinn@gmail.com | Quinn | February 2, 1997 | 29 | Man | Brooklyn, NY | Passes Alex's filters. Used for "wants to match" and a decline. |
-| 8 | catsordogsapp+casey@gmail.com | Casey | March 1, 1993 | 33 | Man | Leave location empty | No city. Should vanish when a maximum distance is set. |
+| 8 | catsordogsapp+casey@gmail.com | Casey | March 1, 1993 | 33 | Man | Leave location empty | No city, so the Distance ranking signal is neutral for him. |
 | 9 | catsordogsapp+drew@gmail.com | Drew | July 7, 1992 | 34 | Man | Brooklyn, NY | Second reporter. Follows Jordan on Day 1 so he can nudge him on Day 2. |
 | 10 | catsordogsapp+taylor@gmail.com | Taylor | May 5, 1995 | 31 | Man | Brooklyn, NY | Stays out of the feed until after the filter check, then answers. |
 | 11 | catsordogsapp+parker@gmail.com | Parker | September 9, 2000 | 26 | Man | Brooklyn, NY | Created so the account can be deleted. Records only at the end of Day 1. |
@@ -130,13 +130,12 @@ Jordan must actually speak the long line. Sam must say only "Yeah."
 Stay as Alex unless a step says otherwise. Alex has answered, so the Feed is unlocked (06).
 
 - [ ] **M-19 Alex does not see herself.** Swipe the whole feed. Alex's own video is not in it. The other seven names can appear: Jordan, Sam, Riley, Morgan, Quinn, Casey, Drew. Taylor and Parker do not, because they have not answered.
-- [ ] **M-20 Jordan ranks ahead of Sam.** With filters still cleared (no Show me chip selected, Age range empty, Maximum distance empty) and ranking still on the defaults, Jordan appears before Sam. Jordan is in Brooklyn, shares Hiking and Coffee and the Long-term relationship goal. Sam is in Austin and shares none of that. (Answer length does not affect the order.) You do not need a perfect order of all seven. Jordan-before-Sam is the check.
+- [ ] **M-20 Jordan ranks ahead of Sam.** With filters still cleared (no Show me chip selected, Age range empty) and ranking still on the defaults, Jordan appears before Sam. Jordan is in Brooklyn, shares Hiking and Coffee and the Long-term relationship goal. Sam is in Austin and shares none of that. (Answer length does not affect the order.) You do not need a perfect order of all seven. Jordan-before-Sam is the check.
 - [ ] **M-21 A view counts only after a real watch.** As Alex, let Jordan's clip play at least 3 seconds, then swipe away from Sam in the first second. Log in as Jordan. On Profile, that answer's eye count includes Alex (the count only, never Alex's name). Log in as Sam. Sam's eye count does not include that instant swipe. Log back in as Alex. Open Jordan's profile once, then open it again. As Jordan, the profile-view count went up by 1, not by 2, and it does not say who.
 - [ ] **M-22 Follow three people.** As Alex, on Jordan's feed video tap **⋯**. The menu is Follow, Not Interested, Report, Block, Cancel. Follow. The dialog is "Follow Jordan?" and says he won't know you're following him, and that his answer will show up at the top of your feed every day he posts. Confirm **Yes, Follow**. Follow Riley and Morgan the same way. Their videos show an orange **Following** tag. As Jordan, the follower count on his own profile goes up, and the profile says identities stay private. Jordan is not told that Alex followed him. There is no email that names Alex.
 - [ ] **M-23 Tighten the feed, then save.** As Alex, open Feed Settings (06i) from the settings control on the feed or from Profile. Set:
   - Show me: **Men**
   - Age range: min **25**, max **40**
-  - Maximum distance: **50**
   - Leave the other filter chips on Any (none selected).
   - Leave ranking at Medium. Save. Expected: "Your feed settings were updated."
   Reopen the Feed and swipe from the top.
@@ -145,11 +144,10 @@ Stay as Alex unless a step says otherwise. Alex has answered, so the Feed is unl
   2. **Riley**, with the Following tag. Riley is a woman, so "Show me: Men" would normally drop her. Following puts her in a top slot anyway.
   3. **Quinn** and **Drew**, in either order, with **no** Following tag. Both are men in Brooklyn inside the age range.
   - **Morgan is absent.** He is followed, but he is 55, so he fails the age filter, and he does not fit in the two top slots.
-  - **Sam is absent** (Austin is farther than 50 miles, and Alex does not follow him).
-  - **Casey is absent** (no city, and a maximum distance is set).
+  - **Sam and Casey** are men inside the age range, so they now also appear, after the four above, with no Following tag (Sam last, since Austin is far away).
   - Alex, Taylor, Parker, and Avery are absent.
   If a stranger's name is in this list, the pool was not limited to the cast. Stop and ask the agent.
-- [ ] **M-25 Clearing filters brings people back.** As Alex, clear Show me, clear both age boxes, clear Maximum distance, and save. Reopen the feed. Sam, Casey, and Morgan can appear again. Morgan still has the Following tag. Sam still appears after Jordan.
+- [ ] **M-25 Clearing filters brings people back.** As Alex, clear Show me, clear both age boxes, and save. Reopen the feed. Morgan can appear again and still has the Following tag. Jordan still comes first.
 - [ ] **M-26 Unfollow.** On Morgan, **⋯** now says **Unfollow** instead of Follow. Confirm. The dialog says Morgan won't be notified, his answers will no longer show up at the top, and you won't be able to nudge him. After you confirm, Morgan's Following tag is gone. As Morgan, nothing tells him he was unfollowed. Alex still follows Jordan and Riley.
 
 - [ ] **M-27 Drew follows Jordan.** Log in as Drew. On Jordan's video, **⋯** → **Follow** → **Yes, Follow**. Log out. This is what lets Drew nudge Jordan on Day 2. Drew's follow does not change the order checks you already did as Alex.

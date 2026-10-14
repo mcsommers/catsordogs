@@ -3,7 +3,7 @@
 -- locations, and who can read what.
 -- (Followed-first ordering and its cap are in 05_feed_followed_cap.test.sql.)
 begin;
-select plan(143);
+select plan(142);
 
 delete from public.answers;
 delete from public.videos;
@@ -285,13 +285,9 @@ select is(pg_temp.filtered('{"age_range":{"min":26,"max":32}}'), array['N1', 'W1
 select is(pg_temp.filtered('{"height_range":{"min":71,"max":79}}'), array['M1'], 'filter: height range (inches)');
 select is(pg_temp.filtered('{"occupation":["nurse","chef"]}'), array['M1', 'W1'], 'filter: occupation (any match, ignoring case)');
 select is(pg_temp.filtered('{"occupation":["Nurse","Chef"]}'), array['M1', 'W1'], 'filter: occupation');
-select is(pg_temp.filtered('{"max_distance":10}'), array['W1', 'X1', 'X2', 'X3'], 'filter: maximum distance (people with no location are excluded)');
-select is(pg_temp.filtered('{"show_me":"Women","max_distance":10,"occupation":["Nurse"]}'), array['W1'], 'filters combine');
+select is((select count(*) from public.filter_definitions where key = 'max_distance' and active), 0::bigint, 'the Maximum distance filter is gone (distance only changes the order)');
+select is(pg_temp.filtered('{"show_me":"Women","age_range":{"min":26,"max":32},"occupation":["Nurse"]}'), array['W1'], 'filters combine');
 select is(pg_temp.filtered('{"occupation":[]}'), array['M1', 'N1', 'W1', 'W2', 'X1', 'X2', 'X3'], 'an empty pick-list means Any');
-update public.profiles set latitude = null, longitude = null where id = pg_temp.uid(1);
-select is(pg_temp.filtered('{"max_distance":1}'), array['M1', 'N1', 'W1', 'W2', 'X1', 'X2', 'X3'],
-  'the distance filter is skipped when the viewer has no location');
-update public.profiles set latitude = 40.7128, longitude = -74.0060 where id = pg_temp.uid(1);
 select is(pg_temp.filtered('{}'), array['M1', 'N1', 'W1', 'W2', 'X1', 'X2', 'X3'], 'clearing the filters shows everyone again');
 
 -- ---------------------------------------------------------------------------
