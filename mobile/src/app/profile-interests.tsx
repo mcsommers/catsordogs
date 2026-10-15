@@ -103,8 +103,9 @@ export default function ProfileInterestsPicker() {
         }}
       />
       <View style={styles.page}>
-        <View style={ui.header}>
+        <View style={ui.headerWithTitle}>
           <BackButton onPress={attemptLeave} />
+          <Text style={ui.headerTitle}>Interests</Text>
           <Text
             style={styles.counter}
           >{`${picked.length} of ${max} selected`}</Text>
@@ -116,7 +117,6 @@ export default function ProfileInterestsPicker() {
             style={styles.flex}
           >
             <TitleGroup
-              title="Interests"
               subtitle={`Pick up to ${max} things you love.`}
             />
             <View style={styles.pills}>

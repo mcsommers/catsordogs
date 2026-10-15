@@ -53107,15 +53107,16 @@
           "children": [
             {
               "type": "frame",
-              "id": "VNtTE",
+              "id": "JYQ3p",
               "name": "Header",
               "width": "fill_container",
+              "gap": 12,
               "justifyContent": "space_between",
               "alignItems": "center",
               "children": [
                 {
                   "type": "frame",
-                  "id": "O5cbH",
+                  "id": "x2aUd",
                   "name": "Back Button",
                   "width": 40,
                   "height": 40,
@@ -53128,7 +53129,7 @@
                   "children": [
                     {
                       "type": "icon",
-                      "id": "oLvit",
+                      "id": "Q6MhE",
                       "name": "Arrow",
                       "width": 18,
                       "height": 18,
@@ -53140,7 +53141,19 @@
                 },
                 {
                   "type": "text",
-                  "id": "beBgn",
+                  "id": "Jk9KT",
+                  "name": "Title",
+                  "fill": "$text-primary",
+                  "textGrowth": "fixed-width",
+                  "width": "fill_container",
+                  "content": "Interests",
+                  "fontFamily": "$font-heading",
+                  "fontSize": 28,
+                  "fontWeight": "normal"
+                },
+                {
+                  "type": "text",
+                  "id": "LPKH3",
                   "name": "Counter",
                   "fill": "$accent-dog",
                   "content": "3 of 5 selected",
@@ -53168,18 +53181,6 @@
                   "layout": "vertical",
                   "gap": 8,
                   "children": [
-                    {
-                      "type": "text",
-                      "id": "b8GK9E",
-                      "name": "Title",
-                      "fill": "$text-primary",
-                      "textGrowth": "fixed-width",
-                      "width": "fill_container",
-                      "content": "Interests",
-                      "fontFamily": "$font-heading",
-                      "fontSize": 28,
-                      "fontWeight": "normal"
-                    },
                     {
                       "type": "text",
                       "id": "j1A2Pg",
@@ -57214,15 +57215,16 @@
           "children": [
             {
               "type": "frame",
-              "id": "cNOxR",
+              "id": "sl72k",
               "name": "Header",
               "width": "fill_container",
+              "gap": 12,
               "justifyContent": "space_between",
               "alignItems": "center",
               "children": [
                 {
                   "type": "frame",
-                  "id": "X4rHq7",
+                  "id": "jomba",
                   "name": "Back Button",
                   "width": 40,
                   "height": 40,
@@ -57235,7 +57237,7 @@
                   "children": [
                     {
                       "type": "icon",
-                      "id": "EupQX",
+                      "id": "felyB",
                       "name": "Arrow",
                       "width": 18,
                       "height": 18,
@@ -57247,7 +57249,19 @@
                 },
                 {
                   "type": "text",
-                  "id": "ZKCQp",
+                  "id": "x82yOS",
+                  "name": "Title",
+                  "fill": "$text-primary",
+                  "textGrowth": "fixed-width",
+                  "width": "fill_container",
+                  "content": "Interests",
+                  "fontFamily": "$font-heading",
+                  "fontSize": 28,
+                  "fontWeight": "normal"
+                },
+                {
+                  "type": "text",
+                  "id": "w5ps2",
                   "name": "Counter",
                   "fill": "$accent-dog",
                   "content": "4 of 5 selected",
@@ -57275,18 +57289,6 @@
                   "layout": "vertical",
                   "gap": 8,
                   "children": [
-                    {
-                      "type": "text",
-                      "id": "W9Skk",
-                      "name": "Title",
-                      "fill": "$text-primary",
-                      "textGrowth": "fixed-width",
-                      "width": "fill_container",
-                      "content": "Interests",
-                      "fontFamily": "$font-heading",
-                      "fontSize": 28,
-                      "fontWeight": "normal"
-                    },
                     {
                       "type": "text",
                       "id": "v8E8VX",

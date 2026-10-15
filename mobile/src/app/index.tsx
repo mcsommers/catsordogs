@@ -6,7 +6,7 @@ import { getGate, getProfileCompleted } from '../lib/api';
 import { startRoute, type StartRoute } from '../lib/routing';
 import { CenteredSpinner, PrimaryButton, styles } from '../components/ui';
 
-/** Decides where the app opens: Welcome, Build Profile, Today's Question, or the Feed. */
+/** Decides where the app opens: Welcome, Build Profile, or the Feed (locked until today is answered). */
 export default function Start() {
   const { session, loading } = useSession();
   const [failed, setFailed] = useState(false);

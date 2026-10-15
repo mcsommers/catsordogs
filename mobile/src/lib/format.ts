@@ -149,6 +149,23 @@ export function formatProfileIdentityLabel(
   return parts.length ? parts.join(' ') : null;
 }
 
+/**
+ * Same parenthetical, honoring Show orientation / Show gender.
+ * On your own profile those flags are true/false. On someone else's they
+ * are null because the server already blanks hidden fields.
+ */
+export function formatVisibleProfileIdentity(
+  sexualOrientation: string[] | null | undefined,
+  gender: string | null | undefined,
+  showOrientation?: boolean | null,
+  showGender?: boolean | null
+): string | null {
+  return formatProfileIdentityLabel(
+    showOrientation === false ? [] : sexualOrientation,
+    showGender === false ? null : gender
+  );
+}
+
 /** 06j location line: "Brooklyn, NY · 2 miles away". */
 export function formatProfileLocation(city: string | null, distanceMiles: number | null): string | null {
   const dist = formatDistanceMiles(distanceMiles);

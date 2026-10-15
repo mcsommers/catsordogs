@@ -10,8 +10,8 @@ describe('where the app opens', () => {
     expect(startRoute({ signedIn: true, profileCompleted: true, gate: 'profile_incomplete' })).toBe('/build-profile');
   });
 
-  it("puts today's question first until it is answered", () => {
-    expect(startRoute({ signedIn: true, profileCompleted: true, gate: 'not_answered' })).toBe('/question');
+  it('opens the Feed tab (Feed Locked) when today is not answered yet', () => {
+    expect(startRoute({ signedIn: true, profileCompleted: true, gate: 'not_answered' })).toBe('/feed');
   });
 
   it('opens the Feed tab once today is answered', () => {

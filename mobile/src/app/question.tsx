@@ -181,7 +181,8 @@ export default function TodaysQuestion() {
 
   return (
     <Screen dark>
-      <View style={{ gap: 12, alignItems: 'center' }}>
+      <View style={styles.column}>
+        <View style={styles.intro}>
         <QuestionBadge />
         <Text style={styles.question}>{question}</Text>
         <Text style={styles.subtext}>Everyone answers before anyone can see today&apos;s responses.</Text>
@@ -215,7 +216,7 @@ export default function TodaysQuestion() {
         </Pressable>
       </View>
 
-      <View style={{ alignItems: 'center', gap: 10 }}>
+      <View style={styles.record}>
         <Pressable
           accessibilityRole="button"
           accessibilityLabel={phase === 'recording' ? 'Stop recording' : 'Start recording'}
@@ -256,11 +257,12 @@ export default function TodaysQuestion() {
         accessibilityRole="button"
         onPress={() => setSkipOpen(true)}
         disabled={phase !== 'ready'}
-        style={{ alignItems: 'center', marginTop: 'auto' }}
+        style={styles.skipHit}
         hitSlop={10}
       >
         <Text style={styles.skip}>Skip today&apos;s question</Text>
       </Pressable>
+      </View>
 
       <Dialog
         visible={skipOpen}
@@ -289,11 +291,14 @@ export default function TodaysQuestion() {
 
 const styles = StyleSheet.create({
   flex: { flex: 1 },
+  column: { flex: 1, minHeight: 0, gap: 28 },
+  intro: { gap: 12, alignItems: 'center', flexShrink: 0 },
   question: { fontFamily: fonts.heading, fontSize: 28, lineHeight: 34, color: colors.white, textAlign: 'center' },
   subtext: { fontFamily: fonts.body, fontSize: 14, lineHeight: 20, color: colors.textDarkMuted, textAlign: 'center' },
   preview: {
-    flex: 1,
-    minHeight: 260,
+    flexGrow: 1,
+    flexShrink: 1,
+    minHeight: 0,
     maxHeight: 380,
     borderRadius: 28,
     borderWidth: 1,
@@ -315,10 +320,12 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
   },
+  record: { alignItems: 'center', gap: 10, flexShrink: 0 },
   capture: { width: 60, height: 60, borderRadius: 30, backgroundColor: colors.accentDog },
   stop: { width: 28, height: 28, borderRadius: 6 },
   timer: { fontFamily: fonts.bodySemi, fontSize: 13, color: colors.white },
   hint: { fontFamily: fonts.body, fontSize: 12, color: colors.textDarkMuted },
   message: { fontFamily: fonts.bodySemi, fontSize: 13, lineHeight: 18, color: '#FF5C5C', textAlign: 'center' },
+  skipHit: { alignItems: 'center', flexShrink: 0, marginTop: 'auto' },
   skip: { fontFamily: fonts.bodySemi, fontSize: 13, color: colors.textDarkMuted },
 });
