@@ -18,6 +18,7 @@ export default function Questions() {
   const [drafts, setDrafts] = useState<Record<string, string>>({});
   const [aheadDate, setAheadDate] = useState(addUtcDays(today, 21));
   const [aheadText, setAheadText] = useState('');
+  const [confirmSwap, setConfirmSwap] = useState<Question | null>(null);
 
   const load = useCallback(async () => {
     const [q, o, c] = await Promise.all([
@@ -58,6 +59,16 @@ export default function Questions() {
   }
   const days = showPast ? past : [today, ...upcoming];
   const hasPast = past.length > 0;
+
+  function trySave(question: Question) {
+    const answered = counts[question.id] ?? 0;
+    const text = (drafts[question.id] ?? question.text).trim();
+    if (answered > 0 && text !== question.text) {
+      setConfirmSwap(question);
+      return;
+    }
+    saveText(question);
+  }
 
   async function saveText(question: Question) {
     const text = (drafts[question.id] ?? question.text).trim();
@@ -130,7 +141,7 @@ export default function Questions() {
                   onChange={(e) => setDrafts({ ...drafts, [question.id]: e.target.value })}
                 />
                 <div className="row">
-                  <button className="primary" type="button" onClick={() => saveText(question)}>Save swap</button>
+                  <button className="primary" type="button" onClick={() => trySave(question)}>Save swap</button>
                   {when === 'future' ? (
                     <button type="button" onClick={() => remove(question.id)}>Remove this future question</button>
                   ) : null}
@@ -172,6 +183,33 @@ export default function Questions() {
         </div>
         <button className="primary" type="submit">Add question</button>
       </form>
+      ) : null}
+      {confirmSwap ? (
+        <div className="modal-backdrop" role="presentation">
+          <div className="modal" role="dialog" aria-modal="true" aria-labelledby="swap-modal-title">
+            <h3 id="swap-modal-title">Change a question that has answers?</h3>
+            <p>
+              {answeredLabel(counts[confirmSwap.id] ?? 0)} this question. Their videos stay as they are, but
+              everywhere in the app they will now appear to answer the new wording, not the original.
+            </p>
+            <p><strong>Original:</strong> {confirmSwap.text}</p>
+            <p><strong>New:</strong> {(drafts[confirmSwap.id] ?? confirmSwap.text).trim()}</p>
+            <div className="row">
+              <button type="button" onClick={() => setConfirmSwap(null)}>Cancel</button>
+              <button
+                type="button"
+                className="primary"
+                onClick={async () => {
+                  const question = confirmSwap;
+                  setConfirmSwap(null);
+                  await saveText(question);
+                }}
+              >
+                Change question
+              </button>
+            </div>
+          </div>
+        </div>
       ) : null}
     </div>
   );
