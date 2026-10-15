@@ -422,8 +422,11 @@ export default function EditProfile() {
         onKeepEditing={leaveGuard.keepEditing}
         onLeave={leaveGuard.confirmLeave}
       />
-      <BackButton onPress={leaveGuard.attemptLeave} />
-      <TitleGroup title="Edit profile" subtitle="Update your profile photo and details." />
+      <View style={ui.headerWithTitle}>
+        <BackButton onPress={leaveGuard.attemptLeave} />
+        <Text style={ui.headerTitle}>Edit profile</Text>
+      </View>
+      <TitleGroup subtitle="Update your profile photo and details." />
       {banner ? <ErrorBanner message={banner} /> : null}
 
       <View ref={photosRef} collapsable={false}>
