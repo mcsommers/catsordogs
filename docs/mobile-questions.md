@@ -367,7 +367,7 @@ Options:
 - **UTC midnight** (what the server used at first): simple, but US evening can already be "tomorrow" on the server.
 - **Local midnight** in the time zone the phone reports (same column as the daily notification). No time zone yet → UTC.
 
-Answer: **Local midnight** for the gate, recording, feed look-back, browse "today", streaks, and nudges. Admin calendar dates stay UTC-labeled for scheduling.
+Answer: **Local midnight** for the gate, recording, feed look-back, browse "today", streaks, and nudges. Admin calendar: follows the signed-in admin's local day (decided later, Oct 2026); it is not tied to the players' days.
 
 ## Feed unified page scroll (asked Oct 12, 2026)
 

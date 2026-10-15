@@ -1,14 +1,14 @@
 import { useCallback, useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { supabase } from '../supabase';
-import { addUtcDays, formatDay, formatWhen, utcToday } from '../dates';
+import { addUtcDays, formatDay, formatWhen, localToday, browserTimeZone } from '../dates';
 
 type Question = { id: string; question_date: string; text: string; is_override: boolean };
 type Override = { id: string; question_id: string; previous_text: string; new_text: string; overridden_at: string };
 type AnswerCount = { question_id: string; answer_count: number };
 
 export default function Questions() {
-  const today = utcToday();
+  const today = localToday();
   const tomorrow = addUtcDays(today, 1);
   const [questions, setQuestions] = useState<Question[]>([]);
   const [overrides, setOverrides] = useState<Override[]>([]);
@@ -37,7 +37,10 @@ export default function Questions() {
     setError(null);
   }, []);
 
-  useEffect(() => { load(); }, [load]);
+  useEffect(() => {
+    // Tell the server which calendar day this admin is on before it applies the calendar rules.
+    supabase.rpc('admin_set_time_zone', { p_time_zone: browserTimeZone() }).then(() => load());
+  }, [load]);
 
   const byDate = new Map(questions.map((q) => [q.question_date, q]));
   const past = questions
@@ -80,7 +83,7 @@ export default function Questions() {
     <div>
       <h2>Question calendar</h2>
       <p className="muted">
-        One question per UTC day, the same day for everyone. You can schedule ahead and swap today.
+        One question per calendar day. Days follow your own local calendar, so “today” flips at your midnight. You can schedule ahead and swap today.
         A past question cannot be changed or removed. Today can be swapped, not deleted.
         Each swap is kept here and is never shown in the phone app.
         This page opens on today and the days ahead.
@@ -159,7 +162,7 @@ export default function Questions() {
         <h2>Schedule further ahead</h2>
         <div className="grid">
           <label>
-            Date (UTC)
+            Date (your local calendar)
             <input type="date" value={aheadDate} min={today} onChange={(e) => setAheadDate(e.target.value)} required />
           </label>
           <label>

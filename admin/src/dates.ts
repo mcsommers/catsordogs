@@ -1,3 +1,14 @@
+/** The browser's time zone name, for example America/New_York. */
+export function browserTimeZone(): string {
+  return Intl.DateTimeFormat().resolvedOptions().timeZone || 'UTC';
+}
+
+/** Today's date (YYYY-MM-DD) on the signed-in admin's own calendar. */
+export function localToday(): string {
+  return new Intl.DateTimeFormat('en-CA', { timeZone: browserTimeZone(), year: 'numeric', month: '2-digit', day: '2-digit' })
+    .format(new Date());
+}
+
 export function utcToday(): string {
   return new Date().toISOString().slice(0, 10);
 }
