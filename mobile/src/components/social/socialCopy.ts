@@ -41,3 +41,9 @@ export function pronouns(gender: string | null | undefined) {
     matches: subject === 'they' ? 'match' : 'matches',
   };
 }
+
+/** Follow confirmation body (06l). Mid-sentence pronouns stay lowercase. */
+export function followDialogBody(gender: string | null | undefined): string {
+  const p = pronouns(gender);
+  return `${p.Subject} won't know you're following ${p.object}. ${p.Possessive} answer will show up at the top of your feed every day ${p.subject} posts.`;
+}
