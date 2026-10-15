@@ -2,7 +2,7 @@
 
 The phone does not rank the feed. It calls the server function `get_feed` and shows the rows in the order that function returns. Filtering and ranking both happen in the database: `private.passes_filters` decides who is allowed, and `private.rank_score` scores the people who remain.
 
-The score is mainly a comparison of **profiles**. One signal uses the video, and it only uses the caption as a word count. Nothing in the score looks at the picture, the audio, the length of the recording, or whether the words answer the question.
+The score is a comparison of **profiles** only. Nothing in it looks at the video, the picture, the audio, the caption words, the length of the recording, or whether the words answer the question.
 
 ## What a row in the feed is
 
