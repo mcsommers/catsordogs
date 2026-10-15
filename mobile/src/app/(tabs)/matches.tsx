@@ -142,7 +142,7 @@ export default function Matches() {
                     style={[styles.outlineBtn, { flex: 1 }]}
                     onPress={() =>
                       confirmDeclineMatch(
-                        { firstName: row.firstName, avatarUri: avatarUri(row.photoPath) },
+                        { firstName: row.firstName, gender: row.gender, avatarUri: avatarUri(row.photoPath) },
                         async () => {
                           await declineMatchRequest(row.userId);
                           await load();
@@ -189,7 +189,7 @@ export default function Matches() {
                     style={[styles.outlineBtn, { flex: 1 }]}
                     onPress={() =>
                       confirmCancelMatch(
-                        { firstName: row.firstName, avatarUri: avatarUri(row.photoPath) },
+                        { firstName: row.firstName, gender: row.gender, avatarUri: avatarUri(row.photoPath) },
                         async () => {
                           await cancelMatchRequest(row.userId);
                           await load();

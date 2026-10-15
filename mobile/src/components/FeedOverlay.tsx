@@ -14,7 +14,8 @@ import {
 } from 'lucide-react-native';
 /** Chrome for one feed page; parent is a paging FlatList row — docs/mobile-feed-scroll.md */
 import type { FeedItem } from '../lib/feed';
-import { formatDistanceMiles, formatStreakBadge, questionPillLabel } from '../lib/format';
+import { formatProfileLocation, formatStreakBadge, questionPillLabel } from '../lib/format';
+import { FollowingBadge } from './FollowingBadge';
 import { colors, fonts } from '../theme';
 
 /** Space above the tab pill; Android needs extra room for 3-button system nav + tab padding. */
@@ -51,7 +52,7 @@ export function FeedOverlay({
   const insets = useSafeAreaInsets();
   const heartOn = item.matchState === 'sent' || item.matchState === 'matched';
   const streak = formatStreakBadge(item.streakDays);
-  const distance = formatDistanceMiles(item.distanceMiles);
+  const distance = formatProfileLocation(item.city, item.distanceMiles);
 
   return (
     <View style={StyleSheet.absoluteFill} pointerEvents="box-none" collapsable={false}>
@@ -83,38 +84,35 @@ export function FeedOverlay({
             <Pressable style={styles.iconBtn} onPress={onFeedSettings} accessibilityLabel="Feed settings" hitSlop={8}>
               <SlidersHorizontal size={15} color={colors.white} />
             </Pressable>
-            <Pressable style={styles.iconBtn} onPress={onToggleMute} accessibilityLabel={muted ? 'Unmute' : 'Mute'} hitSlop={8}>
-              {muted ? <VolumeX size={15} color={colors.white} /> : <Volume2 size={15} color={colors.white} />}
-            </Pressable>
           </View>
         </View>
-        {item.isFollowed ? (
-          <View style={styles.followingTag}>
-            <Text style={styles.followingLabel}>Following</Text>
-          </View>
-        ) : null}
       </View>
 
       <View style={[styles.bottom, { bottom: BOTTOM_CHROME_OFFSET }]} pointerEvents="box-none" collapsable={false}>
         <View style={styles.captionBox} pointerEvents="none">
           <Text style={styles.caption}>{item.captionText || 'No captions for this answer.'}</Text>
         </View>
-        <View style={styles.infoRow}>
-          <Pressable style={styles.infoCol} onPress={onOpenProfile} accessibilityRole="button">
+        <Pressable style={styles.infoCol} onPress={onOpenProfile} accessibilityRole="button">
+          <View style={styles.nameRow}>
             <Text style={styles.name}>{item.firstName}, {item.age}</Text>
-            {distance ? (
-              <View style={styles.metaRow}>
-                <MapPin size={13} color="#FFFFFFB3" />
-                <Text style={styles.meta}>{distance}</Text>
-              </View>
-            ) : null}
-            {streak ? (
-              <View style={styles.streak}>
-                <Flame size={12} color={colors.accentDog} />
-                <Text style={styles.streakText}>{streak}</Text>
-              </View>
-            ) : null}
-          </Pressable>
+            {item.isFollowed ? <FollowingBadge /> : null}
+          </View>
+          {distance ? (
+            <View style={styles.metaRow}>
+              <MapPin size={13} color="#FFFFFFB3" />
+              <Text style={styles.meta}>{distance}</Text>
+            </View>
+          ) : null}
+        </Pressable>
+        <View style={styles.infoRow}>
+          {streak ? (
+            <View style={styles.streak}>
+              <Flame size={12} color={colors.accentDog} />
+              <Text style={styles.streakText}>{streak}</Text>
+            </View>
+          ) : (
+            <View />
+          )}
           <View style={styles.rail}>
             <Pressable style={styles.actionBtn} onPress={onMoreOptions} accessibilityLabel="More options">
               <EllipsisVertical size={22} color={colors.white} />
@@ -125,6 +123,9 @@ export function FeedOverlay({
               accessibilityLabel="Match"
             >
               <Heart size={22} color={colors.white} fill={heartOn ? colors.white : 'transparent'} />
+            </Pressable>
+            <Pressable style={styles.actionBtn} onPress={onToggleMute} accessibilityLabel={muted ? 'Unmute' : 'Mute'}>
+              {muted ? <VolumeX size={22} color={colors.white} /> : <Volume2 size={22} color={colors.white} />}
             </Pressable>
           </View>
         </View>
@@ -166,26 +167,19 @@ const styles = StyleSheet.create({
   pillChevron: { marginTop: 2 },
   topActions: { gap: 8, alignItems: 'center' },
   iconBtn: {
-    width: 32,
-    height: 32,
-    borderRadius: 16,
+    width: 36,
+    height: 36,
+    borderRadius: 18,
     backgroundColor: '#00000066',
     alignItems: 'center',
     justifyContent: 'center',
   },
-  followingTag: {
-    alignSelf: 'flex-start',
-    backgroundColor: colors.accentDog,
-    borderRadius: 9999,
-    paddingHorizontal: 10,
-    paddingVertical: 4,
-  },
-  followingLabel: { fontFamily: fonts.bodySemi, fontSize: 11, color: colors.white },
   bottom: { position: 'absolute', left: 0, right: 0, paddingHorizontal: 20, gap: 14 },
   captionBox: { backgroundColor: '#00000080', borderRadius: 14, paddingHorizontal: 14, paddingVertical: 13 },
   caption: { fontFamily: fonts.body, fontSize: 14, lineHeight: 20, color: colors.white },
-  infoRow: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'flex-end' },
-  infoCol: { flex: 1, gap: 6, paddingRight: 12 },
+  infoRow: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' },
+  infoCol: { gap: 6 },
+  nameRow: { flexDirection: 'row', alignItems: 'center', gap: 8, flexWrap: 'wrap' },
   name: { fontFamily: fonts.heading, fontSize: 22, color: colors.white },
   metaRow: { flexDirection: 'row', alignItems: 'center', gap: 6 },
   meta: { fontFamily: fonts.body, fontSize: 13, color: '#FFFFFFB3' },
@@ -193,7 +187,6 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     gap: 4,
-    alignSelf: 'flex-start',
     backgroundColor: '#FFFFFF1F',
     borderRadius: 9999,
     paddingHorizontal: 10,

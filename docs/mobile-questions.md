@@ -3,6 +3,14 @@
 A record of questions asked while planning the phone app, the options offered,
 and Mike's answer. Newest phase first.
 
+## Profile hero actions on the city row (Mike, Oct 15, 2026)
+
+On another person’s profile (**06j**, **06n**, **07h**, and the same hero on related overlays), **⋯** and the heart sit on the **city, state, and distance** row, not on the name / Following row. That keeps the Following badge from covering the buttons. City, state, and distance are vertically centered with those buttons.
+
+## Orientation and gender next to age on profiles (Mike, Oct 15, 2026)
+
+On a profile hero (**08**, **06j**, **06n**, **07h**, and the same hero on related overlays), show sexual orientation then gender in smaller type next to age, e.g. **Alex, 29 (straight male)**. Woman displays as **female**, Man as **male**. Only include a value if that person turned the matching **Show … on my profile** switch on. The parenthetical is **bottom-aligned** with the name and age; the orange **Following** badge stays **vertically centered** on that row, to the right of the parenthetical. Own profile never shows Following.
+
 ## Notification defaults at sign-up (Mike, Oct 13, 2026)
 
 When someone creates an account, the server seeds **notification_preferences** with **push on** and **email on** for all four types (daily question, matches, messages, nudges). They can turn channels off in **08c**. Older accounts without stored rows still use the legacy fallbacks (email on only for matches).
@@ -90,6 +98,8 @@ Options:
 - **Remove** the count/chevron on **06j** and **06n**; keep only the **Photos** section title (or title + grid).
 
 Answer: **Remove** the **“6 photos ›”** row on **06j** and **06n**. No separate “see all” affordance — the grid is complete.
+
+If the other person has no gallery photos, the Photos section shows **[First name] hasn't added any photos yet.** (**06jb**, e.g. "Jordan hasn't added any photos yet."). Your own profile keeps the **Add photo** tile.
 
 #### Full-screen photo viewer (**06ja**)
 
@@ -209,7 +219,7 @@ Answer: **7A.**
 
 ## Phase D: Social screens (asked Oct 12, 2026)
 
-Planning read-through: Build Plan Phase D (“Follow, nudge, match, messages, filters, settings, the more-options menu … Blocked and Not Interested list with Unblock and Undo, flagging”), MVP requirements (matching, messaging, follow/nudge, moderation menus, Feed Settings **06i**, Account **08b–08g** / **08d** / **08c**, per-video flag vs profile/message report), Pencil frames **07** (Incoming / Outgoing / Chats segments), **07b–07n**, **07h**, social confirmations **06b**, **06e–06w**, **06i**, **06n** / **06o**, **06z**, and Account **08b–08g** / **08d** / **08c**.
+Planning read-through: Build Plan Phase D (“Follow, nudge, match, messages, filters, settings, the more-options menu … Blocked and Not Interested list with Unblock and Undo, flagging”), MVP requirements (matching, messaging, follow/nudge, moderation menus, Feed Settings **06i**, Account **08b–08g** / **08d** / **08c** / **08i**, per-video flag vs profile/message report), Pencil frames **07** (Incoming / Outgoing / Chats segments), **07b–07n**, **07h**, social confirmations **06b**, **06e–06w**, **06i**, **06n** / **06o**, **06z**, and Account **08b–08g** / **08d** / **08c** / **08i**.
 
 **Code today:** The Matches tab is still a placeholder (`mobile/src/app/(tabs)/matches.tsx`). Heart and ⋯ on the feed, **06j** / **06n**, and **06k** call `phaseDPlaceholder.ts`. **08** Account rows use the same placeholder. The feed already loads `matchState` / `isFollowed` on items; profiles use `get_user_profile` (includes `matchState`). Server RPCs for follow, nudge, match, chat, block, Not Interested, flag, report, filters, ranking, notification prefs, and blocked lists are already in Supabase with tests — the mobile app has not wired them yet. There is no Expo push token registration in the app yet (notifications are queued on the server).
 
@@ -291,11 +301,11 @@ Answer: **6A.**
 
 ### 7. Account screens beyond placeholders
 
-**08** already lists Edit Profile, Feed Settings, Notifications, Privacy & Safety, Blocked and Not Interested, and Help & Support (all placeholder except Log Out).
+**08** already lists Edit Profile, Feed Settings, Notifications, Privacy & Safety, People I follow, Blocked and Not Interested, and Help & Support (all placeholder except Log Out).
 
 Options:
 
-- **A.** **Wire every Account row in Phase D** per MVP: **08d** Edit Profile (reuse Build Profile fields + Save Changes), **08b** Privacy & Safety (Allow followers + Delete account), **08c** Notifications, **08e–08g** Blocked and Not Interested list, **06i** from Feed Settings row, Help & Support opens the admin **Help URL** when set. *(Recommended.)*
+- **A.** **Wire every Account row in Phase D** per MVP: **08d** Edit Profile (reuse Build Profile fields + Save Changes), **08b** Privacy & Safety (Allow followers + Delete account), **08c** Notifications, **08i** People I follow, **08e–08g** Blocked and Not Interested list, **06i** from Feed Settings row, Help & Support opens the admin **Help URL** when set. *(Recommended.)*
 - **B.** **Social + 06i + Blocked list only**; defer **08d**, **08b** (delete account), and **08c** to Phase E.
 - **C.** **Delete account** and **Help & Support** only after you approve copy/design for delete (superseded by **8A** / **08h**).
 
@@ -527,6 +537,13 @@ Answer: Design simple versions in the design file, update the requirements doc, 
 - **Maximum distance filter removed (Oct 2026).** Distance only affects the order through the Distance ranking signal. Saved maximum-distance values were cleared.
 - **Relationship goals filter removed; Age range and Height are sliders (Oct 2026).** Age range is a two-handle slider, 18 to 70+; Height is a two-handle slider, 2'0" to 7'0"+. A handle on the far end means no limit on that side (so 70+ includes everyone older), and both handles on the ends is the same as Any. Relationship goals still affect the order through the ranking signal.
 - **Occupation filter removed; Sexual orientation moved above Age range (Oct 2026).** Filter order is Show me, Sexual orientation, Age range, Height.
+
+## Confirmation pronouns (Oct 2026)
+- Woman → she/her/her; Man → he/him/his; any More gender or missing → they/them/their. Dialogs that use pronouns: Follow, Unfollow, Nudge, Match send (**06b** / **07i**), cancel request (**07f** / **06y**), decline (**07g**), Not Interested (**06f** / **06w**). Report, Block, Unmatch, and mute chat use the person's name and do not switch pronouns. *Decided by Mike.*
+
+## People I follow (Oct 2026)
+- Account on **08** has a **People I follow** row after Privacy & Safety and before Blocked and Not Interested. It opens **08i**: everyone the user currently follows (profile photo, name, age, and **Followed on [date]** under the name, same subtitle placement as Outgoing on **07e**) with **Unfollow** (same 06s confirmation) and **View Profile**. Cards match Outgoing on **07e**. Empty **08ia**: "You're not following anyone yet."
+- This list is only people *you* follow. Who follows you stays a count (identities private). The `follows` table stays closed to the app; `get_people_i_follow` is a server function. *Decided by Mike.*
 
 ## Deleting your own video (Oct 2026)
 - On your own answer (**06ka**) the heart is hidden. More options opens a sheet (**06kb**) with only **Delete video** and **Cancel**. Delete video asks for confirmation (**06kc**, or **06kd** when it is today's answer), then returns to your profile.

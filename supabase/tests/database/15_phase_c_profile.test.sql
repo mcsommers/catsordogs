@@ -1,6 +1,6 @@
 -- Phase C: profile view, photo storage, answer archives.
 begin;
-select plan(18);
+select plan(20);
 
 -- Reuse gate/feed fixture users from 04 where possible; minimal set here.
 insert into auth.users (id, email, aud, role, instance_id) values
@@ -58,6 +58,8 @@ select is((select jsonb_array_length(photos) from public.get_user_profile('c1000
   'profile returns every photo path');
 select is((select count(*) from public.get_user_profile('c1000003-0000-0000-0000-000000000003')), 0::bigint,
   'unfinished profile returns no row');
+select is((select gender from public.get_user_profile('c1000002-0000-0000-0000-000000000002')), 'Man',
+  'others see gender when the switch is on');
 
 -- Hiding gender / orientation (Build / Edit Profile switches).
 set local request.jwt.claim.sub = 'c1000002-0000-0000-0000-000000000002';
@@ -66,6 +68,8 @@ select lives_ok(
     where id = 'c1000002-0000-0000-0000-000000000002'$$,
   'a user can hide their gender and orientation');
 select is((select gender from public.get_user_profile(null)), 'Man', 'the owner still sees their own gender');
+select is((select sexual_orientation from public.get_user_profile(null)), '{"Gay"}'::text[],
+  'the owner still sees their own orientation');
 select is((select show_orientation from public.get_user_profile(null)), false, 'the owner sees their switch settings');
 
 set local request.jwt.claim.sub = 'c1000001-0000-0000-0000-000000000001';

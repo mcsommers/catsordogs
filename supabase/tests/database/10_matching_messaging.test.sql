@@ -2,7 +2,7 @@
 -- block ending a match, avatars, and that the app cannot read who requested
 -- whom except through the Incoming / Outgoing lists.
 begin;
-select plan(110);
+select plan(113);
 
 delete from public.answers;
 delete from public.videos;
@@ -82,6 +82,8 @@ select is((select count(*) from public.conversation_mutes), 0::bigint, 'and no m
 -- ---------------------------------------------------------------------------
 select is(public.send_match_request(pg_temp.uid(2)), 'sent', 'A can request B from a profile');
 select is((select first_name from public.get_outgoing_match_requests()), 'B', 'Outgoing shows B');
+select is((select gender from public.get_outgoing_match_requests()), 'Woman',
+  'Outgoing includes gender so cancel-request pronouns can be she/he/they');
 select is((select photo_path from public.get_outgoing_match_requests()), pg_temp.uid(2)::text || '/1.jpg',
   'Outgoing includes B''s avatar path');
 select is((select state from public.get_match_state(pg_temp.uid(2))), 'sent', 'the heart on B''s profile says sent');

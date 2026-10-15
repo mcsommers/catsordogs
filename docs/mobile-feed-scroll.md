@@ -5,7 +5,7 @@ Mike approved this pattern in Phase B (Oct 2026). **Do not change it without an 
 ## What the user experiences
 
 - The feed is a **vertical, full-screen pager** (one answer per “page”).
-- When they swipe up or down, **everything on that answer moves together**: the video, the top chrome (progress bar, question pill, settings, mute), captions, name/age/distance, streak, and heart / more-options.
+- When they swipe up or down, **everything on that answer moves together**: the video, the top chrome (progress bar, question pill, settings), captions, name/age (with a **Following** badge to the right of the name when you follow that person), the city-and-distance row, and the bottom row (streak badge; more-options, heart, mute).
 - It must **not** feel like a fixed HUD sitting on top of a video while only the video changes underneath.
 - The **caught-up** row (06v) is a normal page in the same list and scrolls the same way.
 - Users may **swipe to the next clip immediately** — no wait timer or Skip control. Minimum watch time (admin setting, default 3 seconds) applies **only** to whether a view counts for the poster; it does not gate navigation.
@@ -27,7 +27,7 @@ Playback may still use **one shared player** behind the list for performance; th
 | `mobile/src/app/answer/[answerId].tsx` | **06k** — same pager pattern: root `onLayout` **measured height** for row size (do not rely on `useWindowDimensions` alone on Android); `FlatList` with `StyleSheet.absoluteFill`; `AnswerDetailOverlay` inside each row. Bottom chrome is pinned with safe-area padding only (no tab-bar offset). |
 | Shared `VideoView` | Sits **behind** the list; active row from viewability drives which clip plays. |
 
-On your own answers (**06ka**) the same page layout applies; the only difference is that the heart is not rendered (`hideHeart`), so the more-options button sits alone on the right. More options opens the own-video sheet (**06kb**), not the feed menu.
+On your own answers (**06ka**) the same page layout applies; the only difference is that the heart is not rendered (`hideHeart`), so the bottom rail is more-options and mute. More options opens the own-video sheet (**06kb**), not the feed menu.
 
 Before merging any feed UI change, read the header comment in `feed.tsx` and confirm this table still holds.
 

@@ -1,7 +1,7 @@
 import { Trash2 } from 'lucide-react-native';
 import { showConfirmation } from '../ConfirmationProvider';
 import type { DialogBadgeKind } from '../ui';
-import { capitalize, objectPronoun, possessivePronoun, subjectPronoun } from './socialCopy';
+import { capitalize, objectPronoun, possessivePronoun, pronouns, subjectPronoun } from './socialCopy';
 
 type Person = { firstName: string; gender?: string | null; avatarUri?: string | null };
 
@@ -50,10 +50,11 @@ export function confirmUnfollow(person: Person, onConfirm: () => void | Promise<
 }
 
 export function confirmNotInterested(person: Person, following: boolean, onConfirm: () => void | Promise<void>) {
+  const p = pronouns(person.gender);
   const title = `Hide ${person.firstName}?`;
   const body = following
-    ? `You won't see ${person.firstName} in your feed anymore, and you'll unfollow them. They won't be notified.`
-    : `You won't see ${person.firstName} in your feed anymore. They won't be notified.`;
+    ? `You won't see ${person.firstName} in your feed anymore, and you'll unfollow ${p.object}. ${p.Subject} won't be notified.`
+    : `You won't see ${person.firstName} in your feed anymore. ${p.Subject} won't be notified.`;
   personConfirm(person, 'hide', {
     title,
     body,
@@ -108,9 +109,10 @@ export function confirmBlock(person: Person, onConfirm: () => void | Promise<voi
 }
 
 export function confirmSendMatch(person: Person, onConfirm: () => void | Promise<void>) {
+  const p = pronouns(person.gender);
   personConfirm(person, 'heart', {
     title: `Match with ${person.firstName}?`,
-    body: `${person.firstName} will be notified. You can chat only if you both match.`,
+    body: `${person.firstName} will be notified that you matched ${p.object}. If ${p.subject} ${p.matches} you back, you'll be able to chat.`,
     cancelLabel: 'Cancel',
     confirmLabel: 'Yes, Match',
     onConfirm,
@@ -118,9 +120,10 @@ export function confirmSendMatch(person: Person, onConfirm: () => void | Promise
 }
 
 export function confirmCancelMatch(person: Person, onConfirm: () => void | Promise<void>) {
+  const p = pronouns(person.gender);
   personConfirm(person, 'heart', {
     title: `Cancel your request to ${person.firstName}?`,
-    body: `They won't know you sent one. You can always like one of their answers again later.`,
+    body: `${p.Subject} won't know you sent one. You can always like one of ${p.possessive} answers again later.`,
     cancelLabel: 'Keep Request',
     confirmLabel: 'Cancel Request',
     destructive: true,
@@ -129,9 +132,10 @@ export function confirmCancelMatch(person: Person, onConfirm: () => void | Promi
 }
 
 export function confirmDeclineMatch(person: Person, onConfirm: () => void | Promise<void>) {
+  const p = pronouns(person.gender);
   personConfirm(person, 'heart', {
     title: `Decline ${person.firstName}'s request?`,
-    body: `They won't be notified. You can still like their answer again later from the feed.`,
+    body: `${p.Subject} won't be notified. You can still like ${p.possessive} answer again later from the feed.`,
     cancelLabel: 'Cancel',
     confirmLabel: 'Decline',
     destructive: true,

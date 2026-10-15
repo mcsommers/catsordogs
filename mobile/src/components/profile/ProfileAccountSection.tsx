@@ -12,6 +12,7 @@ const ROWS: { label: string; route?: string }[] = [
   { label: 'Feed Settings', route: '/feed-settings' },
   { label: 'Notifications', route: '/notifications' },
   { label: 'Privacy & Safety', route: '/privacy-safety' },
+  { label: 'People I follow', route: '/people-i-follow' },
   { label: 'Blocked and Not Interested', route: '/blocked-list' },
   { label: 'Help & Support' },
 ];

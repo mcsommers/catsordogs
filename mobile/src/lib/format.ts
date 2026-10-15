@@ -92,6 +92,12 @@ export function formatRelativeTime(isoTimestamp: string): string {
   return `${SHORT_MONTHS[d.getMonth()]} ${d.getDate()}`;
 }
 
+/** People I follow (08i) subtitle, e.g. "Followed on Oct 15". */
+export function formatFollowedOn(isoTimestamp: string): string {
+  const d = new Date(isoTimestamp);
+  return `Followed on ${SHORT_MONTHS[d.getMonth()]} ${d.getDate()}`;
+}
+
 /** Outgoing match row: "Waiting for a response · Sent yesterday" */
 export function formatOutgoingMatchLine(requestedAt: string): string {
   const rel = formatRelativeTime(requestedAt);
@@ -118,6 +124,29 @@ export function formatAnswerDayLabel(isoDate: string): string {
 
 export function formatAnswerMeta(isoDate: string, durationSeconds: number): string {
   return `${formatAnswerDayLabel(isoDate)} · ${clock(durationSeconds)}`;
+}
+
+/** Woman → "female", Man → "male"; other stored values lowercased. */
+function formatGenderForProfile(gender: string | null | undefined): string | null {
+  if (!gender) return null;
+  if (gender === 'Man') return 'male';
+  if (gender === 'Woman') return 'female';
+  return gender.toLowerCase();
+}
+
+/**
+ * Profile hero identity next to age, orientation then gender:
+ * "straight male". Returns null when neither value should show.
+ */
+export function formatProfileIdentityLabel(
+  sexualOrientation: string[] | null | undefined,
+  gender: string | null | undefined
+): string | null {
+  const orientation = sexualOrientation?.[0]?.trim();
+  const orientationPart = orientation ? orientation.toLowerCase() : null;
+  const genderPart = formatGenderForProfile(gender);
+  const parts = [orientationPart, genderPart].filter(Boolean);
+  return parts.length ? parts.join(' ') : null;
 }
 
 /** 06j location line: "Brooklyn, NY · 2 miles away". */

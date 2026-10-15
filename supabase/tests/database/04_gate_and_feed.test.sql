@@ -3,7 +3,7 @@
 -- locations, and who can read what.
 -- (Followed-first ordering and its cap are in 05_feed_followed_cap.test.sql.)
 begin;
-select plan(147);
+select plan(149);
 
 delete from public.answers;
 delete from public.videos;
@@ -230,6 +230,16 @@ select is((select distance_miles from public.get_feed(50, 0, public.utc_today())
   'distance is shown rounded to whole miles');
 select is((select distance_miles from public.get_feed(50, 0, public.utc_today()) where first_name = 'M1'), null,
   'no distance is shown for someone with no location');
+reset role;
+update public.profiles set city = 'Brooklyn, NY' where id = pg_temp.uid(2);
+update public.profiles set latitude = 40.73, longitude = -73.99 where id = pg_temp.uid(2);
+set local role authenticated;
+select is((select city from public.get_feed(50, 0, public.utc_today()) where first_name = 'W1'),
+  'Brooklyn, NY',
+  'each feed row carries the poster''s city');
+select is((select gender from public.get_feed(50, 0, public.utc_today()) where first_name = 'W1'),
+  'Woman',
+  'each feed row carries gender so confirmation pronouns can be she/he/they');
 select ok(not exists (select 1 from public.get_feed(50) where first_name in ('X4', 'X5', 'X6', 'V')),
   'disabled, removed, unfinished and own answers are never in the feed');
 select is((select count(*) from information_schema.columns

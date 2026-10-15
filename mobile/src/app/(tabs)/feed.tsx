@@ -91,8 +91,10 @@ export default function Feed() {
           questionDate: '',
           questionText: '',
           firstName: '',
+          gender: null,
           age: 0,
           distanceMiles: null,
+          city: null,
           captionText: '',
           captionSegments: [],
           durationSeconds: 0,
@@ -118,6 +120,7 @@ export default function Feed() {
     ? {
         userId: activeItem.userId,
         firstName: activeItem.firstName,
+        gender: activeItem.gender,
         avatarUri: activeItem.avatarUrl,
         isFollowed: activeItem.isFollowed,
         matchState: activeItem.matchState,

@@ -1,3 +1,4 @@
+import { useEffect, useState } from 'react';
 import { Modal, Pressable, StyleSheet, Text, View } from 'react-native';
 import { colors, fonts } from '../../theme';
 
@@ -31,9 +32,21 @@ export function MoreOptionsMenu({ visible, isFollowed, own = false, onSelect, on
     o.key === 'follow' ? { ...o, key: isFollowed ? ('unfollow' as const) : ('follow' as const), label: isFollowed ? 'Unfollow' : 'Follow' } : o
   );
 
+  /** The tap that opens this sheet would also hit the backdrop and close it immediately. */
+  const [dismissable, setDismissable] = useState(false);
+  useEffect(() => {
+    if (!visible) {
+      setDismissable(false);
+      return;
+    }
+    const t = setTimeout(() => setDismissable(true), 250);
+    return () => clearTimeout(t);
+  }, [visible]);
+
   return (
     <Modal visible={visible} transparent animationType="fade" onRequestClose={onDismiss}>
-      <Pressable style={styles.backdrop} onPress={onDismiss}>
+      <View style={styles.backdrop}>
+        <Pressable style={StyleSheet.absoluteFill} onPress={dismissable ? onDismiss : undefined} accessibilityLabel="Dismiss" />
         <View style={styles.sheet}>
           {rows.map((row) => (
             <Pressable
@@ -49,7 +62,7 @@ export function MoreOptionsMenu({ visible, isFollowed, own = false, onSelect, on
             </Pressable>
           ))}
         </View>
-      </Pressable>
+      </View>
     </Modal>
   );
 }

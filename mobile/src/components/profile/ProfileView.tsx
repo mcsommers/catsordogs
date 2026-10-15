@@ -1,6 +1,7 @@
 import { useCallback, useRef, useState } from 'react';
 import {
   Image,
+  Platform,
   Pressable,
   ScrollView,
   StyleSheet,
@@ -38,6 +39,7 @@ import {
   formatHeightFeetInches,
   formatJoinedMonthYear,
   formatJoinedShort,
+  formatProfileIdentityLabel,
   formatProfileLocation,
   formatStreakBadge,
 } from '../../lib/format';
@@ -50,6 +52,7 @@ import { ProfileHeroIconButton } from './ProfileHeroIconButton';
 import { ProfileInfoChip } from './ProfileInfoChip';
 import { pickAndAddGalleryPhoto } from '../../lib/addGalleryPhoto';
 import { avatarPhoto } from '../../lib/profilePhotos';
+import { FollowingBadge } from '../FollowingBadge';
 import { ProfilePhotoGrid } from './ProfilePhotoGrid';
 import { ProfileStatBadge } from './ProfileStatBadge';
 import { ProfileTagChip } from './ProfileTagChip';
@@ -67,6 +70,34 @@ import { useSocialActions, type SocialSubject } from '../social/useSocialActions
 import { PrimaryButton } from '../ui';
 
 const PREVIEW_COUNT = 3;
+
+function profileIdentityLabel(profile: UserProfile): string | null {
+  const orientation = profile.isSelf && profile.showOrientation === false ? [] : profile.sexualOrientation;
+  const gender = profile.isSelf && profile.showGender === false ? null : profile.gender;
+  return formatProfileIdentityLabel(orientation, gender);
+}
+
+function ProfileHeroName({
+  profile,
+  showFollowing,
+}: {
+  profile: UserProfile;
+  showFollowing: boolean;
+}) {
+  const identity = profileIdentityLabel(profile);
+  return (
+    <View style={styles.heroNameRow}>
+      <View style={styles.heroNameIdentity}>
+        <Text style={styles.heroName}>
+          {profile.firstName.trim().toUpperCase()}
+          {profile.age != null ? `, ${profile.age}` : ''}
+        </Text>
+        {identity ? <Text style={styles.heroIdentity}>({identity})</Text> : null}
+      </View>
+      {showFollowing ? <FollowingBadge /> : null}
+    </View>
+  );
+}
 
 type Props = {
   userId?: string | null;
@@ -199,7 +230,15 @@ export function ProfileView({ userId, showBack }: Props) {
     if (!profile) return;
     router.push({
       pathname: '/answer/[answerId]',
-      params: { answerId: answer.answerId, userId: profile.isSelf ? 'self' : profile.userId },
+      params: {
+        answerId: answer.answerId,
+        userId: profile.isSelf ? 'self' : profile.userId,
+        firstName: profile.firstName,
+        age: profile.age != null ? String(profile.age) : '',
+        city: profile.city ?? '',
+        distanceMiles: profile.distanceMiles != null ? String(profile.distanceMiles) : '',
+        streakDays: profile.streakDays != null ? String(profile.streakDays) : '',
+      },
     });
   };
 
@@ -259,9 +298,7 @@ export function ProfileView({ userId, showBack }: Props) {
               pointerEvents="none"
             />
             <View style={[styles.heroNameBlock, contentPad]}>
-              <Text style={styles.heroName}>
-                {profile.firstName}{profile.age != null ? `, ${profile.age}` : ''}
-              </Text>
+              <ProfileHeroName profile={profile} showFollowing={false} />
               {profile.city ? (
                 <View style={styles.heroMetaRow}>
                   <MapPin size={13} color="#FFFFFFB3" />
@@ -280,24 +317,28 @@ export function ProfileView({ userId, showBack }: Props) {
                 <BackButton onPress={() => router.back()} hero />
               </View>
             ) : null}
-            <View style={[styles.heroActionsRow, contentPad]}>
-              <ProfileHeroIconButton onPress={social.openMenu} accessibilityLabel="More options">
-                <EllipsisVertical size={20} color={colors.white} />
-              </ProfileHeroIconButton>
-              <ProfileHeroIconButton onPress={social.onHeartPress} accessibilityLabel="Match">
-                <Heart size={20} color={colors.white} fill={heartOn ? colors.white : 'transparent'} />
-              </ProfileHeroIconButton>
-            </View>
-            <View style={[styles.heroNameBlock, contentPad]}>
-              <Text style={styles.heroName}>
-                {profile.firstName}{profile.age != null ? `, ${profile.age}` : ''}
-              </Text>
-              {locationLine ? (
-                <View style={styles.heroMetaRow}>
-                  <MapPin size={13} color="#FFFFFFB3" />
-                  <Text style={styles.heroMetaText}>{locationLine}</Text>
+            <View style={[styles.heroBottom, contentPad]}>
+              <ProfileHeroName profile={profile} showFollowing={isFollowed} />
+              <View style={styles.heroMetaAndActions}>
+                {locationLine ? (
+                  <View style={styles.heroMetaRow}>
+                    <MapPin size={16} color="#FFFFFFB3" />
+                    <Text style={styles.heroMetaText} numberOfLines={1}>
+                      {locationLine}
+                    </Text>
+                  </View>
+                ) : (
+                  <View style={styles.heroMetaRow} />
+                )}
+                <View style={styles.heroActionsRow} collapsable={false}>
+                  <ProfileHeroIconButton onPress={social.openMenu} accessibilityLabel="More options">
+                    <EllipsisVertical size={20} color={colors.white} />
+                  </ProfileHeroIconButton>
+                  <ProfileHeroIconButton onPress={social.onHeartPress} accessibilityLabel="Match">
+                    <Heart size={20} color={colors.white} fill={heartOn ? colors.white : 'transparent'} />
+                  </ProfileHeroIconButton>
                 </View>
-              ) : null}
+              </View>
             </View>
           </View>
         )}
@@ -410,7 +451,11 @@ export function ProfileView({ userId, showBack }: Props) {
 
               <View style={styles.section}>
                 <Text style={styles.sectionTitle}>Photos</Text>
-                <ProfilePhotoGrid photos={profile.photos} onPhotoPress={openPhotos} />
+                <ProfilePhotoGrid
+                  photos={profile.photos}
+                  onPhotoPress={openPhotos}
+                  firstName={profile.firstName}
+                />
               </View>
 
               <View style={styles.infoSection}>
@@ -495,18 +540,64 @@ const styles = StyleSheet.create({
   heroTopScrim: { position: 'absolute', left: 0, right: 0, top: 0, height: 100 },
   heroBottomScrim: { position: 'absolute', left: 0, right: 0, bottom: 0, height: 150 },
   heroTopRow: { position: 'absolute', left: 0, right: 0, top: 0 },
+  heroBottom: {
+    gap: 6,
+    paddingBottom: 16,
+    zIndex: 2,
+  },
+  heroMetaAndActions: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    gap: 8,
+    minHeight: 44,
+  },
   heroActionsRow: {
-    position: 'absolute',
-    right: 0,
-    bottom: 72,
     flexDirection: 'row',
     gap: 8,
-    justifyContent: 'flex-end',
+    alignItems: 'center',
+    flexShrink: 0,
   },
-  heroNameBlock: { paddingBottom: 16, gap: 6 },
-  heroName: { fontFamily: fonts.heading, fontSize: 24, color: colors.white, textTransform: 'uppercase' },
-  heroMetaRow: { flexDirection: 'row', alignItems: 'center', gap: 4 },
-  heroMetaText: { fontFamily: fonts.body, fontSize: 13, color: '#FFFFFFB3' },
+  heroNameBlock: { gap: 6 },
+  heroNameRow: { flexDirection: 'row', alignItems: 'center', gap: 8, flexWrap: 'wrap' },
+  heroNameIdentity: {
+    flexDirection: 'row',
+    alignItems: Platform.OS === 'ios' ? 'baseline' : 'flex-end',
+    gap: 8,
+    flexWrap: 'wrap',
+    flexShrink: 1,
+  },
+  heroName: {
+    fontFamily: fonts.heading,
+    fontSize: 24,
+    lineHeight: 28,
+    color: colors.white,
+    includeFontPadding: false,
+  },
+  heroIdentity: {
+    fontFamily: fonts.body,
+    fontSize: 14,
+    lineHeight: 16,
+    color: '#FFFFFFB3',
+    includeFontPadding: false,
+  },
+  heroMetaRow: {
+    flex: 1,
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 4,
+    minWidth: 0,
+    height: 44,
+  },
+  heroMetaText: {
+    fontFamily: fonts.body,
+    fontSize: 13,
+    lineHeight: 16,
+    color: '#FFFFFFB3',
+    flexShrink: 1,
+    includeFontPadding: false,
+    textAlignVertical: 'center',
+  },
   content: { paddingTop: 20, gap: 24 },
   statsGroup: { gap: 8 },
   statsRow: { flexDirection: 'row', flexWrap: 'wrap', gap: 8 },
