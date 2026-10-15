@@ -63,8 +63,10 @@ export default function PrivacySafetyScreen() {
 
   return (
     <Screen dark scroll edges={['top', 'bottom']}>
-      <BackButton onPress={() => router.back()} dark />
-      <Text style={styles.title}>Privacy & Safety</Text>
+      <View style={ui.headerWithTitle}>
+        <BackButton onPress={() => router.back()} dark />
+        <Text style={ui.headerTitleDark}>Privacy & Safety</Text>
+      </View>
 
       <View style={styles.card}>
         <Text style={styles.cardTitle}>Allow followers</Text>
@@ -94,7 +96,6 @@ export default function PrivacySafetyScreen() {
 }
 
 const styles = StyleSheet.create({
-  title: { ...ui.title, color: colors.white, marginTop: 8, marginBottom: 12 },
   card: {
     backgroundColor: colors.surfaceDark,
     borderRadius: 16,

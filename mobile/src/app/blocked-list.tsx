@@ -48,8 +48,10 @@ export default function BlockedListScreen() {
   return (
     <Screen dark flush edges={['top', 'bottom']}>
       <View style={styles.top}>
-        <BackButton onPress={() => router.back()} dark />
-        <Text style={styles.title}>Blocked and Not Interested</Text>
+        <View style={ui.headerWithTitle}>
+          <BackButton onPress={() => router.back()} dark />
+          <Text style={ui.headerTitleDark}>Blocked and Not Interested</Text>
+        </View>
         <View style={styles.tabs}>
           <Pressable style={[styles.tab, tab === 'blocked' && styles.tabActive]} onPress={() => setTab('blocked')}>
             <Text style={[styles.tabLabel, tab === 'blocked' && styles.tabLabelActive]}>Blocked ({blocked.length})</Text>
@@ -128,7 +130,6 @@ export default function BlockedListScreen() {
 
 const styles = StyleSheet.create({
   top: { paddingHorizontal: 20, paddingTop: 8, gap: 12 },
-  title: { ...ui.title, color: colors.white },
   tabs: { flexDirection: 'row', gap: 8 },
   tab: {
     flex: 1,

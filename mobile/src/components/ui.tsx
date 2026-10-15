@@ -677,6 +677,7 @@ export const styles = StyleSheet.create({
   header: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' },
   headerWithTitle: { flexDirection: 'row', alignItems: 'center', gap: 12 },
   headerTitle: { flex: 1, fontFamily: fonts.heading, fontSize: 28, color: colors.textPrimary },
+  headerTitleDark: { flex: 1, fontFamily: fonts.heading, fontSize: 17, color: colors.white },
   step: { fontFamily: fonts.bodySemi, fontSize: 13, color: colors.textSecondary },
   title: { fontFamily: fonts.heading, fontSize: 28, color: colors.textPrimary },
   subtitle: { fontFamily: fonts.body, fontSize: 15, lineHeight: 21, color: colors.textSecondary },

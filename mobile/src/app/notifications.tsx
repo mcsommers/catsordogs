@@ -55,8 +55,10 @@ export default function NotificationsScreen() {
 
   return (
     <Screen dark scroll edges={['top', 'bottom']}>
-      <BackButton onPress={() => router.back()} dark />
-      <Text style={styles.title}>Notifications</Text>
+      <View style={ui.headerWithTitle}>
+        <BackButton onPress={() => router.back()} dark />
+        <Text style={ui.headerTitleDark}>Notifications</Text>
+      </View>
       <Text style={styles.lead}>Choose how we reach you for each type of update.</Text>
       {!canRegisterForRemotePush() ? (
         <Text style={styles.expoGoNote}>
@@ -86,7 +88,6 @@ function ToggleRow({ label, value, onChange }: { label: string; value: boolean; 
 }
 
 const styles = StyleSheet.create({
-  title: { ...ui.title, color: colors.white, marginTop: 8 },
   lead: { fontFamily: fonts.body, fontSize: 13, color: colors.textDarkMuted, marginBottom: 12 },
   expoGoNote: {
     fontFamily: fonts.body,
