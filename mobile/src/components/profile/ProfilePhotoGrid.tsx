@@ -13,17 +13,30 @@ type Props = {
   /** Index in the list of displayed photos (with URLs), for the photo viewer. */
   onPhotoPress: (displayIndex: number) => void;
   ownProfile?: boolean;
+  firstName?: string;
   onAddPhotoPress?: () => void;
   addPhotoDisabled?: boolean;
 };
 
-export function ProfilePhotoGrid({ photos, onPhotoPress, ownProfile, onAddPhotoPress, addPhotoDisabled }: Props) {
+export function ProfilePhotoGrid({
+  photos,
+  onPhotoPress,
+  ownProfile,
+  firstName,
+  onAddPhotoPress,
+  addPhotoDisabled,
+}: Props) {
   const { width: screenW } = useWindowDimensions();
   const cellW = (screenW - PROFILE_PAD * 2 - GRID_GAP * (COLS - 1)) / COLS;
   const cellH = 115;
 
   const withUrls = galleryPhotos(photos).filter((p) => p.url);
   const showAdd = ownProfile && withUrls.length < MAX_GALLERY_PHOTOS;
+
+  if (!ownProfile && withUrls.length === 0) {
+    const who = firstName?.trim() || 'This user';
+    return <Text style={styles.empty}>{who} hasn&apos;t added any photos yet.</Text>;
+  }
 
   return (
     <View style={styles.grid}>
@@ -75,4 +88,5 @@ const styles = StyleSheet.create({
     marginBottom: 6,
   },
   addLabel: { fontFamily: fonts.body, fontSize: 12, color: colors.textDarkMuted },
+  empty: { fontFamily: fonts.body, fontSize: 14, lineHeight: 20, color: colors.textDarkMuted },
 });

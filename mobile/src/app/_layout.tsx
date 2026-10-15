@@ -45,6 +45,7 @@ export default function RootLayout() {
             <Stack.Screen name="notifications" options={{ contentStyle: { backgroundColor: colors.bgDark } }} />
             <Stack.Screen name="privacy-safety" options={{ contentStyle: { backgroundColor: colors.bgDark } }} />
             <Stack.Screen name="blocked-list" options={{ contentStyle: { backgroundColor: colors.bgDark } }} />
+            <Stack.Screen name="people-i-follow" options={{ contentStyle: { backgroundColor: colors.bgDark } }} />
             <Stack.Screen name="chat/[matchId]" options={{ contentStyle: { backgroundColor: colors.bgDark } }} />
           </Stack>
         </SignedOutGuard>

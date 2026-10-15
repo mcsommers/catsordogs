@@ -19,6 +19,7 @@ export type MatchStateDetail = {
 export type IncomingMatchRequest = {
   userId: string;
   firstName: string;
+  gender: string | null;
   age: number;
   photoPath: string | null;
   answerId: string | null;
@@ -30,6 +31,7 @@ export type IncomingMatchRequest = {
 export type OutgoingMatchRequest = {
   userId: string;
   firstName: string;
+  gender: string | null;
   age: number;
   photoPath: string | null;
   requestedAt: string;
@@ -95,6 +97,28 @@ export async function followUser(userId: string): Promise<void> {
 export async function unfollowUser(userId: string): Promise<void> {
   const { error } = await supabase.rpc('unfollow_user', { p_user_id: userId });
   if (error) throw error;
+}
+
+export type FollowedPerson = {
+  userId: string;
+  firstName: string;
+  age: number;
+  gender: string | null;
+  photoPath: string | null;
+  followedAt: string;
+};
+
+export async function getPeopleIFollow(): Promise<FollowedPerson[]> {
+  const { data, error } = await supabase.rpc('get_people_i_follow');
+  if (error) throw error;
+  return (data ?? []).map((r: Record<string, unknown>) => ({
+    userId: String(r.user_id),
+    firstName: String(r.first_name ?? ''),
+    age: Number(r.age) || 0,
+    gender: r.gender ? String(r.gender) : null,
+    photoPath: r.photo_path ? String(r.photo_path) : null,
+    followedAt: String(r.followed_at ?? ''),
+  }));
 }
 
 export async function getFollowState(userId: string): Promise<FollowState> {
@@ -219,6 +243,7 @@ function mapIncoming(r: Record<string, unknown>): IncomingMatchRequest {
   return {
     userId: String(r.user_id),
     firstName: String(r.first_name ?? ''),
+    gender: r.gender ? String(r.gender) : null,
     age: Number(r.age) || 0,
     photoPath: r.photo_path ? String(r.photo_path) : null,
     answerId: r.answer_id ? String(r.answer_id) : null,
@@ -232,6 +257,7 @@ function mapOutgoing(r: Record<string, unknown>): OutgoingMatchRequest {
   return {
     userId: String(r.user_id),
     firstName: String(r.first_name ?? ''),
+    gender: r.gender ? String(r.gender) : null,
     age: Number(r.age) || 0,
     photoPath: r.photo_path ? String(r.photo_path) : null,
     requestedAt: String(r.requested_at),

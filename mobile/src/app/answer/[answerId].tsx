@@ -49,13 +49,42 @@ const EMPTY_SUBJECT = {
   streakDays: null as number | null,
 };
 
+function oneParam(value: string | string[] | undefined): string | undefined {
+  if (Array.isArray(value)) return value[0];
+  return value;
+}
+
+function numParam(value: string | string[] | undefined): number | null {
+  const raw = oneParam(value);
+  if (raw == null || raw === '') return null;
+  const n = Number(raw);
+  return Number.isFinite(n) ? n : null;
+}
+
 /**
  * 06k Answer detail — unified vertical page scroll (docs/mobile-feed-scroll.md).
  */
 export default function AnswerDetailScreen() {
-  const { answerId, userId } = useLocalSearchParams<{ answerId: string; userId: string }>();
+  const params = useLocalSearchParams<{
+    answerId: string;
+    userId: string;
+    firstName?: string;
+    age?: string;
+    city?: string;
+    distanceMiles?: string;
+    streakDays?: string;
+  }>();
+  const answerId = oneParam(params.answerId);
+  const userId = oneParam(params.userId);
   const isSelf = userId === 'self';
-  const targetUserId = isSelf ? null : userId;
+  const targetUserId = isSelf ? null : userId ?? null;
+  const subjectFromRoute = {
+    firstName: oneParam(params.firstName) ?? '',
+    age: numParam(params.age),
+    city: oneParam(params.city) || null,
+    distanceMiles: numParam(params.distanceMiles),
+    streakDays: numParam(params.streakDays),
+  };
   const { height: windowHeight } = useWindowDimensions();
   const [measuredHeight, setMeasuredHeight] = useState(0);
   const pageHeight = measuredHeight > 0 ? measuredHeight : windowHeight > 0 ? windowHeight : 1;
@@ -67,7 +96,9 @@ export default function AnswerDetailScreen() {
   }, [measuredHeight]);
 
   const [answers, setAnswers] = useState<ProfileAnswer[]>([]);
-  const [subject, setSubject] = useState(EMPTY_SUBJECT);
+  const [subject, setSubject] = useState(
+    subjectFromRoute.firstName || subjectFromRoute.age != null ? subjectFromRoute : EMPTY_SUBJECT
+  );
   const [subjectUserId, setSubjectUserId] = useState<string | null>(null);
   const [subjectGender, setSubjectGender] = useState<string | null>(null);
   const [subjectAvatarUri, setSubjectAvatarUri] = useState<string | null>(null);
@@ -149,11 +180,11 @@ export default function AnswerDetailScreen() {
         setGateOpen(g.state === 'open');
         if (profile) {
           setSubject({
-            firstName: profile.firstName,
-            age: profile.age,
-            city: profile.city,
-            distanceMiles: profile.distanceMiles,
-            streakDays: profile.streakDays,
+            firstName: profile.firstName || subjectFromRoute.firstName,
+            age: profile.age ?? subjectFromRoute.age,
+            city: profile.city ?? subjectFromRoute.city,
+            distanceMiles: profile.distanceMiles ?? subjectFromRoute.distanceMiles,
+            streakDays: profile.streakDays ?? subjectFromRoute.streakDays,
           });
           if (!isSelf && profile.userId) {
             setSubjectUserId(profile.userId);
@@ -313,6 +344,7 @@ export default function AnswerDetailScreen() {
             onMoreOptions={isSelf ? () => setOwnMenuOpen(true) : social.openMenu}
             onHeart={isSelf ? () => {} : social.onHeartPress}
             hideHeart={isSelf}
+            isFollowed={!isSelf && isFollowed}
             matchState={isSelf ? 'none' : matchState}
             videoProgress={isActive ? videoProgress : 0}
             showProgress={isActive}
@@ -321,7 +353,7 @@ export default function AnswerDetailScreen() {
         </View>
       );
     },
-    [activeIndex, isSelf, leaveScreen, matchState, muted, pageHeight, playbackError, social.onHeartPress, social.openMenu, subject, toggleMute, videoProgress]
+    [activeIndex, isFollowed, isSelf, leaveScreen, matchState, muted, pageHeight, playbackError, social.onHeartPress, social.openMenu, subject, toggleMute, videoProgress]
   );
 
   const reportViewIfNeeded = useCallback(() => {
@@ -400,6 +432,7 @@ export default function AnswerDetailScreen() {
           getItemLayout={(_, index) => ({ length: pageHeight, offset: pageHeight * index, index })}
           viewabilityConfigCallbackPairs={viewabilityConfigCallbackPairs}
           renderItem={renderRow}
+          extraData={subject}
           showsVerticalScrollIndicator={false}
           onMomentumScrollEnd={reportViewIfNeeded}
         />

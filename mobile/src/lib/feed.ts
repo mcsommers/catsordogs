@@ -11,8 +11,10 @@ export type FeedItem = {
   questionDate: string;
   questionText: string;
   firstName: string;
+  gender: string | null;
   age: number;
   distanceMiles: number | null;
+  city: string | null;
   captionText: string;
   captionSegments: CaptionSegment[];
   durationSeconds: number;
@@ -43,8 +45,10 @@ type FeedRow = {
   question_date: string;
   question_text: string;
   first_name: string;
+  gender: string | null;
   age: number;
   distance_miles: number | null;
+  city: string | null;
   caption_text: string;
   caption_segments: CaptionSegment[] | null;
   duration_seconds: number;
@@ -64,8 +68,10 @@ function mapFeedRow(row: FeedRow): FeedItem {
     questionDate: row.question_date,
     questionText: row.question_text,
     firstName: row.first_name,
+    gender: row.gender ? String(row.gender) : null,
     age: row.age,
     distanceMiles: row.distance_miles,
+    city: row.city ?? null,
     captionText: row.caption_text ?? '',
     captionSegments: Array.isArray(row.caption_segments) ? row.caption_segments : [],
     durationSeconds: Number(row.duration_seconds) || 0,

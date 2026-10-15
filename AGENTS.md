@@ -84,8 +84,10 @@ submits a form that still has errors, scroll the screen to the first
 field with an error so they can fix it without hunting.
 
 Rules that must never break:
-1. The app never reads follower identities. The follows and nudges
-   tables have no client access; only server functions touch them.
+1. The app never reads who follows a user (follower identities). The
+   follows and nudges tables have no client access; only server
+   functions touch them. `get_people_i_follow` may list the people the
+   signed-in user follows (08i), never the people who follow them.
 2. The daily gate, nudge limits, recording length, and moderation
    thresholds are enforced on the server, never only in the app.
 3. Admin-editable settings (recording length, minimum watch time,

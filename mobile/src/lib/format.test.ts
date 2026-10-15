@@ -1,7 +1,9 @@
 import {
   clock,
   formatDistanceMiles,
+  formatFollowedOn,
   formatHeightFeetInches,
+  formatProfileIdentityLabel,
   formatStreakBadge,
   longDate,
   questionPillLabel,
@@ -46,5 +48,18 @@ describe('formatting', () => {
     expect(formatDistanceMiles(2)).toBe('2 miles away');
     expect(formatDistanceMiles(1)).toBe('1 mile away');
     expect(formatStreakBadge(14)).toBe('14-day streak');
+  });
+
+  it('shows when you followed someone', () => {
+    expect(formatFollowedOn(new Date(2026, 9, 15).toISOString())).toBe('Followed on Oct 15');
+  });
+
+  it('formats profile identity next to age', () => {
+    expect(formatProfileIdentityLabel(['Straight'], 'Man')).toBe('straight male');
+    expect(formatProfileIdentityLabel(['Gay'], 'Woman')).toBe('gay female');
+    expect(formatProfileIdentityLabel(['Bisexual'], 'Non-binary')).toBe('bisexual non-binary');
+    expect(formatProfileIdentityLabel(['Straight'], null)).toBe('straight');
+    expect(formatProfileIdentityLabel([], 'Man')).toBe('male');
+    expect(formatProfileIdentityLabel([], null)).toBeNull();
   });
 });

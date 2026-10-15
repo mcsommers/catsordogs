@@ -2,7 +2,7 @@
 -- notification-a-day limit, and that nobody using the app can ever learn who
 -- follows or nudged them.
 begin;
-select plan(88);
+select plan(94);
 
 delete from public.answers;
 delete from public.videos;
@@ -84,6 +84,32 @@ select lives_ok($$select public.unfollow_user('e0000010-0000-0000-0000-000000000
 select lives_ok($$select public.unfollow_user('e0000010-0000-0000-0000-000000000000')$$, 'unfollowing again is harmless');
 reset role;
 select is((select count(*) from public.follows where followed_id = pg_temp.uid(10)), 0::bigint, 'the follow is gone');
+
+-- People I follow (08i): you can list people you follow; you cannot list who follows you
+reset role;
+set local role anon;
+select throws_ok($$select * from public.get_people_i_follow()$$, '42501', null, 'a signed-out visitor cannot list people they follow');
+reset role;
+select set_config('request.jwt.claims', pg_temp.claims(2), true);
+set local role authenticated;
+select is((select array_agg(first_name order by first_name) from public.get_people_i_follow()), array['A'],
+  'F1 sees A on People I follow');
+select ok((select bool_and(age is not null and user_id is not null and followed_at is not null) from public.get_people_i_follow()),
+  'each followed person has a name, age, id, and follow date');
+reset role;
+select set_config('request.jwt.claims', pg_temp.claims(1), true);
+set local role authenticated;
+select is_empty($$select * from public.get_people_i_follow()$$,
+  'A cannot see the people who follow them on People I follow');
+reset role;
+select set_config('request.jwt.claims', pg_temp.claims(5), true);
+set local role authenticated;
+select is_empty($$select * from public.get_people_i_follow()$$, 'someone who follows nobody sees an empty list');
+reset role;
+select set_config('request.jwt.claims', pg_temp.claims(4), true);
+set local role authenticated;
+select is((select array_agg(first_name order by first_name) from public.get_people_i_follow()), array['A'],
+  'F3 still sees A on People I follow after unfollowing someone else');
 
 -- ---------------------------------------------------------------------------
 -- Follower count and anonymity

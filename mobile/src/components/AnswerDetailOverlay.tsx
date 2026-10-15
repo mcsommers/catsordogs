@@ -4,6 +4,7 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { EllipsisVertical, Flame, Heart, MapPin, Quote, Volume2, VolumeX } from 'lucide-react-native';
 import type { ProfileAnswer } from '../lib/profile';
 import { formatProfileLocation, formatStreakBadge, questionPillLabel } from '../lib/format';
+import { FollowingBadge } from './FollowingBadge';
 import { BackButton } from './ui';
 import { colors, fonts } from '../theme';
 
@@ -26,6 +27,7 @@ type Props = {
   onHeart: () => void;
   /** Your own video (06ka): no match heart. */
   hideHeart?: boolean;
+  isFollowed?: boolean;
   videoProgress: number;
   showProgress: boolean;
   playbackError: string | null;
@@ -41,6 +43,7 @@ export function AnswerDetailOverlay({
   onMoreOptions,
   onHeart,
   hideHeart = false,
+  isFollowed = false,
   matchState = 'none',
   videoProgress,
   showProgress,
@@ -67,17 +70,6 @@ export function AnswerDetailOverlay({
             <Quote size={13} color="#FFFFFFCC" style={styles.pillQuote} />
             <Text style={styles.pillText}>{questionPillLabel(answer.questionDate, answer.questionText)}</Text>
           </View>
-          <View style={styles.topActions}>
-            <Pressable
-              style={styles.iconBtn}
-              onPress={onToggleMute}
-              accessibilityRole="button"
-              accessibilityLabel={muted ? 'Unmute' : 'Mute'}
-              hitSlop={8}
-            >
-              {muted ? <VolumeX size={15} color={colors.white} /> : <Volume2 size={15} color={colors.white} />}
-            </Pressable>
-          </View>
         </View>
       </View>
 
@@ -85,24 +77,30 @@ export function AnswerDetailOverlay({
         <View style={styles.captionBox} pointerEvents="none">
           <Text style={styles.caption}>{answer.captionText || 'No captions for this answer.'}</Text>
         </View>
-        <View style={styles.infoRow}>
-          <View style={styles.infoCol}>
+        <View style={styles.infoCol}>
+          <View style={styles.nameRow}>
             <Text style={styles.name}>
-              {subject.firstName}{subject.age != null ? `, ${subject.age}` : ''}
+              {subject.firstName.trim().toUpperCase()}
+              {subject.age != null && Number.isFinite(subject.age) ? `, ${subject.age}` : ''}
             </Text>
-            {locationLine ? (
-              <View style={styles.metaRow}>
-                <MapPin size={13} color="#FFFFFFB3" />
-                <Text style={styles.meta}>{locationLine}</Text>
-              </View>
-            ) : null}
-            {streak ? (
-              <View style={styles.streak}>
-                <Flame size={12} color={colors.accentDog} />
-                <Text style={styles.streakText}>{streak}</Text>
-              </View>
-            ) : null}
+            {isFollowed && !hideHeart ? <FollowingBadge /> : null}
           </View>
+          {locationLine ? (
+            <View style={styles.metaRow}>
+              <MapPin size={13} color="#FFFFFFB3" />
+              <Text style={styles.meta}>{locationLine}</Text>
+            </View>
+          ) : null}
+        </View>
+        <View style={styles.infoRow}>
+          {streak ? (
+            <View style={styles.streak}>
+              <Flame size={12} color={colors.accentDog} />
+              <Text style={styles.streakText}>{streak}</Text>
+            </View>
+          ) : (
+            <View />
+          )}
           <View style={styles.rail}>
             <Pressable style={styles.actionBtn} onPress={onMoreOptions} accessibilityLabel="More options">
               <EllipsisVertical size={22} color={colors.white} />
@@ -116,6 +114,14 @@ export function AnswerDetailOverlay({
               <Heart size={22} color={colors.white} fill={heartOn ? colors.white : 'transparent'} />
             </Pressable>
             )}
+            <Pressable
+              style={styles.actionBtn}
+              onPress={onToggleMute}
+              accessibilityRole="button"
+              accessibilityLabel={muted ? 'Unmute' : 'Mute'}
+            >
+              {muted ? <VolumeX size={22} color={colors.white} /> : <Volume2 size={22} color={colors.white} />}
+            </Pressable>
           </View>
         </View>
       </View>
@@ -160,16 +166,29 @@ const styles = StyleSheet.create({
   bottom: { position: 'absolute', left: 0, right: 0, bottom: 0, paddingHorizontal: 20, gap: 14 },
   captionBox: { backgroundColor: '#00000080', borderRadius: 14, paddingHorizontal: 14, paddingVertical: 13 },
   caption: { fontFamily: fonts.body, fontSize: 14, lineHeight: 20, color: colors.white },
-  infoRow: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'flex-end' },
-  infoCol: { flex: 1, gap: 6, paddingRight: 12 },
-  name: { fontFamily: fonts.heading, fontSize: 22, color: colors.white, textTransform: 'uppercase' },
+  infoRow: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' },
+  infoCol: { gap: 6 },
+  nameRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 8,
+    flexWrap: 'wrap',
+    overflow: 'visible',
+  },
+  name: {
+    fontFamily: fonts.heading,
+    fontSize: 22,
+    lineHeight: 28,
+    color: colors.white,
+    flexShrink: 0,
+    includeFontPadding: false,
+  },
   metaRow: { flexDirection: 'row', alignItems: 'center', gap: 6 },
   meta: { fontFamily: fonts.body, fontSize: 13, color: '#FFFFFFB3' },
   streak: {
     flexDirection: 'row',
     alignItems: 'center',
     gap: 4,
-    alignSelf: 'flex-start',
     backgroundColor: '#FFFFFF1F',
     borderRadius: 9999,
     paddingHorizontal: 10,
