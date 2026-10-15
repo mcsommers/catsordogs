@@ -1,11 +1,13 @@
 import { Modal, Pressable, StyleSheet, Text, View } from 'react-native';
 import { colors, fonts } from '../../theme';
 
-export type MoreMenuAction = 'follow' | 'unfollow' | 'not_interested' | 'report' | 'block' | 'cancel';
+export type MoreMenuAction = 'follow' | 'unfollow' | 'not_interested' | 'report' | 'block' | 'delete_video' | 'cancel';
 
 type Props = {
   visible: boolean;
   isFollowed: boolean;
+  /** Your own video (06kb): only Delete video and Cancel. */
+  own?: boolean;
   onSelect: (action: MoreMenuAction) => void;
   onDismiss: () => void;
 };
@@ -18,9 +20,14 @@ const OPTIONS: { key: MoreMenuAction; label: string; destructive?: boolean }[] =
   { key: 'cancel', label: 'Cancel' },
 ];
 
-/** 06e / 06p / 06k more-options sheet — order matches MVP. */
-export function MoreOptionsMenu({ visible, isFollowed, onSelect, onDismiss }: Props) {
-  const rows = OPTIONS.map((o) =>
+/** 06e / 06p / 06k more-options sheet — order matches MVP. Own video on 06k: 06kb. */
+const OWN_OPTIONS: { key: MoreMenuAction; label: string; destructive?: boolean }[] = [
+  { key: 'delete_video', label: 'Delete video', destructive: true },
+  { key: 'cancel', label: 'Cancel' },
+];
+
+export function MoreOptionsMenu({ visible, isFollowed, own = false, onSelect, onDismiss }: Props) {
+  const rows = (own ? OWN_OPTIONS : OPTIONS).map((o) =>
     o.key === 'follow' ? { ...o, key: isFollowed ? ('unfollow' as const) : ('follow' as const), label: isFollowed ? 'Unfollow' : 'Follow' } : o
   );
 

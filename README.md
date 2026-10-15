@@ -262,10 +262,11 @@ Mux has its own Staging and Production environments. Use them like the Supabase 
 **Mux Staging with Supabase Staging** (and local testing), **Mux Production only with Supabase Production**.
 Do not record real users' video in Mux Production until the legal review in the Build Plan is done.
 
-Seven Edge Functions (in `supabase/functions/`) do the work: `create-video-upload` (the app asks for an upload link),
+Eight Edge Functions (in `supabase/functions/`) do the work: `create-video-upload` (the app asks for an upload link),
 `mux-webhook` (Mux reports progress, checked against Mux's signature), `get-playback-url` (short-lived signed links to watch your own recording, or another person's answer once the daily gate is open),
 `update-location` (looks up coordinates for the city on a profile, so distance works),
 `process-notifications` (sends queued push and email), `unsubscribe` (the link in every email),
+`delete-answer` (deletes one of your own answers and asks Mux to delete that video file),
 and `delete-account` (permanently deletes the signed-in person and asks Mux to delete their videos).
 
 ### City lookup (distance)

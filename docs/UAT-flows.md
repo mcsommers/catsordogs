@@ -181,6 +181,19 @@ Prerequisites: gate open for feed tests; staging seed helps for other people's p
 - [ ] **C-14a Bottom chrome on Android (06k).** On **Android**, open **06k** from a profile. Expected: caption, name, and action buttons sit on the **bottom** of the screen (above the system nav bar only), not floating ~100px higher; bottom gradient reaches the screen edge.
 - [ ] **C-15 Back to profile.** Tap back on **06k**. Expected: return to the profile you came from.
 
+### Delete your own video (06ka, 06kb, 06kc, 06kd)
+
+Needs an account with at least two answers (today's and an older one). If the older one is missing, ask the agent to add it on staging.
+
+- [ ] **C-15a No heart on your own video (06ka).** From **08** (or **08a**), tap one of your own answers. Expected: **06ka**. The bottom right shows **only** the more-options (⋯) button. There is **no heart** button. Swipe to another of your own answers: still no heart.
+- [ ] **C-15b Options sheet (06kb).** On **06ka**, tap ⋯. Expected: a sheet with **Delete video** (red) and **Cancel** only. There is no Follow, Not Interested, Report, or Block. Tap **Cancel** (or outside the sheet): the sheet closes and the video is still there.
+- [ ] **C-15c Confirmation for an older answer (06kc).** Open an answer from a **previous day**, tap ⋯, then **Delete video**. Expected: a dialog with a red trash icon, title **Delete this video?**, body "This permanently deletes your answer to this question, including its video and captions. There is no undo.", buttons **Delete Video** and **Cancel**. Tap **Cancel**: you stay on the video and nothing is deleted.
+- [ ] **C-15d Delete an older answer.** From that dialog tap **Delete Video**. Expected: you are taken **back to your profile (08)**. That answer is gone from **Your Answers** and the count drops by one. If it was part of your streak, the streak badge is shorter (a gap breaks the run). The Feed tab still opens normally (today's answer is still there).
+- [ ] **C-15e Confirmation for today's answer (06kd).** Open **today's** answer, tap ⋯, then **Delete video**. Expected: the same dialog, but the body reads "This permanently deletes your answer to today's question, including its video and captions. Your feed will lock until you record a new answer. There is no undo."
+- [ ] **C-15f Delete today's answer locks the feed.** Tap **Delete Video**. Expected: back on your profile, today's answer is gone. Open the **Feed** tab: it shows the locked screen (**06m**) with today's question and a way to answer. Record and submit a new answer: the feed opens again.
+- [ ] **C-15g Deleting does not give a recording back.** Admin **Settings** has **recordings per day** (default 10). Ask the agent to set it to **2** on staging, record and submit once, delete that answer, record and submit again, delete it, then try to record a third time. Expected: "You have reached today's limit of 2 recordings." (Put the setting back afterwards.)
+- [ ] **C-15h Someone else's video is unchanged.** Open another person's answer (**06k**). Expected: the heart and the full ⋯ menu (Follow, Not Interested, Report, Block, Cancel) are still there, and there is **no** Delete video.
+
 ### Feed locked (3A)
 
 - [ ] **C-16 Profile while feed locked.** With an account that has **not** answered today, open another person's profile (e.g. from Matches when Phase D exists, or ask agent for entry path). Expected: profile and answer **list** visible; tapping playback shows a clear message that you must answer today to watch (gate), not a silent failure.
@@ -209,7 +222,7 @@ Prerequisites: two test accounts for match/chat; staging seed optional. Decision
 - [ ] **D-08 Heart send feed (06b).** Tap heart on a feed video. Expected: **Match with [name]?** → **Yes, Match**; heart selected on their videos/profile.
 - [ ] **D-09 Heart cancel (07f).** With an outgoing request, tap selected heart. Expected: cancel confirmation; heart clears.
 - [ ] **D-10 Heart profile (07i / 06z).** On **06j**, heart → **07i** → send. Expected: **06z** (or equivalent success on profile) and selected heart everywhere.
-- [ ] **D-11 More on 06k.** On **06k**, heart and **⋯** behave like feed/profile (Report on **06k** flags that answer's video).
+- [ ] **D-11 More on 06k.** On **06k** (someone else's answer), heart and **⋯** behave like feed/profile (Report on **06k** flags that answer's video). On your **own** answer (**06ka**) there is no heart; see **C-15a** to **C-15h**.
 - [ ] **D-12 Match while feed locked.** Without today's answer, send a match from someone's profile. Expected: match works; feed playback still gated (C-16).
 - [ ] **D-13 Nudge (06n / 06o).** Follow someone who has not answered today; on **06n**, nudge → **06o**. Expected: server once-per-day limit.
 - [ ] **D-14 Blocked list (08e).** After block, **Profile** → **Blocked and Not Interested** → **Blocked**. Expected: person listed; **Unblock**.

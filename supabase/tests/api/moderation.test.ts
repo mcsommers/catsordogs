@@ -141,3 +141,28 @@ test('deleting an account removes the profile and the Mux video', async () => {
   assert.equal(profile?.length, 0);
   assert.ok((await bob.client.rpc('send_match_request', { p_user_id: dana.id })).error);
 });
+
+test('deleting your own answer removes it and the Mux video, and nobody else can', async () => {
+  const erin = await newUser('erin');
+  const frank = await newUser('frank');
+  const assetId = `asset-erin-${run}`;
+  const answerId = await answerToday(erin, assetId);
+
+  const call = (user: User) => fetch(`${functionsUrl}/delete-answer`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${user.token}`, apikey: key },
+    body: JSON.stringify({ answer_id: answerId }),
+  });
+
+  const other = await call(frank);
+  assert.equal(other.status, 404, 'someone else cannot delete it');
+  assert.ok(!fakeMux.deletedAssets.includes(assetId), 'Mux was not asked to delete anything yet');
+
+  const res = await call(erin);
+  assert.equal(res.status, 200, await res.text());
+  assert.ok(fakeMux.deletedAssets.includes(assetId), "Mux was asked to delete Erin's video");
+  const { data: left } = await admin.from('answers').select('id').eq('id', answerId);
+  assert.equal(left?.length, 0, 'the answer is gone');
+  const { data: gate } = await erin.client.rpc('get_gate_status');
+  assert.equal(gate?.[0]?.state, 'not_answered', "Erin's daily gate is closed again");
+});

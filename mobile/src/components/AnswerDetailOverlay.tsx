@@ -24,6 +24,8 @@ type Props = {
   onBack: () => void;
   onMoreOptions: () => void;
   onHeart: () => void;
+  /** Your own video (06ka): no match heart. */
+  hideHeart?: boolean;
   videoProgress: number;
   showProgress: boolean;
   playbackError: string | null;
@@ -38,6 +40,7 @@ export function AnswerDetailOverlay({
   onBack,
   onMoreOptions,
   onHeart,
+  hideHeart = false,
   matchState = 'none',
   videoProgress,
   showProgress,
@@ -104,6 +107,7 @@ export function AnswerDetailOverlay({
             <Pressable style={styles.actionBtn} onPress={onMoreOptions} accessibilityLabel="More options">
               <EllipsisVertical size={22} color={colors.white} />
             </Pressable>
+            {hideHeart ? null : (
             <Pressable
               style={[styles.actionBtn, heartOn && { backgroundColor: colors.accentDog }]}
               onPress={onHeart}
@@ -111,6 +115,7 @@ export function AnswerDetailOverlay({
             >
               <Heart size={22} color={colors.white} fill={heartOn ? colors.white : 'transparent'} />
             </Pressable>
+            )}
           </View>
         </View>
       </View>

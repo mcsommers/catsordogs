@@ -153,3 +153,10 @@ export async function fetchUserAnswersPage(
 }
 
 export const PROFILE_ANSWER_PAGE_SIZE = ANSWER_PAGE;
+
+/** Deletes one of your own answers (06kb / 06kc). The server also removes the Mux file. */
+export async function deleteMyAnswer(answerId: string): Promise<void> {
+  const { data, error } = await supabase.functions.invoke('delete-answer', { body: { answer_id: answerId } });
+  if (error) throw error;
+  if (data?.error) throw new Error(String(data.error));
+}

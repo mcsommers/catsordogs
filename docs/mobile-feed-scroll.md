@@ -27,6 +27,8 @@ Playback may still use **one shared player** behind the list for performance; th
 | `mobile/src/app/answer/[answerId].tsx` | **06k** — same pager pattern: root `onLayout` **measured height** for row size (do not rely on `useWindowDimensions` alone on Android); `FlatList` with `StyleSheet.absoluteFill`; `AnswerDetailOverlay` inside each row. Bottom chrome is pinned with safe-area padding only (no tab-bar offset). |
 | Shared `VideoView` | Sits **behind** the list; active row from viewability drives which clip plays. |
 
+On your own answers (**06ka**) the same page layout applies; the only difference is that the heart is not rendered (`hideHeart`), so the more-options button sits alone on the right. More options opens the own-video sheet (**06kb**), not the feed menu.
+
 Before merging any feed UI change, read the header comment in `feed.tsx` and confirm this table still holds.
 
 ## Verification (both platforms)

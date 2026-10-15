@@ -504,7 +504,7 @@ export type DialogBadgeKind =
   | 'unfollow';
 
 export type DialogHero =
-  | { type: 'icon'; icon: Icon; iconTone?: 'warning' | 'success' }
+  | { type: 'icon'; icon: Icon; iconTone?: 'warning' | 'success' | 'danger' }
   | { type: 'avatar'; uri?: string | null; name: string; badge: DialogBadgeKind };
 
 const DIALOG_BADGE: Record<
@@ -572,6 +572,7 @@ export function Dialog({
   const light = variant === 'light';
   const iconHero = hero.type === 'icon' ? hero : null;
   const success = iconHero?.iconTone === 'success';
+  const danger = iconHero?.iconTone === 'danger';
   const IconComponent = iconHero?.icon;
   return (
     <Modal
@@ -585,8 +586,17 @@ export function Dialog({
           {hero.type === 'avatar' ? (
             <DialogAvatarHero uri={hero.uri} name={hero.name} badge={hero.badge} />
           ) : IconComponent ? (
-            <View style={[styles.dialogIcon, success && { backgroundColor: colors.accentDog }]}>
-              <IconComponent size={success ? 26 : 22} color={success ? colors.white : colors.accentDog} />
+            <View
+              style={[
+                styles.dialogIcon,
+                success && { backgroundColor: colors.accentDog },
+                danger && { width: 72, height: 72, borderRadius: 36, backgroundColor: '#FF5C5C26' },
+              ]}
+            >
+              <IconComponent
+                size={success ? 26 : danger ? 32 : 22}
+                color={success ? colors.white : danger ? '#FF5C5C' : colors.accentDog}
+              />
             </View>
           ) : null}
           <Text style={[styles.dialogTitle, light && styles.dialogTitleLight]}>{title}</Text>

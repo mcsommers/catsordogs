@@ -527,3 +527,11 @@ Answer: Design simple versions in the design file, update the requirements doc, 
 - **Maximum distance filter removed (Oct 2026).** Distance only affects the order through the Distance ranking signal. Saved maximum-distance values were cleared.
 - **Relationship goals filter removed; Age range and Height are sliders (Oct 2026).** Age range is a two-handle slider, 18 to 70+; Height is a two-handle slider, 2'0" to 7'0"+. A handle on the far end means no limit on that side (so 70+ includes everyone older), and both handles on the ends is the same as Any. Relationship goals still affect the order through the ranking signal.
 - **Occupation filter removed; Sexual orientation moved above Age range (Oct 2026).** Filter order is Show me, Sexual orientation, Age range, Height.
+
+## Deleting your own video (Oct 2026)
+- On your own answer (**06ka**) the heart is hidden. More options opens a sheet (**06kb**) with only **Delete video** and **Cancel**. Delete video asks for confirmation (**06kc**, or **06kd** when it is today's answer), then returns to your profile.
+- **Deleting today's answer closes the feed again** until a new answer is submitted today. The dialog says so (06kd). *Decided by Mike.*
+- **Deleting does not give a recording back.** The deleted recording still counts toward the recordings-per-day limit, so deleting and re-recording cannot get around the cap. The recording can never be submitted again. *Recommended option, accepted by Mike.*
+- **Streaks are recalculated from the answers that remain**, so deleting a past answer leaves a gap. *Decided by Mike.*
+- An open flag review for a deleted answer is closed automatically; flag and review records are kept without the video. *Assumed, not asked.*
+- Deleting is permanent (video file at Mux, captions, view counts). There is no undo and no grace period, like account deletion.
