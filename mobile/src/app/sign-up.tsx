@@ -58,7 +58,6 @@ export default function SignUp() {
     <Screen scroll scrollRef={scrollRef} scrollContentRef={contentRef}>
       <View style={styles.header}>
         <BackButton />
-        <Text style={styles.step}>Step 1 of 2</Text>
       </View>
       <TitleGroup title="Create your account" subtitle="Let's find your people!" />
       <ComingSoonSocialButtons />

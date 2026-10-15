@@ -430,7 +430,6 @@ export default function BuildProfile() {
       />
       <View style={ui.header}>
         <BackButton onPress={leaveGuard.attemptLeave} />
-        <Text style={ui.step}>Step 2 of 2</Text>
       </View>
       <TitleGroup title="Build your profile" subtitle={PROFILE_SUBTITLE} />
       {banner ? <ErrorBanner message={banner} /> : null}
