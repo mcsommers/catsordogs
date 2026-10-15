@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useState } from 'react';
-import { Alert, Pressable, StyleSheet, Switch, Text, View } from 'react-native';
+import { Alert, Pressable, StyleSheet, Text, View } from 'react-native';
 import { router } from 'expo-router';
 import {
   getNotificationPreferences,
@@ -7,7 +7,7 @@ import {
   type NotificationPreference,
 } from '../lib/social';
 import { canRegisterForRemotePush, registerForPushNotifications } from '../lib/push';
-import { BackButton, CenteredSpinner, Screen, styles as ui } from '../components/ui';
+import { BackButton, CenteredSpinner, Screen, ToggleSwitch, styles as ui } from '../components/ui';
 import { colors, fonts } from '../theme';
 
 const LABELS: Record<NotificationPreference['type'], { title: string; body: string }> = {
@@ -82,7 +82,7 @@ function ToggleRow({ label, value, onChange }: { label: string; value: boolean; 
   return (
     <View style={styles.toggleRow}>
       <Text style={styles.toggleLabel}>{label}</Text>
-      <Switch value={value} onValueChange={onChange} trackColor={{ true: colors.accentDog, false: colors.borderDark }} />
+      <ToggleSwitch value={value} onValueChange={onChange} accessibilityLabel={label} />
     </View>
   );
 }

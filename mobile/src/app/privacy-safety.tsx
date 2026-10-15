@@ -1,12 +1,12 @@
 import { useCallback, useEffect, useState } from 'react';
-import { Alert, StyleSheet, Switch, Text, View } from 'react-native';
+import { Alert, StyleSheet, Text, View } from 'react-native';
 import { router } from 'expo-router';
 import { signOutToWelcome } from '../lib/signOut';
 import { supabase } from '../lib/supabase';
 import { useSession } from '../lib/session';
 import { deleteAccountFully } from '../lib/social';
 import { confirmDeleteAccount } from '../components/social/confirmations';
-import { BackButton, CenteredSpinner, Screen, TextLink, styles as ui } from '../components/ui';
+import { BackButton, CenteredSpinner, Screen, TextLink, ToggleSwitch, styles as ui } from '../components/ui';
 import { colors, fonts } from '../theme';
 
 export default function PrivacySafetyScreen() {
@@ -76,11 +76,7 @@ export default function PrivacySafetyScreen() {
         </Text>
         <View style={styles.toggleRow}>
           <Text style={styles.toggleLabel}>{allowFollowers ? 'On' : 'Off'}</Text>
-          <Switch
-            value={allowFollowers}
-            onValueChange={onToggleFollowers}
-            trackColor={{ true: colors.accentDog, false: colors.borderDark }}
-          />
+          <ToggleSwitch value={allowFollowers} onValueChange={onToggleFollowers} accessibilityLabel="Allow followers" />
         </View>
       </View>
 

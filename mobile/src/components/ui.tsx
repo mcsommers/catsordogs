@@ -621,6 +621,37 @@ export function Dialog({
   );
 }
 
+/** On/off switch drawn to match Pencil (44x26 pill, 20px white knob); identical on iOS and Android. */
+export function ToggleSwitch({
+  value,
+  onValueChange,
+  disabled = false,
+  accessibilityLabel,
+}: {
+  value: boolean;
+  onValueChange: (next: boolean) => void;
+  disabled?: boolean;
+  accessibilityLabel?: string;
+}) {
+  return (
+    <Pressable
+      accessibilityRole="switch"
+      accessibilityState={{ checked: value, disabled }}
+      accessibilityLabel={accessibilityLabel}
+      disabled={disabled}
+      onPress={() => onValueChange(!value)}
+      hitSlop={8}
+      style={[
+        styles.toggleTrack,
+        { backgroundColor: value ? colors.accentDog : '#FFFFFF1F', justifyContent: value ? 'flex-end' : 'flex-start' },
+        disabled && { opacity: 0.5 },
+      ]}
+    >
+      <View style={styles.toggleKnob} />
+    </Pressable>
+  );
+}
+
 export function QuestionBadge() {
   return (
     <View style={styles.badge}>
@@ -678,6 +709,8 @@ export const styles = StyleSheet.create({
   headerWithTitle: { flexDirection: 'row', alignItems: 'center', gap: 12 },
   headerTitle: { flex: 1, fontFamily: fonts.heading, fontSize: 28, color: colors.textPrimary },
   headerTitleDark: { flex: 1, fontFamily: fonts.heading, fontSize: 17, color: colors.white },
+  toggleTrack: { width: 44, height: 26, borderRadius: 13, padding: 3, flexDirection: 'row', alignItems: 'center' },
+  toggleKnob: { width: 20, height: 20, borderRadius: 10, backgroundColor: '#FFFFFF' },
   step: { fontFamily: fonts.bodySemi, fontSize: 13, color: colors.textSecondary },
   title: { fontFamily: fonts.heading, fontSize: 28, color: colors.textPrimary },
   subtitle: { fontFamily: fonts.body, fontSize: 15, lineHeight: 21, color: colors.textSecondary },
