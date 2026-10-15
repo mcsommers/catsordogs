@@ -412,15 +412,30 @@ export function FormMessage({ message, tone = 'error' }: { message: string | nul
   );
 }
 
-export function Chip({ label, selected, onPress }: { label: string; selected: boolean; onPress: () => void }) {
+export function Chip({
+  label,
+  selected,
+  onPress,
+  dark = false,
+}: {
+  label: string;
+  selected: boolean;
+  onPress: () => void;
+  /** Dark screens: unselected pills are black with a white outline and white text. */
+  dark?: boolean;
+}) {
   return (
     <Pressable
       accessibilityRole="checkbox"
       accessibilityState={{ checked: selected }}
       onPress={onPress}
-      style={[styles.chip, selected && { backgroundColor: colors.accentDog, borderColor: colors.accentDog }]}
+      style={[
+        styles.chip,
+        dark && { backgroundColor: '#000000', borderColor: colors.white, borderWidth: 1 },
+        selected && { backgroundColor: colors.accentDog, borderColor: colors.accentDog },
+      ]}
     >
-      <Text style={[styles.chipLabel, selected && { color: colors.white }]}>{label}</Text>
+      <Text style={[styles.chipLabel, (dark || selected) && { color: colors.white }]}>{label}</Text>
     </Pressable>
   );
 }

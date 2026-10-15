@@ -71,7 +71,7 @@ Decided:
 - The **Lifestyle** section is now **Interests**. An empty section shows one **Select Interests >** pill; it opens screen **03e**, which lists all 278 interests as pills in strict alphabetical order. Up to 5 can be chosen, with a live "N of 5 selected" counter.
 - **Done** on 03e stays disabled until something on that screen has changed. Leaving 03e with unsaved changes shows the existing **Discard changes?** dialog.
 - After Done, the picks show as orange selected pills with an orange **Edit** link in the section header.
-- The 5 picks **replace** the old hobby list in the `interests` column, and feed the Interests filter and the Shared Interests ranking.
+- The 5 picks **replace** the old hobby list in the `interests` column, and feed the Shared Interests ranking (the Interests filter was removed; see below).
 - Lifestyle tags are removed. So are the **Smoking** and **Drinking** filters and the **Lifestyle Compatibility** ranking signal (Feed Settings, 06i, now has five ranking signals). Every screen that said "Lifestyle" now says "Interests".
 - The top row (back arrow and "N of 5 selected") is sticky, and the space above **Done** equals the space below it (Pencil 03e and 03e Edited updated). The top row has 12 points of space above and below it. On Android the gap above **Done** is 24 points and does not include the phone's navigation bar; on iPhone it matches the gap below (which includes the home indicator).
 - **Done** is always visible: it is pinned at the bottom of 03e while the pill list scrolls above it (Pencil 03e and 03e Edited now show a phone-height screen with the list clipped and Done fixed at the bottom). The list is strictly alphabetical, ignoring capitals, so acronyms sort by their letters (BBQ falls after Basketball and before Beach Bars; DIY after Diving; EDM after E-Sports); the order is stored in `profile_options.sort_order` and the Pencil pills match it. When 5 are chosen, tapping another unselected pill does nothing.
@@ -279,7 +279,7 @@ Requirements: full **Filters** (driven by `filter_definitions`, not hard-coded) 
 
 Options:
 
-- **A.** **Full 06i in Phase D** — every filter and all five ranking sliders (six before Oct 2026), wired to `filter_preferences`, `feed_settings`, and `reset_feed_settings`, opened from the feed settings control and from **08** Account. *(Recommended; matches MVP.)*
+- **A.** **Full 06i in Phase D** — every filter and all three ranking sliders (six before Oct 2026), wired to `filter_preferences`, `feed_settings`, and `reset_feed_settings`, opened from the feed settings control and from **08** Account. *(Recommended; matches MVP.)*
 - **B.** **Ranking section first** in one PR, Filters in a follow-up (same phase, two steps).
 - **C.** **Filters only** in Phase D; Ranking stays at server defaults until a follow-up.
 
@@ -515,3 +515,11 @@ Options:
 - Show Mike each one before building it.
 
 Answer: Design simple versions in the design file, update the requirements doc, then build them.
+
+## Feed Settings: Specific shared interests (Oct 2026)
+- Shared Interests has a 4th option, **Specific**. Choosing it shows a **Choose specific interests** row (with "N selected") that opens screen **06ia**, a dark screen with all 278 interests as pills, no limit, a live "N selected" counter, and a pinned **Done** button (disabled until something changes; same spacing as 03e). Leaving with unsaved changes shows the **Discard changes?** dialog. Done hands the picks to Feed Settings; they are saved with its **Save** button. Unselected pills on dark screens are black with a white outline and white text.
+- The long list of Interest pills is gone from Feed Settings, and so is the **Interests** filter (a hard filter on interests overlapped with this ranking choice). Interests now only affect ranking. *Assumption, confirm.*
+- Specific weighs 6 (Low 1, Medium 2, High 3). The score is matches / the smaller of (number picked, 3), capped at 1, so any 3 matches is a full score. Specific with nothing picked goes back to the previous setting (Medium if it was already Specific). *Decided by Mike.* The first three are also confirmed.
+- **Maximum distance filter removed (Oct 2026).** Distance only affects the order through the Distance ranking signal. Saved maximum-distance values were cleared.
+- **Relationship goals filter removed; Age range and Height are sliders (Oct 2026).** Age range is a two-handle slider, 18 to 70+; Height is a two-handle slider, 2'0" to 7'0"+. A handle on the far end means no limit on that side (so 70+ includes everyone older), and both handles on the ends is the same as Any. Relationship goals still affect the order through the ranking signal.
+- **Occupation filter removed; Sexual orientation moved above Age range (Oct 2026).** Filter order is Show me, Sexual orientation, Age range, Height.

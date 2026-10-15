@@ -216,10 +216,10 @@ test('the app cannot read follows or other people\'s answers, and cannot write t
 test('ranking settings are private to each user and validated', async () => {
   const mine = await alice.client.from('feed_settings').select('*');
   assert.equal(mine.data!.length, 1);
-  assert.ok((await alice.client.from('feed_settings').update({ recency: 'extreme' }).eq('user_id', alice.id)).error);
-  assert.ifError((await alice.client.from('feed_settings').update({ recency: 'high' }).eq('user_id', alice.id)).error);
+  assert.ok((await alice.client.from('feed_settings').update({ distance: 'extreme' }).eq('user_id', alice.id)).error);
+  assert.ifError((await alice.client.from('feed_settings').update({ distance: 'high' }).eq('user_id', alice.id)).error);
   assert.ifError((await alice.client.rpc('reset_feed_settings')).error);
-  assert.equal((await alice.client.from('feed_settings').select('recency').single()).data!.recency, 'medium');
+  assert.equal((await alice.client.from('feed_settings').select('distance').single()).data!.distance, 'medium');
 });
 
 test('the city on a profile is looked up for distance, and people cannot set coordinates themselves', async () => {

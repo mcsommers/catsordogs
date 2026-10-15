@@ -3,7 +3,7 @@
 -- locations, and who can read what.
 -- (Followed-first ordering and its cap are in 05_feed_followed_cap.test.sql.)
 begin;
-select plan(133);
+select plan(147);
 
 delete from public.answers;
 delete from public.videos;
@@ -283,34 +283,61 @@ select is(pg_temp.filtered('{"show_me":"Men"}'), array['M1'], 'filter: show me m
 select is(pg_temp.filtered('{"show_me":"Everyone"}'), array['M1', 'N1', 'W1', 'W2', 'X1', 'X2', 'X3'], 'filter: everyone shows all');
 select is(pg_temp.filtered('{"age_range":{"min":26,"max":32}}'), array['N1', 'W1', 'X1', 'X2'], 'filter: age range');
 select is(pg_temp.filtered('{"height_range":{"min":71,"max":79}}'), array['M1'], 'filter: height range (inches)');
-select is(pg_temp.filtered('{"interests":["hiking"]}'), array['M1', 'W1', 'X1', 'X2', 'X3'], 'filter: interests (any overlap, ignoring case)');
-select is(pg_temp.filtered('{"occupation":["Nurse","Chef"]}'), array['M1', 'W1'], 'filter: occupation');
-select is(pg_temp.filtered('{"max_distance":10}'), array['W1', 'X1', 'X2', 'X3'], 'filter: maximum distance (people with no location are excluded)');
-select is(pg_temp.filtered('{"show_me":"Women","max_distance":10,"interests":["Coffee"]}'), array['W1'], 'filters combine');
-select is(pg_temp.filtered('{"interests":[]}'), array['M1', 'N1', 'W1', 'W2', 'X1', 'X2', 'X3'], 'an empty pick-list means Any');
-update public.profiles set latitude = null, longitude = null where id = pg_temp.uid(1);
-select is(pg_temp.filtered('{"max_distance":1}'), array['M1', 'N1', 'W1', 'W2', 'X1', 'X2', 'X3'],
-  'the distance filter is skipped when the viewer has no location');
-update public.profiles set latitude = 40.7128, longitude = -74.0060 where id = pg_temp.uid(1);
+select is(pg_temp.filtered('{"age_range":{"min":18,"max":32}}'), array['N1', 'W1', 'W2', 'X1', 'X2'], 'filter: age range with the minimum handle on the end has no lower limit');
+update public.profiles set birthday = birthday - interval '40 years' where id = pg_temp.uid(4);
+select is(pg_temp.filtered('{"age_range":{"min":30,"max":70}}'), array['M1', 'W1', 'X1', 'X2', 'X3'], 'filter: age range 70 is "70+" (a 75-year-old still passes)');
+update public.profiles set birthday = birthday + interval '40 years' where id = pg_temp.uid(4);
+select is(pg_temp.filtered('{"age_range":{"min":18,"max":70},"height_range":{"min":24,"max":84}}'), array['M1', 'N1', 'W1', 'W2', 'X1', 'X2', 'X3'], 'both handles on the ends is the same as Any');
+select is((select count(*) from public.filter_definitions where key = 'relationship_goals' and active), 0::bigint, 'the Relationship goals filter is gone (the ranking signal stays)');
+update public.profiles set sexual_orientation = '{"Gay"}' where id = pg_temp.uid(4);
+update public.profiles set sexual_orientation = '{"Bisexual"}' where id = pg_temp.uid(2);
+select is(pg_temp.filtered('{"sexual_orientation":["gay","bisexual"]}'), array['M1', 'W1'], 'filter: sexual orientation (any match, ignoring case)');
+select is(pg_temp.filtered('{"sexual_orientation":["Gay"]}'), array['M1'], 'filter: sexual orientation');
+select is((select count(*) from public.filter_definitions where key = 'occupation' and active), 0::bigint, 'the Occupation filter is gone');
+select is((select count(*) from public.filter_definitions where key = 'max_distance' and active), 0::bigint, 'the Maximum distance filter is gone (distance only changes the order)');
+select is(pg_temp.filtered('{"show_me":"Women","age_range":{"min":26,"max":32},"sexual_orientation":["Bisexual"]}'), array['W1'], 'filters combine');
+select is(pg_temp.filtered('{"sexual_orientation":[]}'), array['M1', 'N1', 'W1', 'W2', 'X1', 'X2', 'X3'], 'an empty pick-list means Any');
 select is(pg_temp.filtered('{}'), array['M1', 'N1', 'W1', 'W2', 'X1', 'X2', 'X3'], 'clearing the filters shows everyone again');
 
 -- ---------------------------------------------------------------------------
 -- Ranking: the viewer's Low / Medium / High weights change the order
 -- ---------------------------------------------------------------------------
-update public.answers set caption_text = 'one two three four five six seven eight nine ten eleven twelve thirteen fourteen fifteen sixteen seventeen eighteen nineteen twenty twentyone twentytwo twentythree twentyfour twentyfive twentysix twentyseven twentyeight twentynine thirty thirtyone thirtytwo thirtythree thirtyfour thirtyfive thirtysix thirtyseven thirtyeight thirtynine forty'
-  where user_id = pg_temp.uid(5);
 set local role authenticated;
-update public.feed_settings set shared_interests = 'high', relationship_goals = 'low', response_depth = 'low',
-  distance = 'low', recency = 'low';
+update public.feed_settings set shared_interests = 'high', relationship_goals = 'low', distance = 'low';
 select is((select first_name from public.get_feed(50, 0, public.utc_today()) limit 1), 'W1', 'ranking: high weight on shared interests puts the best interest match first');
-update public.feed_settings set shared_interests = 'low', response_depth = 'high';
-select is((select first_name from public.get_feed(50, 0, public.utc_today()) limit 1), 'N1', 'ranking: high weight on response depth puts the longest answer first');
-update public.feed_settings set response_depth = 'low', distance = 'high';
+update public.feed_settings set shared_interests = 'specific', specific_interests = array['Yoga'];
+select is((select first_name from public.get_feed(50, 0, public.utc_today()) limit 1), 'N1', 'ranking: Specific puts the person who shares the chosen interest first');
+update public.feed_settings set shared_interests = 'low';
+update public.feed_settings set shared_interests = 'specific', specific_interests = '{}';
+select is((select shared_interests from public.feed_settings), 'low', 'choosing Specific with nothing picked keeps the previous setting');
+update public.feed_settings set shared_interests = 'specific', specific_interests = array['Yoga'];
+update public.feed_settings set specific_interests = '{}';
+select is((select shared_interests from public.feed_settings), 'medium', 'clearing every pick from a saved Specific falls back to Medium');
+select throws_ok($$update public.feed_settings set specific_interests = array['Dog lover']$$, '23514',
+  '"Dog lover" is not an allowed choice for Interests.', 'a specific interest must be on the Interests list');
+select throws_ok($$update public.feed_settings set specific_interests = array['Yoga', 'Yoga']$$, '23514',
+  'Specific interests contains duplicates.', 'duplicate specific interests are rejected');
+select lives_ok($$update public.feed_settings set specific_interests = (select array_agg(value) from public.profile_options where category = 'interest' and active)$$,
+  'there is no limit on how many specific interests can be chosen');
+select is((select cardinality(specific_interests) from public.feed_settings), 278, 'every interest was stored');
+select is((select count(*) from public.filter_definitions where key = 'interests' and active), 0::bigint,
+  'the Interests filter is gone (Specific only changes the order)');
+select is(
+  (select count(*) from information_schema.columns
+    where table_schema = 'public' and table_name = 'feed_settings' and column_name in ('response_depth', 'recency')),
+  0::bigint, 'Response Depth and Recency are no longer ranking signals');
+select is(
+  (select count(*) from information_schema.columns
+    where table_schema = 'public' and table_name = 'feed_settings'
+      and column_name in ('shared_interests', 'relationship_goals', 'distance')),
+  3::bigint, 'ranking has three signals: shared interests, relationship goals, distance');
+update public.feed_settings set shared_interests = 'low', distance = 'high';
 select is((select first_name from public.get_feed(50, 0, public.utc_today()) offset 6 limit 1), 'W2', 'ranking: with high weight on distance, the farthest person is last');
 select lives_ok($$select public.reset_feed_settings()$$, 'ranking can be reset to the recommended weights');
-select is((select shared_interests || response_depth || distance from public.feed_settings), 'mediummediummedium', 'reset puts every signal back to Medium');
-select throws_ok($$update public.feed_settings set recency = 'extreme'$$, '23514', null, 'a weight must be low, medium or high');
-select is_empty($$update public.feed_settings set recency = 'high' where user_id = 'b0000002-0000-0000-0000-000000000000' returning 1$$,
+select is((select shared_interests || relationship_goals || distance from public.feed_settings), 'mediummediummedium', 'reset puts every signal back to Medium');
+select is((select cardinality(specific_interests) from public.feed_settings), 0, 'reset also clears the specific interests');
+select throws_ok($$update public.feed_settings set distance = 'extreme'$$, '23514', null, 'a weight must be low, medium or high');
+select is_empty($$update public.feed_settings set distance = 'high' where user_id = 'b0000002-0000-0000-0000-000000000000' returning 1$$,
   'a user cannot change someone else''s ranking settings');
 select is((select count(*) from public.feed_settings), 1::bigint, 'a user reads only their own ranking settings');
 

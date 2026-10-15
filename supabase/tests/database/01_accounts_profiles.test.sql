@@ -1,6 +1,6 @@
 -- Phase 1 rules: accounts, profiles, photos, filters, and who can see what.
 begin;
-select plan(73);
+select plan(74);
 
 -- Two test users. The sign-up trigger should give each an empty profile.
 insert into auth.users (id, email, aud, role, instance_id) values
@@ -254,12 +254,14 @@ select lives_ok(
   $$update public.filter_preferences set filters = '{
       "show_me": "Women",
       "age_range": {"min": 24, "max": 35},
-      "max_distance": 25,
       "height_range": {"min": 60, "max": 76},
-      "interests": ["Hiking", "Coffee"],
-      "occupation": ["Product Designer"]
+      "sexual_orientation": ["Straight", "Gay"]
     }' where user_id = 'aaaaaaaa-0000-0000-0000-000000000001'$$,
   'valid filters are accepted');
+select throws_ok(
+  $$update public.filter_preferences set filters = '{"interests": ["Hiking"]}' where user_id = 'aaaaaaaa-0000-0000-0000-000000000001'$$,
+  '23514', 'Unknown filter "interests".',
+  'the Interests filter is gone (Feed Settings uses Specific interests for ranking instead)');
 select throws_ok(
   $$update public.filter_preferences set filters = '{"favorite_color": "blue"}' where user_id = 'aaaaaaaa-0000-0000-0000-000000000001'$$,
   '23514', 'Unknown filter "favorite_color".',
@@ -273,16 +275,16 @@ select throws_ok(
   '23514', 'Age range is out of range.',
   'an age filter below the minimum age is rejected');
 select throws_ok(
-  $$update public.filter_preferences set filters = '{"max_distance": 5000}' where user_id = 'aaaaaaaa-0000-0000-0000-000000000001'$$,
-  '23514', 'Maximum distance is out of range.',
-  'a huge distance is rejected');
+  $$update public.filter_preferences set filters = '{"max_distance": 25}' where user_id = 'aaaaaaaa-0000-0000-0000-000000000001'$$,
+  '23514', 'Unknown filter "max_distance".',
+  'the Maximum distance filter is gone');
 select throws_ok(
   $$update public.filter_preferences set filters = '{"show_me": "Aliens"}' where user_id = 'aaaaaaaa-0000-0000-0000-000000000001'$$,
   '23514', 'Invalid choice for Show me.',
   'an invalid "Show me" choice is rejected');
 select throws_ok(
-  $$update public.filter_preferences set filters = '{"interests": "Hiking"}' where user_id = 'aaaaaaaa-0000-0000-0000-000000000001'$$,
-  '23514', 'Interests must be a list of up to 25 choices.',
+  $$update public.filter_preferences set filters = '{"sexual_orientation": "Gay"}' where user_id = 'aaaaaaaa-0000-0000-0000-000000000001'$$,
+  '23514', 'Sexual orientation must be a list of up to 25 choices.',
   'a list filter that is not a list is rejected');
 select is_empty(
   $$update public.filter_preferences set filters = '{}' where user_id = 'bbbbbbbb-0000-0000-0000-000000000002' returning 1$$,

@@ -1,6 +1,8 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { Alert, Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
-import { router } from 'expo-router';
+import { router, useFocusEffect } from 'expo-router';
+import { ChevronRight } from 'lucide-react-native';
+import { setSpecificInterestsRequest } from '../lib/specificInterestsPicker';
 import {
   loadFeedRankingSettings,
   loadFilterDefinitions,
@@ -11,9 +13,10 @@ import {
   updateFeedRankingSettings,
   type FeedRankingSettings,
   type FilterDefinition,
-  type RankingWeight,
+  type SharedInterestsWeight,
 } from '../lib/feedSettings';
 import { supabase } from '../lib/supabase';
+import { RangeSlider } from '../components/RangeSlider';
 import {
   AppTextInput,
   BackButton,
@@ -28,7 +31,50 @@ import { colors, fonts } from '../theme';
 
 type Option = { value: string };
 
-const WEIGHTS: RankingWeight[] = ['low', 'medium', 'high'];
+const WEIGHTS: SharedInterestsWeight[] = ['low', 'medium', 'high'];
+const SHARED_INTERESTS_WEIGHTS: SharedInterestsWeight[] = [...WEIGHTS, 'specific'];
+
+/** "70+" / 7'0"+" at the top end of the slider. */
+function formatRangeValue(d: FilterDefinition, n: number): string {
+  const top = n >= (d.maxValue ?? Infinity);
+  if (d.unit === 'in') return `${Math.floor(n / 12)}'${n % 12}"${top ? '+' : ''}`;
+  return `${n}${top ? '+' : ''}`;
+}
+
+function RangeFilter({
+  d,
+  filters,
+  setFilter,
+}: {
+  d: FilterDefinition;
+  filters: Record<string, unknown>;
+  setFilter: (key: string, value: unknown) => void;
+}) {
+  const lo0 = d.minValue as number;
+  const hi0 = d.maxValue as number;
+  const saved = filters[d.key] as { min?: number; max?: number } | undefined;
+  const low = Math.min(Math.max(saved?.min ?? lo0, lo0), hi0);
+  const high = Math.min(Math.max(saved?.max ?? hi0, lo0), hi0);
+  return (
+    <View style={{ gap: 12 }}>
+      <View style={styles.rangeLabelRow}>
+        <Text style={styles.filterLabel}>{d.label}</Text>
+        <Text style={styles.rangeValue}>{`${formatRangeValue(d, low)} – ${formatRangeValue(d, high)}`}</Text>
+      </View>
+      <RangeSlider
+        min={lo0}
+        max={hi0}
+        low={low}
+        high={high}
+        onChange={(l, h) => setFilter(d.key, l <= lo0 && h >= hi0 ? null : { min: l, max: h })}
+      />
+      <View style={styles.rangeLabelRow}>
+        <Text style={styles.rangeScale}>{formatRangeValue(d, lo0)}</Text>
+        <Text style={styles.rangeScale}>{formatRangeValue(d, hi0)}</Text>
+      </View>
+    </View>
+  );
+}
 
 function FilterDefinitionCard({
   d,
@@ -45,11 +91,12 @@ function FilterDefinitionCard({
 
   return (
     <View ref={anchorRef} collapsable={false} style={styles.filterCard}>
-      <Text style={styles.filterLabel}>{d.label}</Text>
+      {d.control !== 'range' ? <Text style={styles.filterLabel}>{d.label}</Text> : null}
       {d.control === 'segmented' && d.optionCategory ? (
         <View style={styles.chips}>
           {(options[d.optionCategory] ?? []).map((o) => (
             <Chip
+              dark
               key={o.value}
               label={o.value}
               selected={filters[d.key] === o.value}
@@ -69,41 +116,8 @@ function FilterDefinitionCard({
           onChangeText={(t) => setFilter(d.key, t ? Number(t) : null)}
         />
       ) : null}
-      {d.control === 'range' ? (
-        <View style={styles.rangeRow}>
-          <AppTextInput
-            style={[styles.input, { flex: 1 }]}
-            keyboardType="number-pad"
-            placeholder="Min"
-            placeholderTextColor={colors.textDarkFaint}
-            focusScrollAnchorRef={anchorRef}
-            value={
-              filters[d.key] && typeof filters[d.key] === 'object'
-                ? String((filters[d.key] as { min?: number }).min ?? '')
-                : ''
-            }
-            onChangeText={(t) => {
-              const cur = (filters[d.key] as { min?: number; max?: number }) ?? {};
-              setFilter(d.key, { ...cur, min: t ? Number(t) : undefined });
-            }}
-          />
-          <AppTextInput
-            style={[styles.input, { flex: 1 }]}
-            keyboardType="number-pad"
-            placeholder="Max"
-            placeholderTextColor={colors.textDarkFaint}
-            focusScrollAnchorRef={anchorRef}
-            value={
-              filters[d.key] && typeof filters[d.key] === 'object'
-                ? String((filters[d.key] as { max?: number }).max ?? '')
-                : ''
-            }
-            onChangeText={(t) => {
-              const cur = (filters[d.key] as { min?: number; max?: number }) ?? {};
-              setFilter(d.key, { ...cur, max: t ? Number(t) : undefined });
-            }}
-          />
-        </View>
+      {d.control === 'range' && d.minValue != null && d.maxValue != null ? (
+        <RangeFilter d={d} filters={filters} setFilter={setFilter} />
       ) : null}
       {d.control === 'multi' && d.optionCategory ? (
         <View style={styles.chips}>
@@ -112,6 +126,7 @@ function FilterDefinitionCard({
             const on = arr.includes(o.value);
             return (
               <Chip
+                dark
                 key={o.value}
                 label={o.value}
                 selected={on}
@@ -137,13 +152,26 @@ export default function FeedSettingsScreen() {
   const [options, setOptions] = useState<Record<string, Option[]>>({});
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
+  // What Shared Interests was set to before "Specific" was chosen (Specific with no picks goes back to it).
+  const beforeSpecific = useRef<SharedInterestsWeight>('medium');
+
+  // Coming back from the Specific Interests screen with nothing picked: undo the Specific choice.
+  useFocusEffect(
+    useCallback(() => {
+      setRanking((prev) =>
+        prev && prev.sharedInterests === 'specific' && prev.specificInterests.length === 0
+          ? { ...prev, sharedInterests: beforeSpecific.current }
+          : prev,
+      );
+    }, []),
+  );
 
   const load = useCallback(async () => {
     const [d, f, r, opts] = await Promise.all([
       loadFilterDefinitions(),
       loadFilterPreferences(),
       loadFeedRankingSettings(),
-      supabase.from('profile_options').select('category, value').eq('active', true),
+      supabase.from('profile_options').select('category, value').eq('active', true).order('sort_order'),
     ]);
     setDefs(d);
     setFilters(f);
@@ -176,13 +204,29 @@ export default function FeedSettingsScreen() {
     setSaving(true);
     try {
       await saveFilterPreferences(filters);
-      if (ranking) await updateFeedRankingSettings(ranking);
+      if (ranking) {
+        const noPicks = ranking.sharedInterests === 'specific' && ranking.specificInterests.length === 0;
+        await updateFeedRankingSettings(
+          noPicks ? { ...ranking, sharedInterests: beforeSpecific.current } : ranking,
+        );
+        if (noPicks) setRanking({ ...ranking, sharedInterests: beforeSpecific.current });
+      }
       Alert.alert('Saved', 'Your feed settings were updated.');
     } catch (e) {
       Alert.alert('Could not save', (e as Error).message || 'Try again.');
     } finally {
       setSaving(false);
     }
+  };
+
+  const openSpecificInterests = () => {
+    if (!ranking) return;
+    setSpecificInterestsRequest({
+      options: (options.interest ?? []).map((o) => o.value),
+      value: ranking.specificInterests,
+      onChange: (value) => setRanking((prev) => (prev ? { ...prev, specificInterests: value } : prev)),
+    });
+    router.push('/specific-interests');
   };
 
   const onResetRanking = async () => {
@@ -223,16 +267,21 @@ export default function FeedSettingsScreen() {
           <Text style={styles.resetLink}>Reset</Text>
         </Pressable>
       </View>
-      {(Object.keys(RANKING_LABELS) as (keyof FeedRankingSettings)[]).map((key) => (
+      {(Object.keys(RANKING_LABELS) as (keyof typeof RANKING_LABELS)[]).map((key) => (
         <View key={key} style={styles.filterCard}>
           <Text style={styles.filterLabel}>{RANKING_LABELS[key].title}</Text>
           <Text style={styles.filterHint}>{RANKING_LABELS[key].description}</Text>
           <View style={styles.segment}>
-            {WEIGHTS.map((w) => (
+            {(key === 'sharedInterests' ? SHARED_INTERESTS_WEIGHTS : WEIGHTS).map((w) => (
               <Pressable
                 key={w}
                 style={[styles.segmentBtn, ranking[key] === w && styles.segmentBtnActive]}
-                onPress={() => setRanking({ ...ranking, [key]: w })}
+                onPress={() => {
+                  if (key === 'sharedInterests' && w === 'specific' && ranking.sharedInterests !== 'specific') {
+                    beforeSpecific.current = ranking.sharedInterests;
+                  }
+                  setRanking({ ...ranking, [key]: w });
+                }}
               >
                 <Text style={[styles.segmentLabel, ranking[key] === w && styles.segmentLabelActive]}>
                   {w.charAt(0).toUpperCase() + w.slice(1)}
@@ -240,6 +289,15 @@ export default function FeedSettingsScreen() {
               </Pressable>
             ))}
           </View>
+          {key === 'sharedInterests' && ranking.sharedInterests === 'specific' ? (
+            <Pressable style={styles.specificRow} onPress={openSpecificInterests}>
+              <Text style={styles.specificLabel}>Choose specific interests</Text>
+              <View style={styles.specificValue}>
+                <Text style={styles.specificCount}>{`${ranking.specificInterests.length} selected`}</Text>
+                <ChevronRight size={15} color={colors.textDarkFaint} />
+              </View>
+            </Pressable>
+          ) : null}
         </View>
       ))}
 
@@ -272,9 +330,23 @@ const styles = StyleSheet.create({
     fontSize: 14,
     color: colors.white,
   },
-  rangeRow: { flexDirection: 'row', gap: 8 },
+  rangeLabelRow: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' },
+  rangeScale: { fontFamily: fonts.body, fontSize: 11, color: colors.textDarkMuted },
+  rangeValue: { fontFamily: fonts.bodyBold, fontSize: 13, color: colors.accentDog },
   rankingHeader: { flexDirection: 'row', alignItems: 'flex-start', justifyContent: 'space-between', marginTop: 8 },
   resetLink: { fontFamily: fonts.bodyBold, fontSize: 13, color: colors.accentDog, paddingTop: 4 },
+  specificRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    backgroundColor: '#00000040',
+    borderRadius: 12,
+    paddingHorizontal: 14,
+    paddingVertical: 12,
+  },
+  specificLabel: { fontFamily: fonts.bodyBold, fontSize: 13, color: colors.white },
+  specificValue: { flexDirection: 'row', alignItems: 'center', gap: 6 },
+  specificCount: { fontFamily: fonts.body, fontSize: 13, color: colors.textDarkMuted },
   segment: {
     flexDirection: 'row',
     backgroundColor: '#00000040',
