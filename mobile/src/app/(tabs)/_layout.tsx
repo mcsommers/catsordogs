@@ -94,7 +94,7 @@ const styles = StyleSheet.create({
   bar: {
     flexDirection: 'row',
     height: 56,
-    borderRadius: 28,
+    borderRadius: 10,
     backgroundColor: '#1A1A1CF2',
     paddingVertical: 6,
     paddingHorizontal: 10,
@@ -105,6 +105,6 @@ const styles = StyleSheet.create({
     shadowOffset: { width: 0, height: 8 },
     elevation: 8,
   },
-  tab: { flex: 1, alignItems: 'center', justifyContent: 'center', gap: 2, paddingVertical: 6, borderRadius: 16 },
+  tab: { flex: 1, alignItems: 'center', justifyContent: 'center', gap: 2, paddingVertical: 6, borderRadius: 10 },
   label: { fontFamily: fonts.bodySemi, fontSize: 10 },
 });

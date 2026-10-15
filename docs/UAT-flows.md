@@ -119,7 +119,7 @@ Covers: Welcome (01), Sign Up (02), Log In (02b), Forgot Password (02c), Check Y
 
 ### Tab bar and session
 
-- [ ] **A-44 Tabs.** Expected: a bottom tab bar with Feed, Matches and Profile. Matches and Profile are simple placeholders in this phase. Profile has a **Log Out** link. On **Android**, the pill sits above the system navigation bar (including the always-visible 3-button bar) with clear spacing, not flush against it.
+- [ ] **A-44 Tabs.** Expected: a bottom tab bar with Feed, Matches and Profile. Matches and Profile are simple placeholders in this phase. Profile has a **Log Out** link. The bar and the selected (orange) tab both have square-ish **10 px** rounded corners, not a full pill. On **Android**, the pill sits above the system navigation bar (including the always-visible 3-button bar) with clear spacing, not flush against it.
 - [ ] **A-45 Stays logged in.** Close the app completely and reopen it. Expected: you're still logged in and land in the right place (see A-11). On Android in Expo Go, also reload the bundle (shake → Reload): if you already answered today, you should land on the Feed, not Today's Question.
 - [ ] **A-46 Log out.** Tap Log Out on the Profile tab. Expected: you're back on Welcome. Reopening the app keeps you logged out.
 - [ ] **A-47 Both platforms.** If you have access to both an iPhone and an Android phone, run A-25 to A-37 on each.
