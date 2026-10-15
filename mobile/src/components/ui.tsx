@@ -242,10 +242,10 @@ export function BackButton({
   );
 }
 
-export function TitleGroup({ title, subtitle }: { title: string; subtitle?: string }) {
+export function TitleGroup({ title, subtitle }: { title?: string; subtitle?: string }) {
   return (
     <View style={{ gap: 8 }}>
-      <Text style={styles.title}>{title}</Text>
+      {title ? <Text style={styles.title}>{title}</Text> : null}
       {subtitle ? <Text style={styles.subtitle}>{subtitle}</Text> : null}
     </View>
   );
@@ -675,6 +675,8 @@ export const styles = StyleSheet.create({
     backgroundColor: '#00000066',
   },
   header: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' },
+  headerWithTitle: { flexDirection: 'row', alignItems: 'center', gap: 12 },
+  headerTitle: { flex: 1, fontFamily: fonts.heading, fontSize: 28, color: colors.textPrimary },
   step: { fontFamily: fonts.bodySemi, fontSize: 13, color: colors.textSecondary },
   title: { fontFamily: fonts.heading, fontSize: 28, color: colors.textPrimary },
   subtitle: { fontFamily: fonts.body, fontSize: 15, lineHeight: 21, color: colors.textSecondary },

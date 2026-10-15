@@ -428,10 +428,11 @@ export default function BuildProfile() {
         onKeepEditing={leaveGuard.keepEditing}
         onLeave={leaveGuard.confirmLeave}
       />
-      <View style={ui.header}>
+      <View style={ui.headerWithTitle}>
         <BackButton onPress={leaveGuard.attemptLeave} />
+        <Text style={ui.headerTitle}>Build your profile</Text>
       </View>
-      <TitleGroup title="Build your profile" subtitle={PROFILE_SUBTITLE} />
+      <TitleGroup subtitle={PROFILE_SUBTITLE} />
       {banner ? <ErrorBanner message={banner} /> : null}
 
       <View ref={photosRef} collapsable={false}>
