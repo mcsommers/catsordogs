@@ -671,7 +671,7 @@ export function CenteredSpinner({ dark = false }: { dark?: boolean }) {
 export const styles = StyleSheet.create({
   flex: { flex: 1 },
   center: { alignItems: 'center', justifyContent: 'center' },
-  content: { paddingHorizontal: 20, paddingTop: 24, paddingBottom: 24, gap: 28 },
+  content: { paddingHorizontal: 20, paddingTop: 24, paddingBottom: 24, gap: 28, minHeight: 0 },
   scrollContent: { paddingHorizontal: 20, paddingTop: 24, paddingBottom: 40 },
   scrollContentFlush: { paddingBottom: 40 },
   scrollInner: { gap: 28 },

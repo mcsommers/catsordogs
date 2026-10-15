@@ -39,9 +39,9 @@ import {
   formatHeightFeetInches,
   formatJoinedMonthYear,
   formatJoinedShort,
-  formatProfileIdentityLabel,
   formatProfileLocation,
   formatStreakBadge,
+  formatVisibleProfileIdentity,
 } from '../../lib/format';
 import { BackButton, CenteredSpinner, ErrorBanner, TextLink } from '../ui';
 import { colors, fonts } from '../../theme';
@@ -71,12 +71,6 @@ import { PrimaryButton } from '../ui';
 
 const PREVIEW_COUNT = 3;
 
-function profileIdentityLabel(profile: UserProfile): string | null {
-  const orientation = profile.isSelf && profile.showOrientation === false ? [] : profile.sexualOrientation;
-  const gender = profile.isSelf && profile.showGender === false ? null : profile.gender;
-  return formatProfileIdentityLabel(orientation, gender);
-}
-
 function ProfileHeroName({
   profile,
   showFollowing,
@@ -84,7 +78,12 @@ function ProfileHeroName({
   profile: UserProfile;
   showFollowing: boolean;
 }) {
-  const identity = profileIdentityLabel(profile);
+  const identity = formatVisibleProfileIdentity(
+    profile.sexualOrientation,
+    profile.gender,
+    profile.showOrientation,
+    profile.showGender
+  );
   return (
     <View style={styles.heroNameRow}>
       <View style={styles.heroNameIdentity}>
@@ -297,12 +296,12 @@ export function ProfileView({ userId, showBack }: Props) {
               style={[StyleSheet.absoluteFill, { top: '50%' }]}
               pointerEvents="none"
             />
-            <View style={[styles.heroNameBlock, contentPad]}>
+            <View style={[styles.heroBottom, contentPad]}>
               <ProfileHeroName profile={profile} showFollowing={false} />
-              {profile.city ? (
-                <View style={styles.heroMetaRow}>
-                  <MapPin size={13} color="#FFFFFFB3" />
-                  <Text style={styles.heroMetaText}>{profile.city}</Text>
+              {locationLine ? (
+                <View style={styles.heroLocationRow}>
+                  <MapPin size={16} color="#FFFFFFB3" />
+                  <Text style={styles.heroMetaText}>{locationLine}</Text>
                 </View>
               ) : null}
             </View>
@@ -558,7 +557,6 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     flexShrink: 0,
   },
-  heroNameBlock: { gap: 6 },
   heroNameRow: { flexDirection: 'row', alignItems: 'center', gap: 8, flexWrap: 'wrap' },
   heroNameIdentity: {
     flexDirection: 'row',
@@ -566,6 +564,7 @@ const styles = StyleSheet.create({
     gap: 8,
     flexWrap: 'wrap',
     flexShrink: 1,
+    minWidth: 0,
   },
   heroName: {
     fontFamily: fonts.heading,
@@ -580,6 +579,12 @@ const styles = StyleSheet.create({
     lineHeight: 16,
     color: '#FFFFFFB3',
     includeFontPadding: false,
+    flexShrink: 0,
+  },
+  heroLocationRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 4,
   },
   heroMetaRow: {
     flex: 1,

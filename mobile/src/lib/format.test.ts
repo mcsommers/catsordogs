@@ -4,6 +4,7 @@ import {
   formatFollowedOn,
   formatHeightFeetInches,
   formatProfileIdentityLabel,
+  formatVisibleProfileIdentity,
   formatStreakBadge,
   longDate,
   questionPillLabel,
@@ -61,5 +62,14 @@ describe('formatting', () => {
     expect(formatProfileIdentityLabel(['Straight'], null)).toBe('straight');
     expect(formatProfileIdentityLabel([], 'Man')).toBe('male');
     expect(formatProfileIdentityLabel([], null)).toBeNull();
+  });
+
+  it('hides identity parts the person turned off on their profile', () => {
+    expect(formatVisibleProfileIdentity(['Straight'], 'Man', true, true)).toBe('straight male');
+    expect(formatVisibleProfileIdentity(['Straight'], 'Man', false, true)).toBe('male');
+    expect(formatVisibleProfileIdentity(['Straight'], 'Man', true, false)).toBe('straight');
+    expect(formatVisibleProfileIdentity(['Straight'], 'Man', false, false)).toBeNull();
+    expect(formatVisibleProfileIdentity(['Straight'], 'Man', null, null)).toBe('straight male');
+    expect(formatVisibleProfileIdentity([], null, null, null)).toBeNull();
   });
 });

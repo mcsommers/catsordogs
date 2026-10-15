@@ -85,7 +85,7 @@ Decided:
 - After Done, the picks show as orange selected pills with an orange **Edit** link in the section header.
 - The 5 picks **replace** the old hobby list in the `interests` column, and feed the Shared Interests ranking (the Interests filter was removed; see below).
 - Lifestyle tags are removed. So are the **Smoking** and **Drinking** filters and the **Lifestyle Compatibility** ranking signal (Feed Settings, 06i, now has five ranking signals). Every screen that said "Lifestyle" now says "Interests".
-- The top row (back arrow and "N of 5 selected") is sticky, and the space above **Done** equals the space below it (Pencil 03e and 03e Edited updated). The top row has 12 points of space above and below it. On Android the gap above **Done** is 24 points and does not include the phone's navigation bar; on iPhone it matches the gap below (which includes the home indicator).
+- The top row (back arrow, the title **Interests**, and "N of 5 selected" at the right) is sticky, and the space above **Done** equals the space below it (Pencil 03e and 03e Edited updated). The top row has 12 points of space above and below it. On Android the gap above **Done** is 24 points and does not include the phone's navigation bar; on iPhone it matches the gap below (which includes the home indicator).
 - **Done** is always visible: it is pinned at the bottom of 03e while the pill list scrolls above it (Pencil 03e and 03e Edited now show a phone-height screen with the list clipped and Done fixed at the bottom). The list is strictly alphabetical, ignoring capitals, so acronyms sort by their letters (BBQ falls after Basketball and before Beach Bars; DIY after Diving; EDM after E-Sports); the order is stored in `profile_options.sort_order` and the Pencil pills match it. When 5 are chosen, tapping another unselected pill does nothing.
 
 #### Photo count row on **06j** and **06n** (removed)
@@ -537,6 +537,9 @@ Answer: Design simple versions in the design file, update the requirements doc, 
 - **Maximum distance filter removed (Oct 2026).** Distance only affects the order through the Distance ranking signal. Saved maximum-distance values were cleared.
 - **Relationship goals filter removed; Age range and Height are sliders (Oct 2026).** Age range is a two-handle slider, 18 to 70+; Height is a two-handle slider, 2'0" to 7'0"+. A handle on the far end means no limit on that side (so 70+ includes everyone older), and both handles on the ends is the same as Any. Relationship goals still affect the order through the ranking signal.
 - **Occupation filter removed; Sexual orientation moved above Age range (Oct 2026).** Filter order is Show me, Sexual orientation, Age range, Height.
+
+## Sign-in lands on Feed Locked (Oct 2026)
+- Signing in or reopening the app with a finished profile always opens the **Feed** tab. If today is unanswered, that is **Feed Locked (06m)**, not Today's Question. Recording still starts from **Answer Today's Question** on that screen, or from **Record My First Answer** on How It Works after first setup. *Decided by Mike.*
 
 ## Confirmation pronouns (Oct 2026)
 - Woman → she/her/her; Man → he/him/his; any More gender or missing → they/them/their. Dialogs that use pronouns: Follow, Unfollow, Nudge, Match send (**06b** / **07i**), cancel request (**07f** / **06y**), decline (**07g**), Not Interested (**06f** / **06w**). Report, Block, Unmatch, and mute chat use the person's name and do not switch pronouns. *Decided by Mike.*
