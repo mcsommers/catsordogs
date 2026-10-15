@@ -1,4 +1,4 @@
-import { pronouns } from './socialCopy';
+import { followDialogBody, pronouns } from './socialCopy';
 
 describe('confirmation pronouns', () => {
   it('uses she/her for Woman', () => {
@@ -23,5 +23,14 @@ describe('confirmation pronouns', () => {
     expect(pronouns('Non-binary').matches).toBe('match');
     expect(pronouns(null).Subject).toBe('They');
     expect(pronouns(undefined).object).toBe('them');
+  });
+
+  it('keeps mid-sentence follow pronouns lowercase', () => {
+    expect(followDialogBody('Man')).toBe(
+      "He won't know you're following him. His answer will show up at the top of your feed every day he posts."
+    );
+    expect(followDialogBody('Woman')).toBe(
+      "She won't know you're following her. Her answer will show up at the top of your feed every day she posts."
+    );
   });
 });

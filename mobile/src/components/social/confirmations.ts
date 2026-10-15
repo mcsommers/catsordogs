@@ -1,7 +1,7 @@
 import { Trash2 } from 'lucide-react-native';
 import { showConfirmation } from '../ConfirmationProvider';
 import type { DialogBadgeKind } from '../ui';
-import { capitalize, objectPronoun, possessivePronoun, pronouns, subjectPronoun } from './socialCopy';
+import { capitalize, followDialogBody, objectPronoun, possessivePronoun, pronouns, subjectPronoun } from './socialCopy';
 
 type Person = { firstName: string; gender?: string | null; avatarUri?: string | null };
 
@@ -26,11 +26,9 @@ function personConfirm(
 }
 
 export function confirmFollow(person: Person, onConfirm: () => void | Promise<void>) {
-  const subj = capitalize(subjectPronoun(person.gender));
-  const obj = objectPronoun(person.gender);
   personConfirm(person, 'follow', {
     title: `Follow ${person.firstName}?`,
-    body: `${subj} won't know you're following ${obj}. ${possessivePronoun(person.gender).charAt(0).toUpperCase()}${possessivePronoun(person.gender).slice(1)} answer will show up at the top of your feed every day ${subj} posts.`,
+    body: followDialogBody(person.gender),
     cancelLabel: 'Cancel',
     confirmLabel: 'Yes, Follow',
     onConfirm,
@@ -38,11 +36,10 @@ export function confirmFollow(person: Person, onConfirm: () => void | Promise<vo
 }
 
 export function confirmUnfollow(person: Person, onConfirm: () => void | Promise<void>) {
-  const subj = capitalize(subjectPronoun(person.gender));
-  const obj = objectPronoun(person.gender);
+  const p = pronouns(person.gender);
   personConfirm(person, 'unfollow', {
     title: `Unfollow ${person.firstName}?`,
-    body: `${person.firstName} won't be notified. ${possessivePronoun(person.gender).charAt(0).toUpperCase()}${possessivePronoun(person.gender).slice(1)} answers will no longer show up at the top of your feed, and you won't be able to nudge ${obj}.`,
+    body: `${person.firstName} won't be notified. ${p.Possessive} answers will no longer show up at the top of your feed, and you won't be able to nudge ${p.object}.`,
     cancelLabel: 'Cancel',
     confirmLabel: 'Unfollow',
     onConfirm,
