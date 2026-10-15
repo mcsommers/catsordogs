@@ -23,7 +23,7 @@ export function LocationField({
   icon: IconComponent,
   value,
   onChangeText,
-  placeholder = 'Brooklyn, NY',
+  placeholder,
   requirement,
   maxLength = 100,
   focusScrollAnchorRef,

@@ -16,6 +16,10 @@ On every text input in the mobile app **except chat**, when the user focuses the
 
 Implemented in shared `TextField`, `AppTextInput`, and `LocationField` via `FIELD_LABEL_VIEWPORT_TOP` in `mobile/src/lib/formScroll.ts`. Chat (`09` / `chat/[matchId]`) is unchanged until Mike specifies chat behavior.
 
+### Build Profile and Edit Profile: no placeholder text (Mike, Oct 14, 2026)
+
+On **Build Profile (03)** and **Edit Profile (08d)**, no text field shows placeholder or helper text inside it (no "Alex", no "January 1, 2000", no height numbers, no example job or school, no sample About Me line, no sample city, no "Add your own" hint). Fields are simply empty until the person types. Labels and the hints written under a field (for example the 18-or-older line under Birthday) stay. The placeholder behavior above still applies to other screens (sign up, log in, and so on).
+
 ## Phase C: Profile and archive (asked Oct 12, 2026)
 
 Planning read-through: Build Plan Phase C, MVP requirements (profile / archive / 06j / 06k / 08), Concept doc, UAT placeholders, Pencil frames **06j**, **06n**, **06k**, **08**, and existing backend RPCs (`get_my_answers`, `get_my_profile_view_count`, `record_profile_view`, `get_answer_for_playback`, etc.).

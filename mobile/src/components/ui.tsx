@@ -336,7 +336,7 @@ export function PressableField({
   label: string;
   icon: Icon;
   value: string | null;
-  placeholder: string;
+  placeholder?: string;
   onPress: () => void;
   error?: boolean;
   requirement?: FieldRequirement;
@@ -351,7 +351,7 @@ export function PressableField({
         style={[styles.inputBox, error && { borderColor: colors.danger }]}
       >
         <IconComponent size={18} color={error ? colors.danger : colors.textSecondary} />
-        <Text style={[styles.input, { color: value ? colors.textPrimary : colors.textSecondary }]}>{value ?? placeholder}</Text>
+        <Text style={[styles.input, { color: value ? colors.textPrimary : colors.textSecondary }]}>{value ?? placeholder ?? ''}</Text>
       </Pressable>
     </View>
   );

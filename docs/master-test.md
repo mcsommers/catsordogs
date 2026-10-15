@@ -36,35 +36,19 @@ If the feed shows a name that is not in the cast below, stop. Staging still has 
 
 Create them in this order. Ages are as of October 2026. Use the birthday exactly so the age filter means something.
 
-| Order | Email | First name | Birthday | Age | Gender | Location | What this person is for |
-| --- | --- | --- | --- | --- | --- | --- | --- |
-| 1 | catsordogsapp+avery@gmail.com | Avery | January 1, 1986 | 40 | Woman | Brooklyn, NY | Admin. Never records a video. |
-| 2 | catsordogsapp+alex@gmail.com | Alex | March 15, 1998 | 28 | Woman | Brooklyn, NY | The person whose feed you judge. |
-| 3 | catsordogsapp+jordan@gmail.com | Jordan | June 1, 1996 | 30 | Man | Brooklyn, NY | Should rank first for Alex. Match and chat. Day 2 nudge target. He does not record on Day 2. |
-| 4 | catsordogsapp+sam@gmail.com | Sam | January 20, 1994 | 32 | Man | Austin, TX | Far away, little in common. Should rank behind Jordan. |
-| 5 | catsordogsapp+riley@gmail.com | Riley | August 8, 1999 | 27 | Woman | Brooklyn, NY | Followed by Alex, but outside "Show me: Men". Should still appear at the top. |
-| 6 | catsordogsapp+morgan@gmail.com | Morgan | April 4, 1971 | 55 | Man | Brooklyn, NY | Followed by Alex, but outside age 25–40. Should be left out once the follow cap is full. |
-| 7 | catsordogsapp+quinn@gmail.com | Quinn | February 2, 1997 | 29 | Man | Brooklyn, NY | Passes Alex's filters. Used for "wants to match" and a decline. |
-| 8 | catsordogsapp+casey@gmail.com | Casey | March 1, 1993 | 33 | Man | Leave location empty | No city, so the Distance ranking signal is neutral for him. |
-| 9 | catsordogsapp+drew@gmail.com | Drew | July 7, 1992 | 34 | Man | Brooklyn, NY | Second reporter. Follows Jordan on Day 1 so he can nudge him on Day 2. |
-| 10 | catsordogsapp+taylor@gmail.com | Taylor | May 5, 1995 | 31 | Man | Brooklyn, NY | Stays out of the feed until after the filter check, then answers. |
-| 11 | catsordogsapp+parker@gmail.com | Parker | September 9, 2000 | 26 | Man | Brooklyn, NY | Created so the account can be deleted. Records only at the end of Day 1. |
-
-Shared profile choices, so ranking is explainable:
-
-| Person | Interests (up to 5) | Relationship goal | What they say on camera |
-| --- | --- | --- | --- |
-| Alex | Hiking, Coffee, Cooking | Long-term relationship | Any short honest answer. Alex's own video never appears in Alex's feed. |
-| Jordan | Hiking, Coffee | Long-term relationship | Read this, clearly, at a normal pace: "I walk my dog every morning before coffee, and I cook dinner at home most nights. I want something serious, and I care more about how someone treats people than about a perfect plan." |
-| Sam | Movies | Short-term fun | Say only: "Yeah." |
-| Riley | Hiking | Long-term relationship | One sentence about hiking. |
-| Morgan | Movies | New friends | One short sentence. |
-| Quinn | Travel, Yoga | Still figuring it out | One sentence. |
-| Casey | Hiking | Long-term relationship | One sentence. Leave **Location** blank. |
-| Drew | Online Games | Short-term fun | One sentence. |
-| Taylor | Coffee | Long-term relationship | Do not record until Part 8 says so. |
-| Parker | Hiking | Long-term relationship | Do not record until Part 12. |
-| Avery | any one interest | any one goal | Do not record. |
+| Order | Email | First name | Birthday | Age | Gender | Location | What this person is for | Interests (up to 5) | Relationship goal | What they say on camera |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| 1 | catsordogsapp+avery@gmail.com | Avery | January 1, 1986 | 40 | Woman | Brooklyn, NY | Admin. Never records a video. | any one interest | any one goal | Do not record. |
+| 2 | catsordogsapp+alex@gmail.com | Alex | March 15, 1998 | 28 | Woman | Brooklyn, NY | The person whose feed you judge. | Hiking, Coffee, Cooking | Long-term relationship | Any short honest answer. Alex's own video never appears in Alex's feed. |
+| 3 | catsordogsapp+jordan@gmail.com | Jordan | June 1, 1996 | 30 | Man | Brooklyn, NY | Should rank first for Alex. Match and chat. Day 2 nudge target. He does not record on Day 2. | Hiking, Coffee | Long-term relationship | Read this, clearly, at a normal pace: "I walk my dog every morning before coffee, and I cook dinner at home most nights. I want something serious, and I care more about how someone treats people than about a perfect plan." |
+| 4 | catsordogsapp+sam@gmail.com | Sam | January 20, 1994 | 32 | Man | Austin, TX | Far away, little in common. Should rank behind Jordan. | Movies | Short-term fun | Say only: "Yeah." |
+| 5 | catsordogsapp+riley@gmail.com | Riley | August 8, 1999 | 27 | Woman | Brooklyn, NY | Followed by Alex, but outside "Show me: Men". Should still appear at the top. | Hiking | Long-term relationship | One sentence about hiking. |
+| 6 | catsordogsapp+morgan@gmail.com | Morgan | April 4, 1971 | 55 | Man | Brooklyn, NY | Followed by Alex, but outside age 25–40. Should be left out once the follow cap is full. | Movies | New friends | One short sentence. |
+| 7 | catsordogsapp+quinn@gmail.com | Quinn | February 2, 1997 | 29 | Man | Brooklyn, NY | Passes Alex's filters. Used for "wants to match" and a decline. | Travel, Yoga | Still figuring it out | One sentence. |
+| 8 | catsordogsapp+casey@gmail.com | Casey | March 1, 1993 | 33 | Man | Leave location empty | No city, so the Distance ranking signal is neutral for him. | Hiking | Long-term relationship | One sentence. Leave **Location** blank. |
+| 9 | catsordogsapp+drew@gmail.com | Drew | July 7, 1992 | 34 | Man | Brooklyn, NY | Second reporter. Follows Jordan on Day 1 so he can nudge him on Day 2. | Online Games | Short-term fun | One sentence. |
+| 10 | catsordogsapp+taylor@gmail.com | Taylor | May 5, 1995 | 31 | Man | Brooklyn, NY | Stays out of the feed until after the filter check, then answers. | Coffee | Long-term relationship | Do not record until Part 8 says so. |
+| 11 | catsordogsapp+parker@gmail.com | Parker | September 9, 2000 | 26 | Man | Brooklyn, NY | Created so the account can be deleted. Records only at the end of Day 1. | Hiking | Long-term relationship | Do not record until Part 12. |
 
 One photo each is enough (Finish Setup needs a photo, a first name, a birthday, and a gender). Height, job, school, and About Me can stay empty except where a step says otherwise. Jordan's job title is **Designer**. Sam's job title is **Teacher**.
 
