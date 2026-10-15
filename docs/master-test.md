@@ -36,19 +36,19 @@ If the feed shows a name that is not in the cast below, stop. Staging still has 
 
 Create them in this order. Ages are as of October 2026. Use the birthday exactly so the age filter means something.
 
-| Order | Email | First name | Birthday | Age | Gender | Location | What this person is for | Interests (up to 5) | Relationship goal | What they say on camera | Sexual orientation | Interested in | Height |
-| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| 1 | catsordogsapp+avery@gmail.com | Avery | January 1, 1986 | 40 | Woman | Brooklyn, NY | Admin. Never records a video. | any one interest | any one goal | Do not record. | Straight | Men | 5 ft 5 in |
-| 2 | catsordogsapp+alex@gmail.com | Alex | March 15, 1998 | 28 | Woman | Brooklyn, NY | The person whose feed you judge. | Hiking, Coffee, Cooking | Long-term relationship | Any short honest answer. Alex's own video never appears in Alex's feed. | Straight | Men | 5 ft 6 in |
-| 3 | catsordogsapp+jordan@gmail.com | Jordan | June 1, 1996 | 30 | Man | Brooklyn, NY | Should rank first for Alex. Match and chat. Day 2 nudge target. He does not record on Day 2. | Hiking, Coffee | Long-term relationship | Read this, clearly, at a normal pace: "I walk my dog every morning before coffee, and I cook dinner at home most nights. I want something serious, and I care more about how someone treats people than about a perfect plan." | Straight | Women | 6 ft 0 in |
-| 4 | catsordogsapp+sam@gmail.com | Sam | January 20, 1994 | 32 | Man | Austin, TX | Far away, little in common. Should rank behind Jordan. | Movies | Short-term fun | Say only: "Yeah." | Straight | Women | 5 ft 8 in |
-| 5 | catsordogsapp+riley@gmail.com | Riley | August 8, 1999 | 27 | Woman | Brooklyn, NY | Followed by Alex, but outside "Show me: Men". Should still appear at the top. | Hiking | Long-term relationship | One sentence about hiking. | Bisexual | Men, Women | 5 ft 4 in |
-| 6 | catsordogsapp+morgan@gmail.com | Morgan | April 4, 1971 | 55 | Man | Brooklyn, NY | Followed by Alex, but outside age 25–40. Should be left out once the follow cap is full. | Movies | New friends | One short sentence. | Straight | Women | 5 ft 10 in |
-| 7 | catsordogsapp+quinn@gmail.com | Quinn | February 2, 1997 | 29 | Man | Brooklyn, NY | Passes Alex's filters. Used for "wants to match" and a decline. | Travel, Yoga | Still figuring it out | One sentence. | Bisexual | Men, Women | 5 ft 11 in |
-| 8 | catsordogsapp+casey@gmail.com | Casey | March 1, 1993 | 33 | Man | Leave location empty | No city, so the Distance ranking signal is neutral for him. | Hiking | Long-term relationship | One sentence. Leave **Location** blank. | Gay | Men | Leave height empty |
-| 9 | catsordogsapp+drew@gmail.com | Drew | July 7, 1992 | 34 | Man | Brooklyn, NY | Second reporter. Follows Jordan on Day 1 so he can nudge him on Day 2. | Online Games | Short-term fun | One sentence. | Straight | Women | 5 ft 7 in |
-| 10 | catsordogsapp+taylor@gmail.com | Taylor | May 5, 1995 | 31 | Man | Brooklyn, NY | Stays out of the feed until after the filter check, then answers. | Coffee | Long-term relationship | Do not record until Part 8 says so. | Straight | Women | 6 ft 2 in |
-| 11 | catsordogsapp+parker@gmail.com | Parker | September 9, 2000 | 26 | Man | Brooklyn, NY | Created so the account can be deleted. Records only at the end of Day 1. | Hiking | Long-term relationship | Do not record until Part 12. | Straight | Women | 5 ft 9 in |
+| Order | Email | First name | Birthday | Gender | Height | Location | Sexual orientation | Interested in | Interests (up to 5) | Relationship goal | Age | What this person is for |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| 1 | catsordogsapp+avery@gmail.com | Avery | January 1, 1986 | Woman | 5 ft 5 in | Brooklyn, NY | Straight | Men | any one interest | any one goal | 40 | Admin. Never records a video. |
+| 2 | catsordogsapp+alex@gmail.com | Alex | March 15, 1998 | Woman | 5 ft 6 in | Brooklyn, NY | Straight | Men | Hiking, Coffee, Cooking | Long-term relationship | 28 | The person whose feed you judge. |
+| 3 | catsordogsapp+jordan@gmail.com | Jordan | June 1, 1996 | Man | 6 ft 0 in | Brooklyn, NY | Straight | Women | Hiking, Coffee | Long-term relationship | 30 | Should rank first for Alex. Match and chat. Day 2 nudge target. He does not record on Day 2. |
+| 4 | catsordogsapp+sam@gmail.com | Sam | January 20, 1994 | Man | 5 ft 8 in | Austin, TX | Straight | Women | Movies | Short-term fun | 32 | Far away, little in common. Should rank behind Jordan. |
+| 5 | catsordogsapp+riley@gmail.com | Riley | August 8, 1999 | Woman | 5 ft 4 in | Brooklyn, NY | Bisexual | Men, Women | Hiking | Long-term relationship | 27 | Followed by Alex, but outside "Show me: Men". Should still appear at the top. |
+| 6 | catsordogsapp+morgan@gmail.com | Morgan | April 4, 1971 | Man | 5 ft 10 in | Brooklyn, NY | Straight | Women | Movies | New friends | 55 | Followed by Alex, but outside age 25–40. Should be left out once the follow cap is full. |
+| 7 | catsordogsapp+quinn@gmail.com | Quinn | February 2, 1997 | Man | 5 ft 11 in | Brooklyn, NY | Bisexual | Men, Women | Travel, Yoga | Still figuring it out | 29 | Passes Alex's filters. Used for "wants to match" and a decline. |
+| 8 | catsordogsapp+casey@gmail.com | Casey | March 1, 1993 | Man | Leave height empty | Leave location empty | Gay | Men | Hiking | Long-term relationship | 33 | No city, so the Distance ranking signal is neutral for him. |
+| 9 | catsordogsapp+drew@gmail.com | Drew | July 7, 1992 | Man | 5 ft 7 in | Brooklyn, NY | Straight | Women | Online Games | Short-term fun | 34 | Second reporter. Follows Jordan on Day 1 so he can nudge him on Day 2. |
+| 10 | catsordogsapp+taylor@gmail.com | Taylor | May 5, 1995 | Man | 6 ft 2 in | Brooklyn, NY | Straight | Women | Coffee | Long-term relationship | 31 | Stays out of the feed until after the filter check, then answers. |
+| 11 | catsordogsapp+parker@gmail.com | Parker | September 9, 2000 | Man | 5 ft 9 in | Brooklyn, NY | Straight | Women | Hiking | Long-term relationship | 26 | Created so the account can be deleted. Records only at the end of Day 1. |
 
 One photo each is enough (Finish Setup needs a photo, a first name, a birthday, and a gender). Fill in Sexual orientation, Interested in, and Height exactly as the table says, because the orientation and height filter steps (M-26a, M-26b) depend on them. Interested in does not change the feed order or who is filtered (it is not a filter or a ranking signal), so it only needs to be filled in; do not expect it to change any result. Job, school, and About Me can stay empty except where a step says otherwise. Jordan's job title is **Designer**. Sam's job title is **Teacher**.
 
@@ -97,13 +97,20 @@ New sign-ups already have **email on** for all notification types. On **each** a
 
 ## Part 6 — Record today's answers, in this order
 
-Record only the people in the list below, in this order, one take each. Say the line from the cast table. Wait on Review until captions finish, then Submit Answer. Do not re-record. Do not record Taylor, Parker, or Avery yet.
+Record only the people in the list below, in this order, one take each. Say the line from the list below. Wait on Review until captions finish, then Submit Answer. Do not re-record. Do not record Taylor, Parker, or Avery yet.
 
 Order: **Sam, Morgan, Riley, Casey, Drew, Quinn, Alex, Jordan.** Jordan goes last so "posted more recently" also favors Jordan.
 
 For each person the path is: log in → Today's Question (04) → tap to start → countdown 3, 2, 1 → the line → stop, or let it stop at the cap → Review (05) → Submit → Answer Submitted (05c) → log out.
 
-Jordan must actually speak the long line. Sam must say only "Yeah."
+What to say on camera (this does not affect the feed order; it only needs to be real speech):
+
+- **Jordan:** read this clearly, at a normal pace: "I walk my dog every morning before coffee, and I cook dinner at home most nights. I want something serious, and I care more about how someone treats people than about a perfect plan."
+- **Sam:** say only "Yeah."
+- **Riley:** one sentence about hiking.
+- **Morgan, Quinn, Casey, Drew:** one short sentence. Casey: leave **Location** blank.
+- **Alex:** any short honest answer. Alex's own video never appears in Alex's feed.
+- **Avery, Taylor, Parker:** do not record until a step says so (Taylor in Part 8, Parker in Part 12).
 
 - [ ] **M-15 Eight answers are live.** After Jordan submits, those eight people are done. Taylor, Parker, and Avery have still not recorded.
 - [ ] **M-16 Alex is not asked to record again.** Log in as Alex. Expected: the app opens on the Feed, not Today's Question.

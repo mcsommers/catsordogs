@@ -26,7 +26,7 @@ Everything the app shows comes from the backend. The rules in the next sections 
 | Mobile app | Expo (React Native) | One codebase for iOS and Android, with built-in camera, push notifications, and store build tooling. It is well supported by the Cursor agent. |
 | Backend | Supabase (Postgres, auth, storage, server functions) | Your data is relational (users, follows, matches, flags), and row-level access rules help enforce follower anonymity. |
 | Video | A hosted video service (Mux) | Handles upload, conversion, streaming, and thumbnails. Don't build this yourself. Confirm current pricing, since video is likely your biggest recurring cost. |
-| Captions | A speech-to-text API (Mux should handle this) | Needed for the caption review step and for text-based match ranking. |
+| Captions | A speech-to-text API (Mux should handle this) | Needed for the caption review step and for the captions shown in the feed. Ranking does not use them. |
 | Moderation | A content moderation API plus your own flag-and-review flow | Proactive screening for the worst content categories, not flags alone. |
 | Push notifications | Expo's push service, which routes through Apple and Google | Daily question, matches, and nudges. |
 | Admin panel | A small web app, or a low-code tool such as Retool over the same database | Question calendar, settings, and moderation queue. Plain and functional is fine. |
