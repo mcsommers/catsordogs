@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 import {
+  Alert,
   FlatList,
   Platform,
   StyleSheet,
@@ -15,6 +16,7 @@ import { getGate } from '../../lib/api';
 import { fetchPlaybackForAnswer, reportAnswerView } from '../../lib/feed';
 import {
   fetchUserAnswersPage,
+  deleteMyAnswer,
   fetchUserProfile,
   PROFILE_ANSWER_PAGE_SIZE,
   type ProfileAnswer,
@@ -23,7 +25,9 @@ import { BackButton, CenteredSpinner } from '../../components/ui';
 import { AnswerDetailOverlay } from '../../components/AnswerDetailOverlay';
 import { getFollowState } from '../../lib/social';
 import type { FeedMatchState } from '../../lib/feed';
-import { MoreOptionsMenu } from '../../components/social/MoreOptionsMenu';
+import { MoreOptionsMenu, type MoreMenuAction } from '../../components/social/MoreOptionsMenu';
+import { confirmDeleteVideo } from '../../components/social/confirmations';
+import { toIsoDate } from '../../lib/format';
 import { useSocialActions, type SocialSubject } from '../../components/social/useSocialActions';
 import {
   hlsSource,
@@ -75,6 +79,7 @@ export default function AnswerDetailScreen() {
   const [playbackUrl, setPlaybackUrl] = useState<string | null>(null);
   const [playbackError, setPlaybackError] = useState<string | null>(null);
   const [muted, setMuted] = useState(true);
+  const [ownMenuOpen, setOwnMenuOpen] = useState(false);
   const [videoProgress, setVideoProgress] = useState(0);
   const viewReportedRef = useRef<string | null>(null);
   const listRef = useRef<FlatList<ProfileAnswer>>(null);
@@ -105,6 +110,30 @@ export default function AnswerDetailScreen() {
     safePause(player);
     router.back();
   }, [player]);
+
+  const deleteActive = useCallback(
+    (target: ProfileAnswer) => {
+      confirmDeleteVideo(target.questionDate === toIsoDate(new Date()), async () => {
+        try {
+          updatesAllowedRef.current = false;
+          safePause(player);
+          await deleteMyAnswer(target.answerId);
+          router.dismissTo('/(tabs)/profile');
+        } catch (e) {
+          updatesAllowedRef.current = true;
+          Alert.alert('Could not delete video', (e as Error).message || 'Try again.');
+        }
+      });
+    },
+    [player]
+  );
+
+  const onOwnMenuSelect = useCallback(
+    (action: MoreMenuAction) => {
+      if (action === 'delete_video' && answers[activeIndex]) deleteActive(answers[activeIndex]);
+    },
+    [activeIndex, answers, deleteActive]
+  );
 
   const toggleMute = useCallback(() => {
     setMuted((m) => !m);
@@ -281,8 +310,9 @@ export default function AnswerDetailScreen() {
             muted={muted}
             onToggleMute={toggleMute}
             onBack={leaveScreen}
-            onMoreOptions={isSelf ? () => {} : social.openMenu}
+            onMoreOptions={isSelf ? () => setOwnMenuOpen(true) : social.openMenu}
             onHeart={isSelf ? () => {} : social.onHeartPress}
+            hideHeart={isSelf}
             matchState={isSelf ? 'none' : matchState}
             videoProgress={isActive ? videoProgress : 0}
             showProgress={isActive}
@@ -347,7 +377,15 @@ export default function AnswerDetailScreen() {
           onDismiss={social.closeMenu}
           onSelect={social.runMenuAction}
         />
-      ) : null}
+      ) : (
+        <MoreOptionsMenu
+          own
+          visible={ownMenuOpen}
+          isFollowed={false}
+          onDismiss={() => setOwnMenuOpen(false)}
+          onSelect={onOwnMenuSelect}
+        />
+      )}
       {videoBackdrop}
       {answers.length === 1 ? (
         renderRow({ item: answers[0], index: 0 })

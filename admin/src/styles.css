@@ -174,3 +174,30 @@ button.sort {
   display: block;
 }
 .thumb.empty { border: 1px solid #e7e5e4; }
+
+.badge {
+  display: inline-block;
+  margin-left: 8px;
+  padding: 1px 8px;
+  border-radius: 999px;
+  background: #1c1917;
+  color: #fff;
+  font-size: 0.75rem;
+}
+.modal-backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(28, 25, 23, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 50;
+}
+.modal {
+  background: #fff;
+  border-radius: 12px;
+  padding: 20px;
+  width: min(440px, 90vw);
+}
+.modal h3 { margin: 0 0 8px; font-size: 1.1rem; }
+.modal .row { justify-content: flex-end; }

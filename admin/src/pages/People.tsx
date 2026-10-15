@@ -1,6 +1,7 @@
 import { Fragment, useEffect, useMemo, useState } from 'react';
 import { supabase } from '../supabase';
 import { formatWhen } from '../dates';
+import { useAuth } from '../auth';
 
 type Photo = { position: number; storage_path: string };
 type Person = {
@@ -66,8 +67,16 @@ export default function People() {
   const [error, setError] = useState<string | null>(null);
   const [sortKey, setSortKey] = useState<SortKey>('created_at');
   const [sortDir, setSortDir] = useState<'asc' | 'desc'>('desc');
+  const { userId } = useAuth();
+  const [adminIds, setAdminIds] = useState<Set<string>>(new Set());
+  const [pending, setPending] = useState<{ person: Person; makeAdmin: boolean } | null>(null);
+  const [saving, setSaving] = useState(false);
+  const [adminError, setAdminError] = useState<string | null>(null);
 
   useEffect(() => {
+    supabase.rpc('admin_list_admin_ids').then(({ data }) => {
+      setAdminIds(new Set((data ?? []) as string[]));
+    });
     supabase.rpc('admin_list_people').then(async ({ data, error: loadError }) => {
       if (loadError) return setError(loadError.message);
       const rows = (data ?? []) as Person[];
@@ -100,6 +109,32 @@ export default function People() {
       if (signed.data?.signedUrl) next[photo.storage_path] = signed.data.signedUrl;
     }
     setPhotoUrls(next);
+  }
+
+  function who(person: Person) {
+    return person.first_name ?? person.email ?? 'this person';
+  }
+
+  async function confirmAdminChange() {
+    if (!pending) return;
+    setSaving(true);
+    setAdminError(null);
+    const { error: saveError } = await supabase.rpc('admin_set_admin', {
+      p_user_id: pending.person.id,
+      p_make_admin: pending.makeAdmin,
+    });
+    setSaving(false);
+    if (saveError) {
+      setAdminError(saveError.message);
+      return;
+    }
+    setAdminIds((current) => {
+      const next = new Set(current);
+      if (pending.makeAdmin) next.add(pending.person.id);
+      else next.delete(pending.person.id);
+      return next;
+    });
+    setPending(null);
   }
 
   function sortBy(key: SortKey) {
@@ -154,7 +189,10 @@ export default function People() {
                         ? <img className="thumb" src={photoUrls[thumb.storage_path]} alt="" />
                         : <span className="thumb empty" aria-hidden="true" />}
                     </td>
-                    <td>{person.first_name ?? '—'}</td>
+                    <td>
+                      {person.first_name ?? '—'}
+                      {adminIds.has(person.id) ? <span className="badge">Admin</span> : null}
+                    </td>
                     <td>{person.email ?? '—'}</td>
                     <td className="num">{person.follower_count}</td>
                     <td className="num">{person.following_count}</td>
@@ -170,6 +208,22 @@ export default function People() {
                           <div className="muted">
                             {person.profile_completed_at ? 'Profile finished' : 'Profile not finished'}
                             {person.age != null ? ` · ${person.age}` : ''}
+                          </div>
+                          <div className="row">
+                            <span><strong>Admin access:</strong> {adminIds.has(person.id) ? 'Yes' : 'No'}</span>
+                            {adminIds.has(person.id) ? (
+                              person.id === userId
+                                ? <span className="muted">You cannot remove your own admin access.</span>
+                                : (
+                                  <button type="button" onClick={() => { setAdminError(null); setPending({ person, makeAdmin: false }); }}>
+                                    Remove admin
+                                  </button>
+                                )
+                            ) : (
+                              <button type="button" onClick={() => { setAdminError(null); setPending({ person, makeAdmin: true }); }}>
+                                Make admin
+                              </button>
+                            )}
                           </div>
                           <div className="photos">
                             {person.photos.length === 0 ? <span className="muted">No photos</span> : null}
@@ -212,6 +266,27 @@ export default function People() {
           </tbody>
         </table>
       </div>
+      {pending ? (
+        <div className="modal-backdrop" role="presentation">
+          <div className="modal" role="dialog" aria-modal="true" aria-labelledby="admin-modal-title">
+            <h3 id="admin-modal-title">
+              {pending.makeAdmin ? `Make ${who(pending.person)} an admin?` : `Remove admin access from ${who(pending.person)}?`}
+            </h3>
+            <p>
+              {pending.makeAdmin
+                ? `${who(pending.person)} (${pending.person.email ?? 'no email'}) will be able to sign in to this website and edit questions and settings, review reports, and see every profile and video.`
+                : `${who(pending.person)} (${pending.person.email ?? 'no email'}) will no longer be able to use this website. Their account and answers stay as they are.`}
+            </p>
+            {adminError ? <p className="error">{adminError}</p> : null}
+            <div className="row">
+              <button type="button" onClick={() => setPending(null)} disabled={saving}>Cancel</button>
+              <button type="button" className="primary" onClick={confirmAdminChange} disabled={saving}>
+                {saving ? 'Saving…' : pending.makeAdmin ? 'Make admin' : 'Remove admin'}
+              </button>
+            </div>
+          </div>
+        </div>
+      ) : null}
     </div>
   );
 }

@@ -242,10 +242,10 @@ export function BackButton({
   );
 }
 
-export function TitleGroup({ title, subtitle }: { title: string; subtitle?: string }) {
+export function TitleGroup({ title, subtitle }: { title?: string; subtitle?: string }) {
   return (
     <View style={{ gap: 8 }}>
-      <Text style={styles.title}>{title}</Text>
+      {title ? <Text style={styles.title}>{title}</Text> : null}
       {subtitle ? <Text style={styles.subtitle}>{subtitle}</Text> : null}
     </View>
   );
@@ -336,7 +336,7 @@ export function PressableField({
   label: string;
   icon: Icon;
   value: string | null;
-  placeholder: string;
+  placeholder?: string;
   onPress: () => void;
   error?: boolean;
   requirement?: FieldRequirement;
@@ -351,7 +351,7 @@ export function PressableField({
         style={[styles.inputBox, error && { borderColor: colors.danger }]}
       >
         <IconComponent size={18} color={error ? colors.danger : colors.textSecondary} />
-        <Text style={[styles.input, { color: value ? colors.textPrimary : colors.textSecondary }]}>{value ?? placeholder}</Text>
+        <Text style={[styles.input, { color: value ? colors.textPrimary : colors.textSecondary }]}>{value ?? placeholder ?? ''}</Text>
       </Pressable>
     </View>
   );
@@ -504,7 +504,7 @@ export type DialogBadgeKind =
   | 'unfollow';
 
 export type DialogHero =
-  | { type: 'icon'; icon: Icon; iconTone?: 'warning' | 'success' }
+  | { type: 'icon'; icon: Icon; iconTone?: 'warning' | 'success' | 'danger' }
   | { type: 'avatar'; uri?: string | null; name: string; badge: DialogBadgeKind };
 
 const DIALOG_BADGE: Record<
@@ -572,6 +572,7 @@ export function Dialog({
   const light = variant === 'light';
   const iconHero = hero.type === 'icon' ? hero : null;
   const success = iconHero?.iconTone === 'success';
+  const danger = iconHero?.iconTone === 'danger';
   const IconComponent = iconHero?.icon;
   return (
     <Modal
@@ -585,8 +586,17 @@ export function Dialog({
           {hero.type === 'avatar' ? (
             <DialogAvatarHero uri={hero.uri} name={hero.name} badge={hero.badge} />
           ) : IconComponent ? (
-            <View style={[styles.dialogIcon, success && { backgroundColor: colors.accentDog }]}>
-              <IconComponent size={success ? 26 : 22} color={success ? colors.white : colors.accentDog} />
+            <View
+              style={[
+                styles.dialogIcon,
+                success && { backgroundColor: colors.accentDog },
+                danger && { width: 72, height: 72, borderRadius: 36, backgroundColor: '#FF5C5C26' },
+              ]}
+            >
+              <IconComponent
+                size={success ? 26 : danger ? 32 : 22}
+                color={success ? colors.white : danger ? '#FF5C5C' : colors.accentDog}
+              />
             </View>
           ) : null}
           <Text style={[styles.dialogTitle, light && styles.dialogTitleLight]}>{title}</Text>
@@ -608,6 +618,37 @@ export function Dialog({
         </View>
       </View>
     </Modal>
+  );
+}
+
+/** On/off switch drawn to match Pencil (44x26 pill, 20px white knob); identical on iOS and Android. */
+export function ToggleSwitch({
+  value,
+  onValueChange,
+  disabled = false,
+  accessibilityLabel,
+}: {
+  value: boolean;
+  onValueChange: (next: boolean) => void;
+  disabled?: boolean;
+  accessibilityLabel?: string;
+}) {
+  return (
+    <Pressable
+      accessibilityRole="switch"
+      accessibilityState={{ checked: value, disabled }}
+      accessibilityLabel={accessibilityLabel}
+      disabled={disabled}
+      onPress={() => onValueChange(!value)}
+      hitSlop={8}
+      style={[
+        styles.toggleTrack,
+        { backgroundColor: value ? colors.accentDog : '#FFFFFF1F', justifyContent: value ? 'flex-end' : 'flex-start' },
+        disabled && { opacity: 0.5 },
+      ]}
+    >
+      <View style={styles.toggleKnob} />
+    </Pressable>
   );
 }
 
@@ -665,6 +706,11 @@ export const styles = StyleSheet.create({
     backgroundColor: '#00000066',
   },
   header: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' },
+  headerWithTitle: { flexDirection: 'row', alignItems: 'center', gap: 12 },
+  headerTitle: { flex: 1, fontFamily: fonts.heading, fontSize: 28, color: colors.textPrimary },
+  headerTitleDark: { flex: 1, fontFamily: fonts.heading, fontSize: 17, color: colors.white },
+  toggleTrack: { width: 44, height: 26, borderRadius: 13, padding: 3, flexDirection: 'row', alignItems: 'center' },
+  toggleKnob: { width: 20, height: 20, borderRadius: 10, backgroundColor: '#FFFFFF' },
   step: { fontFamily: fonts.bodySemi, fontSize: 13, color: colors.textSecondary },
   title: { fontFamily: fonts.heading, fontSize: 28, color: colors.textPrimary },
   subtitle: { fontFamily: fonts.body, fontSize: 15, lineHeight: 21, color: colors.textSecondary },

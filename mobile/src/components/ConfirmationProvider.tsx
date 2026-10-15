@@ -1,6 +1,6 @@
 import { useEffect, useState, type ReactNode } from 'react';
 import { TriangleAlert } from 'lucide-react-native';
-import { Dialog, type DialogBadgeKind } from './ui';
+import { Dialog, type DialogBadgeKind, type DialogHero } from './ui';
 
 export type ConfirmationRequest = {
   title: string;
@@ -15,6 +15,9 @@ export type ConfirmationRequest = {
   badge: DialogBadgeKind;
   /** Account delete and other non-person confirmations keep the warning icon (08h). */
   useIconHero?: boolean;
+  /** Icon for the icon hero; defaults to the warning triangle. */
+  icon?: Extract<DialogHero, { type: 'icon' }>['icon'];
+  iconTone?: 'warning' | 'success' | 'danger';
   onConfirm: () => void | Promise<void>;
   onCancel?: () => void;
 };
@@ -40,7 +43,11 @@ export function ConfirmationProvider({ children }: { children: ReactNode }) {
 
   const hero =
     request == null || request.useIconHero
-      ? { type: 'icon' as const, icon: TriangleAlert, iconTone: 'warning' as const }
+      ? {
+          type: 'icon' as const,
+          icon: request?.icon ?? TriangleAlert,
+          iconTone: request?.iconTone ?? ('warning' as const),
+        }
       : {
           type: 'avatar' as const,
           uri: request.avatarUri,

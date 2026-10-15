@@ -248,8 +248,10 @@ export default function FeedSettingsScreen() {
 
   return (
     <Screen dark scroll scrollRef={scrollRef} scrollContentRef={contentRef} edges={['top', 'bottom']}>
-      <BackButton onPress={() => router.back()} dark />
-      <Text style={styles.title}>Feed Settings</Text>
+      <View style={ui.headerWithTitle}>
+        <BackButton onPress={() => router.back()} dark />
+        <Text style={ui.headerTitleDark}>Feed Settings</Text>
+      </View>
       <Text style={styles.lead}>
         Filters decide who can appear in your feed. Ranking signals decide the order they appear in.
       </Text>
@@ -307,7 +309,6 @@ export default function FeedSettingsScreen() {
 }
 
 const styles = StyleSheet.create({
-  title: { ...ui.title, color: colors.white, marginTop: 8 },
   lead: { fontFamily: fonts.body, fontSize: 13, lineHeight: 18, color: colors.textDarkMuted, marginBottom: 8 },
   block: { gap: 12 },
   filterCard: {

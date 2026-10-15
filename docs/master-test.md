@@ -36,37 +36,21 @@ If the feed shows a name that is not in the cast below, stop. Staging still has 
 
 Create them in this order. Ages are as of October 2026. Use the birthday exactly so the age filter means something.
 
-| Order | Email | First name | Birthday | Age | Gender | Location | What this person is for |
-| --- | --- | --- | --- | --- | --- | --- | --- |
-| 1 | catsordogsapp+avery@gmail.com | Avery | January 1, 1986 | 40 | Woman | Brooklyn, NY | Admin. Never records a video. |
-| 2 | catsordogsapp+alex@gmail.com | Alex | March 15, 1998 | 28 | Woman | Brooklyn, NY | The person whose feed you judge. |
-| 3 | catsordogsapp+jordan@gmail.com | Jordan | June 1, 1996 | 30 | Man | Brooklyn, NY | Should rank first for Alex. Match and chat. Day 2 nudge target. He does not record on Day 2. |
-| 4 | catsordogsapp+sam@gmail.com | Sam | January 20, 1994 | 32 | Man | Austin, TX | Far away, little in common. Should rank behind Jordan. |
-| 5 | catsordogsapp+riley@gmail.com | Riley | August 8, 1999 | 27 | Woman | Brooklyn, NY | Followed by Alex, but outside "Show me: Men". Should still appear at the top. |
-| 6 | catsordogsapp+morgan@gmail.com | Morgan | April 4, 1971 | 55 | Man | Brooklyn, NY | Followed by Alex, but outside age 25–40. Should be left out once the follow cap is full. |
-| 7 | catsordogsapp+quinn@gmail.com | Quinn | February 2, 1997 | 29 | Man | Brooklyn, NY | Passes Alex's filters. Used for "wants to match" and a decline. |
-| 8 | catsordogsapp+casey@gmail.com | Casey | March 1, 1993 | 33 | Man | Leave location empty | No city, so the Distance ranking signal is neutral for him. |
-| 9 | catsordogsapp+drew@gmail.com | Drew | July 7, 1992 | 34 | Man | Brooklyn, NY | Second reporter. Follows Jordan on Day 1 so he can nudge him on Day 2. |
-| 10 | catsordogsapp+taylor@gmail.com | Taylor | May 5, 1995 | 31 | Man | Brooklyn, NY | Stays out of the feed until after the filter check, then answers. |
-| 11 | catsordogsapp+parker@gmail.com | Parker | September 9, 2000 | 26 | Man | Brooklyn, NY | Created so the account can be deleted. Records only at the end of Day 1. |
+| Order | Email | First name | Birthday | Gender | Height | Location | Sexual orientation | Interested in | Interests (up to 5) | Relationship goal | Age | What this person is for |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| 1 | catsordogsapp+avery@gmail.com | Avery | January 1, 1986 | Woman | 5 ft 5 in | Brooklyn, NY | Straight | Men | any one interest | any one goal | 40 | Admin. Never records a video. |
+| 2 | catsordogsapp+alex@gmail.com | Alex | March 15, 1998 | Woman | 5 ft 6 in | Brooklyn, NY | Straight | Men | Hiking, Coffee, Cooking | Long-term relationship | 28 | The person whose feed you judge. |
+| 3 | catsordogsapp+jordan@gmail.com | Jordan | June 1, 1996 | Man | 6 ft 0 in | Brooklyn, NY | Straight | Women | Hiking, Coffee | Long-term relationship | 30 | Should rank first for Alex. Match and chat. Day 2 nudge target. He does not record on Day 2. |
+| 4 | catsordogsapp+sam@gmail.com | Sam | January 20, 1994 | Man | 5 ft 8 in | Austin, TX | Straight | Women | Movies | Short-term fun | 32 | Far away, little in common. Should rank behind Jordan. |
+| 5 | catsordogsapp+riley@gmail.com | Riley | August 8, 1999 | Woman | 5 ft 4 in | Brooklyn, NY | Bisexual | Men, Women | Hiking | Long-term relationship | 27 | Followed by Alex, but outside "Show me: Men". Should still appear at the top. |
+| 6 | catsordogsapp+morgan@gmail.com | Morgan | April 4, 1971 | Man | 5 ft 10 in | Brooklyn, NY | Straight | Women | Movies | New friends | 55 | Followed by Alex, but outside age 25–40. Should be left out once the follow cap is full. |
+| 7 | catsordogsapp+quinn@gmail.com | Quinn | February 2, 1997 | Man | 5 ft 11 in | Brooklyn, NY | Bisexual | Men, Women | Travel, Yoga | Still figuring it out | 29 | Passes Alex's filters. Used for "wants to match" and a decline. |
+| 8 | catsordogsapp+casey@gmail.com | Casey | March 1, 1993 | Man | Leave height empty | Leave location empty | Gay | Men | Hiking | Long-term relationship | 33 | No city, so the Distance ranking signal is neutral for him. |
+| 9 | catsordogsapp+drew@gmail.com | Drew | July 7, 1992 | Man | 5 ft 7 in | Brooklyn, NY | Straight | Women | Online Games | Short-term fun | 34 | Second reporter. Follows Jordan on Day 1 so he can nudge him on Day 2. |
+| 10 | catsordogsapp+taylor@gmail.com | Taylor | May 5, 1995 | Man | 6 ft 2 in | Brooklyn, NY | Straight | Women | Coffee | Long-term relationship | 31 | Stays out of the feed until after the filter check, then answers. |
+| 11 | catsordogsapp+parker@gmail.com | Parker | September 9, 2000 | Man | 5 ft 9 in | Brooklyn, NY | Straight | Women | Hiking | Long-term relationship | 26 | Created so the account can be deleted. Records only at the end of Day 1. |
 
-Shared profile choices, so ranking is explainable:
-
-| Person | Interests (up to 5) | Relationship goal | What they say on camera |
-| --- | --- | --- | --- |
-| Alex | Hiking, Coffee, Cooking | Long-term relationship | Any short honest answer. Alex's own video never appears in Alex's feed. |
-| Jordan | Hiking, Coffee | Long-term relationship | Read this, clearly, at a normal pace: "I walk my dog every morning before coffee, and I cook dinner at home most nights. I want something serious, and I care more about how someone treats people than about a perfect plan." |
-| Sam | Movies | Short-term fun | Say only: "Yeah." |
-| Riley | Hiking | Long-term relationship | One sentence about hiking. |
-| Morgan | Movies | New friends | One short sentence. |
-| Quinn | Travel, Yoga | Still figuring it out | One sentence. |
-| Casey | Hiking | Long-term relationship | One sentence. Leave **Location** blank. |
-| Drew | Online Games | Short-term fun | One sentence. |
-| Taylor | Coffee | Long-term relationship | Do not record until Part 8 says so. |
-| Parker | Hiking | Long-term relationship | Do not record until Part 12. |
-| Avery | any one interest | any one goal | Do not record. |
-
-One photo each is enough (Finish Setup needs a photo, a first name, a birthday, and a gender). Height, job, school, and About Me can stay empty except where a step says otherwise. Jordan's job title is **Designer**. Sam's job title is **Teacher**.
+One photo each is enough (Finish Setup needs a photo, a first name, a birthday, and a gender). Fill in Sexual orientation, Interested in, and Height exactly as the table says, because the orientation and height filter steps (M-26a, M-26b) depend on them. Interested in does not change the feed order or who is filtered (it is not a filter or a ranking signal), so it only needs to be filled in; do not expect it to change any result. Job, school, and About Me can stay empty except where a step says otherwise. Jordan's job title is **Designer**. Sam's job title is **Teacher**.
 
 ## Part 1 — Admin website pointed at staging
 
@@ -85,7 +69,7 @@ The admin site on your Mac is a separate small website. For this script it must 
 
 Stay signed in as Avery on the website.
 
-- [ ] **M-06 Today and the next three days have questions.** On Questions, today is in the list and highlighted. Each of the next three days has question text of 1 to 200 characters. A day ahead with an empty box stays in the list and is highlighted. If a day is empty, type a question and save it. Write down the exact text of **today's** question. Previous questions, if any, are behind a separate past view and are newest first. That past view does not include today.
+- [ ] **M-06 Today and the next three days have questions.** On Questions, today is in the list and highlighted. Each of the next three days has question text of 1 to 200 characters. A day ahead with an empty box stays in the list and is highlighted. If a day is empty, type a question and save it. Write down the exact text of **today's** question. Previous questions, if any, are behind a separate past view and are newest first. That past view does not include today. "Today" here is your own local day, so late in the evening it matches your phone's date and not UTC.
 - [ ] **M-07 Today cannot be removed. A future day can.** Today has no working remove. Change today's text slightly (add " — master test" or similar), save, and confirm it is marked as an override. The phone will show the new text. Users never see the old wording. A future day can be removed and added again. Put the next three days back so they each have a question before you leave this page. Past questions cannot be edited or removed.
 - [ ] **M-08 Write down settings, then park the daily email.** Open Settings. Write down every value, especially the Help & Support address (it may be empty). Confirm the defaults you are about to change away from, then set **only** this for now:
   - Daily Question Send Time: **23:59** (11:59 PM). This stops the "question is live" mail from going out while you are still creating accounts. You will move it in Part 5.
@@ -99,6 +83,7 @@ For each person from Alex through Parker: Get Started, that person's plus-addres
 - [ ] **M-09 Ten more accounts.** Alex, Jordan, Sam, Riley, Morgan, Quinn, Casey, Drew, Taylor, and Parker all reach How It Works and then log out. Casey's Location is empty. Jordan's job title is Designer. Sam's job title is Teacher.
 - [ ] **M-10 Under-18 is refused on the way.** On any one new Build Profile, pick a birthday that is under 18. As soon as the date is chosen, before Finish Setup, the birthday field turns red and the hint is "You must be 18 or older to join. Check your birthday." Put the real birthday back before you finish. (You can skip this if you already passed A-18 in UAT-flows.)
 - [ ] **M-11 People list.** As Avery on the admin site, open People. Expected: a sortable table with thumbnail, first name, email, follower count, following count, matches, answers, join date, and last login. Open Alex. Expected: the full profile, including the photo. Follower and following are counts only. There is no list of who follows whom.
+- [ ] **M-11a Make and remove an admin.** As Avery on People, open Alex and click **Make admin**. Expected: a window titled "Make Alex an admin?" with **Cancel** and **Make admin**. Click **Cancel**: nothing changes. Click **Make admin** again and confirm. Expected: an **Admin** badge next to Alex, and the row says "Admin access: Yes". Sign in to the admin site as Alex in a private window: it opens. Back as Avery, open Alex and click **Remove admin**. Expected: a window titled "Remove admin access from Alex?"; confirm. The badge goes away. Alex signing in again is refused. Open Avery's own row: it says "You cannot remove your own admin access." instead of a button.
 
 ## Part 5 — Turn email on, then send today's question mail
 
@@ -112,13 +97,20 @@ New sign-ups already have **email on** for all notification types. On **each** a
 
 ## Part 6 — Record today's answers, in this order
 
-Record only the people in the list below, in this order, one take each. Say the line from the cast table. Wait on Review until captions finish, then Submit Answer. Do not re-record. Do not record Taylor, Parker, or Avery yet.
+Record only the people in the list below, in this order, one take each. Say the line from the list below. Wait on Review until captions finish, then Submit Answer. Do not re-record. Do not record Taylor, Parker, or Avery yet.
 
 Order: **Sam, Morgan, Riley, Casey, Drew, Quinn, Alex, Jordan.** Jordan goes last so "posted more recently" also favors Jordan.
 
 For each person the path is: log in → Today's Question (04) → tap to start → countdown 3, 2, 1 → the line → stop, or let it stop at the cap → Review (05) → Submit → Answer Submitted (05c) → log out.
 
-Jordan must actually speak the long line. Sam must say only "Yeah."
+What to say on camera (this does not affect the feed order; it only needs to be real speech):
+
+- **Jordan:** read this clearly, at a normal pace: "I walk my dog every morning before coffee, and I cook dinner at home most nights. I want something serious, and I care more about how someone treats people than about a perfect plan."
+- **Sam:** say only "Yeah."
+- **Riley:** one sentence about hiking.
+- **Morgan, Quinn, Casey, Drew:** one short sentence. Casey: leave **Location** blank.
+- **Alex:** any short honest answer. Alex's own video never appears in Alex's feed.
+- **Avery, Taylor, Parker:** do not record until a step says so (Taylor in Part 8, Parker in Part 12).
 
 - [ ] **M-15 Eight answers are live.** After Jordan submits, those eight people are done. Taylor, Parker, and Avery have still not recorded.
 - [ ] **M-16 Alex is not asked to record again.** Log in as Alex. Expected: the app opens on the Feed, not Today's Question.
@@ -150,6 +142,8 @@ Stay as Alex unless a step says otherwise. Alex has answered, so the Feed is unl
 - [ ] **M-25 Clearing filters brings people back.** As Alex, clear Show me, drag both Age range handles back to the ends (18 and 70+), and save. Reopen the feed. Morgan can appear again and still has the Following tag. Jordan still comes first.
 - [ ] **M-26 Unfollow.** On Morgan, **⋯** now says **Unfollow** instead of Follow. Confirm. The dialog says Morgan won't be notified, his answers will no longer show up at the top, and you won't be able to nudge him. After you confirm, Morgan's Following tag is gone. As Morgan, nothing tells him he was unfollowed. Alex still follows Jordan and Riley.
 
+- [ ] **M-26a Sexual orientation filter.** As Alex, open Feed Settings (06i). Select only **Bisexual** under Sexual orientation, leave every other filter on Any, and save. Reopen the feed. Expected, in this order: **Jordan** (Following tag), **Riley** (Following tag), then **Quinn**. Riley and Quinn are Bisexual and pass the filter. Jordan is Straight and fails it, but Alex follows him and he outscores Riley, so he takes the one followed slot (3 people in the pool, 30 percent rounded up is 1) and comes first. **Sam, Drew, Casey, and Morgan are absent** (Straight or Gay, and not followed). Casey is Gay, so he is also absent. Alex, Taylor, Parker, and Avery are absent as before. Then clear the Sexual orientation chip and save.
+- [ ] **M-26b Height filter.** As Alex, open Feed Settings and drag the Height handles to **5'8"** and **6'0"**. Leave every other filter on Any, and save. Reopen the feed. Expected: **Jordan** (6'0") and **Riley** (Following tag) first, because Alex follows both and they fill the two followed slots (5 people in the pool, 30 percent rounded up is 2). Riley stays even though she is 5'4". Then **Sam** (5'8"), **Morgan** (5'10"), and **Quinn** (5'11"), in score order, with no Following tag. **Drew is absent** (5'7", just under the range). **Casey is absent** (no height saved, so he fails once the Height filter is set). Then drag both Height handles back to the ends and save. Expected: Casey and Drew are back. Leave every filter cleared.
 - [ ] **M-27 Drew follows Jordan.** Log in as Drew. On Jordan's video, **⋯** → **Follow** → **Yes, Follow**. Log out. This is what lets Drew nudge Jordan on Day 2. Drew's follow does not change the order checks you already did as Alex.
 - [ ] **M-28 Morgan turns followers off.** Log in as Morgan. Profile → **Privacy & Safety** (08b). Turn **Allow followers** off. Log in as Alex and try to follow Morgan again. Expected: the follow does not stick, so Morgan does not get a Following tag. If the app shows an error, it says this person is not accepting followers. Log in as Morgan and turn **Allow followers** back on. Morgan's follower count never listed Alex by name. Log back in as Alex. Leave Morgan unfollowed.
 
@@ -234,5 +228,6 @@ These are real product rules. They are separate because each one disturbs stagin
 - [ ] **M-68 Missing tomorrow.** As Avery, remove tomorrow's question and leave it empty. Within about an hour, every admin (Avery) gets one email naming that next UTC day. Put the question back. If you add it before the mail goes out, the mail is dropped. Notification settings cannot turn this admin mail off.
 - [ ] **M-69 Recording limit.** As Avery, set recordings per day to **2**. As a person who has not submitted today, start two recordings and leave both unsubmitted, then tap record a third time. Expected: "Recording limit reached" using the number 2, a single **Got It**, and no countdown. The feed stays locked. Set the limit back to **10**.
 - [ ] **M-70 Both phones.** If you have an iPhone and an Android phone, repeat M-19, M-32, M-33, and M-55 on the other one. The screens, the words, and the order should match.
+- [ ] **M-71 Changing an answered question asks first.** After at least one person has answered today's question, as Avery open Questions, edit today's text, and click **Save swap**. Expected: a window titled "Change a question that has answers?" showing how many people answered, the original and new wording, with **Cancel** and **Change question**. **Cancel** saves nothing. Confirm once and the new text is saved. On a day nobody has answered, **Save swap** saves immediately with no window. Put today's question back if you want to keep your notes consistent.
 
 Screen-by-screen wording that this script does not walk through (Welcome, Apple and Google "Coming soon", caption editing, the photo grid, pinch-zoom) stays in [UAT-flows.md](UAT-flows.md). Run those when you care about a single screen rather than about several people over two days.

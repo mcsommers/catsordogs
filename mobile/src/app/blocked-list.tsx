@@ -48,19 +48,25 @@ export default function BlockedListScreen() {
   return (
     <Screen dark flush edges={['top', 'bottom']}>
       <View style={styles.top}>
-        <BackButton onPress={() => router.back()} dark />
-        <Text style={styles.title}>Blocked and Not Interested</Text>
+        <View style={ui.headerWithTitle}>
+          <BackButton onPress={() => router.back()} dark />
+          <Text style={ui.headerTitleDark}>Blocked and Not Interested</Text>
+        </View>
         <View style={styles.tabs}>
           <Pressable style={[styles.tab, tab === 'blocked' && styles.tabActive]} onPress={() => setTab('blocked')}>
-            <Text style={[styles.tabLabel, tab === 'blocked' && styles.tabLabelActive]}>Blocked ({blocked.length})</Text>
+            <Text style={[styles.tabLabel, tab === 'blocked' && styles.tabLabelActive]}>Blocked</Text>
+            <View style={styles.badge}>
+              <Text style={styles.badgeText}>{blocked.length}</Text>
+            </View>
           </Pressable>
           <Pressable
             style={[styles.tab, tab === 'not_interested' && styles.tabActive]}
             onPress={() => setTab('not_interested')}
           >
-            <Text style={[styles.tabLabel, tab === 'not_interested' && styles.tabLabelActive]}>
-              Not Interested ({notInterested.length})
-            </Text>
+            <Text style={[styles.tabLabel, tab === 'not_interested' && styles.tabLabelActive]}>Not Interested</Text>
+            <View style={styles.badge}>
+              <Text style={styles.badgeText}>{notInterested.length}</Text>
+            </View>
           </Pressable>
         </View>
       </View>
@@ -128,20 +134,34 @@ export default function BlockedListScreen() {
 
 const styles = StyleSheet.create({
   top: { paddingHorizontal: 20, paddingTop: 8, gap: 12 },
-  title: { ...ui.title, color: colors.white },
-  tabs: { flexDirection: 'row', gap: 8 },
+  tabs: {
+    flexDirection: 'row',
+    gap: 4,
+    padding: 3,
+    borderRadius: 9999,
+    backgroundColor: '#00000040',
+  },
   tab: {
     flex: 1,
+    flexDirection: 'row',
+    gap: 6,
     paddingVertical: 10,
     borderRadius: 9999,
-    backgroundColor: colors.surfaceDark,
     alignItems: 'center',
-    borderWidth: 1,
-    borderColor: colors.borderDark,
+    justifyContent: 'center',
   },
-  tabActive: { borderColor: colors.accentDog },
-  tabLabel: { fontFamily: fonts.body, fontSize: 12, color: colors.textDarkMuted, textAlign: 'center' },
+  tabActive: { backgroundColor: colors.accentDog },
+  tabLabel: { fontFamily: fonts.bodySemi, fontSize: 13, color: colors.textDarkMuted, textAlign: 'center' },
   tabLabelActive: { fontFamily: fonts.bodyBold, color: colors.white },
+  badge: {
+    width: 18,
+    height: 18,
+    borderRadius: 9,
+    backgroundColor: colors.white,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  badgeText: { fontFamily: fonts.bodyBold, fontSize: 10, color: colors.accentDog },
   list: { padding: 20, gap: 10, paddingBottom: 40 },
   empty: { fontFamily: fonts.body, fontSize: 14, color: colors.textDarkMuted, textAlign: 'center', paddingVertical: 24 },
   row: {

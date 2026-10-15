@@ -121,6 +121,7 @@ If one doesn't arrive, check spam.
 | "You're signed into Expo Go as … but not signed in to Expo CLI" | Run `cd mobile && npx expo login -b` on the Mac and sign in to the same Expo account, then restart `npm run phone`. |
 | Tapping an email link says "The application couldn't be opened" | The link is from before the last restart, the server was started with `npm start`, or the link was opened on a different phone. Make sure `npm run phone` is running, then in the app use "Resend" to get a fresh link. |
 | The app opens but says it can't reach the server | Check `mobile/.env` has the staging URL and key, then stop and restart `npm run phone` (changes to `.env` are read only at start). |
+| App restarts by itself (Expo Go), terminal shows **"Exception in HostFunction: std::bad_alloc"** then **"Should not already be working"** | A development-only memory problem in React's debug tooling, most often on busy screens such as Review while captions generate. The app now switches that tooling off in development (`mobile/src/lib/devPerformanceGuard.ts`); store builds never had it. Reload the app once to pick it up. If it still restarts, tell the agent. |
 | A red error screen | Take a screenshot and send it to the agent. Shake the phone and tap **Reload** to try again. |
 | Yellow "Cannot connect to the Expo CLI" | Harmless while using `npm run phone` (the Cloudflare tunnel). It only means live hot-reload could not connect; shake the phone and tap **Reload** when you want the latest code. |
 | Yellow **"WebCrypto API is not supported"** (often right after sign-up) | **Expected in Expo Go.** The phone runtime does not provide full Web Crypto; Supabase falls back and sign-up / email links still work. You can dismiss the warning and continue. It should go away only in a **development build** (not required for everyday UAT on Expo Go). |
@@ -194,7 +195,7 @@ email (the same notification worker as the rest of the app).
 
 ## Making yourself an admin
 
-Nobody can make themselves an admin from the app or the website. To add one, sign up in the app first
+Nobody can make themselves an admin from the app or the website. Once you are an admin, you can make anyone else an admin (or remove another admin) from the People page: open the person's row and use **Make admin** or **Remove admin**; a confirmation window appears first. To add the very first admin, sign up in the app first
 (and confirm the email; locally the message is in the email catcher at http://127.0.0.1:54324), then run this
 in the SQL editor of the right Supabase project (the local one is at http://127.0.0.1:54323), replacing the email:
 
@@ -261,10 +262,11 @@ Mux has its own Staging and Production environments. Use them like the Supabase 
 **Mux Staging with Supabase Staging** (and local testing), **Mux Production only with Supabase Production**.
 Do not record real users' video in Mux Production until the legal review in the Build Plan is done.
 
-Seven Edge Functions (in `supabase/functions/`) do the work: `create-video-upload` (the app asks for an upload link),
+Eight Edge Functions (in `supabase/functions/`) do the work: `create-video-upload` (the app asks for an upload link),
 `mux-webhook` (Mux reports progress, checked against Mux's signature), `get-playback-url` (short-lived signed links to watch your own recording, or another person's answer once the daily gate is open),
 `update-location` (looks up coordinates for the city on a profile, so distance works),
 `process-notifications` (sends queued push and email), `unsubscribe` (the link in every email),
+`delete-answer` (deletes one of your own answers and asks Mux to delete that video file),
 and `delete-account` (permanently deletes the signed-in person and asks Mux to delete their videos).
 
 ### City lookup (distance)

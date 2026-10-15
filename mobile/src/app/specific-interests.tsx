@@ -86,14 +86,14 @@ export default function SpecificInterestsScreen() {
         }}
       />
       <View style={styles.page}>
-        <View style={ui.header}>
+        <View style={ui.headerWithTitle}>
           <BackButton onPress={attemptLeave} dark />
+          <Text style={ui.headerTitleDark}>Specific Interests</Text>
           <Text style={styles.counter}>{`${picked.length} selected`}</Text>
         </View>
         <View style={styles.flex}>
           <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={styles.scroll} style={styles.flex}>
             <View style={{ gap: 8 }}>
-              <Text style={styles.title}>Specific Interests</Text>
               <Text style={styles.subtitle}>
                 Choose every interest that matters most to you. People who share them rank higher. There is no limit.
               </Text>
@@ -126,7 +126,6 @@ const styles = StyleSheet.create({
   page: { flex: 1, paddingHorizontal: 20, paddingTop: 12, gap: 12 },
   scroll: { gap: 20 },
   counter: { fontFamily: fonts.bodyBold, fontSize: 13, color: colors.accentDog },
-  title: { ...ui.title, color: colors.white },
   subtitle: { fontFamily: fonts.body, fontSize: 14, lineHeight: 20, color: colors.textDarkMuted },
   pills: { flexDirection: 'row', flexWrap: 'wrap', gap: 8 },
 });

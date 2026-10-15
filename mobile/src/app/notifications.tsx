@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useState } from 'react';
-import { Alert, Pressable, StyleSheet, Switch, Text, View } from 'react-native';
+import { Alert, Pressable, StyleSheet, Text, View } from 'react-native';
 import { router } from 'expo-router';
 import {
   getNotificationPreferences,
@@ -7,7 +7,7 @@ import {
   type NotificationPreference,
 } from '../lib/social';
 import { canRegisterForRemotePush, registerForPushNotifications } from '../lib/push';
-import { BackButton, CenteredSpinner, Screen, styles as ui } from '../components/ui';
+import { BackButton, CenteredSpinner, Screen, ToggleSwitch, styles as ui } from '../components/ui';
 import { colors, fonts } from '../theme';
 
 const LABELS: Record<NotificationPreference['type'], { title: string; body: string }> = {
@@ -55,8 +55,10 @@ export default function NotificationsScreen() {
 
   return (
     <Screen dark scroll edges={['top', 'bottom']}>
-      <BackButton onPress={() => router.back()} dark />
-      <Text style={styles.title}>Notifications</Text>
+      <View style={ui.headerWithTitle}>
+        <BackButton onPress={() => router.back()} dark />
+        <Text style={ui.headerTitleDark}>Notifications</Text>
+      </View>
       <Text style={styles.lead}>Choose how we reach you for each type of update.</Text>
       {!canRegisterForRemotePush() ? (
         <Text style={styles.expoGoNote}>
@@ -80,13 +82,12 @@ function ToggleRow({ label, value, onChange }: { label: string; value: boolean; 
   return (
     <View style={styles.toggleRow}>
       <Text style={styles.toggleLabel}>{label}</Text>
-      <Switch value={value} onValueChange={onChange} trackColor={{ true: colors.accentDog, false: colors.borderDark }} />
+      <ToggleSwitch value={value} onValueChange={onChange} accessibilityLabel={label} />
     </View>
   );
 }
 
 const styles = StyleSheet.create({
-  title: { ...ui.title, color: colors.white, marginTop: 8 },
   lead: { fontFamily: fonts.body, fontSize: 13, color: colors.textDarkMuted, marginBottom: 12 },
   expoGoNote: {
     fontFamily: fonts.body,

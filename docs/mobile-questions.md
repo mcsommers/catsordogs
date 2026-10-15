@@ -16,6 +16,10 @@ On every text input in the mobile app **except chat**, when the user focuses the
 
 Implemented in shared `TextField`, `AppTextInput`, and `LocationField` via `FIELD_LABEL_VIEWPORT_TOP` in `mobile/src/lib/formScroll.ts`. Chat (`09` / `chat/[matchId]`) is unchanged until Mike specifies chat behavior.
 
+### Build Profile and Edit Profile: no placeholder text (Mike, Oct 14, 2026)
+
+On **Build Profile (03)** and **Edit Profile (08d)**, no text field shows placeholder or helper text inside it (no "Alex", no "January 1, 2000", no height numbers, no example job or school, no sample About Me line, no sample city, no "Add your own" hint). Fields are simply empty until the person types. Labels and the hints written under a field (for example the 18-or-older line under Birthday) stay. The placeholder behavior above still applies to other screens (sign up, log in, and so on).
+
 ## Phase C: Profile and archive (asked Oct 12, 2026)
 
 Planning read-through: Build Plan Phase C, MVP requirements (profile / archive / 06j / 06k / 08), Concept doc, UAT placeholders, Pencil frames **06j**, **06n**, **06k**, **08**, and existing backend RPCs (`get_my_answers`, `get_my_profile_view_count`, `record_profile_view`, `get_answer_for_playback`, etc.).
@@ -367,7 +371,7 @@ Options:
 - **UTC midnight** (what the server used at first): simple, but US evening can already be "tomorrow" on the server.
 - **Local midnight** in the time zone the phone reports (same column as the daily notification). No time zone yet → UTC.
 
-Answer: **Local midnight** for the gate, recording, feed look-back, browse "today", streaks, and nudges. Admin calendar dates stay UTC-labeled for scheduling.
+Answer: **Local midnight** for the gate, recording, feed look-back, browse "today", streaks, and nudges. Admin calendar: follows the signed-in admin's local day (decided later, Oct 2026); it is not tied to the players' days.
 
 ## Feed unified page scroll (asked Oct 12, 2026)
 
@@ -523,3 +527,11 @@ Answer: Design simple versions in the design file, update the requirements doc, 
 - **Maximum distance filter removed (Oct 2026).** Distance only affects the order through the Distance ranking signal. Saved maximum-distance values were cleared.
 - **Relationship goals filter removed; Age range and Height are sliders (Oct 2026).** Age range is a two-handle slider, 18 to 70+; Height is a two-handle slider, 2'0" to 7'0"+. A handle on the far end means no limit on that side (so 70+ includes everyone older), and both handles on the ends is the same as Any. Relationship goals still affect the order through the ranking signal.
 - **Occupation filter removed; Sexual orientation moved above Age range (Oct 2026).** Filter order is Show me, Sexual orientation, Age range, Height.
+
+## Deleting your own video (Oct 2026)
+- On your own answer (**06ka**) the heart is hidden. More options opens a sheet (**06kb**) with only **Delete video** and **Cancel**. Delete video asks for confirmation (**06kc**, or **06kd** when it is today's answer), then returns to your profile.
+- **Deleting today's answer closes the feed again** until a new answer is submitted today. The dialog says so (06kd). *Decided by Mike.*
+- **Deleting does not give a recording back.** The deleted recording still counts toward the recordings-per-day limit, so deleting and re-recording cannot get around the cap. The recording can never be submitted again. *Recommended option, accepted by Mike.*
+- **Streaks are recalculated from the answers that remain**, so deleting a past answer leaves a gap. *Decided by Mike.*
+- An open flag review for a deleted answer is closed automatically; flag and review records are kept without the video. *Assumed, not asked.*
+- Deleting is permanent (video file at Mux, captions, view counts). There is no undo and no grace period, like account deletion.

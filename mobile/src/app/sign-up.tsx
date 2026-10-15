@@ -56,11 +56,11 @@ export default function SignUp() {
 
   return (
     <Screen scroll scrollRef={scrollRef} scrollContentRef={contentRef}>
-      <View style={styles.header}>
+      <View style={styles.headerWithTitle}>
         <BackButton />
-        <Text style={styles.step}>Step 1 of 2</Text>
+        <Text style={styles.headerTitle}>Create your account</Text>
       </View>
-      <TitleGroup title="Create your account" subtitle="Let's find your people!" />
+      <TitleGroup subtitle="Let's find your people!" />
       <ComingSoonSocialButtons />
       <OrDivider />
       <View style={{ gap: 16 }}>

@@ -394,8 +394,6 @@ export default function EditProfile() {
               value={customText}
               onChangeText={setCustomText}
               maxLength={40}
-              placeholder={`Add your own (${def.label.toLowerCase()})`}
-              placeholderTextColor={colors.textSecondary}
               style={styles.addInput}
               focusScrollAnchorRef={addRowRef}
               onSubmitEditing={addCustom}
@@ -424,8 +422,11 @@ export default function EditProfile() {
         onKeepEditing={leaveGuard.keepEditing}
         onLeave={leaveGuard.confirmLeave}
       />
-      <BackButton onPress={leaveGuard.attemptLeave} />
-      <TitleGroup title="Edit profile" subtitle="Update your profile photo and details." />
+      <View style={ui.headerWithTitle}>
+        <BackButton onPress={leaveGuard.attemptLeave} />
+        <Text style={ui.headerTitle}>Edit profile</Text>
+      </View>
+      <TitleGroup subtitle="Update your profile photo and details." />
       {banner ? <ErrorBanner message={banner} /> : null}
 
       <View ref={photosRef} collapsable={false}>
@@ -444,7 +445,6 @@ export default function EditProfile() {
           <TextField
             label="First Name"
             icon={User}
-            placeholder="Alex"
             requirement="required"
             value={form.first_name}
             onChangeText={(t) => set('first_name', t)}
@@ -458,7 +458,6 @@ export default function EditProfile() {
             icon={Cake}
             requirement="required"
             value={form.birthday ? longDate(form.birthday) : null}
-            placeholder="January 1, 2000"
             onPress={() => setPickingBirthday(true)}
             error={birthdayError}
           />
@@ -491,7 +490,6 @@ export default function EditProfile() {
               <TextField
                 label="Feet"
                 icon={Ruler}
-                placeholder="5"
                 keyboardType="number-pad"
                 value={form.height_feet}
                 onChangeText={(t) => {
@@ -507,7 +505,6 @@ export default function EditProfile() {
               <TextField
                 label="Inches"
                 icon={Ruler}
-                placeholder="9"
                 keyboardType="number-pad"
                 value={form.height_inches}
                 onChangeText={(t) => {
@@ -537,7 +534,6 @@ export default function EditProfile() {
           label="Occupation"
           icon={Briefcase}
           requirement="optional"
-          placeholder="Product Designer at Acme Co."
           value={form.occupation}
           onChangeText={(t) => set('occupation', t)}
           maxLength={100}
@@ -548,7 +544,6 @@ export default function EditProfile() {
           label="School"
           icon={GraduationCap}
           requirement="optional"
-          placeholder="University of Michigan"
           value={form.school}
           onChangeText={(t) => set('school', t)}
           maxLength={100}
@@ -564,8 +559,6 @@ export default function EditProfile() {
           onChangeText={(t) => set('about_me', t)}
           focusScrollAnchorRef={aboutRef}
           maxLength={ABOUT_MAX}
-          placeholder="Tell people about yourself — your pets, hobbies, what you're looking for..."
-          placeholderTextColor={colors.textSecondary}
           style={styles.bio}
           textAlignVertical="top"
         />

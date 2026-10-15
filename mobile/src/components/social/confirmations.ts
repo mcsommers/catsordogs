@@ -1,3 +1,4 @@
+import { Trash2 } from 'lucide-react-native';
 import { showConfirmation } from '../ConfirmationProvider';
 import type { DialogBadgeKind } from '../ui';
 import { capitalize, objectPronoun, possessivePronoun, subjectPronoun } from './socialCopy';
@@ -192,6 +193,26 @@ export function confirmDeleteAccount(onConfirm: () => void | Promise<void>) {
     avatarName: '',
     badge: 'block',
     useIconHero: true,
+    onConfirm,
+  });
+}
+
+/** 06kc / 06kd — delete one of your own videos. `isToday` adds the feed-lock warning. */
+export function confirmDeleteVideo(isToday: boolean, onConfirm: () => void | Promise<void>) {
+  showConfirmation({
+    title: 'Delete this video?',
+    body: isToday
+      ? "This permanently deletes your answer to today's question, including its video and captions. Your feed will lock until you record a new answer. There is no undo."
+      : 'This permanently deletes your answer to this question, including its video and captions. There is no undo.',
+    cancelLabel: 'Cancel',
+    confirmLabel: 'Delete Video',
+    destructive: true,
+    variant: 'dark',
+    avatarName: '',
+    badge: 'block',
+    useIconHero: true,
+    icon: Trash2,
+    iconTone: 'danger',
     onConfirm,
   });
 }

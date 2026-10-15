@@ -443,3 +443,7 @@ verify_jwt = false
 # Phase 7: the signed-in user deletes their own account. JWT is required.
 [functions.delete-account]
 verify_jwt = true
+
+# Delete one of your own answers. JWT is required.
+[functions.delete-answer]
+verify_jwt = true
