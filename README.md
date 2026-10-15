@@ -194,7 +194,7 @@ email (the same notification worker as the rest of the app).
 
 ## Making yourself an admin
 
-Nobody can make themselves an admin from the app or the website. To add one, sign up in the app first
+Nobody can make themselves an admin from the app or the website. Once you are an admin, you can make anyone else an admin (or remove another admin) from the People page: open the person's row and use **Make admin** or **Remove admin**; a confirmation window appears first. To add the very first admin, sign up in the app first
 (and confirm the email; locally the message is in the email catcher at http://127.0.0.1:54324), then run this
 in the SQL editor of the right Supabase project (the local one is at http://127.0.0.1:54323), replacing the email:
 

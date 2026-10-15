@@ -2,7 +2,7 @@
 -- count as a view, unhiding restores one video only, profile-question lists
 -- are admin-only, and a missing next-day question emails each admin once.
 begin;
-select plan(52);
+select plan(62);
 
 delete from public.moderation_actions;
 delete from public.flags;
@@ -80,6 +80,9 @@ select pg_temp.become(1);
 
 select throws_ok($$select * from public.admin_list_people()$$, '42501', null, 'a user cannot list people');
 select throws_ok($$select * from public.admin_list_videos()$$, '42501', null, 'a user cannot list videos');
+select throws_ok($$select public.admin_set_admin(pg_temp.uid(1), true)$$, '42501', null,
+  'a user cannot make themselves an admin');
+select throws_ok($$select * from public.admin_list_admin_ids()$$, '42501', null, 'a user cannot see who the admins are');
 select throws_ok($$select * from public.admin_get_video_for_playback('d1000000-0000-0000-0000-000000000001', null)$$,
   '42501', null, 'a user cannot take an admin playback link');
 select throws_ok($$select public.admin_unhide_answer('d2000000-0000-0000-0000-000000000001')$$,
@@ -185,6 +188,24 @@ select is((select count(*) from jsonb_array_elements(
             public.admin_queue_item_content((select id from queue_ids where label = 'message')) -> 'messages')
             e where e ->> 'reported' = 'true' and e ->> 'body' = 'A reported line'),
   1::bigint, 'the reported message is marked in that chat');
+
+-- Managing admins: add and remove from the People page.
+set local role authenticated;
+select pg_temp.become(2);
+select throws_ok($$select public.admin_set_admin(pg_temp.uid(2), false)$$, '42501',
+  'You cannot remove your own admin access.', 'an admin cannot remove their own admin access');
+select throws_ok($$select public.admin_set_admin('00000000-0000-0000-0000-0000000000ff', true)$$, 'P0002',
+  'Person not found.', 'only an existing account can be made an admin');
+select lives_ok($$select public.admin_set_admin(pg_temp.uid(1), true)$$, 'an admin can make another person an admin');
+select lives_ok($$select public.admin_set_admin(pg_temp.uid(1), true)$$, 'making someone an admin twice is harmless');
+select is((select count(*) from public.admin_list_admin_ids()), 2::bigint, 'the admin list now has both people');
+select pg_temp.become(1);
+select lives_ok($$select * from public.admin_list_people()$$, 'the new admin can use admin tools');
+select pg_temp.become(2);
+select lives_ok($$select public.admin_set_admin(pg_temp.uid(1), false)$$, 'an admin can remove another admin');
+select pg_temp.become(1);
+select throws_ok($$select * from public.admin_list_people()$$, '42501', null,
+  'a removed admin can no longer use admin tools');
 
 -- The email job is not something the website calls. It runs as the database.
 reset role;

@@ -8,6 +8,7 @@ type Status = 'loading' | 'signed-out' | 'admin';
 type AuthValue = {
   status: Status;
   email: string | null;
+  userId: string | null;
   rejection: string | null;
   signIn: (email: string, password: string) => Promise<string | null>;
   signOut: () => Promise<void>;
@@ -18,6 +19,7 @@ const AuthContext = createContext<AuthValue | null>(null);
 export function AuthProvider({ children }: { children: ReactNode }) {
   const [status, setStatus] = useState<Status>('loading');
   const [email, setEmail] = useState<string | null>(null);
+  const [userId, setUserId] = useState<string | null>(null);
   const [rejection, setRejection] = useState<string | null>(null);
 
   useEffect(() => {
@@ -26,6 +28,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       if (!session) {
         if (!cancelled) {
           setEmail(null);
+          setUserId(null);
           setStatus('signed-out');
         }
         return;
@@ -35,12 +38,13 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       if (error || data !== true) {
         await supabase.auth.signOut();
         setEmail(null);
-        setRejection('This tool is only for admins. An admin has to add you by hand in the database.');
+        setRejection('This tool is only for admins. An existing admin has to make you an admin from the People page.');
         setStatus('signed-out');
         return;
       }
       setRejection(null);
       setEmail(session.user.email ?? null);
+      setUserId(session.user.id);
       setStatus('admin');
     }
     supabase.auth.getSession().then(({ data }) => adopt(data.session));
@@ -66,7 +70,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   }
 
   return (
-    <AuthContext.Provider value={{ status, email, rejection, signIn, signOut }}>
+    <AuthContext.Provider value={{ status, email, userId, rejection, signIn, signOut }}>
       {children}
     </AuthContext.Provider>
   );
