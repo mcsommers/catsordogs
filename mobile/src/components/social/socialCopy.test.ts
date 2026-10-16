@@ -1,4 +1,4 @@
-import { followDialogBody, pronouns } from './socialCopy';
+import { followDialogBody, nudgeCardBody, nudgeCardTitle, nudgeDialogBody, pronouns } from './socialCopy';
 
 describe('confirmation pronouns', () => {
   it('uses she/her for Woman', () => {
@@ -31,6 +31,25 @@ describe('confirmation pronouns', () => {
     );
     expect(followDialogBody('Woman')).toBe(
       "She won't know you're following her. Her answer will show up at the top of your feed every day she posts."
+    );
+  });
+
+  it('formats nudge card copy (06n)', () => {
+    expect(nudgeCardTitle('Jordan')).toBe("Jordan hasn't answered today yet");
+    expect(nudgeCardBody('Man')).toBe(
+      "Give him a nudge. He'll only be told that a follower wants to hear his answer, never who."
+    );
+    expect(nudgeCardBody('Woman')).toBe(
+      "Give her a nudge. She'll only be told that a follower wants to hear her answer, never who."
+    );
+    expect(nudgeCardBody('Non-binary')).toBe(
+      "Give them a nudge. They'll only be told that a follower wants to hear their answer, never who."
+    );
+  });
+
+  it('formats nudge confirmation copy (06o)', () => {
+    expect(nudgeDialogBody('Man')).toBe(
+      "He'll be told that a follower wants to hear his answer to today's question. He won't know who. You can nudge him once a day."
     );
   });
 });

@@ -47,3 +47,20 @@ export function followDialogBody(gender: string | null | undefined): string {
   const p = pronouns(gender);
   return `${p.Subject} won't know you're following ${p.object}. ${p.Possessive} answer will show up at the top of your feed every day ${p.subject} posts.`;
 }
+
+/** Nudge card title (06n). */
+export function nudgeCardTitle(firstName: string): string {
+  return `${firstName} hasn't answered today yet`;
+}
+
+/** Nudge card body (06n). Woman → she/her; Man → he/him; else → they/them. */
+export function nudgeCardBody(gender: string | null | undefined): string {
+  const p = pronouns(gender);
+  return `Give ${p.object} a nudge. ${p.Subject}'ll only be told that a follower wants to hear ${p.possessive} answer, never who.`;
+}
+
+/** Nudge confirmation body (06o). */
+export function nudgeDialogBody(gender: string | null | undefined): string {
+  const p = pronouns(gender);
+  return `${p.Subject}'ll be told that a follower wants to hear ${p.possessive} answer to today's question. ${p.Subject} won't know who. You can nudge ${p.object} once a day.`;
+}

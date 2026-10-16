@@ -1,7 +1,7 @@
 import { Trash2 } from 'lucide-react-native';
 import { showConfirmation } from '../ConfirmationProvider';
 import type { DialogBadgeKind } from '../ui';
-import { capitalize, followDialogBody, objectPronoun, possessivePronoun, pronouns, subjectPronoun } from './socialCopy';
+import { followDialogBody, nudgeDialogBody, pronouns } from './socialCopy';
 
 type Person = { firstName: string; gender?: string | null; avatarUri?: string | null };
 
@@ -141,11 +141,9 @@ export function confirmDeclineMatch(person: Person, onConfirm: () => void | Prom
 }
 
 export function confirmNudge(person: Person, onConfirm: () => void | Promise<void>) {
-  const subj = subjectPronoun(person.gender);
-  const obj = capitalize(subj);
   personConfirm(person, 'follow', {
     title: `Nudge ${person.firstName}?`,
-    body: `${obj}'ll be told that a follower wants to hear ${possessivePronoun(person.gender)} answer to today's question. ${obj} won't know who. You can nudge ${objectPronoun(person.gender)} once a day.`,
+    body: nudgeDialogBody(person.gender),
     cancelLabel: 'Cancel',
     confirmLabel: 'Yes, Nudge',
     onConfirm,
