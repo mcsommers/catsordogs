@@ -88,8 +88,27 @@ export async function saveFilterPreferences(filters: Record<string, unknown>): P
   const { data: session } = await supabase.auth.getSession();
   const uid = session.session?.user.id;
   if (!uid) throw new Error('Not signed in.');
-  const { error } = await supabase.from('filter_preferences').update({ filters }).eq('user_id', uid);
+  const { data, error } = await supabase
+    .from('filter_preferences')
+    .update({ filters })
+    .eq('user_id', uid)
+    .select('user_id');
   if (error) throw error;
+  if (!data?.length) throw new Error('Could not save feed filters. Try again.');
+}
+
+/** Changes when Feed Settings filters are saved (for refreshing the feed). */
+export async function loadFilterPreferencesUpdatedAt(): Promise<string | null> {
+  const { data: session } = await supabase.auth.getSession();
+  const uid = session.session?.user.id;
+  if (!uid) return null;
+  const { data, error } = await supabase
+    .from('filter_preferences')
+    .select('updated_at')
+    .eq('user_id', uid)
+    .maybeSingle();
+  if (error) throw error;
+  return data?.updated_at ?? null;
 }
 
 export async function loadFeedRankingSettings(): Promise<FeedRankingSettings> {

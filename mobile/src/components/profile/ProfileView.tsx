@@ -415,6 +415,7 @@ export function ProfileView({ userId, showBack }: Props) {
               {canNudge ? (
                 <NudgeCard
                   firstName={profile.firstName}
+                  gender={profile.gender}
                   alreadyNudged={alreadyNudged}
                   onNudge={() =>
                     confirmNudge(

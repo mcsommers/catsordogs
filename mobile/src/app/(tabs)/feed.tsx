@@ -20,6 +20,7 @@ import {
   reportAnswerView,
   type FeedItem,
 } from '../../lib/feed';
+import { loadFilterPreferencesUpdatedAt } from '../../lib/feedSettings';
 import { shortQuestionDate } from '../../lib/format';
 import { FeedEndScreen } from '../../components/FeedEndScreen';
 import { FeedOverlay } from '../../components/FeedOverlay';
@@ -52,6 +53,7 @@ export default function Feed() {
   const { session, loading: sessionLoading } = useSession();
   const { date: feedDate, feedReload } = useLocalSearchParams<{ date?: string; feedReload?: string }>();
   const lastFeedReloadRef = useRef<string | undefined>(undefined);
+  const filtersUpdatedAtRef = useRef<string | null>(null);
   const { height: windowHeight } = useWindowDimensions();
   const [measuredHeight, setMeasuredHeight] = useState(0);
   const pageHeight = measuredHeight > 0 ? measuredHeight : windowHeight;
@@ -249,6 +251,26 @@ export default function Feed() {
     flatRef.current?.scrollToOffset({ offset: 0, animated: false });
     loadInitialFeed();
   }, [feedReload, loadInitialFeed]);
+
+  useFocusEffect(
+    useCallback(() => {
+      if (sessionLoading || !session || !gate || gate.state !== 'open') return;
+      loadFilterPreferencesUpdatedAt()
+        .then((ts) => {
+          if (!ts) return;
+          if (filtersUpdatedAtRef.current === null) {
+            filtersUpdatedAtRef.current = ts;
+            return;
+          }
+          if (ts !== filtersUpdatedAtRef.current) {
+            filtersUpdatedAtRef.current = ts;
+            flatRef.current?.scrollToOffset({ offset: 0, animated: false });
+            loadInitialFeed();
+          }
+        })
+        .catch(() => {});
+    }, [sessionLoading, session, gate, loadInitialFeed]),
+  );
 
   const loadMore = useCallback(async () => {
     if (loadingMoreRef.current || loadingFeedRef.current || items.length >= totalCount) return;

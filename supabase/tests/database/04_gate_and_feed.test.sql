@@ -290,7 +290,7 @@ end $$;
 reset role;
 select is(pg_temp.filtered('{"show_me":"Women"}'), array['W1', 'W2', 'X1', 'X2', 'X3'], 'filter: show me women');
 select is(pg_temp.filtered('{"show_me":"Men"}'), array['M1'], 'filter: show me men');
-select is(pg_temp.filtered('{"show_me":"Everyone"}'), array['M1', 'N1', 'W1', 'W2', 'X1', 'X2', 'X3'], 'filter: everyone shows all');
+select is(pg_temp.filtered('{"show_me":"All Genders"}'), array['M1', 'N1', 'W1', 'W2', 'X1', 'X2', 'X3'], 'filter: all genders shows all');
 select is(pg_temp.filtered('{"age_range":{"min":26,"max":32}}'), array['N1', 'W1', 'X1', 'X2'], 'filter: age range');
 select is(pg_temp.filtered('{"height_range":{"min":71,"max":79}}'), array['M1'], 'filter: height range (inches)');
 select is(pg_temp.filtered('{"age_range":{"min":18,"max":32}}'), array['N1', 'W1', 'W2', 'X1', 'X2'], 'filter: age range with the minimum handle on the end has no lower limit');

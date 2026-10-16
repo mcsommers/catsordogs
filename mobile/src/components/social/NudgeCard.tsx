@@ -1,23 +1,25 @@
 import { Pressable, StyleSheet, Text, View } from 'react-native';
 import { Bell } from 'lucide-react-native';
 import { colors, fonts } from '../../theme';
+import { nudgeCardBody, nudgeCardTitle } from './socialCopy';
 
 type Props = {
   firstName: string;
+  gender?: string | null;
   alreadyNudged: boolean;
   onNudge: () => void;
 };
 
 /** 06n — shown when get_follow_state.can_nudge is true. */
-export function NudgeCard({ firstName, alreadyNudged, onNudge }: Props) {
+export function NudgeCard({ firstName, gender, alreadyNudged, onNudge }: Props) {
   return (
     <View style={styles.card}>
       <View style={styles.iconWrap}>
         <Bell size={18} color={colors.accentDog} />
       </View>
       <View style={styles.textCol}>
-        <Text style={styles.title}>{firstName} hasn&apos;t answered today</Text>
-        <Text style={styles.body}>Send a nudge so they know a follower wants to hear their answer.</Text>
+        <Text style={styles.title}>{nudgeCardTitle(firstName)}</Text>
+        <Text style={styles.body}>{nudgeCardBody(gender)}</Text>
       </View>
       <Pressable
         style={[styles.btn, alreadyNudged && styles.btnDisabled]}

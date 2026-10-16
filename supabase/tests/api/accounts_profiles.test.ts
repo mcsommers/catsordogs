@@ -87,7 +87,7 @@ test('a user can build and finish a profile with a photo upload', async () => {
 
   const { data: prefs } = await alice.client.from('filter_preferences').select('filters').single();
   assert.equal(prefs?.filters?.sexual_orientation, undefined);
-  assert.equal(prefs?.filters?.show_me, 'Everyone');
+  assert.equal(prefs?.filters?.show_me, 'All Genders');
 });
 
 test('a user cannot read or change anyone else\'s profile, photos or filters', async () => {

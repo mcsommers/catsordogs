@@ -2,7 +2,7 @@
 -- share, even outside the viewer's filters. (Everything else about the feed is
 -- in 04_gate_and_feed.test.sql.)
 begin;
-select plan(15);
+select plan(17);
 
 delete from public.answers;
 delete from public.videos;
@@ -107,7 +107,23 @@ set local role authenticated;
 select is((select first_name from public.get_feed(50) offset 10 limit 1), 'Y1', 'earlier days follow after today''s whole list');
 select is((select is_followed from public.get_feed(50, 0, public.utc_today() - 1)), true, 'a followed person''s earlier answer is marked as followed');
 
+-- Sexual orientation filter applies to followed people too (Show me / age / height can still be overridden).
+reset role;
+update public.profiles set sexual_orientation = '{"Gay"}' where id = pg_temp.uid(11);
+update public.profiles set sexual_orientation = '{"Bisexual"}' where id = pg_temp.uid(21);
+update public.filter_preferences set filters = '{"sexual_orientation":["Bisexual"]}' where user_id = pg_temp.uid(1);
+select set_config('request.jwt.claims', pg_temp.claims(1), true);
+set local role authenticated;
+select ok(not exists (select 1 from public.get_feed(50, 0, public.utc_today()) where first_name = 'F1'),
+  'followed people outside Sexual orientation do not appear');
+select ok(exists (select 1 from public.get_feed(50, 0, public.utc_today()) where first_name = 'G1'),
+  'people who match Sexual orientation still appear');
+
 -- being followed changes nothing for the followed person, and nobody can read follows
+reset role;
+update public.filter_preferences set filters = '{}' where user_id = pg_temp.uid(1);
+select set_config('request.jwt.claims', pg_temp.claims(1), true);
+set local role authenticated;
 select is((select count(*) from public.get_feed(50, 0, public.utc_today())), 10::bigint, 'the viewer''s feed is unaffected by who follows the viewer');
 select throws_ok($$select * from public.follows$$, '42501', null, 'the viewer cannot read who they follow, or who follows them');
 
