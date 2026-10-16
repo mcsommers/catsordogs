@@ -6,6 +6,7 @@
 // Not callable by the app: it needs the shared secret in x-worker-secret.
 import { json, requireEnv } from '../_shared/http.ts';
 import { serviceClient } from '../_shared/clients.ts';
+import { notificationSettingsAppUrl, openAppUrlForNotification } from '../_shared/emailLinks.ts';
 import { unsubscribeUrl } from '../_shared/unsubscribe.ts';
 
 type Work = {
@@ -48,13 +49,34 @@ async function sendPush(work: Work, db: ReturnType<typeof serviceClient>): Promi
   return accepted;
 }
 
+function emailFooter(work: Work): { text: string; html: string } {
+  const openUrl = openAppUrlForNotification(work.type, work.data);
+  const settingsUrl = notificationSettingsAppUrl();
+  const textLines = [
+    work.body,
+    '',
+    `Open the app: ${openUrl}`,
+    `Manage your notification settings: ${settingsUrl}`,
+  ];
+  const htmlParts = [
+    `<p>${escapeHtml(work.body)}</p>`,
+    `<p><a href="${escapeHtml(openUrl)}">Open the app</a></p>`,
+    `<p style="color:#888;font-size:12px"><a href="${escapeHtml(settingsUrl)}">Manage your notification settings</a></p>`,
+  ];
+  return { text: textLines.join('\n'), html: htmlParts.join('') };
+}
+
 async function sendEmail(work: Work): Promise<void> {
   const apiKey = Deno.env.get('RESEND_API_KEY');
   if (!apiKey) throw new Error('Email is not configured (RESEND_API_KEY is missing).');
-  // Hidden-video notices and admin operational mail have no unsubscribe link.
-  const safety = work.type === 'moderation' || work.type === 'admin_alert';
+  const adminOnly = work.type === 'admin_alert';
   const base = Deno.env.get('PUBLIC_FUNCTIONS_URL') || `${requireEnv('SUPABASE_URL')}/functions/v1`;
-  const link = safety ? null : await unsubscribeUrl(base, requireEnv('UNSUBSCRIBE_SECRET'), work.user_id, work.type);
+  const listUnsubscribe = adminOnly
+    ? null
+    : await unsubscribeUrl(base, requireEnv('UNSUBSCRIBE_SECRET'), work.user_id, work.type);
+  const footer = adminOnly
+    ? { text: work.body, html: `<p>${escapeHtml(work.body)}</p>` }
+    : emailFooter(work);
   const res = await fetch(`${Deno.env.get('RESEND_BASE_URL') || 'https://api.resend.com'}/emails`, {
     method: 'POST',
     headers: { Authorization: `Bearer ${apiKey}`, 'Content-Type': 'application/json' },
@@ -62,11 +84,11 @@ async function sendEmail(work: Work): Promise<void> {
       from: Deno.env.get('RESEND_FROM') || 'Cats or Dogs? <noreply@catsordogs.net>',
       to: [work.email],
       subject: work.title,
-      text: link ? `${work.body}\n\nYou can turn these emails off any time: ${link}` : work.body,
-      html: link
-        ? `<p>${escapeHtml(work.body)}</p><p style="color:#888;font-size:12px"><a href="${escapeHtml(link)}">Unsubscribe from these emails</a></p>`
-        : `<p>${escapeHtml(work.body)}</p>`,
-      ...(link ? { headers: { 'List-Unsubscribe': `<${link}>`, 'List-Unsubscribe-Post': 'List-Unsubscribe=One-Click' } } : {}),
+      text: footer.text,
+      html: footer.html,
+      ...(listUnsubscribe
+        ? { headers: { 'List-Unsubscribe': `<${listUnsubscribe}>`, 'List-Unsubscribe-Post': 'List-Unsubscribe=One-Click' } }
+        : {}),
     }),
   });
   if (!res.ok) throw new Error(`Resend failed with status ${res.status}.`);
