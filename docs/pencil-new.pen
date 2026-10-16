@@ -9392,13 +9392,13 @@
                           "id": "obIkm",
                           "type": "ref",
                           "ref": "yFGdp",
-                          "name": "Everyone",
+                          "name": "All Genders",
                           "fill": "#000000",
                           "stroke": "$white",
                           "strokeWidth": 1,
                           "descendants": {
                             "p8naJP": {
-                              "content": "Everyone",
+                              "content": "All Genders",
                               "fill": "$white"
                             }
                           }
@@ -61510,13 +61510,13 @@
                           "id": "ouUCF",
                           "type": "ref",
                           "ref": "yFGdp",
-                          "name": "Everyone",
+                          "name": "All Genders",
                           "fill": "#000000",
                           "stroke": "$white",
                           "strokeWidth": 1,
                           "descendants": {
                             "p8naJP": {
-                              "content": "Everyone",
+                              "content": "All Genders",
                               "fill": "$white"
                             }
                           }
@@ -77538,7 +77538,7 @@
                                   "id": "UIu31",
                                   "name": "Label",
                                   "fill": "$text-dark-muted",
-                                  "content": "Everyone",
+                                  "content": "All Genders",
                                   "fontFamily": "$font-body",
                                   "fontSize": 12,
                                   "fontWeight": "600"
