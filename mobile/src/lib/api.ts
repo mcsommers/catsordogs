@@ -102,6 +102,11 @@ export async function submitAnswer(videoId: string): Promise<void> {
   if (error) throw error;
 }
 
+export async function abandonPendingCaptions(videoId: string): Promise<void> {
+  const { error } = await supabase.rpc('abandon_pending_captions', { p_video_id: videoId });
+  if (error) throw error;
+}
+
 export async function saveCaptionTexts(videoId: string, texts: string[]): Promise<void> {
   const { error } = await supabase.rpc('update_caption_segments', { p_video_id: videoId, p_texts: texts });
   if (error) throw error;

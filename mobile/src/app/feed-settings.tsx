@@ -1,6 +1,9 @@
-import { useCallback, useEffect, useRef, useState } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { Alert, Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
 import { router, useFocusEffect } from 'expo-router';
+import { DiscardFeedSettingsChangesDialog } from '../components/DiscardFeedSettingsChangesDialog';
+import { useFeedSettingsLeaveGuard } from '../hooks/useFeedSettingsLeaveGuard';
+import { feedSettingsHasUnsavedChanges, snapshotFeedSettings } from '../lib/feedSettingsDirty';
 import { ChevronRight } from 'lucide-react-native';
 import { setSpecificInterestsRequest } from '../lib/specificInterestsPicker';
 import {
@@ -8,7 +11,6 @@ import {
   loadFilterDefinitions,
   loadFilterPreferences,
   RANKING_LABELS,
-  resetFeedSettings,
   saveFilterPreferences,
   updateFeedRankingSettings,
   type FeedRankingSettings,
@@ -152,6 +154,7 @@ export default function FeedSettingsScreen() {
   const [options, setOptions] = useState<Record<string, Option[]>>({});
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
+  const [baseline, setBaseline] = useState<string | null>(null);
   // What Shared Interests was set to before "Specific" was chosen (Specific with no picks goes back to it).
   const beforeSpecific = useRef<SharedInterestsWeight>('medium');
 
@@ -176,6 +179,7 @@ export default function FeedSettingsScreen() {
     setDefs(d);
     setFilters(f);
     setRanking(r);
+    setBaseline(snapshotFeedSettings(f, r));
     const grouped: Record<string, Option[]> = {};
     for (const row of opts.data ?? []) {
       const cat = String(row.category);
@@ -191,6 +195,20 @@ export default function FeedSettingsScreen() {
       .finally(() => setLoading(false));
   }, [load]);
 
+  const dirty = useMemo(
+    () => (ranking ? feedSettingsHasUnsavedChanges(filters, ranking, baseline) : false),
+    [filters, ranking, baseline],
+  );
+
+  const leaveToFeed = useCallback(() => {
+    router.replace({ pathname: '/(tabs)/feed', params: { feedReload: String(Date.now()) } });
+  }, []);
+
+  const { attemptLeave, confirmLeave, keepEditing, discardVisible, permitLeave } = useFeedSettingsLeaveGuard({
+    dirty,
+    onLeave: () => router.back(),
+  });
+
   const setFilter = (key: string, value: unknown) => {
     setFilters((prev) => {
       const next = { ...prev };
@@ -204,14 +222,16 @@ export default function FeedSettingsScreen() {
     setSaving(true);
     try {
       await saveFilterPreferences(filters);
+      let savedRanking = ranking;
       if (ranking) {
         const noPicks = ranking.sharedInterests === 'specific' && ranking.specificInterests.length === 0;
-        await updateFeedRankingSettings(
-          noPicks ? { ...ranking, sharedInterests: beforeSpecific.current } : ranking,
-        );
-        if (noPicks) setRanking({ ...ranking, sharedInterests: beforeSpecific.current });
+        savedRanking = noPicks ? { ...ranking, sharedInterests: beforeSpecific.current } : ranking;
+        await updateFeedRankingSettings(savedRanking);
+        if (noPicks) setRanking(savedRanking);
       }
-      Alert.alert('Saved', 'Your feed settings were updated.');
+      setBaseline(snapshotFeedSettings(filters, savedRanking!));
+      permitLeave();
+      leaveToFeed();
     } catch (e) {
       Alert.alert('Could not save', (e as Error).message || 'Try again.');
     } finally {
@@ -229,15 +249,6 @@ export default function FeedSettingsScreen() {
     router.push('/specific-interests');
   };
 
-  const onResetRanking = async () => {
-    try {
-      await resetFeedSettings();
-      setRanking(await loadFeedRankingSettings());
-    } catch {
-      Alert.alert('Could not reset', 'Try again.');
-    }
-  };
-
   if (loading || !ranking) {
     return (
       <Screen dark>
@@ -248,26 +259,33 @@ export default function FeedSettingsScreen() {
 
   return (
     <Screen dark scroll scrollRef={scrollRef} scrollContentRef={contentRef} edges={['top', 'bottom']}>
+      <DiscardFeedSettingsChangesDialog
+        visible={discardVisible}
+        onKeepEditing={keepEditing}
+        onLeave={confirmLeave}
+      />
       <View style={ui.headerWithTitle}>
-        <BackButton onPress={() => router.back()} dark />
+        <BackButton onPress={attemptLeave} dark />
         <Text style={ui.headerTitleDark}>Feed Settings</Text>
       </View>
       <Text style={styles.lead}>
         Filters decide who can appear in your feed. Ranking signals decide the order they appear in.
       </Text>
 
-      <SectionHeader title="Filters" />
+      <SectionHeader dark title="Filters" />
       <View style={styles.block}>
         {defs.map((d) => (
           <FilterDefinitionCard key={d.key} d={d} filters={filters} setFilter={setFilter} options={options} />
         ))}
       </View>
 
-      <View style={styles.rankingHeader}>
-        <SectionHeader title="Ranking" helper="Adjust how much each signal matters for the order of your feed." />
-        <Pressable onPress={onResetRanking}>
-          <Text style={styles.resetLink}>Reset</Text>
-        </Pressable>
+      <View style={styles.rankingSectionHeader}>
+        <SectionHeader
+          dark
+          title="Ranking"
+          helper="Adjust how much each signal matters for the order of your feed."
+          helperBelow
+        />
       </View>
       {(Object.keys(RANKING_LABELS) as (keyof typeof RANKING_LABELS)[]).map((key) => (
         <View key={key} style={styles.filterCard}>
@@ -303,7 +321,13 @@ export default function FeedSettingsScreen() {
         </View>
       ))}
 
-      <PrimaryButton label="Save" onPress={onSave} loading={saving} style={{ marginTop: 8 }} />
+      <PrimaryButton
+        label="Save"
+        onPress={onSave}
+        loading={saving}
+        disabled={!dirty}
+        style={{ marginTop: 8 }}
+      />
     </Screen>
   );
 }
@@ -334,8 +358,7 @@ const styles = StyleSheet.create({
   rangeLabelRow: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' },
   rangeScale: { fontFamily: fonts.body, fontSize: 11, color: colors.textDarkMuted },
   rangeValue: { fontFamily: fonts.bodyBold, fontSize: 13, color: colors.accentDog },
-  rankingHeader: { flexDirection: 'row', alignItems: 'flex-start', justifyContent: 'space-between', marginTop: 8 },
-  resetLink: { fontFamily: fonts.bodyBold, fontSize: 13, color: colors.accentDog, paddingTop: 4 },
+  rankingSectionHeader: { marginTop: 8 },
   specificRow: {
     flexDirection: 'row',
     alignItems: 'center',

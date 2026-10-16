@@ -62,7 +62,13 @@ test('minimum age is enforced through the API', async () => {
 test('a user can build and finish a profile with a photo upload', async () => {
   const { error: e1 } = await alice.client
     .from('profiles')
-    .update({ first_name: 'Alex', birthday: eighteenYearsAgo(), gender: 'Woman', interested_in: ['Women'] })
+    .update({
+      first_name: 'Alex',
+      birthday: eighteenYearsAgo(),
+      gender: 'Woman',
+      interested_in: ['Women'],
+      sexual_orientation: ['Bisexual'],
+    })
     .eq('id', alice.id);
   assert.ifError(e1);
 
@@ -78,6 +84,10 @@ test('a user can build and finish a profile with a photo upload', async () => {
   const done = await alice.client.rpc('complete_profile');
   assert.ifError(done.error);
   assert.ok(done.data);
+
+  const { data: prefs } = await alice.client.from('filter_preferences').select('filters').single();
+  assert.equal(prefs?.filters?.sexual_orientation, undefined);
+  assert.equal(prefs?.filters?.show_me, 'Everyone');
 });
 
 test('a user cannot read or change anyone else\'s profile, photos or filters', async () => {

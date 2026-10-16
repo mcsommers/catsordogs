@@ -1,6 +1,6 @@
 -- Phase 1 rules: accounts, profiles, photos, filters, and who can see what.
 begin;
-select plan(74);
+select plan(77);
 
 -- Two test users. The sign-up trigger should give each an empty profile.
 insert into auth.users (id, email, aud, role, instance_id) values
@@ -198,7 +198,19 @@ select throws_ok(
   '42501', null,
   'a user cannot add photos to someone else''s profile');
 
+select is(
+  (select filters from public.filter_preferences where user_id = 'aaaaaaaa-0000-0000-0000-000000000001'),
+  '{}'::jsonb,
+  'feed filters stay empty until the profile is finished');
 select isnt(public.complete_profile(), null, 'a profile with the required fields and a photo can be finished');
+select is(
+  (select filters ? 'sexual_orientation' from public.filter_preferences where user_id = 'aaaaaaaa-0000-0000-0000-000000000001'),
+  false,
+  'finishing does not seed the sexual orientation feed filter');
+select is(
+  (select filters ->> 'show_me' from public.filter_preferences where user_id = 'aaaaaaaa-0000-0000-0000-000000000001'),
+  'Women',
+  'finishing seeds Show me from gender and sexual orientation');
 select is(
   (select profile_completed_at from public.profiles where id = 'aaaaaaaa-0000-0000-0000-000000000001'),
   public.complete_profile(),
