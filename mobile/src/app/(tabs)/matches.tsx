@@ -1,6 +1,6 @@
 import { useCallback, useState } from 'react';
 import { Image, Pressable, RefreshControl, ScrollView, StyleSheet, Text, View } from 'react-native';
-import { router, useFocusEffect } from 'expo-router';
+import { router, useFocusEffect, useLocalSearchParams } from 'expo-router';
 import {
   cancelMatchRequest,
   declineMatchRequest,
@@ -26,6 +26,7 @@ const SEGMENTS: { key: Segment; label: string }[] = [
 ];
 
 export default function Matches() {
+  const { segment: segmentParam } = useLocalSearchParams<{ segment?: string }>();
   const [segment, setSegment] = useState<Segment>('chats');
   const [incoming, setIncoming] = useState<IncomingMatchRequest[]>([]);
   const [outgoing, setOutgoing] = useState<OutgoingMatchRequest[]>([]);
@@ -33,6 +34,14 @@ export default function Matches() {
   const [avatars, setAvatars] = useState<Map<string, string>>(new Map());
   const [loading, setLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
+
+  useFocusEffect(
+    useCallback(() => {
+      if (segmentParam === 'chats' || segmentParam === 'incoming' || segmentParam === 'outgoing') {
+        setSegment(segmentParam);
+      }
+    }, [segmentParam])
+  );
 
   const load = useCallback(async () => {
     const [inc, out, conv] = await Promise.all([
