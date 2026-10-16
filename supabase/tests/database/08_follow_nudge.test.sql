@@ -2,7 +2,7 @@
 -- notification-a-day limit, and that nobody using the app can ever learn who
 -- follows or nudged them.
 begin;
-select plan(94);
+select plan(95);
 
 delete from public.answers;
 delete from public.videos;
@@ -179,6 +179,7 @@ set local role service_role;
 create temp table claimed as select * from public.claim_notifications() where user_id = pg_temp.uid(1);
 grant select on claimed to public;
 select is((select count(*) from claimed), 1::bigint, 'it is handed to the worker immediately');
+select is((select title from claimed), 'You have been nudged', 'nudge subject line');
 select is((select body from claimed), '3 followers want to hear your answer to today''s question.', 'it says how many followers want to hear the answer');
 select is((select send_push from claimed), true, 'it goes by push (the default, and A has a phone registered)');
 select is((select send_email from claimed), true, 'and by email (on for new accounts)');
