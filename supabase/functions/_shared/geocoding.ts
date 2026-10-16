@@ -1,5 +1,6 @@
-// Open-Meteo-style geocoding search (GEOCODING_URL). Used for profile location
-// autocomplete and for update-location lookups.
+// Open-Meteo-style geocoding search (GEOCODING_URL). Used when
+// app_settings.location_provider is open_meteo (the default). Keep this file
+// even if Google Places is selected in Admin Settings.
 
 export type GeocodeHit = {
   name: string;

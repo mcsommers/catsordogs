@@ -14,11 +14,14 @@ WORK="$(mktemp -d)"
 FAKE_MUX_PORT=54399
 FAKE_GEOCODER_PORT=54398
 FAKE_NOTIFY_PORT=54397
+FAKE_GOOGLE_PLACES_PORT=54396
 openssl genrsa -out "$WORK/key.pem" 2048 2>/dev/null
 openssl rsa -in "$WORK/key.pem" -pubout -out "$WORK/pub.pem" 2>/dev/null
 export MUX_WEBHOOK_SECRET="test-webhook-$(openssl rand -hex 16)"
 export MUX_TEST_PUBLIC_KEY="$(cat "$WORK/pub.pem")"
-export FAKE_MUX_PORT FAKE_GEOCODER_PORT FAKE_NOTIFY_PORT
+export FAKE_MUX_PORT FAKE_GEOCODER_PORT FAKE_NOTIFY_PORT FAKE_GOOGLE_PLACES_PORT
+GOOGLE_PLACES_API_KEY="test-google-places-key"
+export GOOGLE_PLACES_API_KEY
 export NOTIFICATION_WORKER_SECRET="test-worker-$(openssl rand -hex 16)"
 export UNSUBSCRIBE_SECRET="test-unsub-$(openssl rand -hex 16)"
 
@@ -32,6 +35,8 @@ MUX_BASE_URL=http://host.docker.internal:$FAKE_MUX_PORT
 MUX_STREAM_BASE_URL=http://host.docker.internal:$FAKE_MUX_PORT/stream
 MUX_IMAGE_BASE_URL=http://host.docker.internal:$FAKE_MUX_PORT/image
 GEOCODING_URL=http://host.docker.internal:$FAKE_GEOCODER_PORT/v1/search
+GOOGLE_PLACES_API_KEY=$GOOGLE_PLACES_API_KEY
+GOOGLE_PLACES_BASE_URL=http://host.docker.internal:$FAKE_GOOGLE_PLACES_PORT
 NOTIFICATION_WORKER_SECRET=$NOTIFICATION_WORKER_SECRET
 UNSUBSCRIBE_SECRET=$UNSUBSCRIBE_SECRET
 RESEND_API_KEY=test-resend-key

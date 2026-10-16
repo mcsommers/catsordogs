@@ -92,7 +92,7 @@ Rules that must never break:
    thresholds are enforced on the server, never only in the app.
 3. Admin-editable settings (recording length, minimum watch time,
    onboarding mode, followed-content cap, feed look-back days, flag threshold,
-   nudge notification delay) come from
+   nudge notification delay, location provider) come from
    the app_settings table. Never hard-code them.
 4. A flag disables one video, never an account.
 5. Every server rule gets an automated test.

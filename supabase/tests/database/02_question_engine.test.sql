@@ -1,6 +1,6 @@
 -- Phase 2 rules: the question calendar, settings, and who may change them.
 begin;
-select plan(69);
+select plan(73);
 
 -- Start from a clean calendar (the local seed data is removed inside this test only).
 delete from public.videos;
@@ -114,6 +114,10 @@ select throws_ok($$update public.app_settings set followed_content_cap_percent =
 select throws_ok($$update public.app_settings set flag_threshold = 0$$, '23514', null, 'a flag threshold under 1 is rejected');
 select throws_ok($$update public.app_settings set help_support_url = 'http://insecure.example.com'$$, '23514', null, 'the help URL must be https');
 select lives_ok($$update public.app_settings set help_support_url = 'https://help.example.com/catsordogs'$$, 'a valid help URL is accepted');
+select is((select location_provider from public.app_settings), 'open_meteo', 'location lookup defaults to Open-Meteo');
+select lives_ok($$update public.app_settings set location_provider = 'google_places'$$, 'an admin can switch location lookup to Google Places');
+select throws_ok($$update public.app_settings set location_provider = 'mapbox'$$, '23514', null, 'an unknown location provider is rejected');
+select lives_ok($$update public.app_settings set location_provider = 'open_meteo'$$, 'an admin can switch location lookup back to Open-Meteo');
 select throws_ok($$delete from public.app_settings$$, '42501', null, 'the settings row cannot be deleted');
 select throws_ok($$insert into public.app_settings (id) values (true)$$, '42501', null, 'a second settings row cannot be added');
 

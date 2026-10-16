@@ -38,6 +38,7 @@ after(async () => {
   for (const d of testDates) await admin.from('questions').delete().eq('question_date', d);
   await admin.from('app_settings').update({
     recording_length_seconds: 14, min_watch_seconds: 3, onboarding_mode: 'todays_question', help_support_url: null,
+    location_provider: 'open_meteo',
   }).eq('id', true);
 });
 

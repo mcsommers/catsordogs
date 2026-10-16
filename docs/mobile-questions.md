@@ -3,6 +3,10 @@
 A record of questions asked while planning the phone app, the options offered,
 and Mike's answer. Newest phase first.
 
+## City lookup: Open-Meteo or Google Places (Mike, Oct 15, 2026)
+
+Keep the tested Open-Meteo city suggestions. Add Google Places Autocomplete (New) and Place Details (New) as an alternative. Admin Settings (`/admin/settings`) chooses which service to use (`location_provider`: Open-Meteo default, or Google Places). The Google API key is a server secret, not a field on that page. The phone still stores only a city label; it does not talk to Google or Open-Meteo directly.
+
 ## Profile hero actions on the city row (Mike, Oct 15, 2026)
 
 On another person’s profile (**06j**, **06n**, **07h**, and the same hero on related overlays), **⋯** and the heart sit on the **city, state, and distance** row, not on the name / Following row. That keeps the Following badge from covering the buttons. City, state, and distance are vertically centered with those buttons.
