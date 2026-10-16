@@ -79,7 +79,8 @@ export default function MyAnswersScreen() {
 }
 
 const styles = StyleSheet.create({
-  header: { paddingHorizontal: PROFILE_PAD, paddingBottom: 16 },
+  /** Match Feed Settings (`Screen` scroll `paddingTop: 24` below the safe area). */
+  header: { paddingHorizontal: PROFILE_PAD, paddingTop: 24, paddingBottom: 16 },
   list: { flex: 1 },
   listContent: { paddingHorizontal: PROFILE_PAD, paddingBottom: 32, gap: 8 },
   empty: { fontFamily: fonts.body, fontSize: 14, color: colors.textDarkMuted, textAlign: 'center', marginTop: 24 },
