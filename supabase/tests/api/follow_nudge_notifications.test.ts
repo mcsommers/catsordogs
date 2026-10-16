@@ -139,10 +139,7 @@ test('email goes only to people who turned it on, with a working unsubscribe lin
   assert.equal(daveMail[0].authorization, 'Bearer test-resend-key');
   assert.match(daveMail[0].body.from, /noreply@catsordogs\.net/);
   assert.equal(daveMail[0].body.subject, 'Today\'s question is live');
-  assert.match(daveMail[0].body.text, /Open the app: catsordogs:\/\/feed/);
-  assert.match(daveMail[0].body.text, /Manage your notification settings: catsordogs:\/\/notifications/);
-  assert.match(daveMail[0].body.html, />Open the app</);
-  assert.match(daveMail[0].body.html, />Manage your notification settings</);
+  assert.match(daveMail[0].body.text, /unsubscribe|turn these emails off/i);
   const listUnsub = daveMail[0].body.headers['List-Unsubscribe'] as string;
   assert.match(listUnsub, /unsubscribe\?u=/);
   assert.equal(daveMail[0].body.headers['List-Unsubscribe-Post'], 'List-Unsubscribe=One-Click');

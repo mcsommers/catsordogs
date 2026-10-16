@@ -6,7 +6,6 @@ import { useFonts, Anton_400Regular } from '@expo-google-fonts/anton';
 import { FunnelSans_400Regular, FunnelSans_600SemiBold, FunnelSans_700Bold } from '@expo-google-fonts/funnel-sans';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { ConfirmationProvider } from '../components/ConfirmationProvider';
-import { useAppDeepLinks } from '../hooks/useAppDeepLinks';
 import { SessionProvider, useSession } from '../lib/session';
 import { needsSignIn } from '../lib/routing';
 import { colors } from '../theme';
@@ -32,7 +31,6 @@ export default function RootLayout() {
         <ConfirmationProvider>
         <StatusBar style="auto" />
         <SignedOutGuard>
-        <AppDeepLinkRouter>
           <Stack screenOptions={{ headerShown: false, contentStyle: { backgroundColor: colors.bg } }}>
             <Stack.Screen name="question" options={{ gestureEnabled: false, contentStyle: { backgroundColor: colors.bgDark } }} />
             <Stack.Screen name="review" options={{ gestureEnabled: false, contentStyle: { backgroundColor: colors.bgDark } }} />
@@ -50,7 +48,6 @@ export default function RootLayout() {
             <Stack.Screen name="people-i-follow" options={{ contentStyle: { backgroundColor: colors.bgDark } }} />
             <Stack.Screen name="chat/[matchId]" options={{ contentStyle: { backgroundColor: colors.bgDark } }} />
           </Stack>
-        </AppDeepLinkRouter>
         </SignedOutGuard>
         </ConfirmationProvider>
       </SessionProvider>
@@ -59,12 +56,6 @@ export default function RootLayout() {
 }
 
 /** If a signed-out person lands on a signed-in screen (common on Android QR scans), send them to Welcome once. */
-function AppDeepLinkRouter({ children }: { children: ReactNode }) {
-  const { session, loading } = useSession();
-  useAppDeepLinks(!loading && !!session);
-  return children;
-}
-
 function SignedOutGuard({ children }: { children: ReactNode }) {
   const { session, loading } = useSession();
   const screen = useSegments()[0];
