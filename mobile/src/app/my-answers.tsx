@@ -1,11 +1,10 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { FlatList, StyleSheet, Text, View } from 'react-native';
-import { StatusBar } from 'expo-status-bar';
 import { router } from 'expo-router';
 import { fetchUserAnswersPage, PROFILE_ANSWER_PAGE_SIZE, type ProfileAnswer } from '../lib/profile';
 import { ProfileArchiveCard } from '../components/profile/ProfileArchiveCard';
 import { PROFILE_PAD } from '../components/profile/profileLayout';
-import { BackButton, CenteredSpinner } from '../components/ui';
+import { BackButton, CenteredSpinner, Screen, styles as ui } from '../components/ui';
 import { colors, fonts } from '../theme';
 
 /** 08a Your Answers — full archive with lazy loading (Pencil 08a). */
@@ -42,48 +41,46 @@ export default function MyAnswersScreen() {
     }
   }, [answers.length, total]);
 
-  return (
-    <View style={styles.root}>
-      <StatusBar style="light" />
-      <View style={styles.header}>
-        <BackButton onPress={() => router.back()} hero />
-        <Text style={styles.title}>Your Answers</Text>
-        <View style={styles.headerSpacer} />
-      </View>
-      {loading ? (
+  if (loading) {
+    return (
+      <Screen dark edges={['top', 'bottom']}>
         <CenteredSpinner dark />
-      ) : (
-        <FlatList
-          data={answers}
-          keyExtractor={(a) => a.answerId}
-          contentContainerStyle={{ paddingHorizontal: PROFILE_PAD, paddingBottom: 32, gap: 8 }}
-          onEndReached={loadMore}
-          onEndReachedThreshold={0.4}
-          renderItem={({ item }) => (
-            <ProfileArchiveCard
-              answer={item}
-              onPress={() =>
-                router.push({ pathname: '/answer/[answerId]', params: { answerId: item.answerId, userId: 'self' } })
-              }
-            />
-          )}
-          ListEmptyComponent={<Text style={styles.empty}>No answers yet.</Text>}
-        />
-      )}
-    </View>
+      </Screen>
+    );
+  }
+
+  return (
+    <Screen dark flush edges={['top', 'bottom']}>
+      <View style={styles.header}>
+        <View style={ui.headerWithTitle}>
+          <BackButton onPress={() => router.back()} dark />
+          <Text style={ui.headerTitleDark}>Your Answers</Text>
+        </View>
+      </View>
+      <FlatList
+        data={answers}
+        keyExtractor={(a) => a.answerId}
+        style={styles.list}
+        contentContainerStyle={styles.listContent}
+        onEndReached={loadMore}
+        onEndReachedThreshold={0.4}
+        renderItem={({ item }) => (
+          <ProfileArchiveCard
+            answer={item}
+            onPress={() =>
+              router.push({ pathname: '/answer/[answerId]', params: { answerId: item.answerId, userId: 'self' } })
+            }
+          />
+        )}
+        ListEmptyComponent={<Text style={styles.empty}>No answers yet.</Text>}
+      />
+    </Screen>
   );
 }
 
 const styles = StyleSheet.create({
-  root: { flex: 1, backgroundColor: colors.bgDark },
-  header: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    paddingHorizontal: PROFILE_PAD,
-    paddingVertical: 12,
-    gap: 12,
-  },
-  title: { flex: 1, textAlign: 'center', fontFamily: fonts.bodyBold, fontSize: 17, color: colors.white },
-  headerSpacer: { width: 36 },
+  header: { paddingHorizontal: PROFILE_PAD, paddingBottom: 16 },
+  list: { flex: 1 },
+  listContent: { paddingHorizontal: PROFILE_PAD, paddingBottom: 32, gap: 8 },
   empty: { fontFamily: fonts.body, fontSize: 14, color: colors.textDarkMuted, textAlign: 'center', marginTop: 24 },
 });

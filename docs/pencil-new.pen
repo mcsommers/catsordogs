@@ -47274,18 +47274,6 @@
                   "fill": "$text-dark-faint"
                 }
               ]
-            },
-            {
-              "type": "text",
-              "id": "qOI6p",
-              "fill": "$text-dark-muted",
-              "textGrowth": "fixed-width",
-              "width": "fill_container",
-              "content": "Older answers load as you scroll",
-              "textAlign": "center",
-              "fontFamily": "$font-body",
-              "fontSize": 11,
-              "fontWeight": "normal"
             }
           ]
         }
