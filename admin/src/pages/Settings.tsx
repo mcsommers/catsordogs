@@ -15,6 +15,7 @@ type SettingsRow = {
   nudge_delay_minutes: number;
   daily_question_notify_time: string;
   help_support_url: string | null;
+  location_provider: 'open_meteo' | 'google_places';
   updated_at: string;
 };
 
@@ -33,6 +34,7 @@ const empty: SettingsRow = {
   nudge_delay_minutes: 0,
   daily_question_notify_time: '12:03:00',
   help_support_url: null,
+  location_provider: 'open_meteo',
   updated_at: '',
 };
 
@@ -51,6 +53,7 @@ function snapshotFromRow(row: SettingsRow): SettingsSnapshot {
     nudge_delay_minutes: Number(row.nudge_delay_minutes),
     daily_question_notify_time: `${time}:00`,
     help_support_url: row.help_support_url?.trim() ? row.help_support_url.trim() : null,
+    location_provider: row.location_provider === 'google_places' ? 'google_places' : 'open_meteo',
   };
 }
 
@@ -103,6 +106,7 @@ export default function Settings() {
       nudge_delay_minutes: payload.nudge_delay_minutes,
       daily_question_notify_time: payload.daily_question_notify_time,
       help_support_url: payload.help_support_url,
+      location_provider: payload.location_provider,
     }).eq('id', true);
     setSaving(false);
     if (saveError) return setError(saveError.message);
@@ -150,6 +154,22 @@ export default function Settings() {
         <span>Help & Support web address (https, or leave empty)</span>
         <input value={row.help_support_url ?? ''} placeholder="https://" onChange={(e) => set('help_support_url', e.target.value)} />
       </label>
+      <label className="card setting-row">
+        <span>City lookup</span>
+        <select
+          value={row.location_provider === 'google_places' ? 'google_places' : 'open_meteo'}
+          onChange={(e) => set('location_provider', e.target.value as SettingsRow['location_provider'])}
+        >
+          <option value="open_meteo">Open-Meteo</option>
+          <option value="google_places">Google Places</option>
+        </select>
+      </label>
+      <p className="muted setting-help">
+        Used when someone types a city on their profile, and again to look up coordinates for distance.
+        Open-Meteo is the default and needs no key. Google Places needs a server API key
+        (GOOGLE_PLACES_API_KEY). That key is a secret — it is not entered on this page. Switch to Google
+        Places only after the key is set on the server.
+      </p>
       <button className="primary" type="submit" disabled={!dirty || saving || !baseline}>
         {saving ? 'Saving…' : 'Save Settings'}
       </button>

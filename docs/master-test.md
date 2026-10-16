@@ -1,6 +1,6 @@
 # Master test — Cats or Dogs? on staging
 
-This is the ordered script for checking the whole product on the **staging** backend: several people posting, following, matching, chatting, and reporting, plus the feed order and the admin website. It is meant to be run by one person, on one phone, over two local days, with every email landing in **catsordogsapp@gmail.com**.
+This is the ordered script for checking the whole product on the **staging** backend: several people posting, following, matching, chatting, and reporting, plus the feed order and the admin website. It is meant to be run by one person, on one phone, over two local days, with every email landing in **[catsordogsapp@gmail.com](mailto:catsordogsapp@gmail.com)**.
 
 [UAT-flows.md](UAT-flows.md) is the screen-by-screen checklist (Welcome wording, caption states, photo zoom, and so on). This file does not repeat those. Use this file when the question is whether people, content, and the admin tools behave correctly together. Screen numbers (06, 07c, 08e) match `docs/pencil-new.pen`.
 
@@ -8,13 +8,15 @@ Tick a box when what you see matches the expected result. If it does not, note t
 
 ## How the two days fit together
 
-| When | What you prove |
-| --- | --- |
-| Day 1, setup | Admin access, the question calendar, and settings. Accounts exist but nobody has recorded yet. |
-| Day 1, morning | The daily-question email goes to people who have not answered, and only to them. |
-| Day 1, recordings | Eight people answer first, in an order that makes the feed predictable. Taylor and Parker record only after that check. |
-| Day 1, afternoon | Feed order, filters, follows, match requests, chat, block, reports, and the review queue. |
-| Day 2 (the next morning on your phone) | A nudge, a streak, a locked feed, yesterday rolling into the feed, and the "all caught up" screen. |
+
+| When                                   | What you prove                                                                                                          |
+| -------------------------------------- | ----------------------------------------------------------------------------------------------------------------------- |
+| Day 1, setup                           | Admin access, the question calendar, and settings. Accounts exist but nobody has recorded yet.                          |
+| Day 1, morning                         | The daily-question email goes to people who have not answered, and only to them.                                        |
+| Day 1, recordings                      | Eight people answer first, in an order that makes the feed predictable. Taylor and Parker record only after that check. |
+| Day 1, afternoon                       | Feed order, filters, follows, match requests, chat, block, reports, and the review queue.                               |
+| Day 2 (the next morning on your phone) | A nudge, a streak, a locked feed, yesterday rolling into the feed, and the "all caught up" screen.                      |
+
 
 Do not start Day 2 until your phone's date has changed. The app uses the phone's calendar day, not UTC midnight. In October, midnight on the US East Coast is 4:00 AM UTC.
 
@@ -27,7 +29,7 @@ Do not start Day 2 until your phone's date has changed. The app uses the phone's
 5. **Log out between people.** Profile tab → **Log Out** → Welcome. Closing the app does not log you out.
 6. **A second phone is optional.** It only helps for one check: a chat message appearing instantly while the other person already has the chat open. With one phone, send the message, log out, and log in as the other person.
 7. **Email is how you judge notifications in this script.** Push to a real phone needs a development build. Expo Go will not reliably show remote pushes (on current Android it cannot). Each account turns **email on** for the types under test. A scheduled job sends queued email about once a minute. The daily-question job looks every 5 minutes, so that mail can arrive a few minutes late. A nudge is sent immediately. Settings has **Nudge notification delay** in minutes (default **0**). A number above 0 holds that one email so later nudges can be counted in it.
-8. **Staging video (Mux test mode off).** Staging is set up with **`MUX_TEST_MODE=false`** in `supabase/functions/.env.staging` (and the same value in Supabase Edge Function secrets for staging). New uploads are **normal** Mux assets in the **Mux Staging** environment: **no** test watermark, up to the admin **recording length** (default **14** seconds), and they **stay** until deleted. They are **not** auto-removed after 24 hours. Mux bills encoding and storage on your plan. Record **one take** per person when you can; re-recording still counts against **recordings per day** (default **10**). If you see "We could not start the upload", ask the agent to check Mux and the staging `create-video-upload` function. "Recording limit reached" is the app's daily cap, not Mux. Do not run `supabase/seed-staging-feed.mjs` during this script. Extra demo posters would change who shows up in the feed.
+8. **Staging video (Mux test mode off).** Staging is set up with `MUX_TEST_MODE=false` in `supabase/functions/.env.staging` (and the same value in Supabase Edge Function secrets for staging). New uploads are **normal** Mux assets in the **Mux Staging** environment: **no** test watermark, up to the admin **recording length** (default **14** seconds), and they **stay** until deleted. They are **not** auto-removed after 24 hours. Mux bills encoding and storage on your plan. Record **one take** per person when you can; re-recording still counts against **recordings per day** (default **10**). If you see "We could not start the upload", ask the agent to check Mux and the staging `create-video-upload` function. "Recording limit reached" is the app's daily cap, not Mux. Do not run `supabase/seed-staging-feed.mjs` during this script. Extra demo posters would change who shows up in the feed.
 9. **Write down today's question** when you first see it in the admin calendar (Part 3). Later steps call it "today's question".
 
 If the feed shows a name that is not in the cast below, stop. Staging still has someone else's answer for today, and the order checks will not be trustworthy until that is cleared. Ask the agent before deleting anything.
@@ -36,19 +38,21 @@ If the feed shows a name that is not in the cast below, stop. Staging still has 
 
 Create them in this order. Ages are as of October 2026. Use the birthday exactly so the age filter means something.
 
-| Order | Email | First name | Birthday | Gender | Height | Location | Job | Sexual orientation | Interested in | Interests (up to 5) | Relationship goal | Age | What this person is for |
-| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| 1 | catsordogsapp+avery@gmail.com | Avery | January 1, 1986 | Woman | 5 ft 5 in | Brooklyn, NY | Leave empty | Straight | Men | any one interest | any one goal | 40 | Admin. Never records a video. |
-| 2 | catsordogsapp+alex@gmail.com | Alex | March 15, 1998 | Woman | 5 ft 6 in | Brooklyn, NY | Leave empty | Straight | Men | Hiking, Coffee, Cooking | Long-term relationship | 28 | The person whose feed you judge. |
-| 3 | catsordogsapp+jordan@gmail.com | Jordan | June 1, 1996 | Man | 6 ft 0 in | Brooklyn, NY | Designer | Straight | Women | Hiking, Coffee | Long-term relationship | 30 | Should rank first for Alex. Match and chat. Day 2 nudge target. He does not record on Day 2. |
-| 4 | catsordogsapp+sam@gmail.com | Sam | January 20, 1994 | Man | 5 ft 8 in | Austin, TX | Teacher | Straight | Women | Movies | Short-term fun | 32 | Far away, little in common. Should rank behind Jordan. |
-| 5 | catsordogsapp+riley@gmail.com | Riley | August 8, 1999 | Woman | 5 ft 4 in | Brooklyn, NY | Leave empty | Bisexual | Men, Women | Hiking | Long-term relationship | 27 | Followed by Alex, but outside "Show me: Men". Should still appear at the top. |
-| 6 | catsordogsapp+morgan@gmail.com | Morgan | April 4, 1971 | Man | 5 ft 10 in | Brooklyn, NY | Leave empty | Straight | Women | Movies | New friends | 55 | Followed by Alex, but outside age 25–40. Still appears in a followed slot when the cap has room (three slots with seven people in the pool). |
-| 7 | catsordogsapp+quinn@gmail.com | Quinn | February 2, 1997 | Man | 5 ft 11 in | Brooklyn, NY | Leave empty | Bisexual | Men, Women | Travel, Yoga | Still figuring it out | 29 | Passes Alex's filters. Used for "wants to match" and a decline. |
-| 8 | catsordogsapp+casey@gmail.com | Casey | March 1, 1993 | Man | Leave height empty | Leave location empty | Leave empty | Gay | Men | Hiking | Long-term relationship | 33 | No city, so the Distance ranking signal is neutral for him. |
-| 9 | catsordogsapp+drew@gmail.com | Drew | July 7, 1992 | Man | 5 ft 7 in | Brooklyn, NY | Leave empty | Straight | Women | Online Games | Short-term fun | 34 | Second reporter. Follows Jordan on Day 1 so he can nudge him on Day 2. |
-| 10 | catsordogsapp+taylor@gmail.com | Taylor | May 5, 1995 | Man | 6 ft 2 in | Brooklyn, NY | Leave empty | Straight | Women | Coffee | Long-term relationship | 31 | Stays out of the feed until after the filter check, then answers. |
-| 11 | catsordogsapp+parker@gmail.com | Parker | September 9, 2000 | Man | 5 ft 9 in | Brooklyn, NY | Leave empty | Straight | Women | Hiking | Long-term relationship | 26 | Created so the account can be deleted. Records only at the end of Day 1. |
+
+| Order | Email                                                                   | First name | Birthday          | Gender | Height             | Location             | Job         | Sexual orientation | Interested in | Interests (up to 5)     | Relationship goal      | Age | What this person is for                                                                                                                      |
+| ----- | ----------------------------------------------------------------------- | ---------- | ----------------- | ------ | ------------------ | -------------------- | ----------- | ------------------ | ------------- | ----------------------- | ---------------------- | --- | -------------------------------------------------------------------------------------------------------------------------------------------- |
+| 1     | [catsordogsapp+avery@gmail.com](mailto:catsordogsapp+avery@gmail.com)   | Avery      | January 1, 1986   | Woman  | 5 ft 5 in          | Brooklyn, NY         | Leave empty | Straight           | Men           | any one interest        | any one goal           | 40  | Admin. Never records a video.                                                                                                                |
+| 2     | [catsordogsapp+alex@gmail.com](mailto:catsordogsapp+alex@gmail.com)     | Alex       | March 15, 1998    | Woman  | 5 ft 6 in          | Brooklyn, NY         | Leave empty | Straight           | Men           | Hiking, Coffee, Cooking | Long-term relationship | 28  | The person whose feed you judge.                                                                                                             |
+| 3     | [catsordogsapp+jordan@gmail.com](mailto:catsordogsapp+jordan@gmail.com) | Jordan     | June 1, 1996      | Man    | 6 ft 0 in          | Brooklyn, NY         | Designer    | Straight           | Women         | Hiking, Coffee          | Long-term relationship | 30  | Should rank first for Alex. Match and chat. Day 2 nudge target. He does not record on Day 2.                                                 |
+| 4     | [catsordogsapp+sam@gmail.com](mailto:catsordogsapp+sam@gmail.com)       | Sam        | January 20, 1994  | Man    | 5 ft 8 in          | Austin, TX           | Teacher     | Straight           | Women         | Movies                  | Short-term fun         | 32  | Far away, little in common. Should rank behind Jordan.                                                                                       |
+| 5     | [catsordogsapp+riley@gmail.com](mailto:catsordogsapp+riley@gmail.com)   | Riley      | August 8, 1999    | Woman  | 5 ft 4 in          | Brooklyn, NY         | Leave empty | Bisexual           | Men, Women    | Hiking                  | Long-term relationship | 27  | Followed by Alex, but outside "Show me: Men". Should still appear at the top.                                                                |
+| 6     | [catsordogsapp+morgan@gmail.com](mailto:catsordogsapp+morgan@gmail.com) | Morgan     | April 4, 1971     | Man    | 5 ft 10 in         | Brooklyn, NY         | Leave empty | Straight           | Women         | Movies                  | New friends            | 55  | Followed by Alex, but outside age 25–40. Still appears in a followed slot when the cap has room (three slots with seven people in the pool). |
+| 7     | [catsordogsapp+quinn@gmail.com](mailto:catsordogsapp+quinn@gmail.com)   | Quinn      | February 2, 1997  | Man    | 5 ft 11 in         | Brooklyn, NY         | Leave empty | Bisexual           | Men, Women    | Travel, Yoga            | Still figuring it out  | 29  | Passes Alex's filters. Used for "wants to match" and a decline.                                                                              |
+| 8     | [catsordogsapp+casey@gmail.com](mailto:catsordogsapp+casey@gmail.com)   | Casey      | March 1, 1993     | Man    | Leave height empty | Leave location empty | Leave empty | Gay                | Men           | Hiking                  | Long-term relationship | 33  | No city, so the Distance ranking signal is neutral for him.                                                                                  |
+| 9     | [catsordogsapp+drew@gmail.com](mailto:catsordogsapp+drew@gmail.com)     | Drew       | July 7, 1992      | Man    | 5 ft 7 in          | Brooklyn, NY         | Leave empty | Straight           | Women         | Online Games            | Short-term fun         | 34  | Second reporter. Follows Jordan on Day 1 so he can nudge him on Day 2.                                                                       |
+| 10    | [catsordogsapp+taylor@gmail.com](mailto:catsordogsapp+taylor@gmail.com) | Taylor     | May 5, 1995       | Man    | 6 ft 2 in          | Brooklyn, NY         | Leave empty | Straight           | Women         | Coffee                  | Long-term relationship | 31  | Stays out of the feed until after the filter check, then answers.                                                                            |
+| 11    | [catsordogsapp+parker@gmail.com](mailto:catsordogsapp+parker@gmail.com) | Parker     | September 9, 2000 | Man    | 5 ft 9 in          | Brooklyn, NY         | Leave empty | Straight           | Women         | Hiking                  | Long-term relationship | 26  | Created so the account can be deleted. Records only at the end of Day 1.                                                                     |
+
 
 One photo each is enough (Finish Setup needs a photo, a first name, a birthday, and a gender). Fill in Sexual orientation, Interested in, Height, and Job exactly as the table says. Orientation and height matter for M-26a and M-26b. Job does not change the feed order or who is filtered (there is no Occupation filter); Jordan's **Designer** and Sam's **Teacher** are only so you can see those titles on their profiles. Interested in also does not change the feed; fill it in anyway. School and About Me stay empty.
 
@@ -56,7 +60,9 @@ One photo each is enough (Finish Setup needs a photo, a first name, a birthday, 
 
 The admin site on your Mac is a separate small website. For this script it must talk to staging, the same project as the phone.
 
-- [ ] **M-01 Point admin at staging.** In the `admin` folder, copy `.env.example` to `.env` if you do not already have one. Put the same staging project URL and anon key that are in `mobile/.env` into `VITE_SUPABASE_URL` and `VITE_SUPABASE_ANON_KEY`. From the project folder run `npm run admin` and open http://127.0.0.1:5173/admin/ . You should see **Admin sign in**, the line that there is no Create Account, and no Apple or Google buttons.
+- [ ] **M-01 Point admin at staging.** In the `admin` folder, copy `.env.example` to `.env` if you do not already have one. Put the same staging project URL and anon key that are in `mobile/.env` into `VITE_SUPABASE_URL` and `VITE_SUPABASE_ANON_KEY`. From the project folder run `npm run admin` and open [http://127.0.0.1:5173/admin/](http://127.0.0.1:5173/admin/) . You should see **Admin sign in**, the line that there is no Create Account, and no Apple or Google buttons.
+
+
 
 ## Part 2 — Avery becomes an admin
 
@@ -65,16 +71,20 @@ The admin site on your Mac is a separate small website. For this script it must 
 - [ ] **M-04 A normal person cannot open admin.** On the admin site, sign in as Avery. Expected: you are signed straight back out, with "This tool is only for admins. An admin has to add you by hand in the database."
 - [ ] **M-05 Add Avery to the admin list.** Ask the agent to add `catsordogsapp+avery@gmail.com` to `admin_users` on staging. Nobody can do this from the app or the website. Then sign in again as Avery. Expected: you land on the question calendar, the header says **Cats or Dogs? admin**, and your email is shown. The nav has Questions, Settings, Review queue, People, Videos, and Profile questions.
 
+
+
 ## Part 3 — Questions and settings, before anyone records
 
 Stay signed in as Avery on the website.
 
 - [ ] **M-06 Today and the next three days have questions.** On Questions, today is in the list and highlighted. Each of the next three days has question text of 1 to 200 characters. A day ahead with an empty box stays in the list and is highlighted. If a day is empty, type a question and save it. Write down the exact text of **today's** question. Previous questions, if any, are behind a separate past view and are newest first. That past view does not include today. "Today" here is your own local day, so late in the evening it matches your phone's date and not UTC.
 - [ ] **M-07 Today cannot be removed. A future day can.** Today has no working remove. Change today's text slightly (add " — master test" or similar), save, and confirm it is marked as an override. The phone will show the new text. Users never see the old wording. A future day can be removed and added again. Put the next three days back so they each have a question before you leave this page. Past questions cannot be edited or removed.
-- [ ] **M-08 Write down settings, then park the daily email.** Open Settings. Write down every value, especially the Help & Support address (it may be empty). Confirm the defaults you are about to change away from, then set **only** this for now:
+- [ ] **M-08 Write down settings, then park the daily email.** Open Settings. Write down every value, especially the Help & Support address (it may be empty) and **City lookup** (should be **Open-Meteo**). Confirm the defaults you are about to change away from, then set **only** this for now:
   - Daily Question Send Time: **23:59** (11:59 PM). This stops the "question is live" mail from going out while you are still creating accounts. You will move it in Part 5.
-  - Leave everything else at the defaults: recording length **14**, minimum watch **3**, followed share **30**, flags to hide a video **5**, reporters before a profile is high priority **3**, feed look-back **7**, recordings per day **10**, nudge notification delay **0**, first recording **Today's question**, fixed question text **Cats or dogs?**.
+  - Leave everything else at the defaults: recording length **14**, minimum watch **3**, followed share **30**, flags to hide a video **5**, reporters before a profile is high priority **3**, feed look-back **7**, recordings per day **10**, nudge notification delay **0**, first recording **Today's question**, fixed question text **Cats or dogs?**, city lookup **Open-Meteo**.
   - Save. The page says **Saved.**
+
+
 
 ## Part 4 — Create the other profiles, still with no videos
 
@@ -85,6 +95,8 @@ For each person from Alex through Parker: Get Started, that person's plus-addres
 - [ ] **M-11 People list.** As Avery on the admin site, open People. Expected: a sortable table with thumbnail, first name, email, follower count, following count, matches, answers, join date, and last login. Open Alex. Expected: the full profile, including the photo. Follower and following are counts only. There is no list of who follows whom.
 - [ ] **M-11a Make and remove an admin.** As Avery on People, open Alex and click **Make admin**. Expected: a window titled "Make Alex an admin?" with **Cancel** and **Make admin**. Click **Cancel**: nothing changes. Click **Make admin** again and confirm. Expected: an **Admin** badge next to Alex, and the row says "Admin access: Yes". Sign in to the admin site as Alex in a private window: it opens. Back as Avery, open Alex and click **Remove admin**. Expected: a window titled "Remove admin access from Alex?"; confirm. The badge goes away. Alex signing in again is refused. Open Avery's own row: it says "You cannot remove your own admin access." instead of a button.
 
+
+
 ## Part 5 — Turn email on, then send today's question mail
 
 The daily mail is skipped for anyone who has already answered, and it is also skipped if email is off and there is no working push. Do this **before** anyone records.
@@ -94,6 +106,8 @@ New sign-ups already have **email on** for all notification types. On **each** a
 - [ ] **M-12 Email toggles stick.** Log out of Alex and back in. Notifications still shows email on for Daily question, Matches, Messages, and Nudges.
 - [ ] **M-13 Send the daily mail on purpose.** As Avery, set **Daily Question Send Time** to about **10 minutes from now** in your phone's time zone. Save. Wait up to 15 minutes (the job runs every 5 minutes). Expected in the Gmail inbox: one "Today's question is live" email per account that has not answered, and the body is today's question text. That includes Avery, Alex, and the rest. You should not get two copies for the same address.
 - [ ] **M-14 Answering stops a repeat.** This is checked again at the end of Part 6. After Alex has submitted, set the time another 10 minutes ahead and wait. Alex does **not** get a second "Today's question is live" email. Avery, who still has not answered, can get another one. That is correct.
+
+
 
 ## Part 6 — Record today's answers, in this order
 
@@ -116,6 +130,8 @@ What to say on camera (this does not affect the feed order; it only needs to be 
 - [ ] **M-16 Alex is not asked to record again.** Log in as Alex. Expected: the app opens on the unlocked Feed (videos), not Today's Question and not Feed Locked.
 - [ ] **M-17 No second daily mail for Alex.** Do the check in M-14 now if you have not already.
 - [ ] **M-18 Admin counts the answers.** As Avery, on Questions, today's row counts answers. A hidden video would still count; none are hidden yet. Open the video list for today. You see the eight recordings, not Taylor, Parker, or Avery. Watching one here does not tell that person, and it does not increase their view count. Note Jordan's view count on Jordan's own profile first if you want to confirm that: it should be unchanged after you watch as Avery.
+
+
 
 ## Part 7 — Alex's feed: order, filters, and the follow cap
 
@@ -152,11 +168,15 @@ Stay as Alex unless a step says otherwise. Alex has answered, so the Feed is unl
 - [ ] **M-27 Drew follows Jordan.** Log in as Drew. On Jordan's video, **⋯** → **Follow** → **Yes, Follow**. Log out. This is what lets Drew nudge Jordan on Day 2. Drew's follow does not change the order checks you already did as Alex.
 - [ ] **M-28 Morgan turns followers off.** Log in as Morgan. Profile → **Privacy & Safety** (08b). Turn **Allow followers** off. Log in as Alex and try to follow Morgan again. Expected: the follow does not stick, so Morgan does not get a Following tag. If the app shows an error, it says this person is not accepting followers. Log in as Morgan and turn **Allow followers** back on. Morgan's follower count never listed Alex by name. Log back in as Alex. Leave Morgan unfollowed.
 
+
+
 ## Part 8 — Taylor answers, and then shows up
 
 Taylor has been absent on purpose. Someone who has not answered today cannot appear in today's feed, and you cannot nudge them until you already follow them from an earlier day. The nudge itself is Day 2, when Jordan has not answered the new day and Alex and Drew already follow him.
 
 - [ ] **M-29 Taylor is missing, then appears.** As Alex, confirm Taylor is not in the feed. Log in as Taylor, record one sentence, submit, and log out. As Alex, pull the feed open again. Taylor is now in it. Alex's own video is still absent.
+
+
 
 ## Part 9 — Match requests, chat, mute, and unmatch
 
@@ -171,12 +191,16 @@ Do these as Alex unless a step says otherwise. Hearts sit to the right of **⋯*
 
 - [ ] **M-36 Unmatch.** As Alex, open the chat with Jordan and tap the heart-with-a-slash (Unmatch). Expected: "Unmatch Jordan?" and "You'll lose this chat. Jordan won't be notified. You can match again later." Confirm **Unmatch**. The chat is gone for Alex. As Jordan, the chat is gone too, and Jordan was not emailed. Jordan is still in Alex's feed. Alex still follows Jordan. They can match again later. Do that only if you want to. The rest of the script does not need the match.
 
+
+
 ## Part 10 — Not Interested and block
 
 - [ ] **M-37 Not Interested, without a follow.** As Alex, on Drew's video, **⋯** → **Not Interested**. Expected: "Hide Drew?" and "You won't see Drew in your feed anymore. He won't be notified." Button **Yes, Hide**. Confirm. Drew leaves Alex's feed. As Drew, Alex is still in the feed. Drew is not told. As Alex, Profile → **Blocked and Not Interested** (08e) → **Not Interested**. Drew is listed with name, age, and a date, and the button is **Undo**. Undo. No confirmation dialog. Drew can show in the feed again. A follow is not restored, because Alex was not following Drew.
 - [ ] **M-38 Not Interested while following.** As Alex, follow Riley if you unfollowed her. Then **⋯** → **Not Interested**. Expected: title **Hide Riley?**, body **You won't see Riley in your feed anymore, and you'll unfollow her. She won't be notified.**, button **Yes, Hide and Unfollow**. Confirm. Riley leaves the feed, and the follow is gone. Undo from the Not Interested tab. Riley can appear again. The follow does not come back. Follow Riley again so later checks are simple, or leave her unfollowed. Either is fine after this step. Alex must still follow Jordan.
 - [ ] **M-39 Block Sam.** As Alex, on Sam, **⋯** → **Block**. Expected: "Block Sam?" and "You won't see each other again, and any match will be removed. You and Sam won't be able to message each other." Confirm **Block**. Sam disappears from Alex's feed. As Sam, Alex disappears from the feed, from Matches, and Sam is not told why. Sam cannot open Alex's profile. As Alex, **Blocked and Not Interested** → **Blocked**. Sam is listed with **Unblock**.
 - [ ] **M-40 Unblock.** Tap **Unblock**. Expected: "Unblock Sam?" and "Sam will be able to see you and message you again, and you'll see their answers in your feed. Your old match won't come back. They won't be notified." Confirm. Sam can appear in the feed again. No match, chat, or follow is restored. As Sam, nothing announces the unblock.
+
+
 
 ## Part 11 — Reports, a hidden video, and the review queue
 
@@ -190,6 +214,8 @@ A flag hides one video, never the account. Profile reports and message reports w
 - [ ] **M-46 Turn Jordan's email back on.** As Jordan, Notifications: email on again for Daily question, Messages, and Nudges. Matches email on. Day 2's nudge email will not arrive if this stays off.
 - [ ] **M-47 Put the two thresholds back only after Part 12.** Leave them at 2 until Parker is deleted. Part 14 sets them back to 5 and 3 with everything else.
 
+
+
 ## Part 12 — Delete Parker
 
 Parker exists so you can see an account disappear without destroying Alex or Jordan. Deleting the account should remove Parker's Mux files as well.
@@ -197,6 +223,8 @@ Parker exists so you can see an account disappear without destroying Alex or Jor
 - [ ] **M-48 Parker records and is reported.** Log in as Parker, record one sentence, submit. As Drew, report Parker's profile (the profile report, from Parker's profile). As Alex, send Parker a match request from the feed. Parker's Incoming shows Alex.
 - [ ] **M-49 Delete the account.** As Parker, Profile → **Privacy & Safety** → delete. Expected confirmation (08h): "Delete your account?" and "This permanently deletes your profile, photos, videos, chats, and matches. There is no undo." Confirm **Delete Account**. You are signed out. Trying to log in as Parker fails, or the account is simply gone.
 - [ ] **M-50 Everyone else loses Parker immediately.** As Alex, Parker is gone from the feed and from Outgoing. As Avery, People no longer has a normal Parker row. The profile report can still be in the queue, with the name removed, so a review can see that a report happened. **Mark reviewed** if it is still waiting.
+
+
 
 ## Part 13 — The next local day
 
@@ -215,14 +243,18 @@ Before anyone records on Day 2, ask the agent to trim staging **if the feed is n
 - [ ] **M-59 Browse and search.** From the feed, tap the question pill (06c). Today's question is marked **Live now · Today's feed**. Yesterday is in the list with a response count of live answers only. Type a word from yesterday's question. The list narrows and the word is highlighted (06d). Clear the search and the full list returns. Pick yesterday. The feed shows that day. Close and reopen the feed. It starts at today again, not stuck on yesterday.
 - [ ] **M-60 No second daily mail after answering.** As Avery, set the notification time another 10 minutes ahead. Alex, who has answered today, does not get another "Today's question is live" email. Jordan, who skipped and did not answer, can get one. That is correct.
 
+
+
 ## Part 14 — Put staging back, and the account screens
 
 - [ ] **M-61 Edit Profile.** As Alex, Profile → **Edit Profile** (08d). Change About Me to `Master test note`. **Save Changes**. Profile shows the new text.
 - [ ] **M-61b Discard profile edits (optional).** On **Edit Profile** or **Build Profile**, change a field, tap back, tap **Keep Editing**, then save or leave with **Leave Without Saving** as in **A-22b** / **D-31b**.
 - [ ] **M-62 Ranking reset.** Feed Settings → set **Shared Interests** to High → save. Tap **Reset**. Every ranking signal (three) returns to Medium, and any Specific interests you picked are cleared (M-26c already did this once; this confirms Reset still works from High). Save if the screen asks you to.
 - [ ] **M-63 Help & Support.** If the Help address is empty, Profile → **Help & Support** shows "Help is not set up yet. Check back later." As Avery, set Help & Support to `https://example.com` and save. As Alex, **Help & Support** opens that address in the browser. As Avery, put back the Help address you wrote down in M-08 (or clear it if it was empty).
-- [ ] **M-64 Restore every setting.** As Avery, set Settings back to the values from M-08, except keep any Help address you just restored. In particular: recording length **14**, minimum watch **3**, followed share **30**, flags to hide a video **5**, profile high-priority count **3**, feed look-back **7**, recordings per day **10**, Daily Question Send Time **12:03**, nudge notification delay **0**, first recording **Today's question**, fixed question **Cats or dogs?**. Save.
+- [ ] **M-64 Restore every setting.** As Avery, set Settings back to the values from M-08, except keep any Help address you just restored. In particular: recording length **14**, minimum watch **3**, followed share **30**, flags to hide a video **5**, profile high-priority count **3**, feed look-back **7**, recordings per day **10**, Daily Question Send Time **12:03**, nudge notification delay **0**, first recording **Today's question**, fixed question **Cats or dogs?**, city lookup **Open-Meteo**. Save.
 - [ ] **M-65 Sign out of admin.** Sign out. The phone can stay on Alex. You are done with the main script.
+
+
 
 ## Extra checks
 

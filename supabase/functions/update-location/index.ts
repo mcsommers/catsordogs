@@ -4,13 +4,11 @@
 // themselves: this function looks the city up and stores the result with the
 // server key, and only if the profile still has that city.
 //
-// The lookup service is set by GEOCODING_URL (default: Open-Meteo's free
-// geocoding search). It must accept ?name=<city>&count=1 and answer with
-// { results: [{ latitude, longitude }] }. Check the provider's terms before
-// launch: Open-Meteo's free service is for non-commercial use.
+// Which lookup service to use is the admin setting location_provider
+// (Open-Meteo or Google Places). Open-Meteo still honors GEOCODING_URL.
 import { corsHeaders, json } from '../_shared/http.ts';
 import { serviceClient, userClient } from '../_shared/clients.ts';
-import { geocodeOne } from '../_shared/geocoding.ts';
+import { coordinatesForCity } from '../_shared/locationLookup.ts';
 
 Deno.serve(async (req) => {
   if (req.method === 'OPTIONS') return new Response('ok', { headers: corsHeaders });
@@ -37,7 +35,7 @@ Deno.serve(async (req) => {
   if (profile.latitude !== null && profile.longitude !== null) return json({ found: true });
 
   try {
-    const place = await geocodeOne(city);
+    const place = await coordinatesForCity(city);
     if (!place) return json({ found: false });
     const { error: saveError } = await serviceClient().rpc('set_profile_location', {
       p_user_id: auth.user.id, p_city: profile.city, p_latitude: place.latitude, p_longitude: place.longitude,

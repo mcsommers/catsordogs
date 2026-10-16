@@ -1,7 +1,7 @@
 // Returns US city + state suggestions for the Build Profile location field.
 import { corsHeaders, json } from '../_shared/http.ts';
 import { userClient } from '../_shared/clients.ts';
-import { locationSuggestions, searchGeocoding } from '../_shared/geocoding.ts';
+import { suggestionsForQuery } from '../_shared/locationLookup.ts';
 
 const MIN_QUERY = 2;
 const MAX_SUGGESTIONS = 6;
@@ -25,8 +25,7 @@ Deno.serve(async (req) => {
   if (q.length < MIN_QUERY) return json({ suggestions: [] });
 
   try {
-    const hits = await searchGeocoding(q, 12);
-    return json({ suggestions: locationSuggestions(hits, MAX_SUGGESTIONS) });
+    return json({ suggestions: await suggestionsForQuery(q, MAX_SUGGESTIONS) });
   } catch (e) {
     console.error('search-locations failed', e);
     return json({ error: 'We could not search locations. Please try again.' }, 502);

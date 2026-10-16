@@ -108,6 +108,7 @@ input, select, textarea {
 textarea { min-height: 72px; resize: vertical; }
 
 .muted { color: #57534e; }
+.setting-help { margin: -4px 0 8px; padding: 0 2px; max-width: 42rem; }
 .error { color: #9f1239; }
 .notice-success {
   color: #14532d;
