@@ -5,10 +5,10 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { LinearGradient } from 'expo-linear-gradient';
 import { VideoView, useVideoPlayer } from 'expo-video';
 import { Check, Clock3, Pencil, Play, RotateCcw, X } from 'lucide-react-native';
-import { getVideo, submitAnswer } from '../lib/api';
+import { abandonPendingCaptions, getVideo, submitAnswer } from '../lib/api';
 import { getCurrentRecording, setCurrentRecording } from '../lib/currentRecording';
 import { clock } from '../lib/format';
-import { reviewState, type VideoRow } from '../lib/recording';
+import { CAPTION_FALLBACK_TEXT, CAPTION_WAIT_MS, reviewState, type VideoRow } from '../lib/recording';
 import { Dialog, PrimaryButton } from '../components/ui';
 import { colors, fonts } from '../theme';
 
@@ -23,6 +23,7 @@ export default function ReviewAndSubmit() {
   const [submitting, setSubmitting] = useState(false);
   const [submitted, setSubmitted] = useState(false);
   const [message, setMessage] = useState<string | null>(null);
+  const [captionWaitStopped, setCaptionWaitStopped] = useState(false);
 
   const player = useVideoPlayer(recording?.fileUri ?? null, (p) => {
     p.loop = true;
@@ -50,12 +51,27 @@ export default function ReviewAndSubmit() {
       refresh();
     }, [refresh])
   );
-  const state = reviewState(row, uploadFailed);
+  const state = reviewState(row, uploadFailed, { captionWaitTimedOut: captionWaitStopped });
   useEffect(() => {
     if (state.kind !== 'processing') return;
     const timer = setInterval(refresh, POLL_MS);
     return () => clearInterval(timer);
   }, [state.kind, refresh]);
+
+  useEffect(() => {
+    if (!recording) return;
+    if (captionWaitStopped) return;
+    if (row?.status !== 'ready' || row?.captions_status !== 'pending') return;
+    const timer = setTimeout(() => {
+      setCaptionWaitStopped(true);
+      abandonPendingCaptions(recording.videoId)
+        .then(() => refresh())
+        .catch(() => {
+          setMessage('We couldn\u2019t load captions. Try submitting again.');
+        });
+    }, CAPTION_WAIT_MS);
+    return () => clearTimeout(timer);
+  }, [recording, row?.status, row?.captions_status, captionWaitStopped, refresh]);
 
   function togglePlay() {
     if (player.playing) player.pause();
@@ -68,6 +84,9 @@ export default function ReviewAndSubmit() {
     setMessage(null);
     setSubmitting(true);
     try {
+      if (row?.captions_status === 'pending') {
+        await abandonPendingCaptions(recording.videoId);
+      }
       await submitAnswer(recording.videoId);
       player.pause();
       setSubmitted(true);
@@ -88,6 +107,7 @@ export default function ReviewAndSubmit() {
   if (!recording) return null;
 
   const canSubmit = state.kind === 'ready' || state.kind === 'no_speech';
+  const canEditCaptions = state.kind === 'ready' && row?.captions_status === 'ready';
   const duration = row?.duration_seconds ?? null;
 
   return (
@@ -121,8 +141,8 @@ export default function ReviewAndSubmit() {
       <View style={[styles.bottom, { paddingBottom: insets.bottom + 20 }]}>
         <Pressable
           accessibilityRole="button"
-          accessibilityLabel={state.kind === 'ready' ? 'Edit captions' : undefined}
-          disabled={state.kind !== 'ready'}
+          accessibilityLabel={canEditCaptions ? 'Edit captions' : undefined}
+          disabled={!canEditCaptions}
           onPress={() => {
             player.pause();
             // Replace (not push) so Review unmounts — Android cannot run two players on the same file.
@@ -133,7 +153,7 @@ export default function ReviewAndSubmit() {
           <Text style={[styles.caption, state.kind !== 'ready' && { color: colors.textDarkMuted }]}>
             {captionText(state)}
           </Text>
-          {state.kind === 'ready' ? (
+          {canEditCaptions ? (
             <View style={styles.editIcon}>
               <Pencil size={14} color={colors.white} />
             </View>
@@ -183,9 +203,11 @@ function captionText(state: ReturnType<typeof reviewState>): string {
 function helperText(state: ReturnType<typeof reviewState>): string {
   switch (state.kind) {
     case 'ready':
-      return 'Auto-captioned from your audio \u2014 tap to edit';
+      return state.caption === CAPTION_FALLBACK_TEXT
+        ? 'Tap to edit your caption before you submit.'
+        : 'Auto-captioned from your audio \u2014 tap to edit';
     case 'processing':
-      return 'This usually takes a few seconds. You can submit once it\u2019s done.';
+      return 'This usually takes a few seconds. After 8 seconds you can type your own caption.';
     case 'no_speech':
       return 'You can still submit it, or re-record.';
     case 'too_long':

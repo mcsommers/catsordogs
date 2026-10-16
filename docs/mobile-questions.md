@@ -3,6 +3,14 @@
 A record of questions asked while planning the phone app, the options offered,
 and Mike's answer. Newest phase first.
 
+## Feed Settings unsaved changes and save (Mike, Oct 16, 2026)
+
+On **06i**, **Save** stays grey until the user changes a filter or ranking control. Leaving with unsaved edits shows **Discard changes?** with copy about unsaved **feed settings** (same pattern as profile on **03**; Pencil frame **06i Feed Settings Unsaved Changes**). **Save** goes straight back to the Feed tab and refreshes the feed — no saved alert. Pencil **06i Feed Settings** shows **Save** disabled by default (label **Save**, not “Save Preferences”).
+
+## Caption wait timeout on Review (Mike, Oct 16, 2026)
+
+If auto-captions are still pending **8 seconds** after the video is **ready**, stop waiting on Mux: show **No caption.**, enable **Submit Answer**, and let the user edit on **05b**. The server stores that placeholder so submit works; a late Mux caption delivery does not overwrite it.
+
 ## City lookup: Open-Meteo or Google Places (Mike, Oct 15, 2026)
 
 Keep the tested Open-Meteo city suggestions. Add Google Places Autocomplete (New) and Place Details (New) as an alternative. Admin Settings (`/admin/settings`) chooses which service to use (`location_provider`: Open-Meteo default, or Google Places). The Google API key is a server secret, not a field on that page. The phone still stores only a city label; it does not talk to Google or Open-Meteo directly.
@@ -79,6 +87,8 @@ Gender used to offer Woman, Man, and Non-binary only. Decided: **Woman**, **Man*
 #### Sexual orientation on Build / Edit Profile (03 / 08d, Oct 2026)
 
 Decided: the chips are now Straight, Gay, Lesbian, Bisexual, Asexual, Demisexual, Pansexual, Queer, Questioning (replacing Straight, Gay, Bi-Sexual, Questioning), still optional, but now **single-select** (header "Optional · Choose one"; the earlier "select all that apply, up to 5" is removed). **Lesbian** is a plain option: it is not linked to Show me or Interested in (decided Oct 2026). A **Show orientation on my profile** switch (default on, same wording and rule as the gender switch) sits under the chips; hidden orientation still counts for the Sexual orientation filter. Database and app code are not yet updated (UAT A-20, A-20d).
+
+**Feed Settings defaults (Oct 2026):** **Sexual orientation** in Feed Settings is never pre-selected from Build Profile (always **Any** until the person changes it). **Show me** is seeded on first finish from gender + orientation when Man/Woman (see `feed-rules.md`); genders from **More** always seed **Everyone**, even if orientation was skipped. Man/Woman with no orientation leave **Show me** unset (Any). Later edits on Edit Profile do not change Feed Settings automatically.
 
 #### Interests replace Lifestyle on Build / Edit Profile (03 / 03e / 08d, Oct 2026)
 

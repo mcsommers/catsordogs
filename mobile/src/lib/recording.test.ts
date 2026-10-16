@@ -1,4 +1,11 @@
-import { joinedCaptionText, reviewState, splitCaptionForSegments, uploadRefusal, type VideoRow } from './recording';
+import {
+  CAPTION_FALLBACK_TEXT,
+  joinedCaptionText,
+  reviewState,
+  splitCaptionForSegments,
+  uploadRefusal,
+  type VideoRow,
+} from './recording';
 
 const row = (over: Partial<VideoRow>): VideoRow => ({
   id: 'v1',
@@ -40,6 +47,13 @@ describe('what Review & Submit shows', () => {
     expect(reviewState(row({ status: 'awaiting_upload' })).kind).toBe('processing');
     expect(reviewState(row({ status: 'processing' })).kind).toBe('processing');
     expect(reviewState(row({ captions_status: 'pending' })).kind).toBe('processing');
+  });
+
+  it('shows a placeholder caption after the wait timeout while Mux is still pending', () => {
+    expect(reviewState(row({ captions_status: 'pending' }), false, { captionWaitTimedOut: true })).toEqual({
+      kind: 'ready',
+      caption: CAPTION_FALLBACK_TEXT,
+    });
   });
 
   it('says no speech was found when captions are unavailable (05e)', () => {

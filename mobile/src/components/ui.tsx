@@ -473,19 +473,37 @@ export function SectionHeader({
   title,
   helper,
   requirement,
+  dark = false,
+  helperBelow = false,
 }: {
   title: string;
   helper?: string;
   requirement?: FieldRequirement;
+  /** Dark screens (e.g. Feed Settings 06i): white section title, muted helper. */
+  dark?: boolean;
+  /** Helper under the title (06i Ranking) instead of on the same row. */
+  helperBelow?: boolean;
 }) {
   const helperText =
     requirement === 'optional' && helper ? `Optional · ${helper}` : requirement === 'optional' ? 'Optional' : helper;
+  const titleStyle = [styles.sectionTitle, dark && styles.sectionTitleDark];
+  const helperStyle = [styles.sectionHelper, dark && styles.sectionHelperDark];
+
+  if (helperBelow && helperText) {
+    return (
+      <View style={styles.sectionHeaderStack}>
+        <Text style={titleStyle}>{title}</Text>
+        <Text style={helperStyle}>{helperText}</Text>
+      </View>
+    );
+  }
+
   return (
     <View style={styles.sectionHeader}>
-      <Text style={styles.sectionTitle}>{title}</Text>
+      <Text style={titleStyle}>{title}</Text>
       <View style={styles.sectionHeaderEnd}>
         {requirement === 'required' ? <RequiredTag /> : null}
-        {helperText ? <Text style={styles.sectionHelper}>{helperText}</Text> : null}
+        {helperText ? <Text style={helperStyle}>{helperText}</Text> : null}
       </View>
     </View>
   );
@@ -798,8 +816,11 @@ export const styles = StyleSheet.create({
   },
   radioDot: { width: 10, height: 10, borderRadius: 5, backgroundColor: colors.accentDog },
   sectionHeader: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' },
+  sectionHeaderStack: { gap: 4 },
   sectionTitle: { fontFamily: fonts.heading, fontSize: 18, color: colors.textPrimary },
+  sectionTitleDark: { color: colors.white },
   sectionHelper: { fontFamily: fonts.body, fontSize: 12, color: colors.textSecondary },
+  sectionHelperDark: { color: colors.textDarkMuted },
   scrim: { flex: 1, backgroundColor: '#000000B3', alignItems: 'center', justifyContent: 'center', padding: 32 },
   scrimLight: { backgroundColor: '#00000066' },
   dialog: {

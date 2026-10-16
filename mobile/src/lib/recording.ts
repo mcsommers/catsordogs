@@ -53,6 +53,11 @@ export function splitCaptionForSegments(edited: string, template: CaptionSegment
   return texts;
 }
 
+/** How long Review waits for Mux auto-captions after the video is ready (05d). */
+export const CAPTION_WAIT_MS = 8000;
+
+export const CAPTION_FALLBACK_TEXT = 'No caption.';
+
 export type VideoRow = {
   id: string;
   status: 'awaiting_upload' | 'processing' | 'ready' | 'rejected' | 'failed' | 'cancelled' | string;
@@ -70,12 +75,20 @@ export type ReviewState =
   | { kind: 'too_long' }
   | { kind: 'failed' };
 
-export function reviewState(row: VideoRow | null, uploadFailed = false): ReviewState {
+export function reviewState(
+  row: VideoRow | null,
+  uploadFailed = false,
+  opts?: { captionWaitTimedOut?: boolean }
+): ReviewState {
   if (uploadFailed) return { kind: 'failed' };
   if (!row) return { kind: 'processing' };
   if (row.status === 'rejected') return { kind: 'too_long' };
   if (row.status === 'failed' || row.status === 'cancelled') return { kind: 'failed' };
-  if (row.status !== 'ready' || row.captions_status === 'pending') return { kind: 'processing' };
+  if (row.status !== 'ready') return { kind: 'processing' };
+  if (row.captions_status === 'pending') {
+    if (opts?.captionWaitTimedOut) return { kind: 'ready', caption: CAPTION_FALLBACK_TEXT };
+    return { kind: 'processing' };
+  }
   const segments = row.caption_segments ?? [];
   if (row.captions_status === 'unavailable' || segments.length === 0) return { kind: 'no_speech' };
   // An owner who erased every caption can still go back and edit them.

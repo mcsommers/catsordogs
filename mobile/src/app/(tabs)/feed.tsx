@@ -14,6 +14,7 @@ import { VideoView, useVideoPlayer } from 'expo-video';
 import { getGate, type Gate } from '../../lib/api';
 import {
   fetchAppFeedConfig,
+  appendUniqueFeedItems,
   fetchFeedPage,
   fetchPlaybackForAnswer,
   reportAnswerView,
@@ -49,7 +50,8 @@ const FEED_END_KEY = '__feed_caught_up__';
 
 export default function Feed() {
   const { session, loading: sessionLoading } = useSession();
-  const { date: feedDate } = useLocalSearchParams<{ date?: string }>();
+  const { date: feedDate, feedReload } = useLocalSearchParams<{ date?: string; feedReload?: string }>();
+  const lastFeedReloadRef = useRef<string | undefined>(undefined);
   const { height: windowHeight } = useWindowDimensions();
   const [measuredHeight, setMeasuredHeight] = useState(0);
   const pageHeight = measuredHeight > 0 ? measuredHeight : windowHeight;
@@ -76,6 +78,8 @@ export default function Feed() {
   const [dayBanner, setDayBanner] = useState<string | null>(null);
   const [dismissedBanners, setDismissedBanners] = useState<Set<string>>(() => new Set());
   const loadingMoreRef = useRef(false);
+  const loadingFeedRef = useRef(false);
+  const feedLoadEpochRef = useRef(0);
   const viewReportedRef = useRef<string | null>(null);
   const flatRef = useRef<FlatList<FeedItem>>(null);
 
@@ -209,6 +213,9 @@ export default function Feed() {
 
   const loadInitialFeed = useCallback(async () => {
     if (!gate || gate.state !== 'open') return;
+    const epoch = ++feedLoadEpochRef.current;
+    loadingMoreRef.current = false;
+    loadingFeedRef.current = true;
     setLoadingFeed(true);
     setFeedFailed(false);
     try {
@@ -216,15 +223,19 @@ export default function Feed() {
         fetchAppFeedConfig(),
         fetchFeedPage(0, PAGE_SIZE, feedDate ?? null),
       ]);
+      if (epoch !== feedLoadEpochRef.current) return;
       setMinWatch(config.minWatchSeconds);
       setLookbackDays(config.feedLookbackDays);
       setItems(page.items);
       setTotalCount(page.totalCount);
       setActiveIndex(0);
     } catch {
-      setFeedFailed(true);
+      if (epoch === feedLoadEpochRef.current) setFeedFailed(true);
     } finally {
-      setLoadingFeed(false);
+      if (epoch === feedLoadEpochRef.current) {
+        loadingFeedRef.current = false;
+        setLoadingFeed(false);
+      }
     }
   }, [gate, feedDate]);
 
@@ -232,18 +243,28 @@ export default function Feed() {
     loadInitialFeed();
   }, [loadInitialFeed]);
 
+  useEffect(() => {
+    if (!feedReload || feedReload === lastFeedReloadRef.current) return;
+    lastFeedReloadRef.current = feedReload;
+    flatRef.current?.scrollToOffset({ offset: 0, animated: false });
+    loadInitialFeed();
+  }, [feedReload, loadInitialFeed]);
+
   const loadMore = useCallback(async () => {
-    if (loadingMoreRef.current || items.length >= totalCount) return;
+    if (loadingMoreRef.current || loadingFeedRef.current || items.length >= totalCount) return;
+    const epoch = feedLoadEpochRef.current;
+    const offset = items.length;
     loadingMoreRef.current = true;
     try {
-      const page = await fetchFeedPage(items.length, PAGE_SIZE, feedDate ?? null);
+      const page = await fetchFeedPage(offset, PAGE_SIZE, feedDate ?? null);
+      if (epoch !== feedLoadEpochRef.current) return;
       if (page.items.length > 0) {
-        setItems((prev) => [...prev, ...page.items]);
+        setItems((prev) => appendUniqueFeedItems(prev, page.items));
       }
     } catch {
       // keep what we have
     } finally {
-      loadingMoreRef.current = false;
+      if (epoch === feedLoadEpochRef.current) loadingMoreRef.current = false;
     }
   }, [items.length, totalCount, feedDate]);
 

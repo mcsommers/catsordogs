@@ -1,6 +1,6 @@
 -- Phase 3 rules: recording attempts, the length limit, and caption editing.
 begin;
-select plan(77);
+select plan(82);
 
 -- The fixed reason a refusal carries (the app picks a screen from it).
 create function pg_temp.refusal_hint() returns text language plpgsql as $f$
@@ -181,6 +181,28 @@ select isnt((select captions_edited_at from public.videos where id = (select vid
 select lives_ok($$select public.reset_captions((select video_id from started))$$, 'the owner can reset to the automatic captions');
 select is((select caption_segments -> 1 ->> 'text' from public.videos where id = (select video_id from started)), 'I love dogs', 'reset restores the automatic text');
 select is((select captions_edited_at from public.videos where id = (select video_id from started)), null, 'reset clears the edit marker');
+
+-- ---------------------------------------------------------------------------
+-- Caption wait fallback (owner stops waiting for Mux)
+-- ---------------------------------------------------------------------------
+reset role;
+insert into public.videos (id, user_id, question_id, status, duration_seconds, captions_status, mux_playback_id)
+values ('d0000008-0000-0000-0000-000000000000', 'c1000000-0000-0000-0000-0000000000c1', (select id from public.questions),
+        'ready', 9, 'pending', 'playback-pending');
+set local role authenticated;
+select set_config('request.jwt.claims', '{"sub":"c1000000-0000-0000-0000-0000000000c1","role":"authenticated"}', true);
+select lives_ok($$select public.abandon_pending_captions('d0000008-0000-0000-0000-000000000000')$$,
+  'the owner can abandon a pending auto-caption wait');
+select is((select captions_status from public.videos where id = 'd0000008-0000-0000-0000-000000000000'), 'ready',
+  'fallback captions are ready to edit and submit');
+select is((select caption_segments -> 0 ->> 'text' from public.videos where id = 'd0000008-0000-0000-0000-000000000000'),
+  'No caption.', 'fallback text is the placeholder');
+reset role;
+set local role service_role;
+select lives_ok($$select public.video_set_captions('d0000008-0000-0000-0000-000000000000',
+  '[{"start":0,"end":9,"text":"Late from Mux"}]'::jsonb)$$, 'a late Mux delivery does not raise');
+select is((select caption_segments -> 0 ->> 'text' from public.videos where id = 'd0000008-0000-0000-0000-000000000000'),
+  'No caption.', 'late Mux captions do not replace an owner fallback');
 
 -- ---------------------------------------------------------------------------
 -- After submitting (Phase 4 sets submitted_at), captions are locked

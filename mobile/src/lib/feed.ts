@@ -25,6 +25,8 @@ export type FeedItem = {
   avatarUrl?: string;
 };
 
+export { appendUniqueFeedItems } from './feedMerge';
+
 export type BrowseQuestion = {
   questionId: string;
   questionDate: string;
