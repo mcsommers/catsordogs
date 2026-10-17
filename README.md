@@ -44,9 +44,12 @@ Run from the project root unless noted.
 | `cd mobile && npm start` | Starts the app for the iOS simulator (press `i`) |
 | `cd mobile && npm test` | Runs the app's tests |
 | `cd mobile && npm run typecheck` | Checks the app's TypeScript for errors |
-| `npm run admin` | Opens the admin website at http://127.0.0.1:5173/admin/ (after the one-time setup below) |
-| `npm run website` | Starts the marketing homepage locally (default http://127.0.0.1:4321) |
-| `npm run website:build` | Builds the static marketing site into `website/dist/` |
+| `npm run admin` | Opens the admin website locally (run from the **repo root**; open http://localhost:5173/admin/) |
+| `npm run website` | Starts the marketing homepage locally (run from the **repo root**; open http://localhost:4321) |
+| `npm run website:build` | Builds the static marketing site into `website/dist/` (repo root) |
+| `cd website && npm run dev` | Same dev server if you are already inside the `website/` folder |
+
+**Marketing website setup:** `cd website && npm install`, then copy `website/.env.example` to `website/.env`. Use the same Supabase URL and anon key as `mobile/.env` (`EXPO_PUBLIC_*` → `PUBLIC_SUPABASE_*`). The download badges open a Coming Soon modal; email signups call `submit_website_launch_notify` on Supabase (run `db push` on staging after the launch-signups migration lands).
 
 ## Running the app on your phone (Expo Go)
 
@@ -187,7 +190,7 @@ cp .env.example .env
 
 Put the local URL and the anon key from `npm run db:start` into `admin/.env`
 (`VITE_SUPABASE_URL` and `VITE_SUPABASE_ANON_KEY`). They are the same public values as `mobile/.env`.
-Then `npm run admin` and open http://127.0.0.1:5173/admin/
+Then `npm run admin` (repo root) or `cd admin && npm run dev`, and open http://localhost:5173/admin/
 
 Sign in with the email and password of someone on the admin list. The question calendar opens on
 today and the days ahead. A day ahead with no question stays in the list and is highlighted. Previous
@@ -240,7 +243,7 @@ node --env-file=supabase/.env.scripts.staging supabase/seed-staging-feed.mjs
 
 Demo accounts use `@catsordogs.demo` emails. Staging uploads use normal Mux Staging assets (`MUX_TEST_MODE=false`); for playback UAT, your own submitted answer is the most reliable clip.
 
-Then open http://127.0.0.1:5173/admin/ and sign in as `admin@local.demo` with password
+Then open http://localhost:5173/admin/ and sign in as `admin@local.demo` with password
 `correct-horse-battery`. If you were already signed in as an older local admin, sign out first.
 `visitor@local.demo` (same password) is a normal account and should be turned away.
 

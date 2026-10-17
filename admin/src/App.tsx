@@ -8,6 +8,7 @@ import Queue from './pages/Queue';
 import People from './pages/People';
 import Videos from './pages/Videos';
 import ProfileQuestions from './pages/ProfileQuestions';
+import EmailList from './pages/EmailList';
 
 const links = [
   ['/questions', 'Questions'],
@@ -16,6 +17,7 @@ const links = [
   ['/people', 'People'],
   ['/videos', 'Videos'],
   ['/profile-questions', 'Profile questions'],
+  ['/email-list', 'Email list'],
 ] as const;
 
 function Shell({ children }: { children: ReactNode }) {
@@ -51,6 +53,7 @@ export default function App() {
       <Route path="/people" element={<RequireAdmin><Shell><People /></Shell></RequireAdmin>} />
       <Route path="/videos" element={<RequireAdmin><Shell><Videos /></Shell></RequireAdmin>} />
       <Route path="/profile-questions" element={<RequireAdmin><Shell><ProfileQuestions /></Shell></RequireAdmin>} />
+      <Route path="/email-list" element={<RequireAdmin><Shell><EmailList /></Shell></RequireAdmin>} />
       <Route path="*" element={<Navigate to="/" replace />} />
     </Routes>
   );

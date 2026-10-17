@@ -1,11 +1,11 @@
 export const siteName = 'Cats or Dogs?';
 
 export const navLinks = [
-  { href: '#how-it-works', label: 'How it works' },
-  { href: '#subscriptions', label: 'Subscriptions' },
-  { href: '#safety', label: 'Safety' },
-  { href: '#support', label: 'Support' },
-  { href: '#download', label: 'Download' },
+  { href: '/#how-it-works', label: 'How it works' },
+  { href: '/#subscriptions', label: 'Subscriptions' },
+  { href: '/#safety', label: 'Safety' },
+  { href: '/#faqs', label: 'FAQs' },
+  { href: '/#download', label: 'Download' },
 ] as const;
 
 export const hero = {
@@ -65,7 +65,7 @@ export const subscriptions = {
       bullets: [
         'Everything in Free',
         'Additional capabilities coming soon',
-        'Placeholder benefit',
+        'Launch-day pricing for early subscribers',
       ],
     },
     {
@@ -77,7 +77,7 @@ export const subscriptions = {
       bullets: [
         'Everything in Gold',
         'Premium capabilities coming soon',
-        'Placeholder benefit',
+        'Best value when paid tiers go live',
       ],
     },
   ],
@@ -112,9 +112,14 @@ export const safety = {
 };
 
 export const support = {
-  title: 'Support',
+  title: 'FAQs',
   subtitle: 'Quick answers while we build out the full help center.',
   faqs: [
+    {
+      question: 'Why do I have to record videos of myself?',
+      answer:
+        'Still photos and polished profiles let people hide behind a curated version of themselves. Cats or Dogs? is built around short, on-camera answers to the same daily question for everyone. You hear someone’s voice, see their face in the moment, and get an honest read on who they are. That is how matches start with substance, not guesswork.',
+    },
     {
       question: 'Do I have to answer every day?',
       answer:
@@ -153,9 +158,27 @@ export const downloadSection = {
     'Available soon on iOS and Android. Join the daily question and meet people who show up as themselves.',
 };
 
+export const footerLegalLinks = [
+  { label: 'Privacy', href: '/privacy-policy' },
+  { label: 'Terms', href: '/terms-of-service' },
+  { label: 'Community guidelines', href: '/community-guidelines' },
+] as const;
+
 export const footer = {
-  legalLabels: ['Privacy', 'Terms', 'Community guidelines'],
   copyright: '© 2026 Cats or Dogs? Authenticity-first dating.',
+};
+
+export const downloadModal = {
+  title: 'Coming Soon',
+  message:
+    'The Cats or Dogs? app is currently in development. Enter your email and we will notify you when we launch.',
+  emailLabel: 'Email address',
+  submitLabel: 'Notify me',
+  successMessage: "Thanks. We'll email you when the app launches.",
+  errorInvalid: 'Enter a valid email address.',
+  errorGeneric: 'Something went wrong. Please try again.',
+  errorNotConfigured:
+    'Sign-up is not available right now. Please try again later.',
 };
 
 export const seo = {
