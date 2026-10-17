@@ -1,0 +1,88 @@
+---
+import { navLinks, siteName } from '../data/homepage';
+---
+
+<a class="skip-link" href="#main">Skip to main content</a>
+
+<header class="site-header">
+  <div class="site-header__inner">
+    <span class="logo">{siteName}</span>
+
+    <nav class="nav-desktop" aria-label="Primary">
+      <ul class="nav-desktop__list">
+        {
+          navLinks.map((link) => (
+            <li>
+              <a href={link.href}>{link.label}</a>
+            </li>
+          ))
+        }
+      </ul>
+    </nav>
+
+    <button
+      type="button"
+      class="nav-toggle"
+      id="nav-toggle"
+      aria-expanded="false"
+      aria-controls="nav-drawer"
+      aria-label="Open menu"
+    >
+      <span class="nav-toggle__bars" aria-hidden="true"></span>
+    </button>
+  </div>
+</header>
+
+<div class="nav-drawer" id="nav-drawer" data-open="false" aria-hidden="true">
+  <button type="button" class="nav-drawer__backdrop" id="nav-backdrop" tabindex="-1" aria-label="Close menu"></button>
+  <div class="nav-drawer__panel" role="dialog" aria-modal="true" aria-labelledby="nav-drawer-title">
+    <div class="nav-drawer__header">
+      <h2 class="nav-drawer__title" id="nav-drawer-title">Menu</h2>
+      <button type="button" class="nav-drawer__close" id="nav-close" aria-label="Close menu">×</button>
+    </div>
+    <nav aria-label="Mobile">
+      <ul class="nav-drawer__links">
+        {
+          navLinks.map((link) => (
+            <li>
+              <a href={link.href} data-nav-link>{link.label}</a>
+            </li>
+          ))
+        }
+      </ul>
+    </nav>
+  </div>
+</div>
+
+<script is:inline>
+  (function () {
+    const drawer = document.getElementById('nav-drawer');
+    const toggle = document.getElementById('nav-toggle');
+    const closeBtn = document.getElementById('nav-close');
+    const backdrop = document.getElementById('nav-backdrop');
+    if (!drawer || !toggle || !closeBtn || !backdrop) return;
+
+    const links = drawer.querySelectorAll('[data-nav-link]');
+
+    function setOpen(open) {
+      drawer.dataset.open = open ? 'true' : 'false';
+      drawer.setAttribute('aria-hidden', open ? 'false' : 'true');
+      toggle.setAttribute('aria-expanded', open ? 'true' : 'false');
+      toggle.setAttribute('aria-label', open ? 'Close menu' : 'Open menu');
+      document.body.style.overflow = open ? 'hidden' : '';
+      if (open) closeBtn.focus();
+    }
+
+    toggle.addEventListener('click', () => setOpen(drawer.dataset.open !== 'true'));
+    closeBtn.addEventListener('click', () => setOpen(false));
+    backdrop.addEventListener('click', () => setOpen(false));
+
+    links.forEach((link) => {
+      link.addEventListener('click', () => setOpen(false));
+    });
+
+    document.addEventListener('keydown', (event) => {
+      if (event.key === 'Escape' && drawer.dataset.open === 'true') setOpen(false);
+    });
+  })();
+</script>

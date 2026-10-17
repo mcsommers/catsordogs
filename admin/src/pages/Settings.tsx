@@ -167,7 +167,7 @@ export default function Settings() {
       <p className="muted setting-help">
         Used when someone types a city on their profile, and again to look up coordinates for distance.
         Open-Meteo is the default and needs no key. Google Places needs a server API key
-        (GOOGLE_PLACES_API_KEY). That key is a secret — it is not entered on this page. Switch to Google
+        (GOOGLE_PLACES_API_KEY). That key is a secret. It is not entered on this page. Switch to Google
         Places only after the key is set on the server.
       </p>
       <button className="primary" type="submit" disabled={!dirty || saving || !baseline}>

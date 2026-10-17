@@ -1,0 +1,138 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Header from '../components/Header.astro';
+import StoreBadges from '../components/StoreBadges.astro';
+import {
+  downloadSection,
+  footer,
+  hero,
+  howItWorks,
+  safety,
+  siteName,
+  subscriptions,
+  support,
+} from '../data/homepage';
+import heroPhone from '../../assets/homepagehero.png';
+---
+
+<BaseLayout>
+  <Header />
+
+  <main id="main">
+    <section class="hero" aria-labelledby="hero-heading">
+      <div class="container hero__grid">
+        <div>
+          <h1 id="hero-heading" class="heading-display hero__headline">{hero.headline}</h1>
+          <p class="hero__subhead">{hero.subhead}</p>
+          <StoreBadges />
+        </div>
+        <figure class="hero__phone">
+          <img
+            src={heroPhone.src}
+            width={heroPhone.width}
+            height={heroPhone.height}
+            alt="Cats or Dogs? app on iPhone showing a daily video answer with captions and submit controls"
+            fetchpriority="high"
+            decoding="async"
+          />
+        </figure>
+      </div>
+    </section>
+
+    <section id="how-it-works" class="section section-alt" aria-labelledby="how-it-works-heading">
+      <div class="container">
+        <h2 id="how-it-works-heading" class="heading-section">{howItWorks.title}</h2>
+        <p class="section-lead">{howItWorks.subtitle}</p>
+        <ol class="steps">
+          {
+            howItWorks.steps.map((step, index) => (
+              <li class="step-card">
+                <p class="step-card__number" aria-hidden="true">{index + 1}</p>
+                <h3 class="step-card__title">{step.title}</h3>
+                <p class="step-card__body">{step.body}</p>
+              </li>
+            ))
+          }
+        </ol>
+      </div>
+    </section>
+
+    <section id="subscriptions" class="section" aria-labelledby="subscriptions-heading">
+      <div class="container">
+        <h2 id="subscriptions-heading" class="heading-section">{subscriptions.title}</h2>
+        <p class="section-lead">{subscriptions.subtitle}</p>
+        <div class="tiers">
+          {
+            subscriptions.tiers.map((tier) => (
+              <article
+                class:list={['tier-card', tier.featured && 'tier-card--featured']}
+                aria-labelledby={`tier-${tier.id}`}
+              >
+                <div class="tier-card__head">
+                  <h3 id={`tier-${tier.id}`} class="tier-card__name">{tier.name}</h3>
+                  {tier.badge && <span class="tier-card__badge">{tier.badge}</span>}
+                </div>
+                {tier.price && <p class="tier-card__price">{tier.price}</p>}
+                <ul class="tier-card__list">
+                  {tier.bullets.map((bullet) => <li>{bullet}</li>)}
+                </ul>
+              </article>
+            ))
+          }
+        </div>
+      </div>
+    </section>
+
+    <section id="safety" class="section section-alt" aria-labelledby="safety-heading">
+      <div class="container">
+        <h2 id="safety-heading" class="heading-section">{safety.title}</h2>
+        <p class="section-lead">{safety.subtitle}</p>
+        <div class="safety-grid">
+          {
+            safety.items.map((item) => (
+              <article class="safety-card">
+                <h3 class="safety-card__title">{item.title}</h3>
+                <p class="safety-card__body">{item.body}</p>
+              </article>
+            ))
+          }
+        </div>
+      </div>
+    </section>
+
+    <section id="support" class="section" aria-labelledby="support-heading">
+      <div class="container">
+        <h2 id="support-heading" class="heading-section">{support.title}</h2>
+        <p class="section-lead">{support.subtitle}</p>
+        <div class="faq">
+          {
+            support.faqs.map((faq) => (
+              <details class="faq__item">
+                <summary class="faq__question">{faq.question}</summary>
+                <p class="faq__answer">{faq.answer}</p>
+              </details>
+            ))
+          }
+        </div>
+      </div>
+    </section>
+
+    <section id="download" class="section section-alt download" aria-labelledby="download-heading">
+      <div class="container">
+        <h2 id="download-heading" class="heading-section">{downloadSection.title}</h2>
+        <p class="section-lead">{downloadSection.subtitle}</p>
+        <StoreBadges />
+      </div>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <div class="container site-footer__inner">
+      <p class="site-footer__logo">{siteName}</p>
+      <ul class="site-footer__legal" aria-label="Legal">
+        {footer.legalLabels.map((label) => <li><span>{label}</span></li>)}
+      </ul>
+      <p class="site-footer__copy">{footer.copyright}</p>
+    </div>
+  </footer>
+</BaseLayout>

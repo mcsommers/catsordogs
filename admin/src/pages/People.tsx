@@ -190,10 +190,10 @@ export default function People() {
                         : <span className="thumb empty" aria-hidden="true" />}
                     </td>
                     <td>
-                      {person.first_name ?? '—'}
+                      {person.first_name ?? '-'}
                       {adminIds.has(person.id) ? <span className="badge">Admin</span> : null}
                     </td>
-                    <td>{person.email ?? '—'}</td>
+                    <td>{person.email ?? '-'}</td>
                     <td className="num">{person.follower_count}</td>
                     <td className="num">{person.following_count}</td>
                     <td className="num">{person.match_count}</td>

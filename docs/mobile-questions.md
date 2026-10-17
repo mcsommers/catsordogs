@@ -3,6 +3,10 @@
 A record of questions asked while planning the phone app, the options offered,
 and Mike's answer. Newest phase first.
 
+## Admin email on every new report (Mike, Oct 17, 2026)
+
+Each new video flag, profile report, or chat message report queues one email to every admin (`admin_alert` / `moderation_report`). Copy names what was reported and points admins to the moderation queue; reporter identities are never included. A second report from the same person on the same target does not send another email. Notification settings cannot turn these off.
+
 ## Following badge outline pill (Mike, Oct 17, 2026)
 
 On feed (**06**), profile heroes (**06j**, **06n**, …), and answer detail (**06k**), the **Following** badge is a pill with **transparent** fill, **orange** 1.5pt border, and **orange** **Following** label (11pt semibold)—not a solid orange fill with white text.
@@ -295,7 +299,7 @@ The person who unmatches loses the chat. The other person keeps the history and 
 
 The unmatch confirmation (**07n**) has three actions: **Unmatch Only** (primary), **Unmatch & Block**, and **Keep Match**. Unmatch & Block is a block.
 
-Report confirmations for a video (**06g**), a profile (**06q**), and a chat message (**07m**) use the same pattern: **Report Only** (primary), **Report & Block**, and **Cancel**. Report & Block also blocks them. They are not told about the report or the block. After a video or profile report is filed, the acknowledgment is the dark in-app dialog **06ga** (**Report submitted**, **Thanks — we'll review this response.**, orange **OK**), not the phone's system alert.
+Report confirmations for a video (**06g**), a profile (**06q**), and a chat message (**07m**) use the same pattern: **Report Only** (primary), **Report & Block**, and **Cancel**. Report & Block also blocks them. They are not told about the report or the block. After a video or profile report is filed, the acknowledgment is the dark in-app dialog **06ga** (**Report submitted**, **Thanks. We'll review this response.**, orange **OK**), not the phone's system alert.
 
 ### Matches tab: open the list that has something new (Mike, Oct 16, 2026)
 

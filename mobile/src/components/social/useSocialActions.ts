@@ -89,7 +89,7 @@ export function useSocialActions(subject: SocialSubject | null, options: Options
               person,
               async () => {
                 const result = await reportProfile(subject.userId);
-                tell(result, 'You have already reported this profile.', "Thanks — we'll review this profile.");
+                tell(result, 'You have already reported this profile.', "Thanks. We'll review this profile.");
               },
               async () => {
                 const result = await reportProfile(subject.userId);
@@ -98,7 +98,7 @@ export function useSocialActions(subject: SocialSubject | null, options: Options
                 tell(
                   result,
                   "You have already reported this profile. You won't see each other again.",
-                  "Thanks — we'll review this profile. You won't see each other again.",
+                  "Thanks. We'll review this profile. You won't see each other again.",
                 );
               },
             );
@@ -107,7 +107,7 @@ export function useSocialActions(subject: SocialSubject | null, options: Options
               person,
               async () => {
                 const result = await flagAnswer(subject.answerId!);
-                tell(result, 'You have already reported this answer.', "Thanks — we'll review this response.");
+                tell(result, 'You have already reported this answer.', "Thanks. We'll review this response.");
               },
               async () => {
                 const result = await flagAnswer(subject.answerId!);
@@ -116,7 +116,7 @@ export function useSocialActions(subject: SocialSubject | null, options: Options
                 tell(
                   result,
                   "You have already reported this answer. You won't see each other again.",
-                  "Thanks — we'll review this response. You won't see each other again.",
+                  "Thanks. We'll review this response. You won't see each other again.",
                 );
               },
             );

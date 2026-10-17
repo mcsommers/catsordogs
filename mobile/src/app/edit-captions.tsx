@@ -87,7 +87,7 @@ function EditCaptionsForm({ recording, previewAboveCaptions }: EditCaptionsFormP
     !previewAboveCaptions && duration ? (
       <View style={styles.durationOnly}>
         <Clock3 size={14} color={colors.textDarkMuted} />
-        <Text style={styles.durationLabel}>{clock(duration)} recording — preview on Review</Text>
+        <Text style={styles.durationLabel}>{clock(duration)} recording. Preview on Review</Text>
       </View>
     ) : null;
 
