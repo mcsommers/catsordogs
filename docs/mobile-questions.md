@@ -62,7 +62,7 @@ On **Log In (02b)** and **Sign Up (02)**, the **Email** and **Password** fields 
 
 ### Sign Up subtitle (Mike, Oct 17, 2026)
 
-Sign Up (02) subtitle is **Let's make some magic.** (not "Let's find your people!").
+Sign Up (02) subtitle is **Let's make some magic.** (not "Let's find your people!"). The email field label is **Email (a confirmation link will be sent here)**.
 
 ## Phase C: Profile and archive (asked Oct 12, 2026)
 

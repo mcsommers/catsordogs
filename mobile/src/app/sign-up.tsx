@@ -66,7 +66,7 @@ export default function SignUp() {
       <View style={{ gap: 16 }}>
         <View ref={emailAnchorRef} collapsable={false}>
           <TextField
-            label="Email"
+            label="Email (a confirmation link will be sent here)"
             icon={Mail}
             autoCapitalize="none"
             autoComplete="email"
