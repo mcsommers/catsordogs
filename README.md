@@ -49,7 +49,9 @@ Run from the project root unless noted.
 | `npm run website:build` | Builds the static marketing site into `website/dist/` (repo root) |
 | `cd website && npm run dev` | Same dev server if you are already inside the `website/` folder |
 
-**Marketing website setup:** `cd website && npm install`, then copy `website/.env.example` to `website/.env`. Use the same Supabase URL and anon key as `mobile/.env` (`EXPO_PUBLIC_*` → `PUBLIC_SUPABASE_*`). The download badges open a Coming Soon modal; email signups call `submit_website_launch_notify` on Supabase (run `db push` on staging after the launch-signups migration lands).
+**Marketing website setup:** `cd website && npm install`, then copy `website/.env.example` to `website/.env`. The public site at **catsordogs.net** uses **production** Supabase (`PUBLIC_SUPABASE_*` in the example file), not staging. Phone UAT stays on staging in `mobile/.env`. Print the production anon key with `npx supabase projects api-keys --project-ref fvnbcofflierdlnnglko` (the line named `anon`). The download badges open a Coming Soon modal; email signups call `submit_website_launch_notify` on Supabase (run `npx supabase db push --project-ref fvnbcofflierdlnnglko` after signup migrations land on production).
+
+**Marketing website deploy (Cloudflare Pages):** Connect this GitHub repo in the Cloudflare dashboard (**Workers & Pages → Create → Pages → Connect to Git**). Build settings: framework preset **Astro** (or None), root directory **`website`**, build command **`npm ci && npm run build`**, output directory **`dist`**. Add production environment variables `PUBLIC_SITE_URL` (`https://catsordogs.net`), `PUBLIC_SUPABASE_URL`, and `PUBLIC_SUPABASE_ANON_KEY` (same values as `website/.env`). Attach custom domains **catsordogs.net** (and **www** if you use it). Each push to `main` that touches the site can trigger a new deploy.
 
 ## Running the app on your phone (Expo Go)
 
