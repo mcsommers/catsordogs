@@ -30,7 +30,7 @@ Living log of product questions, options, and Mike’s answers for the public ma
 
 - **Visual system:** Match mobile — Anton + Funnel Sans; dark homepage using app dark tokens (`bg-dark`, `surface-dark`, dog orange accent).
 - **Hero visual (website):** Full iPhone mockup image `website/assets/homepagehero.png` (470×954).
-- **Structure:** Single scrolling homepage; nav items scroll to sections: How it works, Subscriptions, Safety, Support, Download.
+- **Structure:** Single scrolling homepage; nav items scroll to sections: How it works, Subscriptions, Safety, FAQs, Download.
 - **Logo:** Simple placeholder until brand lockup exists.
 - **Frames in Pencil:** Desktop (~1440px) and mobile (~390px) homepage variants.
 
@@ -52,9 +52,14 @@ Living log of product questions, options, and Mike’s answers for the public ma
 | Oct 17, 2026 | **Hero visual:** Replaced layered `black.webp` + **06 Feed** inset with single asset `website/homepagehero.png` on desktop and mobile. |
 | Oct 17, 2026 | **Website assets:** Mike moved marketing assets under `website/assets/`; `website.pen` image fills updated to `../website/assets/…`. |
 | Oct 17, 2026 | **Website code:** Astro static site in `website/` (run `npm run website` from repo root). Copy lives in `website/src/data/homepage.ts`. Section nav anchors wired; store badges and footer legal labels are not links yet. Set `PUBLIC_SITE_URL` in `website/.env` before production build for canonical URLs, sitemap, and Open Graph. |
+| Oct 17, 2026 | **Download modal:** Store badges open a Coming Soon dialog with email notify signup. Design frame **Download Modal** in `website.pen`. Backend: `website_launch_signups` + RPC `submit_website_launch_notify` (migration `20261043000000_website_launch_signups.sql`). Website needs `PUBLIC_SUPABASE_URL` and `PUBLIC_SUPABASE_ANON_KEY` in `website/.env`. |
+| Oct 17, 2026 | **Admin email list:** `/admin/email-list` lists signups via RPC `admin_list_website_launch_signups` (migration `20261043100000_admin_list_website_launch_signups.sql`). Nav link **Email list** in the admin shell. |
+| Oct 17, 2026 | **Legal pages:** `/privacy-policy`, `/terms-of-service`, `/community-guidelines` with shared header/footer; footer links wired. Copy in `website/src/data/legal/`. |
+| Oct 17, 2026 | Homepage: **Support** section and nav label renamed to **FAQs** (`#faqs` anchor). |
+| Oct 17, 2026 | FAQs: added **Why do I have to record videos of myself?** as first item (desktop + mobile + site). |
 
 ### Open design follow-ups
 
-- [ ] Link Privacy, Terms, and Community guidelines to real URLs when legal copy exists.
+- [x] Link Privacy, Terms, and Community guidelines to `/privacy-policy`, `/terms-of-service`, and `/community-guidelines` (Oct 17, 2026).
 - [ ] Refine subscription tier bullets when the Free / Gold / Platinum model is defined.
 - [ ] Optional: add anchor IDs / section labels in Pencil for handoff to code (not required for static design).

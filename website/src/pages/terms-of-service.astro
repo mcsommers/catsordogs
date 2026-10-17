@@ -1,0 +1,13 @@
+---
+import LegalDocument from '../components/LegalDocument.astro';
+import { termsOfService } from '../data/legal/terms-of-service';
+import { siteName } from '../data/homepage';
+import SiteLayout from '../layouts/SiteLayout.astro';
+---
+
+<SiteLayout
+  title={`${termsOfService.title} | ${siteName}`}
+  description={termsOfService.metaDescription}
+>
+  <LegalDocument document={termsOfService} />
+</SiteLayout>

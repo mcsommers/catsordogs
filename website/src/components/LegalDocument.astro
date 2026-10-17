@@ -1,0 +1,30 @@
+---
+import type { LegalDocument } from '../data/legal/types';
+
+interface Props {
+  document: LegalDocument;
+}
+
+const { document } = Astro.props;
+---
+
+<main id="main" class="legal-page">
+  <div class="container legal-page__inner">
+    <h1 class="legal-page__title">{document.title}</h1>
+    <p class="legal-page__updated">Last updated: {document.lastUpdated}</p>
+    {document.intro ? <p class="legal-page__intro">{document.intro}</p> : null}
+    {
+      document.sections.map((section, index) => (
+        <section class="legal-page__section" aria-labelledby={`legal-section-${index}`}>
+          <h2 class="legal-page__heading" id={`legal-section-${index}`}>{section.title}</h2>
+          {section.paragraphs.map((paragraph) => <p>{paragraph}</p>)}
+          {section.bullets ? (
+            <ul>
+              {section.bullets.map((item) => <li>{item}</li>)}
+            </ul>
+          ) : null}
+        </section>
+      ))
+    }
+  </div>
+</main>

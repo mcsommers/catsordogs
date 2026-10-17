@@ -1,0 +1,155 @@
+---
+import { downloadModal } from '../data/homepage';
+
+const supabaseUrl = import.meta.env.PUBLIC_SUPABASE_URL ?? '';
+const supabaseAnonKey = import.meta.env.PUBLIC_SUPABASE_ANON_KEY ?? '';
+---
+
+<div
+  class="download-modal"
+  id="download-modal"
+  data-open="false"
+  aria-hidden="true"
+  data-supabase-url={supabaseUrl}
+  data-supabase-anon-key={supabaseAnonKey}
+>
+  <button type="button" class="download-modal__backdrop" id="download-modal-backdrop" tabindex="-1" aria-label="Close dialog"></button>
+  <div
+    class="download-modal__panel"
+    role="dialog"
+    aria-modal="true"
+    aria-labelledby="download-modal-title"
+    aria-describedby="download-modal-desc"
+  >
+    <button type="button" class="download-modal__close" id="download-modal-close" aria-label="Close">×</button>
+    <h2 id="download-modal-title" class="download-modal__title">{downloadModal.title}</h2>
+    <p id="download-modal-desc" class="download-modal__message">{downloadModal.message}</p>
+
+    <form class="download-modal__form" id="download-modal-form" novalidate>
+      <label class="download-modal__label" for="download-modal-email">{downloadModal.emailLabel}</label>
+      <input
+        class="download-modal__input"
+        type="email"
+        id="download-modal-email"
+        name="email"
+        autocomplete="email"
+        inputmode="email"
+        required
+      />
+      <p class="download-modal__feedback" id="download-modal-feedback" hidden></p>
+      <button class="download-modal__submit" type="submit">{downloadModal.submitLabel}</button>
+    </form>
+
+    <p class="download-modal__success" id="download-modal-success" hidden>{downloadModal.successMessage}</p>
+  </div>
+</div>
+
+<script define:vars={{ downloadModal, supabaseUrl, supabaseAnonKey }}>
+  (function () {
+  const modal = document.getElementById('download-modal');
+  const backdrop = document.getElementById('download-modal-backdrop');
+  const closeBtn = document.getElementById('download-modal-close');
+  const form = document.getElementById('download-modal-form');
+  const emailInput = document.getElementById('download-modal-email');
+  const feedback = document.getElementById('download-modal-feedback');
+  const success = document.getElementById('download-modal-success');
+
+  if (!modal || !backdrop || !closeBtn || !form || !emailInput || !feedback || !success) return;
+
+  let lastFocused = null;
+
+  function setFeedback(message, isError) {
+    feedback.hidden = !message;
+    feedback.textContent = message;
+    feedback.classList.toggle('download-modal__feedback--error', Boolean(isError));
+  }
+
+  function openModal() {
+    lastFocused = document.activeElement;
+    modal.dataset.open = 'true';
+    modal.setAttribute('aria-hidden', 'false');
+    document.body.style.overflow = 'hidden';
+    form.hidden = false;
+    success.hidden = true;
+    setFeedback('', false);
+    emailInput.value = '';
+    emailInput.focus();
+  }
+
+  function closeModal() {
+    modal.dataset.open = 'false';
+    modal.setAttribute('aria-hidden', 'true');
+    document.body.style.overflow = '';
+    if (lastFocused && typeof lastFocused.focus === 'function') lastFocused.focus();
+  }
+
+  function isValidEmail(value) {
+    return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value.trim());
+  }
+
+  async function submitEmail(email) {
+    const url = supabaseUrl || modal.dataset.supabaseUrl;
+    const key = supabaseAnonKey || modal.dataset.supabaseAnonKey;
+    if (!url || !key) throw new Error('not_configured');
+
+    const res = await fetch(`${url.replace(/\/$/, '')}/rest/v1/rpc/submit_website_launch_notify`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        apikey: key,
+        Authorization: `Bearer ${key}`,
+      },
+      body: JSON.stringify({ p_email: email.trim() }),
+    });
+
+    if (!res.ok) {
+      const body = await res.json().catch(() => ({}));
+      if (body?.code === '22023' || body?.message?.includes('Invalid email')) {
+        throw new Error('invalid');
+      }
+      throw new Error('submit');
+    }
+  }
+
+  document.querySelectorAll('[data-open-download-modal]').forEach((trigger) => {
+    trigger.addEventListener('click', openModal);
+  });
+
+  backdrop.addEventListener('click', closeModal);
+  closeBtn.addEventListener('click', closeModal);
+
+  document.addEventListener('keydown', (event) => {
+    if (event.key === 'Escape' && modal.dataset.open === 'true') closeModal();
+  });
+
+  form.addEventListener('submit', async (event) => {
+    event.preventDefault();
+    const email = emailInput.value.trim();
+    if (!isValidEmail(email)) {
+      setFeedback(downloadModal.errorInvalid, true);
+      emailInput.focus();
+      return;
+    }
+
+    setFeedback('', false);
+    const submitBtn = form.querySelector('button[type="submit"]');
+    if (submitBtn) submitBtn.disabled = true;
+
+    try {
+      await submitEmail(email);
+      form.hidden = true;
+      success.hidden = false;
+    } catch (err) {
+      if (err.message === 'not_configured') {
+        setFeedback(downloadModal.errorNotConfigured, true);
+      } else if (err.message === 'invalid') {
+        setFeedback(downloadModal.errorInvalid, true);
+      } else {
+        setFeedback(downloadModal.errorGeneric, true);
+      }
+    } finally {
+      if (submitBtn) submitBtn.disabled = false;
+    }
+  });
+  })();
+</script>
