@@ -1,0 +1,31 @@
+---
+import appStoreBadge from '../../assets/appstore.png';
+import googlePlayBadge from '../../assets/googleplay.png';
+
+interface Props {
+  class?: string;
+}
+
+const { class: className = 'store-badges' } = Astro.props;
+---
+
+<div class={className}>
+  <img
+    class="store-badge"
+    src={appStoreBadge.src}
+    width={appStoreBadge.width}
+    height={appStoreBadge.height}
+    alt="Download on the App Store"
+    loading="lazy"
+    decoding="async"
+  />
+  <img
+    class="store-badge"
+    src={googlePlayBadge.src}
+    width={googlePlayBadge.width}
+    height={googlePlayBadge.height}
+    alt="Get it on Google Play"
+    loading="lazy"
+    decoding="async"
+  />
+</div>

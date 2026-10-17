@@ -228,7 +228,7 @@ export default function Matches() {
 
         {segment === 'chats' &&
           (chats.length === 0 ? (
-            <Text style={styles.empty}>No chats yet — match with someone to start talking.</Text>
+            <Text style={styles.empty}>No chats yet. Match with someone to start talking.</Text>
           ) : (
             chats.map((row) => (
               <Pressable

@@ -83,6 +83,20 @@ under-18 birthday right after the user picks a date). When the user
 submits a form that still has errors, scroll the screen to the first
 field with an error so they can fix it without hunting.
 
+Product copy punctuation (standing instruction from Mike):
+Never use em dashes (the `—` character) in user-facing copy. That includes
+mobile and admin UI strings, marketing site text in `docs/website.pen`,
+labels and designed strings in Pencil, notification and email wording, and
+any doc that records exact in-app text users see (for example
+`docs/UAT-flows.md` and `docs/master-test.md` expected results). When you
+would use an em dash, pick clearer punctuation instead (comma, period,
+semicolon, colon) or rewrite into two sentences. Hyphens in compound words
+are fine. En dashes in numeric ranges (for example `3–5`) are fine. Do not
+use an em dash as an empty table cell; use `-` or `n/a`. If you touch
+existing copy that still has em dashes, rewrite it in the same pass. This
+rule does not apply to existing document filenames or to internal code
+comments.
+
 Rules that must never break:
 1. The app never reads who follows a user (follower identities). The
    follows and nudges tables have no client access; only server

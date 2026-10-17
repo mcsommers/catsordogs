@@ -587,111 +587,21 @@
                 {
                   "type": "frame",
                   "id": "NQa6Q",
-                  "name": "Hero",
+                  "name": "Hero Video",
+                  "clip": true,
                   "width": "fill_container",
                   "height": 300,
                   "fill": {
-                    "type": "gradient",
-                    "gradientType": "linear",
+                    "type": "image",
                     "enabled": true,
-                    "rotation": 180,
-                    "size": {
-                      "height": 1
-                    },
-                    "colors": [
-                      {
-                        "color": "$accent-cat",
-                        "position": 0
-                      },
-                      {
-                        "color": "$accent-dog",
-                        "position": 1
-                      }
-                    ]
+                    "url": "website-assets/welcome-hero-frame.jpg",
+                    "mode": "cover"
                   },
                   "cornerRadius": 32,
                   "layout": "vertical",
                   "gap": 20,
                   "justifyContent": "center",
-                  "alignItems": "center",
-                  "children": [
-                    {
-                      "type": "frame",
-                      "id": "x67mR",
-                      "name": "Badge Row",
-                      "gap": 20,
-                      "alignItems": "center",
-                      "children": [
-                        {
-                          "type": "frame",
-                          "id": "XpGDm",
-                          "name": "Cat Badge",
-                          "width": 72,
-                          "height": 72,
-                          "fill": "#FFFFFF33",
-                          "cornerRadius": 9999,
-                          "justifyContent": "center",
-                          "alignItems": "center",
-                          "children": [
-                            {
-                              "type": "icon",
-                              "id": "SwEVR",
-                              "name": "Cat Icon",
-                              "width": 36,
-                              "height": 36,
-                              "icon": "cat",
-                              "library": "lucide",
-                              "fill": "$white"
-                            }
-                          ]
-                        },
-                        {
-                          "type": "icon",
-                          "id": "BfFBy",
-                          "name": "Heart Icon",
-                          "width": 26,
-                          "height": 26,
-                          "icon": "heart",
-                          "library": "lucide",
-                          "fill": "$white"
-                        },
-                        {
-                          "type": "frame",
-                          "id": "p0MTQv",
-                          "name": "Dog Badge",
-                          "width": 72,
-                          "height": 72,
-                          "fill": "#FFFFFF33",
-                          "cornerRadius": 9999,
-                          "justifyContent": "center",
-                          "alignItems": "center",
-                          "children": [
-                            {
-                              "type": "icon",
-                              "id": "SUV8k",
-                              "name": "Dog Icon",
-                              "width": 36,
-                              "height": 36,
-                              "icon": "dog",
-                              "library": "lucide",
-                              "fill": "$white"
-                            }
-                          ]
-                        }
-                      ]
-                    },
-                    {
-                      "type": "text",
-                      "id": "Q0KNKC",
-                      "name": "Hero Tag",
-                      "fill": "#FFFFFFCC",
-                      "content": "PICK YOUR PACK",
-                      "fontFamily": "$font-body",
-                      "fontSize": 13,
-                      "fontWeight": "700",
-                      "letterSpacing": 2
-                    }
-                  ]
+                  "alignItems": "center"
                 },
                 {
                   "type": "text",

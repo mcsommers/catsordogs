@@ -223,7 +223,7 @@ function ReviewPane({
           {content.first_name ?? 'Unknown'} {content.email ? `· ${content.email}` : ''}
           {content.question_date ? ` · ${formatDay(content.question_date)}` : ''}
         </p>
-        <p>Question: {content.question_text ?? '—'}</p>
+        <p>Question: {content.question_text ?? '-'}</p>
         {content.caption_text ? <p>Caption: {content.caption_text}</p> : null}
         {watchUrl ? (
           <Player url={watchUrl} />

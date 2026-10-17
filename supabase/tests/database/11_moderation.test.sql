@@ -3,7 +3,7 @@
 -- poster is told when a video is hidden, and deleting an account removes
 -- what people can see while keeping anonymous moderation records.
 begin;
-select plan(68);
+select plan(74);
 
 delete from public.moderation_actions;
 delete from public.flags;
@@ -95,6 +95,9 @@ select throws_ok($$select * from public.get_moderation_queue()$$, '42501', 'Not 
 -- ---------------------------------------------------------------------------
 select is(public.flag_answer((select today_a from ids)), 'flagged', 'the first flag does not hide the video');
 reset role;
+select is((select count(*) from public.notification_outbox
+           where user_id = pg_temp.uid(8) and kind = 'moderation_report' and type = 'admin_alert'),
+  1::bigint, 'the first video report emails the admin');
 select is((select status from public.answers where id = (select today_a from ids)), 'live',
   'two flags are required (the admin-set threshold)');
 select pg_temp.become(2);
@@ -106,6 +109,9 @@ select pg_temp.become(3);
 set local role authenticated;
 select is(public.flag_answer((select today_a from ids)), 'disabled', 'the second distinct flag hides the video');
 reset role;
+select is((select count(*) from public.notification_outbox
+           where user_id = pg_temp.uid(8) and kind = 'moderation_report'),
+  2::bigint, 'each distinct video report emails the admin once');
 select is((select status from public.answers where id = (select today_a from ids)), 'disabled',
   'that answer is disabled');
 select is((select status from public.answers where id = (select yesterday_a from ids)), 'live',
@@ -181,7 +187,13 @@ select is((select status from public.notification_outbox where kind = 'answer_di
 select pg_temp.become(2);
 set local role authenticated;
 select is(public.report_profile(pg_temp.uid(1)), 'reported', 'B reports A''s profile');
+select is((select count(*) from public.notification_outbox
+           where user_id = pg_temp.uid(8) and kind = 'moderation_report'),
+  3::bigint, 'a profile report emails the admin');
 select is(public.report_profile(pg_temp.uid(1)), 'already_reported', 'a second report from B is a no-op');
+select is((select count(*) from public.notification_outbox
+           where user_id = pg_temp.uid(8) and kind = 'moderation_report'),
+  3::bigint, 'reporting a profile again does not email the admin twice');
 select throws_ok($$select public.report_profile(auth.uid())$$, '23514', 'Choose someone else.',
   'you cannot report yourself');
 
@@ -218,7 +230,16 @@ reset role;
 select pg_temp.become(1);
 set local role authenticated;
 select is(public.report_message((select message_id from msgs)), 'reported', 'A reports E''s message');
+select is((select count(*) from public.notification_outbox
+           where user_id = pg_temp.uid(8) and kind = 'moderation_report'),
+  4::bigint, 'a chat message report emails the admin');
 select is(public.report_message((select message_id from msgs)), 'already_reported', 'reporting it again is a no-op');
+reset role;
+select ok((select send_email from public.claim_notifications(20)
+           where user_id = pg_temp.uid(8) and kind = 'moderation_report' limit 1),
+  'admin report alerts are always sent by email');
+select pg_temp.become(1);
+set local role authenticated;
 select ok(public.send_message((select match_id from chat), 'hi E') is not null, 'A replies');
 select throws_ok($$select public.report_message((select id from public.messages where sender_id = auth.uid() limit 1))$$,
   'P0002', 'Message not found.', 'you cannot report your own message');

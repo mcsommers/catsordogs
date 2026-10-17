@@ -11,6 +11,7 @@ MVP Scope & Requirements doc. Rules for the AI coding agent are in [`AGENTS.md`]
 | Folder | What it is |
 | --- | --- |
 | `mobile/` | The Expo (React Native, TypeScript) app for iOS and Android |
+| `website/` | Public marketing homepage (Astro static site; design in `docs/website.pen`) |
 | `supabase/` | The backend: database migrations, server functions, and database tests |
 | `docs/` | Requirements, build plan, concept doc, and the Pencil design file |
 
@@ -44,6 +45,8 @@ Run from the project root unless noted.
 | `cd mobile && npm test` | Runs the app's tests |
 | `cd mobile && npm run typecheck` | Checks the app's TypeScript for errors |
 | `npm run admin` | Opens the admin website at http://127.0.0.1:5173/admin/ (after the one-time setup below) |
+| `npm run website` | Starts the marketing homepage locally (default http://127.0.0.1:4321) |
+| `npm run website:build` | Builds the static marketing site into `website/dist/` |
 
 ## Running the app on your phone (Expo Go)
 
