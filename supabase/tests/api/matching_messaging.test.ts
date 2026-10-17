@@ -124,7 +124,14 @@ test('unmatch ends the chat without hiding the other person', async () => {
 
   assert.ifError((await dana.client.rpc('unmatch_user', { p_user_id: ed.id })).error);
   assert.equal((await dana.client.rpc('get_conversations')).data.length, 0);
-  assert.equal((await ed.client.rpc('get_conversations')).data.length, 0);
+  const edChats = await ed.client.rpc('get_conversations');
+  assert.ifError(edChats.error);
+  assert.equal(edChats.data.length, 1);
+  assert.equal(edChats.data[0].closed, true);
+  const history = await ed.client.rpc('get_messages', { p_match_id: matchId });
+  assert.ifError(history.error);
+  assert.equal(history.data[0].body, 'hi');
+  assert.ok((await ed.client.rpc('send_message', { p_match_id: matchId, p_body: 'nope' })).error);
   assert.equal((await ed.client.rpc('get_match_state', { p_user_id: dana.id })).data[0].state, 'none');
   assert.ok((await dana.client.rpc('send_message', { p_match_id: matchId, p_body: 'still?' })).error);
   assert.ifError((await dana.client.rpc('send_match_request', { p_user_id: ed.id })).error);

@@ -21,6 +21,7 @@ import {
   confirmReportProfile,
   confirmSendMatch,
   confirmUnfollow,
+  showReportResult,
 } from './confirmations';
 
 export type SocialSubject = {
@@ -76,24 +77,49 @@ export function useSocialActions(subject: SocialSubject | null, options: Options
           return;
         }
         if (action === 'report') {
+          const tell = (result: string, already: string, thanks: string) => {
+            if (result === 'already_reported' || result === 'already_flagged') {
+              showReportResult(person, 'Already reported', already);
+            } else {
+              showReportResult(person, 'Report submitted', thanks);
+            }
+          };
           if (subject.surface === 'profile') {
-            confirmReportProfile(person, async () => {
-              const result = await reportProfile(subject.userId);
-              if (result === 'already_reported') {
-                Alert.alert('Already reported', 'You have already reported this profile.');
-              } else {
-                Alert.alert('Report submitted', "Thanks — we'll review this profile.");
-              }
-            });
+            confirmReportProfile(
+              person,
+              async () => {
+                const result = await reportProfile(subject.userId);
+                tell(result, 'You have already reported this profile.', "Thanks — we'll review this profile.");
+              },
+              async () => {
+                const result = await reportProfile(subject.userId);
+                await blockUser(subject.userId);
+                options.onBlocked?.();
+                tell(
+                  result,
+                  "You have already reported this profile. You won't see each other again.",
+                  "Thanks — we'll review this profile. You won't see each other again.",
+                );
+              },
+            );
           } else if (subject.answerId) {
-            confirmFlagAnswer(person, async () => {
-              const result = await flagAnswer(subject.answerId!);
-              if (result === 'already_flagged') {
-                Alert.alert('Already reported', 'You have already reported this answer.');
-              } else {
-                Alert.alert('Report submitted', "Thanks — we'll review this response.");
-              }
-            });
+            confirmFlagAnswer(
+              person,
+              async () => {
+                const result = await flagAnswer(subject.answerId!);
+                tell(result, 'You have already reported this answer.', "Thanks — we'll review this response.");
+              },
+              async () => {
+                const result = await flagAnswer(subject.answerId!);
+                await blockUser(subject.userId);
+                options.onBlocked?.();
+                tell(
+                  result,
+                  "You have already reported this answer. You won't see each other again.",
+                  "Thanks — we'll review this response. You won't see each other again.",
+                );
+              },
+            );
           }
           return;
         }

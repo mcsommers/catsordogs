@@ -47,6 +47,12 @@ export function shortQuestionDate(isoDate: string): string {
   return `${SHORT_MONTHS[m - 1]} ${d}`;
 }
 
+/** Question history row date, e.g. "Oct 16, 2026" (06c / 06d). */
+export function historyQuestionDate(isoDate: string): string {
+  const [y, m, d] = isoDate.split('-').map(Number);
+  return `${SHORT_MONTHS[m - 1]} ${d}, ${y}`;
+}
+
 /** Full question pill label: "Oct 5 · What are your thoughts on graffiti?" */
 export function questionPillLabel(isoDate: string, questionText: string): string {
   return `${shortQuestionDate(isoDate)} · ${questionText}`;

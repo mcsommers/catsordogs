@@ -81,7 +81,6 @@ export default function LogIn() {
           <TextField
             label="Email"
             icon={Mail}
-            placeholder="you@example.com"
             autoCapitalize="none"
             autoComplete="email"
             keyboardType="email-address"
@@ -102,7 +101,6 @@ export default function LogIn() {
             ref={passwordRef}
             label="Password"
             icon={Lock}
-            placeholder="••••••••"
             secureTextEntry
             autoComplete="current-password"
             textContentType="password"

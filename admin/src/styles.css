@@ -95,6 +95,46 @@ label.setting-row select {
 }
 
 .row { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
+
+.multi-select {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  font-size: 0.92rem;
+  min-width: 12rem;
+}
+.multi-select-label { color: inherit; }
+.multi-select-trigger {
+  text-align: left;
+  min-width: 12rem;
+  max-width: 20rem;
+}
+.multi-select-panel {
+  position: absolute;
+  z-index: 20;
+  top: calc(100% + 4px);
+  left: 0;
+  min-width: 16rem;
+  max-height: 280px;
+  overflow: auto;
+  background: #fff;
+  border: 1px solid #d6d3d1;
+  border-radius: 8px;
+  padding: 8px;
+  box-shadow: 0 8px 24px rgba(28, 25, 23, 0.12);
+}
+.multi-select-option {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 4px;
+  cursor: pointer;
+  font-size: 0.92rem;
+}
+.multi-select-option input { width: auto; margin: 0; }
+.multi-select-clear { margin-top: 4px; width: 100%; text-align: center; }
 .stack { display: flex; flex-direction: column; gap: 8px; }
 .grid { display: grid; gap: 12px; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); }
 

@@ -30,8 +30,6 @@ type Props = {
   onFeedSettings: () => void;
   onMoreOptions: () => void;
   onHeart: () => void;
-  showDayBanner: string | null;
-  onDismissDayBanner: () => void;
   /** 0–1 progress through the current video playback. */
   videoProgress: number;
 };
@@ -45,8 +43,6 @@ export function FeedOverlay({
   onFeedSettings,
   onMoreOptions,
   onHeart,
-  showDayBanner,
-  onDismissDayBanner,
   videoProgress,
 }: Props) {
   const insets = useSafeAreaInsets();
@@ -60,12 +56,6 @@ export function FeedOverlay({
       <LinearGradient colors={['#00000000', '#000000D9']} style={styles.bottomScrim} pointerEvents="none" />
 
       <View style={[styles.top, { paddingTop: insets.top + 8 }]} pointerEvents="box-none" collapsable={false}>
-        {showDayBanner ? (
-          <Pressable style={styles.dayBanner} onPress={onDismissDayBanner} accessibilityRole="button">
-            <Text style={styles.dayBannerText}>Earlier answers · {showDayBanner}</Text>
-            <Text style={styles.dayBannerDismiss}>Dismiss</Text>
-          </Pressable>
-        ) : null}
         <View style={styles.progressTrack}>
           <View style={[styles.progressFill, { width: `${Math.min(100, Math.max(0, videoProgress * 100))}%` }]} />
         </View>
@@ -138,17 +128,6 @@ const styles = StyleSheet.create({
   topScrim: { position: 'absolute', top: 0, left: 0, right: 0, height: 200 },
   bottomScrim: { position: 'absolute', bottom: 0, left: 0, right: 0, height: 360 },
   top: { paddingHorizontal: 20, gap: 10 },
-  dayBanner: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    backgroundColor: '#00000099',
-    borderRadius: 12,
-    paddingHorizontal: 14,
-    paddingVertical: 10,
-  },
-  dayBannerText: { fontFamily: fonts.bodySemi, fontSize: 13, color: colors.white },
-  dayBannerDismiss: { fontFamily: fonts.bodySemi, fontSize: 13, color: colors.accentDog },
   progressTrack: { height: 3, borderRadius: 2, backgroundColor: '#FFFFFF2E', overflow: 'hidden' },
   progressFill: { height: 3, backgroundColor: colors.white, borderRadius: 2 },
   questionRow: { flexDirection: 'row', alignItems: 'flex-start', gap: 8 },

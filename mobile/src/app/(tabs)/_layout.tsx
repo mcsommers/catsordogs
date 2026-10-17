@@ -1,36 +1,23 @@
-import { useCallback, useEffect, useState } from 'react';
 import { Pressable, StyleSheet, Text, View } from 'react-native';
-import { Tabs, usePathname } from 'expo-router';
+import { router, Tabs, useFocusEffect } from 'expo-router';
 import type { BottomTabBarProps } from 'expo-router/tabs';
+import { useCallback } from 'react';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { Clapperboard, Heart, User } from 'lucide-react-native';
-import { getConversations, getIncomingMatchRequests, hasMatchesTabAlert } from '../../lib/social';
+import { useMatchesAlert } from '../../lib/matchesAlertContext';
 import { tabBarBottomPadding } from '../../lib/tabBarLayout';
 import { colors, fonts } from '../../theme';
 
 const ICONS = { feed: Clapperboard, matches: Heart, profile: User } as const;
 const LABELS = { feed: 'Feed', matches: 'Matches', profile: 'Profile' } as const;
 
-function TabBar({ state, navigation }: BottomTabBarProps) {
+type TabBarProps = BottomTabBarProps & {
+  matchesAlert: boolean;
+  onMatchesPress: () => void;
+};
+
+function TabBar({ state, navigation, matchesAlert, onMatchesPress }: TabBarProps) {
   const insets = useSafeAreaInsets();
-  const pathname = usePathname();
-  const [matchesAlert, setMatchesAlert] = useState(false);
-
-  const refreshMatchesAlert = useCallback(async () => {
-    try {
-      const [incoming, conversations] = await Promise.all([
-        getIncomingMatchRequests(),
-        getConversations(),
-      ]);
-      setMatchesAlert(hasMatchesTabAlert(incoming, conversations));
-    } catch {
-      setMatchesAlert(false);
-    }
-  }, []);
-
-  useEffect(() => {
-    void refreshMatchesAlert();
-  }, [pathname, refreshMatchesAlert]);
 
   return (
     <View style={[styles.wrapper, { paddingBottom: tabBarBottomPadding(insets.bottom) }]}>
@@ -53,7 +40,17 @@ function TabBar({ state, navigation }: BottomTabBarProps) {
               }
               onPress={() => {
                 const event = navigation.emit({ type: 'tabPress', target: route.key, canPreventDefault: true });
-                if (!active && !event.defaultPrevented) navigation.navigate(route.name);
+                if (active && name === 'feed') {
+                  router.replace({
+                    pathname: '/(tabs)/feed',
+                    params: { feedReload: String(Date.now()) },
+                  });
+                  return;
+                }
+                if (!active && !event.defaultPrevented) {
+                  if (name === 'matches') onMatchesPress();
+                  navigation.navigate(route.name);
+                }
               }}
               style={[styles.tab, active && { backgroundColor: colors.accentDog }]}
             >
@@ -80,8 +77,21 @@ function TabBar({ state, navigation }: BottomTabBarProps) {
 }
 
 export default function TabsLayout() {
+  const { matchesAlert, refreshMatchesAlert, armMatchesLanding } = useMatchesAlert();
+
+  useFocusEffect(
+    useCallback(() => {
+      void refreshMatchesAlert();
+    }, [refreshMatchesAlert])
+  );
+
   return (
-    <Tabs screenOptions={{ headerShown: false }} tabBar={(props) => <TabBar {...props} />}>
+    <Tabs
+      screenOptions={{ headerShown: false }}
+      tabBar={(props) => (
+        <TabBar {...props} matchesAlert={matchesAlert} onMatchesPress={armMatchesLanding} />
+      )}
+    >
       <Tabs.Screen name="feed" />
       <Tabs.Screen name="matches" />
       <Tabs.Screen name="profile" />

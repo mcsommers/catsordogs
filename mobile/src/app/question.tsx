@@ -173,6 +173,7 @@ export default function TodaysQuestion() {
   if (!question || !lengthSeconds) return <CenteredSpinner dark />;
 
   const busy = phase === 'starting' || phase === 'countdown' || phase === 'finishing';
+  const showFlipCamera = phase === 'ready' || phase === 'countdown';
   const hint =
     phase === 'countdown' ? 'Get ready…' : phase === 'recording' ? 'Tap to stop' : phase === 'starting' ? 'Starting…' : 'Tap to start recording';
   const progress = phase === 'recording' ? Math.min(elapsed / lengthSeconds, 1) : 0;
@@ -204,16 +205,17 @@ export default function TodaysQuestion() {
             {count}
           </Text>
         ) : null}
-        <Pressable
-          accessibilityRole="button"
-          accessibilityLabel="Flip camera"
-          onPress={() => setFacing((f) => (f === 'front' ? 'back' : 'front'))}
-          disabled={phase === 'recording'}
-          style={styles.flip}
-          hitSlop={6}
-        >
-          <RefreshCw size={18} color={colors.white} />
-        </Pressable>
+        {showFlipCamera ? (
+          <Pressable
+            accessibilityRole="button"
+            accessibilityLabel="Flip camera"
+            onPress={() => setFacing((f) => (f === 'front' ? 'back' : 'front'))}
+            style={styles.flip}
+            hitSlop={6}
+          >
+            <RefreshCw size={18} color={colors.white} />
+          </Pressable>
+        ) : null}
       </View>
 
       <View style={styles.record}>

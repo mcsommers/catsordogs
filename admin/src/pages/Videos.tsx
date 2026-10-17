@@ -3,6 +3,8 @@ import { useSearchParams } from 'react-router-dom';
 import { supabase } from '../supabase';
 import { formatDay, formatWhen } from '../dates';
 import Player from '../Player';
+import { MultiSelectDropdown } from '../MultiSelectDropdown';
+import { VIDEO_STATE_OPTIONS, videoDisplayState } from '../videoStates';
 
 type VideoRow = {
   video_id: string;
@@ -24,6 +26,7 @@ export default function Videos() {
   const from = params.get('from') ?? '';
   const to = params.get('to') ?? '';
   const [rows, setRows] = useState<VideoRow[]>([]);
+  const [stateFilter, setStateFilter] = useState<Set<string>>(() => new Set());
   const [error, setError] = useState<string | null>(null);
   const [watchUrl, setWatchUrl] = useState<string | null>(null);
 
@@ -42,6 +45,8 @@ export default function Videos() {
   }, []);
 
   useEffect(() => { load(); }, [load]);
+
+  const filtered = filterRows(rows, from, to, stateFilter);
 
   async function watch(row: VideoRow) {
     setError(null);
@@ -76,14 +81,31 @@ export default function Videos() {
           Question date, to
           <input type="date" value={to} onChange={(e) => setRange(from, e.target.value)} />
         </label>
-        {from || to ? (
-          <button type="button" onClick={() => setParams({}, { replace: true })}>Clear dates</button>
+        <MultiSelectDropdown
+          label="State"
+          options={VIDEO_STATE_OPTIONS}
+          selected={stateFilter}
+          onChange={setStateFilter}
+        />
+        {from || to || stateFilter.size > 0 ? (
+          <button
+            type="button"
+            onClick={() => {
+              setParams({}, { replace: true });
+              setStateFilter(new Set());
+            }}
+          >
+            Clear filters
+          </button>
         ) : null}
       </div>
       {from && to && from > to ? (
         <p className="error">The start date is after the end date.</p>
       ) : from || to ? (
         <p className="muted">{rangeLabel(from, to)}</p>
+      ) : null}
+      {stateFilter.size > 0 ? (
+        <p className="muted">Showing only: {stateFilterSummary(stateFilter)}.</p>
       ) : null}
       {error ? <p className="error">{error}</p> : null}
       {watchUrl ? <Player url={watchUrl} onClose={() => setWatchUrl(null)} /> : null}
@@ -97,7 +119,7 @@ export default function Videos() {
           </tr>
         </thead>
         <tbody>
-          {visibleRows(rows, from, to).map((row) => (
+          {filtered.map((row) => (
             <tr key={row.video_id}>
               <td>{row.first_name ?? 'No name'}</td>
               <td>
@@ -106,7 +128,7 @@ export default function Videos() {
                 <div className="muted">{formatWhen(row.created_at)}</div>
               </td>
               <td>
-                {row.answer_status ?? row.video_status}
+                {videoDisplayState(row)}
                 {row.reject_reason ? <div className="muted">{row.reject_reason}</div> : null}
               </td>
               <td>
@@ -121,20 +143,31 @@ export default function Videos() {
           ))}
         </tbody>
       </table>
-      {visibleRows(rows, from, to).length === 0 && !(from && to && from > to) ? (
-        <p className="muted">{from || to ? 'No videos in that date range.' : 'No videos yet.'}</p>
+      {filtered.length === 0 && !(from && to && from > to) ? (
+        <p className="muted">{emptyMessage(from, to, stateFilter)}</p>
       ) : null}
     </div>
   );
 }
 
-function visibleRows(rows: VideoRow[], from: string, to: string): VideoRow[] {
+function filterRows(rows: VideoRow[], from: string, to: string, states: ReadonlySet<string>): VideoRow[] {
   if (from && to && from > to) return [];
   return rows.filter((row) => {
     if (from && row.question_date < from) return false;
     if (to && row.question_date > to) return false;
+    if (states.size > 0 && !states.has(videoDisplayState(row))) return false;
     return true;
   });
+}
+
+function stateFilterSummary(states: ReadonlySet<string>): string {
+  const labels = VIDEO_STATE_OPTIONS.filter((o) => states.has(o.value)).map((o) => o.label);
+  return labels.join(', ');
+}
+
+function emptyMessage(from: string, to: string, states: ReadonlySet<string>): string {
+  if (from || to || states.size > 0) return 'No videos match these filters.';
+  return 'No videos yet.';
 }
 
 function rangeLabel(from: string, to: string): string {
