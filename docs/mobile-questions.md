@@ -58,7 +58,11 @@ On **Build Profile (03)** and **Edit Profile (08d)**, no text field shows placeh
 
 ### Log In: no placeholder text (Mike, Oct 16, 2026)
 
-On **Log In (02b)**, the **Email** and **Password** fields show no helper text inside them (no "you@example.com", no dots). The labels stay. Sign Up, Forgot Password, and Set New Password still use their placeholders.
+On **Log In (02b)** and **Sign Up (02)**, the **Email** and **Password** fields show no helper text inside them (no "you@example.com", no dots). The labels stay. Forgot Password and Set New Password still use their placeholders.
+
+### Sign Up subtitle (Mike, Oct 17, 2026)
+
+Sign Up (02) subtitle is **Let's make some magic.** (not "Let's find your people!").
 
 ## Phase C: Profile and archive (asked Oct 12, 2026)
 
