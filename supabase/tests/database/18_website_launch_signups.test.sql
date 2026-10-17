@@ -1,5 +1,5 @@
 begin;
-select plan(10);
+select plan(7);
 
 create function pg_temp.uid(n int) returns uuid language sql
 as $$ select ('e' || lpad(n::text, 7, '0') || '-0000-0000-0000-000000000000')::uuid $$;
@@ -33,21 +33,8 @@ select lives_ok(
 
 select is(
   (select count(*)::int from public.notification_outbox where kind = 'website_launch_signup'),
-  1,
-  'a new signup queues one owner alert'
-);
-
-select is(
-  (select data ->> 'recipient_email' from public.notification_outbox where kind = 'website_launch_signup' limit 1),
-  'mikesommers@gmail.com',
-  'owner alert targets the fixed notify address'
-);
-
-select is(
-  (select body from public.notification_outbox where kind = 'website_launch_signup' limit 1),
-  'Email address: launch@example.com' || E'\n\n'
-    || 'They asked to be notified when the Cats or Dogs? app launches.',
-  'owner alert body includes the submitted email'
+  0,
+  'launch signup does not use notification_outbox'
 );
 
 set local role service_role;
@@ -74,17 +61,6 @@ select is(
   (select email from public.admin_list_website_launch_signups() limit 1),
   'launch@example.com',
   'an admin can list website launch signups'
-);
-
-reset role;
-select ok(
-  exists (
-    select 1 from public.claim_notifications(20) c
-    where c.kind = 'website_launch_signup'
-      and c.email = 'mikesommers@gmail.com'
-      and c.send_email
-  ),
-  'website launch signup mail goes to the fixed owner address by email'
 );
 
 select * from finish();
