@@ -1,5 +1,5 @@
 begin;
-select plan(6);
+select plan(8);
 
 create function pg_temp.uid(n int) returns uuid language sql
 as $$ select ('e' || lpad(n::text, 7, '0') || '-0000-0000-0000-000000000000')::uuid $$;
@@ -31,6 +31,20 @@ select lives_ok(
   'duplicate email does not error'
 );
 
+select is(
+  (select count(*)::int from public.notification_outbox where kind = 'website_launch_signup' and user_id = pg_temp.uid(2)),
+  1,
+  'a new signup queues one admin alert per admin'
+);
+
+select is(
+  (select body from public.notification_outbox where kind = 'website_launch_signup' and user_id = pg_temp.uid(2) limit 1),
+  'Email address: launch@example.com' || E'\n\n' ||
+    'They asked to be notified when the Cats or Dogs? app launches. '
+    || 'Open Email list in the admin panel to see every signup.',
+  'admin alert body includes the submitted email'
+);
+
 set local role service_role;
 
 select results_eq(
@@ -56,6 +70,11 @@ select is(
   'launch@example.com',
   'an admin can list website launch signups'
 );
+
+reset role;
+select ok((select send_email from public.claim_notifications(20)
+           where user_id = pg_temp.uid(2) and kind = 'website_launch_signup' limit 1),
+  'website launch signup alerts are always sent by email');
 
 select * from finish();
 rollback;
