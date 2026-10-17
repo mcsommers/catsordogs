@@ -1,5 +1,5 @@
 begin;
-select plan(8);
+select plan(10);
 
 create function pg_temp.uid(n int) returns uuid language sql
 as $$ select ('e' || lpad(n::text, 7, '0') || '-0000-0000-0000-000000000000')::uuid $$;
@@ -32,17 +32,22 @@ select lives_ok(
 );
 
 select is(
-  (select count(*)::int from public.notification_outbox where kind = 'website_launch_signup' and user_id = pg_temp.uid(2)),
+  (select count(*)::int from public.notification_outbox where kind = 'website_launch_signup'),
   1,
-  'a new signup queues one admin alert per admin'
+  'a new signup queues one owner alert'
 );
 
 select is(
-  (select body from public.notification_outbox where kind = 'website_launch_signup' and user_id = pg_temp.uid(2) limit 1),
-  'Email address: launch@example.com' || E'\n\n' ||
-    'They asked to be notified when the Cats or Dogs? app launches. '
-    || 'Open Email list in the admin panel to see every signup.',
-  'admin alert body includes the submitted email'
+  (select data ->> 'recipient_email' from public.notification_outbox where kind = 'website_launch_signup' limit 1),
+  'mikesommers@gmail.com',
+  'owner alert targets the fixed notify address'
+);
+
+select is(
+  (select body from public.notification_outbox where kind = 'website_launch_signup' limit 1),
+  'Email address: launch@example.com' || E'\n\n'
+    || 'They asked to be notified when the Cats or Dogs? app launches.',
+  'owner alert body includes the submitted email'
 );
 
 set local role service_role;
@@ -72,9 +77,15 @@ select is(
 );
 
 reset role;
-select ok((select send_email from public.claim_notifications(20)
-           where user_id = pg_temp.uid(2) and kind = 'website_launch_signup' limit 1),
-  'website launch signup alerts are always sent by email');
+select ok(
+  exists (
+    select 1 from public.claim_notifications(20) c
+    where c.kind = 'website_launch_signup'
+      and c.email = 'mikesommers@gmail.com'
+      and c.send_email
+  ),
+  'website launch signup mail goes to the fixed owner address by email'
+);
 
 select * from finish();
 rollback;
