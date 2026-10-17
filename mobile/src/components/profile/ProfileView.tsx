@@ -60,14 +60,22 @@ import { HERO_HEIGHT_OTHER, HERO_HEIGHT_SELF, PROFILE_PAD, PROFILE_SCROLL_BOTTOM
 import { profileType } from './profileTypography';
 import { signOutToWelcome } from '../../lib/signOut';
 import { supabase } from '../../lib/supabase';
-import { acceptMatchRequest, getFollowState, nudgeUser } from '../../lib/social';
+import {
+  acceptMatchRequest,
+  declineMatchRequest,
+  getFollowState,
+  getIncomingMatchRequests,
+  nudgeUser,
+  type IncomingMatchRequest,
+} from '../../lib/social';
 import type { FeedMatchState } from '../../lib/feed';
 import { MoreOptionsMenu } from '../social/MoreOptionsMenu';
+import { IncomingMatchCard } from '../social/IncomingMatchCard';
 import { MatchRequestSentBanner } from '../social/MatchRequestSentBanner';
 import { NudgeCard } from '../social/NudgeCard';
-import { confirmNudge } from '../social/confirmations';
+import { confirmAcceptMatch, confirmDeclineMatch, confirmNudge } from '../social/confirmations';
 import { useSocialActions, type SocialSubject } from '../social/useSocialActions';
-import { PrimaryButton } from '../ui';
+import { formatRelativeTime } from '../../lib/format';
 
 const PREVIEW_COUNT = 3;
 
@@ -114,6 +122,7 @@ export function ProfileView({ userId, showBack }: Props) {
   const [canNudge, setCanNudge] = useState(false);
   const [alreadyNudged, setAlreadyNudged] = useState(false);
   const [matchState, setMatchState] = useState<FeedMatchState>('none');
+  const [incomingRequest, setIncomingRequest] = useState<IncomingMatchRequest | null>(null);
   const [matchSentBanner, setMatchSentBanner] = useState(false);
   const [galleryPhotoBusy, setGalleryPhotoBusy] = useState(false);
   const [galleryPhotoBanner, setGalleryPhotoBanner] = useState<string | null>(null);
@@ -134,12 +143,17 @@ export function ProfileView({ userId, showBack }: Props) {
       setProfile(p);
       setMatchState((p.matchState as FeedMatchState) || 'none');
       setMatchSentBanner(false);
+      setIncomingRequest(null);
       if (!p.isSelf) {
         await recordProfileView(p.userId);
         const fs = await getFollowState(p.userId);
         setIsFollowed(fs.following);
         setCanNudge(fs.canNudge);
         setAlreadyNudged(fs.alreadyNudged);
+        if (p.matchState === 'incoming') {
+          const incoming = await getIncomingMatchRequests();
+          setIncomingRequest(incoming.find((row) => row.userId === p.userId) ?? null);
+        }
       }
       const page = await fetchUserAnswersPage(userId ?? null, 0, PROFILE_ANSWER_PAGE_SIZE);
       setAnswers(page.items);
@@ -401,15 +415,48 @@ export function ProfileView({ userId, showBack }: Props) {
             </>
           ) : (
             <>
-              {matchSentBanner ? <MatchRequestSentBanner firstName={profile.firstName} /> : null}
-              {matchState === 'incoming' ? (
-                <PrimaryButton
-                  label="Accept"
-                  onPress={async () => {
-                    const matchId = await acceptMatchRequest(profile.userId);
-                    setMatchState('matched');
-                    if (matchId) router.push({ pathname: '/chat/[matchId]', params: { matchId } });
-                  }}
+              {matchState === 'sent' || matchSentBanner ? (
+                <MatchRequestSentBanner firstName={profile.firstName} />
+              ) : null}
+              {matchState === 'incoming' && incomingRequest ? (
+                <IncomingMatchCard
+                  firstName={profile.firstName}
+                  questionText={incomingRequest.questionText}
+                  requestedAt={formatRelativeTime(incomingRequest.requestedAt)}
+                  onDecline={() =>
+                    confirmDeclineMatch(
+                      {
+                        firstName: profile.firstName,
+                        gender: profile.gender,
+                        avatarUri: avatarPhoto(profile.photos)?.url,
+                      },
+                      async () => {
+                        await declineMatchRequest(profile.userId);
+                        setMatchState('none');
+                        setIncomingRequest(null);
+                      }
+                    )
+                  }
+                  onAccept={() =>
+                    confirmAcceptMatch(
+                      {
+                        firstName: profile.firstName,
+                        gender: profile.gender,
+                        avatarUri: avatarPhoto(profile.photos)?.url,
+                      },
+                      async () => {
+                        const matchId = await acceptMatchRequest(profile.userId);
+                        setMatchState('matched');
+                        setIncomingRequest(null);
+                        if (matchId) {
+                          router.push({
+                            pathname: '/chat/[matchId]',
+                            params: { matchId, justMatched: '1' },
+                          });
+                        }
+                      }
+                    )
+                  }
                 />
               ) : null}
               {canNudge ? (

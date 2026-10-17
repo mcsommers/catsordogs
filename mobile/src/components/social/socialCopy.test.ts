@@ -1,4 +1,15 @@
-import { followDialogBody, nudgeCardBody, nudgeCardTitle, nudgeDialogBody, pronouns } from './socialCopy';
+import {
+  followDialogBody,
+  acceptMatchDialogBody,
+  incomingMatchCardBody,
+  matchRequestCardTitle,
+  newMatchChatIntro,
+  unmatchedChatNotice,
+  nudgeCardBody,
+  nudgeCardTitle,
+  nudgeDialogBody,
+  pronouns,
+} from './socialCopy';
 
 describe('confirmation pronouns', () => {
   it('uses she/her for Woman', () => {
@@ -45,6 +56,21 @@ describe('confirmation pronouns', () => {
     expect(nudgeCardBody('Non-binary')).toBe(
       "Give them a nudge. They'll only be told that a follower wants to hear their answer, never who."
     );
+  });
+
+  it('formats incoming match card copy (07h)', () => {
+    expect(matchRequestCardTitle('Sam')).toBe('Match with Sam?');
+    expect(incomingMatchCardBody('Coffee or tea', '2h ago')).toBe(
+      'Liked your answer to Coffee or tea · 2h ago'
+    );
+    expect(incomingMatchCardBody(null, '5h ago')).toBe('Wants to match with you · 5h ago');
+    expect(acceptMatchDialogBody('Alex')).toBe(
+      "You'll be matched with Alex and can chat with each other right away."
+    );
+    expect(newMatchChatIntro('Alex')).toBe(
+      'You and Alex are now matched. You can chat with each other now.'
+    );
+    expect(unmatchedChatNotice('Alex')).toBe('Alex unmatched you. You can no longer chat.');
   });
 
   it('formats nudge confirmation copy (06o)', () => {

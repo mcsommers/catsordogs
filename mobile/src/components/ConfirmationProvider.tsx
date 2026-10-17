@@ -6,7 +6,11 @@ export type ConfirmationRequest = {
   title: string;
   body: string;
   confirmLabel: string;
-  cancelLabel?: string;
+  /** Omit for the default Cancel button. Pass null when the dialog has only the primary button. */
+  cancelLabel?: string | null;
+  /** Button between the primary action and the text dismiss, such as Unmatch & Block. */
+  alternateLabel?: string;
+  onAlternate?: () => void | Promise<void>;
   destructive?: boolean;
   variant?: 'dark' | 'light';
   /** Profile photo URL when available; initials used as fallback. */
@@ -73,8 +77,20 @@ export function ConfirmationProvider({ children }: { children: ReactNode }) {
             if (action) void action();
           },
         }}
+        alternate={
+          request?.alternateLabel
+            ? {
+                label: request.alternateLabel,
+                onPress: () => {
+                  const action = request.onAlternate;
+                  dismiss();
+                  if (action) void action();
+                },
+              }
+            : undefined
+        }
         secondary={
-          request
+          request && request.cancelLabel !== null
             ? {
                 label: request.cancelLabel ?? 'Cancel',
                 onPress: () => {

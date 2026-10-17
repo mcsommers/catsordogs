@@ -6,6 +6,7 @@ import { useFonts, Anton_400Regular } from '@expo-google-fonts/anton';
 import { FunnelSans_400Regular, FunnelSans_600SemiBold, FunnelSans_700Bold } from '@expo-google-fonts/funnel-sans';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { ConfirmationProvider } from '../components/ConfirmationProvider';
+import { MatchesAlertProvider } from '../lib/matchesAlertContext';
 import { SessionProvider, useSession } from '../lib/session';
 import { needsSignIn } from '../lib/routing';
 import { colors } from '../theme';
@@ -28,6 +29,7 @@ export default function RootLayout() {
   return (
     <SafeAreaProvider>
       <SessionProvider>
+        <MatchesAlertProvider>
         <ConfirmationProvider>
         <StatusBar style="auto" />
         <SignedOutGuard>
@@ -50,6 +52,7 @@ export default function RootLayout() {
           </Stack>
         </SignedOutGuard>
         </ConfirmationProvider>
+        </MatchesAlertProvider>
       </SessionProvider>
     </SafeAreaProvider>
   );

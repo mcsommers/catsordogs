@@ -1,7 +1,7 @@
 import { Trash2 } from 'lucide-react-native';
 import { showConfirmation } from '../ConfirmationProvider';
 import type { DialogBadgeKind } from '../ui';
-import { followDialogBody, nudgeDialogBody, pronouns } from './socialCopy';
+import { acceptMatchDialogBody, followDialogBody, nudgeDialogBody, pronouns } from './socialCopy';
 
 type Person = { firstName: string; gender?: string | null; avatarUri?: string | null };
 
@@ -22,6 +22,20 @@ function personConfirm(
     avatarUri: person.avatarUri,
     avatarName: person.firstName,
     badge,
+  });
+}
+
+/** Dark in-app dialog after a report is filed (06ga). Not a system alert. */
+export function showReportResult(person: Person, title: string, body: string) {
+  showConfirmation({
+    title,
+    body,
+    confirmLabel: 'OK',
+    cancelLabel: null,
+    avatarUri: person.avatarUri,
+    avatarName: person.firstName,
+    badge: 'flag',
+    onConfirm: () => {},
   });
 }
 
@@ -61,37 +75,50 @@ export function confirmNotInterested(person: Person, following: boolean, onConfi
   });
 }
 
-export function confirmFlagAnswer(person: Person, onConfirm: () => void | Promise<void>) {
-  personConfirm(person, 'flag', {
-    title: `Report ${person.firstName}'s answer?`,
-    body: `We'll review this response for violations of our community guidelines. ${person.firstName} won't be notified.`,
+function confirmReportChoice(
+  person: Person,
+  title: string,
+  subject: 'response' | 'profile' | 'message',
+  onReport: () => void | Promise<void>,
+  onReportAndBlock: () => void | Promise<void>,
+) {
+  const noun = subject === 'response' ? 'response' : subject === 'profile' ? 'profile' : 'message';
+  showConfirmation({
+    title,
+    body: `We'll review this ${noun} for violations of our community guidelines. Report Only: ${person.firstName} won't be notified. Report & Block: you won't see each other again, and ${person.firstName} won't be notified.`,
+    confirmLabel: 'Report Only',
+    alternateLabel: 'Report & Block',
     cancelLabel: 'Cancel',
-    confirmLabel: 'Submit Report',
-    destructive: true,
-    onConfirm,
+    avatarUri: person.avatarUri,
+    avatarName: person.firstName,
+    badge: 'flag',
+    onConfirm: onReport,
+    onAlternate: onReportAndBlock,
   });
 }
 
-export function confirmReportProfile(person: Person, onConfirm: () => void | Promise<void>) {
-  personConfirm(person, 'flag', {
-    title: `Report ${person.firstName}?`,
-    body: `We'll review this profile for violations of our community guidelines. ${person.firstName} won't be notified.`,
-    cancelLabel: 'Cancel',
-    confirmLabel: 'Submit Report',
-    destructive: true,
-    onConfirm,
-  });
+export function confirmFlagAnswer(
+  person: Person,
+  onReport: () => void | Promise<void>,
+  onReportAndBlock: () => void | Promise<void>,
+) {
+  confirmReportChoice(person, `Report ${person.firstName}'s answer?`, 'response', onReport, onReportAndBlock);
 }
 
-export function confirmReportMessage(person: Person, onConfirm: () => void | Promise<void>) {
-  personConfirm(person, 'flag', {
-    title: 'Report this message?',
-    body: `We'll review this message for violations of our community guidelines. ${person.firstName} won't be notified.`,
-    cancelLabel: 'Cancel',
-    confirmLabel: 'Submit Report',
-    destructive: true,
-    onConfirm,
-  });
+export function confirmReportProfile(
+  person: Person,
+  onReport: () => void | Promise<void>,
+  onReportAndBlock: () => void | Promise<void>,
+) {
+  confirmReportChoice(person, `Report ${person.firstName}?`, 'profile', onReport, onReportAndBlock);
+}
+
+export function confirmReportMessage(
+  person: Person,
+  onReport: () => void | Promise<void>,
+  onReportAndBlock: () => void | Promise<void>,
+) {
+  confirmReportChoice(person, 'Report this message?', 'message', onReport, onReportAndBlock);
 }
 
 export function confirmBlock(person: Person, onConfirm: () => void | Promise<void>) {
@@ -140,6 +167,17 @@ export function confirmDeclineMatch(person: Person, onConfirm: () => void | Prom
   });
 }
 
+/** 07h — confirm before accepting an incoming match on the sender's profile. */
+export function confirmAcceptMatch(person: Person, onConfirm: () => void | Promise<void>) {
+  personConfirm(person, 'heart', {
+    title: `Accept ${person.firstName}'s request?`,
+    body: acceptMatchDialogBody(person.firstName),
+    cancelLabel: 'Cancel',
+    confirmLabel: 'Accept',
+    onConfirm,
+  });
+}
+
 export function confirmNudge(person: Person, onConfirm: () => void | Promise<void>) {
   personConfirm(person, 'follow', {
     title: `Nudge ${person.firstName}?`,
@@ -170,14 +208,22 @@ export function confirmMuteChat(person: Person, onConfirm: () => void | Promise<
   });
 }
 
-export function confirmUnmatch(person: Person, onConfirm: () => void | Promise<void>) {
-  personConfirm(person, 'unmatch', {
+export function confirmUnmatch(
+  person: Person,
+  onUnmatch: () => void | Promise<void>,
+  onUnmatchAndBlock: () => void | Promise<void>,
+) {
+  showConfirmation({
     title: `Unmatch ${person.firstName}?`,
-    body: `You'll lose this chat. ${person.firstName} won't be notified. You can match again later.`,
+    body: `You'll lose this chat. Unmatch Only: ${person.firstName} will see that you unmatched and can no longer chat. Unmatch & Block: you won't see each other again, and ${person.firstName} won't be notified.`,
+    confirmLabel: 'Unmatch Only',
+    alternateLabel: 'Unmatch & Block',
     cancelLabel: 'Keep Match',
-    confirmLabel: 'Unmatch',
-    destructive: true,
-    onConfirm,
+    avatarUri: person.avatarUri,
+    avatarName: person.firstName,
+    badge: 'unmatch',
+    onConfirm: onUnmatch,
+    onAlternate: onUnmatchAndBlock,
   });
 }
 

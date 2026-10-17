@@ -574,6 +574,7 @@ export function Dialog({
   title,
   body,
   primary,
+  alternate,
   secondary,
   primaryDestructive = false,
 }: {
@@ -583,6 +584,8 @@ export function Dialog({
   title: string;
   body: string;
   primary: { label: string; onPress: () => void };
+  /** Outlined button between the primary action and the text dismiss. */
+  alternate?: { label: string; onPress: () => void };
   secondary?: { label: string; onPress: () => void };
   /** Red primary button for Block, Report, Delete, etc. */
   primaryDestructive?: boolean;
@@ -628,6 +631,17 @@ export function Dialog({
               ...(primaryDestructive ? { backgroundColor: colors.danger } : null),
             }}
           />
+          {alternate ? (
+            <Pressable
+              accessibilityRole="button"
+              onPress={alternate.onPress}
+              style={[styles.dialogAlternate, light && styles.dialogAlternateLight]}
+            >
+              <Text style={[styles.dialogAlternateLabel, light && styles.dialogAlternateLabelLight]}>
+                {alternate.label}
+              </Text>
+            </Pressable>
+          ) : null}
           {secondary ? (
             <Pressable accessibilityRole="button" onPress={secondary.onPress} hitSlop={8} style={{ paddingVertical: 6 }}>
               <Text style={[styles.dialogSecondary, light && styles.dialogSecondaryLight]}>{secondary.label}</Text>
@@ -846,6 +860,18 @@ export const styles = StyleSheet.create({
   dialogTitleLight: { fontSize: 20, color: colors.textPrimary },
   dialogBody: { fontFamily: fonts.body, fontSize: 14, lineHeight: 20, color: colors.textDarkMuted, textAlign: 'center' },
   dialogBodyLight: { lineHeight: 20, color: colors.textSecondary },
+  dialogAlternate: {
+    alignSelf: 'stretch',
+    borderWidth: 1.5,
+    borderColor: '#FFFFFF33',
+    borderRadius: 9999,
+    paddingVertical: 13,
+    paddingHorizontal: 20,
+    alignItems: 'center',
+  },
+  dialogAlternateLight: { borderColor: colors.borderSubtle },
+  dialogAlternateLabel: { fontFamily: fonts.bodyBold, fontSize: 16, color: colors.white, textAlign: 'center' },
+  dialogAlternateLabelLight: { color: colors.textPrimary },
   dialogSecondary: { fontFamily: fonts.bodyBold, fontSize: 15, color: colors.white, textAlign: 'center' },
   dialogSecondaryLight: { color: colors.textSecondary },
   dialogAvatarWrap: { width: 72, height: 72, marginBottom: 4 },

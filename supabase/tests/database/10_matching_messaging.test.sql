@@ -2,7 +2,7 @@
 -- block ending a match, avatars, and that the app cannot read who requested
 -- whom except through the Incoming / Outgoing lists.
 begin;
-select plan(113);
+select plan(115);
 
 delete from public.answers;
 delete from public.videos;
@@ -319,6 +319,8 @@ select pg_temp.become(1);
 set local role authenticated;
 select is((select match_state from public.get_feed(50, 0, public.utc_today()) where first_name = 'C'),
   'matched', 'the heart stays selected while they are matched');
+select lives_ok($$select public.send_message((select match_id from public.get_conversations()), 'still here')$$,
+  'A sends a line before unmatching');
 select lives_ok($$select public.unmatch_user('a0000003-0000-0000-0000-000000000000')$$, 'A unmatches C');
 select is((select count(*) from public.get_conversations()), 0::bigint, 'the chat is gone for A');
 select is((select state from public.get_match_state(pg_temp.uid(3))), 'none', 'and they are no longer matched');
@@ -330,11 +332,16 @@ select throws_ok($$select public.unmatch_user('a0000003-0000-0000-0000-000000000
 reset role;
 select pg_temp.become(3);
 set local role authenticated;
-select is((select count(*) from public.get_conversations()), 0::bigint, 'the chat is gone for C too');
+select is((select count(*) from public.get_conversations()), 1::bigint, 'C still has the chat');
+select is((select closed from public.get_conversations()), true, 'C sees the chat as closed');
+select is((select body from public.get_messages((select match_id from public.get_conversations()))), 'still here',
+  'C can still read the history');
+select throws_ok($$select public.send_message((select match_id from public.get_conversations()), 'reply')$$,
+  'P0002', 'Conversation not found.', 'C cannot send after being unmatched');
 select lives_ok($$select public.undo_not_interested('a0000001-0000-0000-0000-000000000000')$$,
   'C had hidden A from the feed earlier; undo so we can check the feed');
 select is((select match_state from public.get_feed(50, 0, public.utc_today()) where first_name = 'A'),
-  'none', 'A is still in C''s feed — C is not told they were unmatched');
+  'none', 'A is still in C''s feed');
 select is(public.send_match_request(pg_temp.uid(1)), 'sent', 'they can send a new request after unmatching');
 reset role;
 select is((select ended_reason from public.matches
@@ -398,15 +405,22 @@ select pg_temp.become(8);
 set local role authenticated;
 select public.accept_match_request(pg_temp.uid(4));
 reset role;
-select is((select kind from public.notification_outbox where user_id = pg_temp.uid(4) and kind = 'match'), 'match',
-  'D is told about the match, not F who just accepted');
+select is((select count(*)::int from public.notification_outbox
+           where kind = 'match' and user_id in (pg_temp.uid(4), pg_temp.uid(8))), 2,
+  'both people are queued a mutual-match notification');
+create temp table match_claimed as
+  select * from public.claim_notifications(20) where kind = 'match';
+select is((select title from match_claimed where user_id = pg_temp.uid(4)),
+  'We have a match!', 'match email subject');
+select is((select body from match_claimed where user_id = pg_temp.uid(4)),
+  'You are now matched with F. You can start chatting in the app immediately.', 'match email body names the other person');
 select pg_temp.become(8);
 set local role authenticated;
 select public.block_user(pg_temp.uid(4));
 reset role;
 set local role service_role;
 select is((select count(*) from public.claim_notifications(20) where user_id = pg_temp.uid(4) and type = 'matches'
-           and title = 'It''s a match!'), 0::bigint, 'a match that has already ended is not sent');
+           and title = 'We have a match!'), 0::bigint, 'a match that has already ended is not sent');
 reset role;
 select is((select last_error from public.notification_outbox where user_id = pg_temp.uid(4) and kind = 'match'),
   'match ended', 'recorded as skipped');

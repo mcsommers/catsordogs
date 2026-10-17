@@ -9,6 +9,7 @@ import {
   longDate,
   questionPillLabel,
   segmentRange,
+  historyQuestionDate,
   shortQuestionDate,
   splitHeightInches,
   timerLabel,
@@ -45,6 +46,7 @@ describe('formatting', () => {
 
   it('formats feed labels', () => {
     expect(shortQuestionDate('2026-10-05')).toBe('Oct 5');
+    expect(historyQuestionDate('2026-10-16')).toBe('Oct 16, 2026');
     expect(questionPillLabel('2026-10-05', 'Hi?')).toBe('Oct 5 · Hi?');
     expect(formatDistanceMiles(2)).toBe('2 miles away');
     expect(formatDistanceMiles(1)).toBe('1 mile away');

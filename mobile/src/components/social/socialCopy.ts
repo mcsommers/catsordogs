@@ -59,6 +59,32 @@ export function nudgeCardBody(gender: string | null | undefined): string {
   return `Give ${p.object} a nudge. ${p.Subject}'ll only be told that a follower wants to hear ${p.possessive} answer, never who.`;
 }
 
+/** Match request card title on the sender's profile (07h). */
+export function matchRequestCardTitle(firstName: string): string {
+  return `Match with ${firstName}?`;
+}
+
+/** Match request card body (07h): liked-answer line or want-to-match, plus relative time. */
+export function incomingMatchCardBody(questionText: string | null, requestedAtLabel: string): string {
+  if (questionText) return `Liked your answer to ${questionText} · ${requestedAtLabel}`;
+  return `Wants to match with you · ${requestedAtLabel}`;
+}
+
+/** Accept incoming match confirmation body (07h). */
+export function acceptMatchDialogBody(firstName: string): string {
+  return `You'll be matched with ${firstName} and can chat with each other right away.`;
+}
+
+/** Shown at the top of a new chat after accepting a match request (07c). */
+export function newMatchChatIntro(firstName: string): string {
+  return `You and ${firstName} are now matched. You can chat with each other now.`;
+}
+
+/** Shown to the person who was unmatched. They can still read the chat (07c). */
+export function unmatchedChatNotice(firstName: string): string {
+  return `${firstName} unmatched you. You can no longer chat.`;
+}
+
 /** Nudge confirmation body (06o). */
 export function nudgeDialogBody(gender: string | null | undefined): string {
   const p = pronouns(gender);

@@ -21,11 +21,13 @@ import {
   reportMessage,
   sendMessage,
   setConversationMuted,
+  blockUser,
   unmatchUser,
   type ChatMessage,
 } from '../../lib/social';
 import { signPhotoPaths } from '../../lib/profile';
 import { supabase } from '../../lib/supabase';
+import { useMatchesAlert } from '../../lib/matchesAlertContext';
 import { useSession } from '../../lib/session';
 import { BackButton, CenteredSpinner, Screen } from '../../components/ui';
 import {
@@ -33,14 +35,16 @@ import {
   confirmReportMessage,
   confirmUnmatch,
 } from '../../components/social/confirmations';
+import { newMatchChatIntro, unmatchedChatNotice } from '../../components/social/socialCopy';
 import { colors, fonts } from '../../theme';
 
 /** Matches `composer.paddingTop` — gap from separator to field and from field to keyboard. */
 const COMPOSER_EDGE_PAD = 8;
 
 export default function ChatScreen() {
-  const { matchId } = useLocalSearchParams<{ matchId: string }>();
+  const { matchId, justMatched } = useLocalSearchParams<{ matchId: string; justMatched?: string }>();
   const { session } = useSession();
+  const { refreshMatchesAlert } = useMatchesAlert();
   const insets = useSafeAreaInsets();
   const me = session?.user.id;
   const [peerName, setPeerName] = useState('');
@@ -53,6 +57,9 @@ export default function ChatScreen() {
   const [draft, setDraft] = useState('');
   const [loading, setLoading] = useState(true);
   const [sending, setSending] = useState(false);
+  const [showMatchIntro, setShowMatchIntro] = useState(justMatched === '1');
+  const [closed, setClosed] = useState(false);
+  const [unavailable, setUnavailable] = useState(false);
   const listRef = useRef<FlatList<ChatMessage>>(null);
   const [keyboardHeight, setKeyboardHeight] = useState(0);
 
@@ -105,6 +112,7 @@ export default function ChatScreen() {
       setPeerCity(row.city);
       setPeerUserId(row.userId);
       setMuted(row.muted);
+      setClosed(row.closed);
       if (row.photoPath) {
         const signed = await signPhotoPaths([row.photoPath]);
         setPeerAvatarUri(signed.get(row.photoPath));
@@ -122,13 +130,17 @@ export default function ChatScreen() {
   const syncThread = useCallback(async () => {
     await loadMessages();
     await markConversationRead(matchId);
-  }, [loadMessages, matchId]);
+    await refreshMatchesAlert();
+  }, [loadMessages, matchId, refreshMatchesAlert]);
 
   useEffect(() => {
     (async () => {
       setLoading(true);
       try {
         await Promise.all([loadMeta(), syncThread()]);
+        setUnavailable(false);
+      } catch {
+        setUnavailable(true);
       } finally {
         setLoading(false);
       }
@@ -167,7 +179,9 @@ export default function ChatScreen() {
           setMessages((prev) => (prev.some((m) => m.id === msg.id) ? prev : [...prev, msg]));
           scrollToLatest(true);
           if (msg.senderId !== me) {
-            void markConversationRead(matchId).catch(() => {});
+            void markConversationRead(matchId)
+              .then(() => refreshMatchesAlert())
+              .catch(() => {});
           }
         }
       )
@@ -178,6 +192,8 @@ export default function ChatScreen() {
   }, [matchId, me, scrollToLatest]);
 
   const lastPeerMessage = [...messages].reverse().find((m) => m.senderId !== me);
+
+  const threadEmptyWithIntro = messages.length === 0 && showMatchIntro && peerName;
 
   const onSend = async () => {
     const body = draft.trim();
@@ -190,7 +206,9 @@ export default function ChatScreen() {
         ...prev,
         { id: sent.id, senderId: me!, kind: 'text', body, createdAt: sent.createdAt },
       ]);
+      setShowMatchIntro(false);
       await markConversationRead(matchId);
+      await refreshMatchesAlert();
       scrollToLatest(true);
     } finally {
       setSending(false);
@@ -201,6 +219,15 @@ export default function ChatScreen() {
     return (
       <Screen dark>
         <CenteredSpinner dark />
+      </Screen>
+    );
+  }
+
+  if (unavailable) {
+    return (
+      <Screen dark edges={['top']}>
+        <BackButton onPress={() => router.back()} dark />
+        <Text style={styles.unavailable}>This conversation is no longer available.</Text>
       </Screen>
     );
   }
@@ -229,14 +256,22 @@ export default function ChatScreen() {
             ) : null}
           </View>
         </Pressable>
+        {closed ? null : (
         <View style={styles.headerActions}>
           <Pressable
             style={styles.iconBtn}
             onPress={() =>
-              confirmUnmatch({ firstName: peerName, avatarUri: peerAvatarUri }, async () => {
-                await unmatchUser(peerUserId);
-                router.back();
-              })
+              confirmUnmatch(
+                { firstName: peerName, avatarUri: peerAvatarUri },
+                async () => {
+                  await unmatchUser(peerUserId);
+                  router.back();
+                },
+                async () => {
+                  await blockUser(peerUserId);
+                  router.back();
+                },
+              )
             }
             accessibilityLabel="Unmatch"
           >
@@ -246,9 +281,17 @@ export default function ChatScreen() {
             style={styles.iconBtn}
             onPress={() => {
               if (!lastPeerMessage) return;
-              confirmReportMessage({ firstName: peerName, avatarUri: peerAvatarUri }, async () => {
-                await reportMessage(lastPeerMessage.id);
-              });
+              confirmReportMessage(
+                { firstName: peerName, avatarUri: peerAvatarUri },
+                async () => {
+                  await reportMessage(lastPeerMessage.id);
+                },
+                async () => {
+                  await reportMessage(lastPeerMessage.id);
+                  await blockUser(peerUserId);
+                  router.back();
+                },
+              );
             }}
             accessibilityLabel="Report message"
           >
@@ -271,6 +314,7 @@ export default function ChatScreen() {
             {muted ? <BellOff size={16} color={colors.white} /> : <Bell size={16} color={colors.white} />}
           </Pressable>
         </View>
+        )}
       </View>
 
       <View style={[styles.flex, iosKeyboardLift > 0 && { paddingBottom: iosKeyboardLift }]}>
@@ -279,7 +323,28 @@ export default function ChatScreen() {
           style={styles.flex}
           data={messages}
           keyExtractor={(m) => m.id}
-          contentContainerStyle={styles.thread}
+          contentContainerStyle={[
+            styles.thread,
+            threadEmptyWithIntro ? styles.threadIntroOnly : styles.threadAnchoredBottom,
+          ]}
+          ListHeaderComponent={
+            showMatchIntro && peerName && !closed
+              ? () => (
+                  <View style={styles.matchIntro}>
+                    <Text style={styles.matchIntroText}>{newMatchChatIntro(peerName)}</Text>
+                  </View>
+                )
+              : undefined
+          }
+          ListFooterComponent={
+            closed && peerName
+              ? () => (
+                  <View style={styles.matchIntro}>
+                    <Text style={styles.matchIntroText}>{unmatchedChatNotice(peerName)}</Text>
+                  </View>
+                )
+              : undefined
+          }
           keyboardShouldPersistTaps="handled"
           onContentSizeChange={() => scrollToLatest(false)}
           onLayout={() => scrollToLatest(false)}
@@ -294,6 +359,7 @@ export default function ChatScreen() {
             );
           }}
         />
+        {closed ? null : (
         <View
           style={[
             styles.composer,
@@ -314,6 +380,7 @@ export default function ChatScreen() {
             <Text style={styles.sendLabel}>Send</Text>
           </Pressable>
         </View>
+        )}
       </View>
     </Screen>
   );
@@ -352,6 +419,31 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   thread: { padding: 16, gap: 8, flexGrow: 1 },
+  /** Short threads (and each new message) sit just above the composer, not under the header. */
+  threadAnchoredBottom: { justifyContent: 'flex-end' },
+  threadIntroOnly: { justifyContent: 'center' },
+  matchIntro: {
+    paddingHorizontal: 8,
+    paddingVertical: 24,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  unavailable: {
+    fontFamily: fonts.body,
+    fontSize: 15,
+    color: colors.textDarkMuted,
+    textAlign: 'center',
+    paddingHorizontal: 32,
+    paddingTop: 48,
+  },
+  matchIntroText: {
+    fontFamily: fonts.body,
+    fontSize: 14,
+    lineHeight: 20,
+    color: colors.textDarkMuted,
+    textAlign: 'center',
+    maxWidth: 280,
+  },
   bubbleWrap: { maxWidth: '82%' },
   bubbleWrapMine: { alignSelf: 'flex-end' },
   bubbleWrapTheirs: { alignSelf: 'flex-start' },

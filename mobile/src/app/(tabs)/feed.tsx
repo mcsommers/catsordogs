@@ -2,6 +2,7 @@ import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import {
   FlatList,
   Platform,
+  RefreshControl,
   StyleSheet,
   Text,
   useWindowDimensions,
@@ -21,7 +22,6 @@ import {
   type FeedItem,
 } from '../../lib/feed';
 import { loadFilterPreferencesUpdatedAt } from '../../lib/feedSettings';
-import { shortQuestionDate } from '../../lib/format';
 import { FeedEndScreen } from '../../components/FeedEndScreen';
 import { FeedOverlay } from '../../components/FeedOverlay';
 import { FeedLocked, NoQuestionToday } from '../../components/QuestionStates';
@@ -48,6 +48,8 @@ import { useSocialActions, type SocialSubject } from '../../components/social/us
  */
 const PAGE_SIZE = 12;
 const FEED_END_KEY = '__feed_caught_up__';
+/** Pull-to-refresh spinner sits below the status bar / playback progress chrome. */
+const FEED_REFRESH_SPINNER_OFFSET = 50;
 
 export default function Feed() {
   const { session, loading: sessionLoading } = useSession();
@@ -69,6 +71,7 @@ export default function Feed() {
   const [items, setItems] = useState<FeedItem[]>([]);
   const [totalCount, setTotalCount] = useState(0);
   const [loadingFeed, setLoadingFeed] = useState(false);
+  const [feedRefreshing, setFeedRefreshing] = useState(false);
   const [feedFailed, setFeedFailed] = useState(false);
   const [activeIndex, setActiveIndex] = useState(0);
   const [playbackUrl, setPlaybackUrl] = useState<string | null>(null);
@@ -77,13 +80,13 @@ export default function Feed() {
   const [lookbackDays, setLookbackDays] = useState(7);
   const [watchedSeconds, setWatchedSeconds] = useState(0);
   const [videoProgress, setVideoProgress] = useState(0);
-  const [dayBanner, setDayBanner] = useState<string | null>(null);
-  const [dismissedBanners, setDismissedBanners] = useState<Set<string>>(() => new Set());
   const loadingMoreRef = useRef(false);
   const loadingFeedRef = useRef(false);
   const feedLoadEpochRef = useRef(0);
   const viewReportedRef = useRef<string | null>(null);
   const flatRef = useRef<FlatList<FeedItem>>(null);
+  /** After pull-to-refresh clears a browse `date` param, skip the duplicate load from the param change. */
+  const skipFeedDateEffectRef = useRef(false);
 
   const listRows = useMemo((): FeedItem[] => {
     if (items.length === 0) return [];
@@ -213,8 +216,9 @@ export default function Feed() {
     loadGate();
   }, [sessionLoading, session, loadGate]);
 
-  const loadInitialFeed = useCallback(async () => {
+  const loadInitialFeed = useCallback(async (questionDate?: string | null) => {
     if (!gate || gate.state !== 'open') return;
+    const dateFilter = questionDate !== undefined ? questionDate : (feedDate ?? null);
     const epoch = ++feedLoadEpochRef.current;
     loadingMoreRef.current = false;
     loadingFeedRef.current = true;
@@ -223,7 +227,7 @@ export default function Feed() {
     try {
       const [config, page] = await Promise.all([
         fetchAppFeedConfig(),
-        fetchFeedPage(0, PAGE_SIZE, feedDate ?? null),
+        fetchFeedPage(0, PAGE_SIZE, dateFilter),
       ]);
       if (epoch !== feedLoadEpochRef.current) return;
       setMinWatch(config.minWatchSeconds);
@@ -241,16 +245,40 @@ export default function Feed() {
     }
   }, [gate, feedDate]);
 
+  const refreshTodayFeed = useCallback(async () => {
+    if (!gate || gate.state !== 'open') return;
+    if (loadingFeedRef.current) return;
+    flatRef.current?.scrollToOffset({ offset: 0, animated: false });
+    const browsingPastDay = Boolean(feedDate);
+    if (browsingPastDay) {
+      skipFeedDateEffectRef.current = true;
+      router.replace({ pathname: '/(tabs)/feed' });
+    }
+    await loadInitialFeed(browsingPastDay ? null : undefined);
+  }, [gate, feedDate, loadInitialFeed]);
+
+  const onPullRefresh = useCallback(async () => {
+    setFeedRefreshing(true);
+    try {
+      await refreshTodayFeed();
+    } finally {
+      setFeedRefreshing(false);
+    }
+  }, [refreshTodayFeed]);
+
   useEffect(() => {
+    if (skipFeedDateEffectRef.current) {
+      skipFeedDateEffectRef.current = false;
+      return;
+    }
     loadInitialFeed();
   }, [loadInitialFeed]);
 
   useEffect(() => {
     if (!feedReload || feedReload === lastFeedReloadRef.current) return;
     lastFeedReloadRef.current = feedReload;
-    flatRef.current?.scrollToOffset({ offset: 0, animated: false });
-    loadInitialFeed();
-  }, [feedReload, loadInitialFeed]);
+    void refreshTodayFeed();
+  }, [feedReload, refreshTodayFeed]);
 
   useFocusEffect(
     useCallback(() => {
@@ -348,26 +376,15 @@ export default function Feed() {
     };
   }, [activeItem?.answerId, activeItem?.durationSeconds, playbackUrl, minWatch, player]);
 
-  const feedScrollRef = useRef({
-    items: items,
-    dismissedBanners,
-    loadMore,
-  });
-  feedScrollRef.current = { items, dismissedBanners, loadMore };
+  const feedScrollRef = useRef({ items: items, loadMore });
+  feedScrollRef.current = { items, loadMore };
 
   const onViewableItemsChanged = useCallback(({ viewableItems }: { viewableItems: ViewToken[] }) => {
     const first = viewableItems.find((v) => v.isViewable);
     if (first?.index == null) return;
     const idx = first.index;
     setActiveIndex(idx);
-    const { items: rows, dismissedBanners: dismissed, loadMore: more } = feedScrollRef.current;
-    if (idx > 0 && rows[idx] && rows[idx - 1]) {
-      const prevDate = rows[idx - 1].questionDate;
-      const nextDate = rows[idx].questionDate;
-      if (prevDate !== nextDate && !dismissed.has(nextDate)) {
-        setDayBanner(shortQuestionDate(nextDate));
-      }
-    }
+    const { items: rows, loadMore: more } = feedScrollRef.current;
     if (idx >= rows.length - 3) more();
   }, []);
 
@@ -401,17 +418,12 @@ export default function Feed() {
             onFeedSettings={openFeedSettings}
             onMoreOptions={social.openMenu}
             onHeart={social.onHeartPress}
-            showDayBanner={isActive ? dayBanner : null}
-            onDismissDayBanner={() => {
-              setDismissedBanners((s) => new Set(s).add(item.questionDate));
-              setDayBanner(null);
-            }}
             videoProgress={isActive ? videoProgress : 0}
           />
         </View>
       );
     },
-    [activeItem?.answerId, dayBanner, lookbackDays, muted, openFeedSettings, pageHeight, social.onHeartPress, social.openMenu, videoProgress]
+    [activeItem?.answerId, lookbackDays, muted, openFeedSettings, pageHeight, social.onHeartPress, social.openMenu, videoProgress]
   );
 
   const showVideo = !!session && !!playbackUrl && gate?.state === 'open';
@@ -502,13 +514,24 @@ export default function Feed() {
       <FlatList
         ref={flatRef}
         data={listRows}
-        extraData={{ activeId: activeItem?.answerId, muted, videoProgress, dayBanner }}
+        extraData={{ activeId: activeItem?.answerId, muted, videoProgress }}
         keyExtractor={(item) => item.answerId}
         pagingEnabled
         decelerationRate="fast"
         showsVerticalScrollIndicator={false}
         viewabilityConfigCallbackPairs={viewabilityConfigCallbackPairs}
-        bounces={false}
+        bounces={activeIndex === 0}
+        overScrollMode={activeIndex === 0 ? 'always' : 'never'}
+        refreshControl={
+          <RefreshControl
+            refreshing={feedRefreshing}
+            onRefresh={onPullRefresh}
+            tintColor={colors.white}
+            colors={[colors.accentDog]}
+            progressBackgroundColor={colors.bgDark}
+            progressViewOffset={FEED_REFRESH_SPINNER_OFFSET}
+          />
+        }
         onEndReached={() => {
           if (items.length < totalCount) loadMore();
         }}

@@ -3,6 +3,22 @@
 A record of questions asked while planning the phone app, the options offered,
 and Mike's answer. Newest phase first.
 
+## Following badge outline pill (Mike, Oct 17, 2026)
+
+On feed (**06**), profile heroes (**06j**, **06n**, …), and answer detail (**06k**), the **Following** badge is a pill with **transparent** fill, **orange** 1.5pt border, and **orange** **Following** label (11pt semibold)—not a solid orange fill with white text.
+
+## Question history list UI (06c / 06d) (Mike, Oct 16, 2026)
+
+Screen title **Question History** left-aligned in the header row next to the dark circular back button (same pattern as Feed Settings / Your Answers), not centered “Browse Questions”. Each row: orange date **Month Day, Year** on one line; today adds gray **Live now** beside the date (not “Live now · Today’s feed”); question below; past rows show muted **N responses** (today has no count). Search placeholder **Search past questions...**; active search uses orange border/icon and **orange bold** highlights on matching words in titles. One screen for browse and search (06d is a state, not a separate route).
+
+## Pull-to-refresh and Feed tab reload today's feed (Mike, Oct 16, 2026)
+
+If the user picked a past question from Browse Questions and is viewing that day's feed, pull down on the first video reloads and shows **today's** feed again (not the same past day). Tapping **Feed** in the tab bar while already on the Feed tab does the same reload (fresh server fetch for today, first video).
+
+## No "Earlier answers" day-change banner (Mike, Oct 16, 2026)
+
+When the feed rolls to a previous day, only the question pill updates (date and question text). There is no **Earlier answers** banner or other day-change banner on **06** / **06u**.
+
 ## Feed Settings unsaved changes and save (Mike, Oct 16, 2026)
 
 On **06i**, **Save** stays grey until the user changes a filter or ranking control. Leaving with unsaved edits shows **Discard changes?** with copy about unsaved **feed settings** (same pattern as profile on **03**; Pencil frame **06i Feed Settings Unsaved Changes**). **Save** goes straight back to the Feed tab and refreshes the feed — no saved alert. Pencil **06i Feed Settings** shows **Save** disabled by default (label **Save**, not “Save Preferences”).
@@ -38,7 +54,11 @@ Implemented in shared `TextField`, `AppTextInput`, and `LocationField` via `FIEL
 
 ### Build Profile and Edit Profile: no placeholder text (Mike, Oct 14, 2026)
 
-On **Build Profile (03)** and **Edit Profile (08d)**, no text field shows placeholder or helper text inside it (no "Alex", no "January 1, 2000", no height numbers, no example job or school, no sample About Me line, no sample city, no "Add your own" hint). Fields are simply empty until the person types. Labels and the hints written under a field (for example the 18-or-older line under Birthday) stay. The placeholder behavior above still applies to other screens (sign up, log in, and so on).
+On **Build Profile (03)** and **Edit Profile (08d)**, no text field shows placeholder or helper text inside it (no "Alex", no "January 1, 2000", no height numbers, no example job or school, no sample About Me line, no sample city, no "Add your own" hint). Fields are simply empty until the person types. Labels and the hints written under a field (for example the 18-or-older line under Birthday) stay. The placeholder behavior above still applies to other screens (sign up, and so on).
+
+### Log In: no placeholder text (Mike, Oct 16, 2026)
+
+On **Log In (02b)**, the **Email** and **Password** fields show no helper text inside them (no "you@example.com", no dots). The labels stay. Sign Up, Forgot Password, and Set New Password still use their placeholders.
 
 ## Phase C: Profile and archive (asked Oct 12, 2026)
 
@@ -265,6 +285,18 @@ Options:
 
 Answer: **2A.**
 
+### Unmatch keeps the chat for the other person (Mike, Oct 16, 2026)
+
+The person who unmatches loses the chat. The other person keeps the history and sees **[Name] unmatched you. You can no longer chat.** They cannot send. There is no email. A block still removes the chat for both people.
+
+The unmatch confirmation (**07n**) has three actions: **Unmatch Only** (primary), **Unmatch & Block**, and **Keep Match**. Unmatch & Block is a block.
+
+Report confirmations for a video (**06g**), a profile (**06q**), and a chat message (**07m**) use the same pattern: **Report Only** (primary), **Report & Block**, and **Cancel**. Report & Block also blocks them. They are not told about the report or the block. After a video or profile report is filed, the acknowledgment is the dark in-app dialog **06ga** (**Report submitted**, **Thanks — we'll review this response.**, orange **OK**), not the phone's system alert.
+
+### Matches tab: open the list that has something new (Mike, Oct 16, 2026)
+
+When the bottom **Matches** heart is filled orange and the person taps **Matches**, open the segment that has the new item: **Chats** if someone sent an unread message, **Incoming** if the only new item is a pending match request. If both are waiting, open **Chats**. When the heart is not lit, stay on the segment they last used.
+
 ### 3. Where should Accept and Decline live?
 
 Requirements: the recipient can **View Profile**, **Accept (on the sender’s profile, 07h)**, or **Decline**. Pencil **07** Incoming rows include **Decline** (with **07g**); **07h** shows **Accept**.
@@ -414,8 +446,7 @@ Answer: **Unified page.** Locked for implementation in `docs/mobile-feed-scroll.
 
 The **Build Plan** names Phase B as: scrollable feed, minimum watch time,
 captions, and followed-first display. The **requirements** also describe Browse
-Questions (06c/06d), the Question Pill, rolling to earlier days (06u), a day-change
-banner, the "You're all caught up" end screen (06v), and streak badges on feed
+Questions (06c/06d), the Question Pill, rolling to earlier days (06u; pill only, no day-change banner), the "You're all caught up" end screen (06v), and streak badges on feed
 videos. **Phase D** is where heart (match), the more-options menu (follow, report,
 block, Not Interested), and Feed Settings (06i) live.
 
@@ -425,7 +456,7 @@ Options:
   minimum watch, followed section looks distinct, Question Pill. Defer browse,
   day rollover, end screen, and streak badge to a fast follow-up.
 - **Feed + browse (recommended):** Everything in core, plus Browse Questions and
-  search (06c/06d), opening a past day's feed, day rollover (06u) with banner,
+  search (06c/06d), opening a past day's feed, day rollover (06u),
   and 06v when caught up. Buttons on 06v can open Browse; "Adjust Feed Settings"
   can show "Coming in a later update" until Phase D.
 - **Full feed UX in one phase:** All of the above plus streak badges on each
@@ -556,7 +587,7 @@ Answer: Design simple versions in the design file, update the requirements doc, 
 - Signing in or reopening the app with a finished profile always opens the **Feed** tab. If today is unanswered, that is **Feed Locked (06m)**, not Today's Question. Recording still starts from **Answer Today's Question** on that screen, or from **Record My First Answer** on How It Works after first setup. *Decided by Mike.*
 
 ## Confirmation pronouns (Oct 2026)
-- Woman → she/her/her; Man → he/him/his; any More gender or missing → they/them/their. Dialogs that use pronouns: Follow, Unfollow, Nudge, Match send (**06b** / **07i**), cancel request (**07f** / **06y**), decline (**07g**), Not Interested (**06f** / **06w**). Report, Block, Unmatch, and mute chat use the person's name and do not switch pronouns. *Decided by Mike.*
+- Woman → she/her/her; Man → he/him/his; any More gender or missing → they/them/their. Dialogs that use pronouns: Follow, Unfollow, Nudge, Match send (**06b** / **07i**), cancel request (**07f** / **06y**), decline (**07g**), Not Interested (**06f** / **06w**). Accept incoming match (**07j**) uses the person's name in the title and body, not pronouns. Report, Block, Unmatch, and mute chat use the person's name and do not switch pronouns. *Decided by Mike.*
 
 ## People I follow (Oct 2026)
 - Account on **08** has a **People I follow** row after Privacy & Safety and before Blocked and Not Interested. It opens **08i**: everyone the user currently follows (profile photo, name, age, and **Followed on [date]** under the name, same subtitle placement as Outgoing on **07e**) with **Unfollow** (same 06s confirmation) and **View Profile**. Cards match Outgoing on **07e**. Empty **08ia**: "You're not following anyone yet."

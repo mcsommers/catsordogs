@@ -1,4 +1,6 @@
 import { supabase } from './supabase';
+
+export { hasMatchesTabAlert } from './matchesTabAlert';
 import type { FeedMatchState } from './feed';
 
 export type FollowState = {
@@ -37,15 +39,6 @@ export type OutgoingMatchRequest = {
   requestedAt: string;
 };
 
-/** Orange Matches tab heart (06u): incoming requests or unread peer chat messages. */
-export function hasMatchesTabAlert(
-  incoming: IncomingMatchRequest[],
-  conversations: ConversationSummary[]
-): boolean {
-  if (incoming.length > 0) return true;
-  return conversations.some((c) => c.unreadCount > 0 && !c.lastMessageIsMine);
-}
-
 export type ConversationSummary = {
   matchId: string;
   userId: string;
@@ -60,6 +53,8 @@ export type ConversationSummary = {
   lastMessageIsMine: boolean;
   muted: boolean;
   unreadCount: number;
+  /** True when the other person unmatched. History stays; sending does not. */
+  closed: boolean;
 };
 
 export type ChatMessage = {
@@ -281,6 +276,7 @@ export async function getConversations(): Promise<ConversationSummary[]> {
     lastMessageIsMine: Boolean(r.last_message_is_mine),
     muted: Boolean(r.muted),
     unreadCount: Number(r.unread_count) || 0,
+    closed: Boolean(r.closed),
   }));
 }
 

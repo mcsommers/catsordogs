@@ -1,6 +1,7 @@
-import { useCallback, useState } from 'react';
+import { useCallback, useRef, useState } from 'react';
 import { Image, Pressable, RefreshControl, ScrollView, StyleSheet, Text, View } from 'react-native';
 import { router, useFocusEffect } from 'expo-router';
+import { useMatchesAlert } from '../../lib/matchesAlertContext';
 import {
   cancelMatchRequest,
   declineMatchRequest,
@@ -13,6 +14,7 @@ import {
 } from '../../lib/social';
 import { signPhotoPaths } from '../../lib/profile';
 import { formatOutgoingMatchLine, formatRelativeTime } from '../../lib/format';
+import { unmatchedChatNotice } from '../../components/social/socialCopy';
 import { confirmCancelMatch, confirmDeclineMatch } from '../../components/social/confirmations';
 import { CenteredSpinner, PrimaryButton, Screen, styles as ui } from '../../components/ui';
 import { colors, fonts } from '../../theme';
@@ -26,6 +28,8 @@ const SEGMENTS: { key: Segment; label: string }[] = [
 ];
 
 export default function Matches() {
+  const { matchesLandingRequest } = useMatchesAlert();
+  const appliedLandingId = useRef(0);
   const [segment, setSegment] = useState<Segment>('chats');
   const [incoming, setIncoming] = useState<IncomingMatchRequest[]>([]);
   const [outgoing, setOutgoing] = useState<OutgoingMatchRequest[]>([]);
@@ -52,11 +56,16 @@ export default function Matches() {
 
   useFocusEffect(
     useCallback(() => {
+      const request = matchesLandingRequest();
+      if (request && request.id !== appliedLandingId.current) {
+        appliedLandingId.current = request.id;
+        setSegment(request.landing);
+      }
       setLoading(true);
       load()
         .catch(() => {})
         .finally(() => setLoading(false));
-    }, [load])
+    }, [load, matchesLandingRequest])
   );
 
   const onRefresh = async () => {
@@ -72,6 +81,11 @@ export default function Matches() {
   const peerUnread = (row: ConversationSummary) =>
     row.unreadCount > 0 && !row.lastMessageIsMine ? row.unreadCount : 0;
   const totalUnreadChats = chats.reduce((sum, c) => sum + peerUnread(c), 0);
+  const segmentBadgeCount = (key: Segment) => {
+    if (key === 'chats') return totalUnreadChats;
+    if (key === 'incoming') return incoming.length;
+    return 0;
+  };
 
   if (loading) {
     return (
@@ -86,7 +100,9 @@ export default function Matches() {
       <View style={styles.header}>
         <Text style={styles.title}>Matches</Text>
         <View style={styles.segments}>
-          {SEGMENTS.map(({ key, label }) => (
+          {SEGMENTS.map(({ key, label }) => {
+            const badgeCount = segmentBadgeCount(key);
+            return (
             <Pressable
               key={key}
               style={[styles.segment, segment === key && styles.segmentActive]}
@@ -94,16 +110,17 @@ export default function Matches() {
             >
               <View style={styles.segmentInner}>
                 <Text style={[styles.segmentLabel, segment === key && styles.segmentLabelActive]}>{label}</Text>
-                {key === 'chats' && totalUnreadChats > 0 ? (
+                {badgeCount > 0 ? (
                   <View style={styles.segmentBadge}>
                     <Text style={styles.segmentBadgeLabel}>
-                      {totalUnreadChats > 99 ? '99+' : String(totalUnreadChats)}
+                      {badgeCount > 99 ? '99+' : String(badgeCount)}
                     </Text>
                   </View>
                 ) : null}
               </View>
             </Pressable>
-          ))}
+            );
+          })}
         </View>
       </View>
       <ScrollView
@@ -232,11 +249,13 @@ export default function Matches() {
                     style={[styles.preview, peerUnread(row) > 0 && styles.previewUnread]}
                     numberOfLines={1}
                   >
-                    {row.lastMessageBody
-                      ? row.lastMessageIsMine
-                        ? `You: ${row.lastMessageBody}`
-                        : row.lastMessageBody
-                      : 'Say hi!'}
+                    {row.closed
+                      ? unmatchedChatNotice(row.firstName)
+                      : row.lastMessageBody
+                        ? row.lastMessageIsMine
+                          ? `You: ${row.lastMessageBody}`
+                          : row.lastMessageBody
+                        : 'Say hi!'}
                   </Text>
                 </View>
                 <View style={styles.metaCol}>

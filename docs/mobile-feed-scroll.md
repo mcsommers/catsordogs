@@ -9,6 +9,8 @@ Mike approved this pattern in Phase B (Oct 2026). **Do not change it without an 
 - It must **not** feel like a fixed HUD sitting on top of a video while only the video changes underneath.
 - The **caught-up** row (06v) is a normal page in the same list and scrolls the same way.
 - Users may **swipe to the next clip immediately** — no wait timer or Skip control. Minimum watch time (admin setting, default 3 seconds) applies **only** to whether a view counts for the poster; it does not gate navigation.
+- On the **first** feed item only, **pull down from the top** reloads the feed from the server (same reload as after saving Feed Settings). If the user was browsing a **past day** from Browse Questions, pull-to-refresh also clears that choice and loads **today's** feed again. Pull-to-refresh does not apply on later items or on the caught-up page.
+- Tapping the **Feed** tab while you are already on the Feed tab runs the same **today's feed** reload from the server (scrolls to the first item).
 
 ## What we must not do (anti-patterns)
 
@@ -36,6 +38,7 @@ Before merging any feed UI change, read the header comment in `feed.tsx` and con
 Run on **iPhone and Android** (Expo Go):
 
 - **UAT B-05** — swipe between videos; pill updates when the day changes.
+- **UAT B-05a** — pull down on the first feed item reloads the feed; later items do not.
 - **UAT B-15** — unified page scroll (see `docs/UAT-flows.md`).
 
 If touch handling changes, test **swipe in the middle of the screen** and **every feed control** on both OSes.

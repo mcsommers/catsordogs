@@ -1,7 +1,7 @@
 import { StyleSheet, Text, View } from 'react-native';
 import { colors, fonts } from '../theme';
 
-/** Orange "Following" pill next to name/age on feed, profile, and 06k. */
+/** Outlined orange "Following" pill next to name/age on feed, profile, and 06k (Pencil). */
 export function FollowingBadge() {
   return (
     <View style={styles.tag} accessibilityLabel="Following">
@@ -12,11 +12,13 @@ export function FollowingBadge() {
 
 const styles = StyleSheet.create({
   tag: {
-    backgroundColor: colors.accentDog,
+    backgroundColor: 'transparent',
     borderRadius: 9999,
+    borderWidth: 1.5,
+    borderColor: colors.accentDog,
     paddingHorizontal: 10,
     paddingVertical: 4,
     flexShrink: 0,
   },
-  label: { fontFamily: fonts.bodySemi, fontSize: 11, color: colors.white },
+  label: { fontFamily: fonts.bodySemi, fontSize: 11, color: colors.accentDog },
 });
