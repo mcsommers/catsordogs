@@ -4,6 +4,7 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
+    "admin": "vite",
     "typecheck": "tsc --noEmit",
     "build": "tsc --noEmit && vite build"
   },
