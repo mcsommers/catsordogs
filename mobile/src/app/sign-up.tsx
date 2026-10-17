@@ -60,7 +60,7 @@ export default function SignUp() {
         <BackButton />
         <Text style={styles.headerTitle}>Create your account</Text>
       </View>
-      <TitleGroup subtitle="Let's find your people!" />
+      <TitleGroup subtitle="Let's make some magic." />
       <ComingSoonSocialButtons />
       <OrDivider />
       <View style={{ gap: 16 }}>
@@ -68,7 +68,6 @@ export default function SignUp() {
           <TextField
             label="Email"
             icon={Mail}
-            placeholder="you@example.com"
             autoCapitalize="none"
             autoComplete="email"
             keyboardType="email-address"
@@ -89,7 +88,6 @@ export default function SignUp() {
             ref={passwordRef}
             label="Password"
             icon={Lock}
-            placeholder="••••••••"
             secureTextEntry
             autoComplete="new-password"
             textContentType="newPassword"

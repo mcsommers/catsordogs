@@ -1,30 +1,42 @@
+import { useCallback } from 'react';
 import { StyleSheet, Text, View } from 'react-native';
-import { router } from 'expo-router';
-import { LinearGradient } from 'expo-linear-gradient';
-import { Cat, Dog, Heart } from 'lucide-react-native';
+import { router, useFocusEffect } from 'expo-router';
+import { VideoView, useVideoPlayer } from 'expo-video';
 import { PrimaryButton, Screen, TextLink, styles as ui } from '../components/ui';
+import { safePause, safePlay } from '../lib/videoPlayer';
 import { colors, fonts } from '../theme';
 
+const welcomeVideo = require('../../assets/welcome-video-2b.mp4');
+
 export default function Welcome() {
+  const player = useVideoPlayer(welcomeVideo, (p) => {
+    p.loop = true;
+    p.muted = true;
+  });
+
+  useFocusEffect(
+    useCallback(() => {
+      safePlay(player);
+      return () => safePause(player);
+    }, [player]),
+  );
+
   return (
     <Screen scroll>
       <View style={{ gap: 20, alignItems: 'center' }}>
-        <LinearGradient colors={[colors.accentCat, colors.accentDog]} style={styles.hero}>
-          <View style={styles.badgeRow}>
-            <View style={styles.badge}>
-              <Cat size={30} color={colors.white} />
-            </View>
-            <Heart size={22} color={colors.white} />
-            <View style={styles.badge}>
-              <Dog size={30} color={colors.white} />
-            </View>
-          </View>
-          <Text style={styles.heroTag}>PICK YOUR PACK</Text>
-        </LinearGradient>
+        <View style={styles.hero}>
+          <VideoView
+            player={player}
+            style={StyleSheet.absoluteFill}
+            contentFit="cover"
+            nativeControls={false}
+            pointerEvents="none"
+          />
+        </View>
         <Text style={styles.headline}>Cats or Dogs?</Text>
         <Text style={[ui.subtitle, { textAlign: 'center' }]}>
-          Every day, everyone answers the same question on camera. Answer today&apos;s, then meet people through what
-          they actually say, not how well they curate a profile.
+          Every day, everyone answers the same question on camera. Meet people through what they actually say, not how
+          well they curate a profile.
         </Text>
       </View>
       <View style={{ gap: 14, marginTop: 12 }}>
@@ -39,10 +51,13 @@ export default function Welcome() {
 }
 
 const styles = StyleSheet.create({
-  hero: { alignSelf: 'stretch', height: 300, borderRadius: 32, alignItems: 'center', justifyContent: 'center', gap: 20 },
-  badgeRow: { flexDirection: 'row', alignItems: 'center', gap: 20 },
-  badge: { width: 72, height: 72, borderRadius: 36, backgroundColor: '#FFFFFF33', alignItems: 'center', justifyContent: 'center' },
-  heroTag: { fontFamily: fonts.bodyBold, fontSize: 13, letterSpacing: 2, color: '#FFFFFFCC' },
+  hero: {
+    alignSelf: 'stretch',
+    height: 300,
+    borderRadius: 32,
+    overflow: 'hidden',
+    backgroundColor: colors.bg,
+  },
   headline: { fontFamily: fonts.heading, fontSize: 40, color: colors.textPrimary, textAlign: 'center' },
   loginRow: { flexDirection: 'row', justifyContent: 'center', alignItems: 'center', gap: 6 },
   prompt: { fontFamily: fonts.body, fontSize: 14, color: colors.textSecondary },
