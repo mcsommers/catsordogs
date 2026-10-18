@@ -1,17 +1,3898 @@
 {
-  "version": "2.6",
+  "version": "2.21",
   "children": [
     {
       "type": "frame",
-      "id": "bi8Au",
+      "id": "IMAqz",
       "x": 0,
       "y": 0,
-      "name": "Frame",
+      "name": "Homepage — Desktop",
       "clip": true,
-      "width": 800,
-      "height": 600,
-      "fill": "#FFFFFF",
-      "layout": "none"
+      "width": 1440,
+      "fill": "$bg-dark",
+      "layout": "vertical",
+      "children": [
+        {
+          "type": "frame",
+          "id": "K2Ld87",
+          "name": "Nav",
+          "width": "fill_container",
+          "fill": "$bg-dark",
+          "padding": [
+            20,
+            64
+          ],
+          "justifyContent": "space_between",
+          "alignItems": "center",
+          "children": [
+            {
+              "type": "text",
+              "id": "z1kZFi",
+              "name": "Logo",
+              "fill": "$accent-dog",
+              "content": "Cats or Dogs?",
+              "fontFamily": "$font-heading",
+              "fontSize": 24,
+              "fontWeight": "normal"
+            },
+            {
+              "type": "frame",
+              "id": "J5GKP",
+              "name": "Nav Links",
+              "gap": 28,
+              "alignItems": "center",
+              "children": [
+                {
+                  "type": "text",
+                  "id": "cG8Ji",
+                  "name": "Nav How it works",
+                  "fill": "$text-dark-muted",
+                  "content": "How it works",
+                  "fontFamily": "$font-body",
+                  "fontSize": 14,
+                  "fontWeight": "normal"
+                },
+                {
+                  "type": "text",
+                  "id": "FaFKK",
+                  "name": "Nav Subscriptions",
+                  "fill": "$text-dark-muted",
+                  "content": "Subscriptions",
+                  "fontFamily": "$font-body",
+                  "fontSize": 14,
+                  "fontWeight": "normal"
+                },
+                {
+                  "type": "text",
+                  "id": "PCkIp",
+                  "name": "Nav Safety",
+                  "fill": "$text-dark-muted",
+                  "content": "Safety",
+                  "fontFamily": "$font-body",
+                  "fontSize": 14,
+                  "fontWeight": "normal"
+                },
+                {
+                  "type": "text",
+                  "id": "LtgWQ",
+                  "name": "Nav FAQs",
+                  "fill": "$text-dark-muted",
+                  "content": "FAQs",
+                  "fontFamily": "$font-body",
+                  "fontSize": 14,
+                  "fontWeight": "normal"
+                },
+                {
+                  "type": "text",
+                  "id": "n4z1X",
+                  "name": "Nav Download",
+                  "fill": "$text-dark-muted",
+                  "content": "Download",
+                  "fontFamily": "$font-body",
+                  "fontSize": 14,
+                  "fontWeight": "normal"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "frame",
+          "id": "W52aM",
+          "name": "Hero",
+          "width": "fill_container",
+          "gap": 40,
+          "padding": [
+            56,
+            64,
+            72,
+            64
+          ],
+          "alignItems": "center",
+          "children": [
+            {
+              "type": "frame",
+              "id": "R2pmS",
+              "name": "Hero Copy",
+              "width": "fill_container",
+              "layout": "vertical",
+              "gap": 18,
+              "children": [
+                {
+                  "type": "text",
+                  "id": "PppYF",
+                  "name": "Hero Headline",
+                  "fill": "$white",
+                  "textGrowth": "fixed-width",
+                  "width": "fill_container",
+                  "content": "Meet people through what they actually say",
+                  "lineHeight": 1.05,
+                  "fontFamily": "$font-heading",
+                  "fontSize": 54,
+                  "fontWeight": "normal"
+                },
+                {
+                  "type": "text",
+                  "id": "sGyRP",
+                  "name": "Hero Subhead",
+                  "fill": "$text-dark-muted",
+                  "textGrowth": "fixed-width",
+                  "width": "fill_container",
+                  "content": "Every day, everyone answers the same question on camera.\nDiscover real people in a feed built on honesty, not curated photos.",
+                  "lineHeight": 1.45,
+                  "fontFamily": "$font-body",
+                  "fontSize": 18,
+                  "fontWeight": "normal"
+                },
+                {
+                  "type": "frame",
+                  "id": "RzApL",
+                  "name": "Store Badges",
+                  "gap": 12,
+                  "alignItems": "center",
+                  "children": [
+                    {
+                      "type": "frame",
+                      "id": "ixEbV",
+                      "name": "App Store Badge",
+                      "width": 139,
+                      "height": 40,
+                      "fill": {
+                        "type": "image",
+                        "enabled": true,
+                        "url": "../website/assets/appstore.png",
+                        "mode": "contain"
+                      }
+                    },
+                    {
+                      "type": "frame",
+                      "id": "fuMq5",
+                      "name": "Google Play Badge",
+                      "width": 138,
+                      "height": 40,
+                      "fill": {
+                        "type": "image",
+                        "enabled": true,
+                        "url": "../website/assets/googleplay.png",
+                        "mode": "contain"
+                      }
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "FbDdl",
+              "name": "iPhone Mockup",
+              "width": 300,
+              "height": 609,
+              "fill": {
+                "type": "image",
+                "enabled": true,
+                "url": "../website/assets/homepagehero.png",
+                "mode": "contain"
+              },
+              "layout": "none"
+            }
+          ]
+        },
+        {
+          "type": "frame",
+          "id": "C1kn4d",
+          "name": "How it works",
+          "width": "fill_container",
+          "fill": "$surface-dark",
+          "layout": "vertical",
+          "gap": 36,
+          "padding": [
+            72,
+            64
+          ],
+          "children": [
+            {
+              "type": "frame",
+              "id": "P8opLF",
+              "name": "How it works Header",
+              "width": "fill_container",
+              "layout": "vertical",
+              "gap": 10,
+              "alignItems": "center",
+              "children": [
+                {
+                  "type": "text",
+                  "id": "mD9nV",
+                  "name": "How it works Title",
+                  "fill": "$white",
+                  "content": "How it works",
+                  "fontFamily": "$font-heading",
+                  "fontSize": 40,
+                  "fontWeight": "normal"
+                },
+                {
+                  "type": "text",
+                  "id": "LNjlh",
+                  "name": "How it works Subtitle",
+                  "fill": "$text-dark-muted",
+                  "textGrowth": "fixed-width",
+                  "width": 720,
+                  "content": "One daily question. Real video answers. Relationships that start with voice and face, not filters.",
+                  "lineHeight": 1.45,
+                  "textAlign": "center",
+                  "fontFamily": "$font-body",
+                  "fontSize": 17,
+                  "fontWeight": "normal"
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "a80NVi",
+              "name": "Steps",
+              "width": "fill_container",
+              "gap": 20,
+              "children": [
+                {
+                  "type": "frame",
+                  "id": "AmX30",
+                  "name": "Step 1",
+                  "width": "fill_container",
+                  "fill": "$bg-dark",
+                  "cornerRadius": 16,
+                  "stroke": "$border-dark",
+                  "strokeWidth": 1,
+                  "layout": "vertical",
+                  "gap": 10,
+                  "padding": 20,
+                  "children": [
+                    {
+                      "type": "text",
+                      "id": "ZcAp6",
+                      "name": "Step Number",
+                      "fill": "$accent-dog",
+                      "content": "1",
+                      "fontFamily": "$font-heading",
+                      "fontSize": 28,
+                      "fontWeight": "normal"
+                    },
+                    {
+                      "type": "text",
+                      "id": "o4jbOb",
+                      "name": "Step Title",
+                      "fill": "$white",
+                      "textGrowth": "fixed-width",
+                      "width": "fill_container",
+                      "content": "Get today’s question",
+                      "fontFamily": "$font-body",
+                      "fontSize": 17,
+                      "fontWeight": "600"
+                    },
+                    {
+                      "type": "text",
+                      "id": "B1KG5L",
+                      "name": "Step Body",
+                      "fill": "$text-dark-muted",
+                      "textGrowth": "fixed-width",
+                      "width": "fill_container",
+                      "content": "Everyone sees the same prompt each calendar day, whether it's timely or timeless.",
+                      "lineHeight": 1.4,
+                      "fontFamily": "$font-body",
+                      "fontSize": 14,
+                      "fontWeight": "normal"
+                    }
+                  ]
+                },
+                {
+                  "type": "frame",
+                  "id": "sgfI5",
+                  "name": "Step 2",
+                  "width": "fill_container",
+                  "fill": "$bg-dark",
+                  "cornerRadius": 16,
+                  "stroke": "$border-dark",
+                  "strokeWidth": 1,
+                  "layout": "vertical",
+                  "gap": 10,
+                  "padding": 20,
+                  "children": [
+                    {
+                      "type": "text",
+                      "id": "xskBZ",
+                      "name": "Step Number",
+                      "fill": "$accent-dog",
+                      "content": "2",
+                      "fontFamily": "$font-heading",
+                      "fontSize": 28,
+                      "fontWeight": "normal"
+                    },
+                    {
+                      "type": "text",
+                      "id": "DeHDR",
+                      "name": "Step Title",
+                      "fill": "$white",
+                      "textGrowth": "fixed-width",
+                      "width": "fill_container",
+                      "content": "Record your answer",
+                      "fontFamily": "$font-body",
+                      "fontSize": 17,
+                      "fontWeight": "600"
+                    },
+                    {
+                      "type": "text",
+                      "id": "uWHKX",
+                      "name": "Step Body",
+                      "fill": "$text-dark-muted",
+                      "textGrowth": "fixed-width",
+                      "width": "fill_container",
+                      "content": "Up to 14 seconds on camera. Your first answer unlocks the feed right away.",
+                      "lineHeight": 1.4,
+                      "fontFamily": "$font-body",
+                      "fontSize": 14,
+                      "fontWeight": "normal"
+                    }
+                  ]
+                },
+                {
+                  "type": "frame",
+                  "id": "u2LxW",
+                  "name": "Step 3",
+                  "width": "fill_container",
+                  "fill": "$bg-dark",
+                  "cornerRadius": 16,
+                  "stroke": "$border-dark",
+                  "strokeWidth": 1,
+                  "layout": "vertical",
+                  "gap": 10,
+                  "padding": 20,
+                  "children": [
+                    {
+                      "type": "text",
+                      "id": "HrSGq",
+                      "name": "Step Number",
+                      "fill": "$accent-dog",
+                      "content": "3",
+                      "fontFamily": "$font-heading",
+                      "fontSize": 28,
+                      "fontWeight": "normal"
+                    },
+                    {
+                      "type": "text",
+                      "id": "t1x6WN",
+                      "name": "Step Title",
+                      "fill": "$white",
+                      "textGrowth": "fixed-width",
+                      "width": "fill_container",
+                      "content": "Explore the feed",
+                      "fontFamily": "$font-body",
+                      "fontSize": 17,
+                      "fontWeight": "600"
+                    },
+                    {
+                      "type": "text",
+                      "id": "znngt",
+                      "name": "Step Body",
+                      "fill": "$text-dark-muted",
+                      "textGrowth": "fixed-width",
+                      "width": "fill_container",
+                      "content": "Swipe through real responses. Follow people you want to hear from again.",
+                      "lineHeight": 1.4,
+                      "fontFamily": "$font-body",
+                      "fontSize": 14,
+                      "fontWeight": "normal"
+                    }
+                  ]
+                },
+                {
+                  "type": "frame",
+                  "id": "oxciA",
+                  "name": "Step 4",
+                  "width": "fill_container",
+                  "fill": "$bg-dark",
+                  "cornerRadius": 16,
+                  "stroke": "$border-dark",
+                  "strokeWidth": 1,
+                  "layout": "vertical",
+                  "gap": 10,
+                  "padding": 20,
+                  "children": [
+                    {
+                      "type": "text",
+                      "id": "z7JBXS",
+                      "name": "Step Number",
+                      "fill": "$accent-dog",
+                      "content": "4",
+                      "fontFamily": "$font-heading",
+                      "fontSize": 28,
+                      "fontWeight": "normal"
+                    },
+                    {
+                      "type": "text",
+                      "id": "KGfGx",
+                      "name": "Step Title",
+                      "fill": "$white",
+                      "textGrowth": "fixed-width",
+                      "width": "fill_container",
+                      "content": "Match & chat",
+                      "fontFamily": "$font-body",
+                      "fontSize": 17,
+                      "fontWeight": "600"
+                    },
+                    {
+                      "type": "text",
+                      "id": "PjAzp",
+                      "name": "Step Body",
+                      "fill": "$text-dark-muted",
+                      "textGrowth": "fixed-width",
+                      "width": "fill_container",
+                      "content": "Send a match request when someone’s answers resonate. Chat when you both say yes.",
+                      "lineHeight": 1.4,
+                      "fontFamily": "$font-body",
+                      "fontSize": 14,
+                      "fontWeight": "normal"
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "frame",
+          "id": "KnHpS",
+          "name": "Subscriptions",
+          "width": "fill_container",
+          "layout": "vertical",
+          "gap": 32,
+          "padding": [
+            72,
+            64
+          ],
+          "children": [
+            {
+              "type": "frame",
+              "id": "K4G4OP",
+              "name": "Subscriptions Header",
+              "width": "fill_container",
+              "layout": "vertical",
+              "gap": 10,
+              "alignItems": "center",
+              "children": [
+                {
+                  "type": "text",
+                  "id": "Ye2AA",
+                  "name": "Subscriptions Title",
+                  "fill": "$white",
+                  "content": "Subscriptions",
+                  "fontFamily": "$font-heading",
+                  "fontSize": 40,
+                  "fontWeight": "normal"
+                },
+                {
+                  "type": "text",
+                  "id": "F3r7C",
+                  "name": "Subscriptions Subtitle",
+                  "fill": "$text-dark-muted",
+                  "textGrowth": "fixed-width",
+                  "width": 720,
+                  "content": "Start free. Upgrade when you're ready for more. Pricing and perks are still being finalized.",
+                  "lineHeight": 1.45,
+                  "textAlign": "center",
+                  "fontFamily": "$font-body",
+                  "fontSize": 17,
+                  "fontWeight": "normal"
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "dyKNr",
+              "name": "Tier Cards",
+              "width": "fill_container",
+              "gap": 20,
+              "children": [
+                {
+                  "type": "frame",
+                  "id": "ahuHa",
+                  "name": "Free Plan",
+                  "width": "fill_container",
+                  "fill": "$bg-dark",
+                  "cornerRadius": 16,
+                  "stroke": "$border-dark",
+                  "strokeWidth": 1,
+                  "layout": "vertical",
+                  "gap": 14,
+                  "padding": 24,
+                  "children": [
+                    {
+                      "type": "text",
+                      "id": "eQiLk",
+                      "name": "Free Name",
+                      "fill": "$white",
+                      "content": "Free",
+                      "fontFamily": "$font-heading",
+                      "fontSize": 32,
+                      "fontWeight": "normal"
+                    },
+                    {
+                      "type": "text",
+                      "id": "yzBL7",
+                      "name": "Free Price",
+                      "fill": "$text-dark-faint",
+                      "content": "Pricing TBD",
+                      "fontFamily": "$font-body",
+                      "fontSize": 14,
+                      "fontWeight": "normal"
+                    },
+                    {
+                      "type": "text",
+                      "id": "hFhP0",
+                      "name": "Daily question & f",
+                      "fill": "$text-dark-muted",
+                      "textGrowth": "fixed-width",
+                      "width": "fill_container",
+                      "content": "• Daily question & feed access",
+                      "lineHeight": 1.35,
+                      "fontFamily": "$font-body",
+                      "fontSize": 14,
+                      "fontWeight": "normal"
+                    },
+                    {
+                      "type": "text",
+                      "id": "jIALk",
+                      "name": "Record and match a",
+                      "fill": "$text-dark-muted",
+                      "textGrowth": "fixed-width",
+                      "width": "fill_container",
+                      "content": "• Record and match at no cost",
+                      "lineHeight": 1.35,
+                      "fontFamily": "$font-body",
+                      "fontSize": 14,
+                      "fontWeight": "normal"
+                    },
+                    {
+                      "type": "text",
+                      "id": "D8N8Ov",
+                      "name": "Core safety and re",
+                      "fill": "$text-dark-muted",
+                      "textGrowth": "fixed-width",
+                      "width": "fill_container",
+                      "content": "• Core safety and reporting tools",
+                      "lineHeight": 1.35,
+                      "fontFamily": "$font-body",
+                      "fontSize": 14,
+                      "fontWeight": "normal"
+                    }
+                  ]
+                },
+                {
+                  "type": "frame",
+                  "id": "uJ9ut",
+                  "name": "Gold Plan",
+                  "width": "fill_container",
+                  "fill": "$surface-dark",
+                  "cornerRadius": 16,
+                  "stroke": "$accent-dog",
+                  "strokeWidth": 2,
+                  "layout": "vertical",
+                  "gap": 14,
+                  "padding": 24,
+                  "children": [
+                    {
+                      "type": "frame",
+                      "id": "Q8CRN",
+                      "name": "Tier Name Row",
+                      "width": "fill_container",
+                      "gap": 12,
+                      "alignItems": "center",
+                      "children": [
+                        {
+                          "type": "text",
+                          "id": "u1JP7",
+                          "name": "Gold Name",
+                          "fill": "$white",
+                          "content": "Gold",
+                          "fontFamily": "$font-heading",
+                          "fontSize": 32,
+                          "fontWeight": "normal"
+                        },
+                        {
+                          "type": "frame",
+                          "id": "Cp6AO",
+                          "name": "Coming soon Label",
+                          "cornerRadius": 20,
+                          "stroke": "$accent-dog",
+                          "strokeWidth": 1,
+                          "padding": [
+                            6,
+                            12
+                          ],
+                          "children": [
+                            {
+                              "type": "text",
+                              "id": "rgoLs",
+                              "name": "Coming soon Text",
+                              "fill": "$accent-dog",
+                              "content": "Coming soon",
+                              "fontFamily": "$font-body",
+                              "fontSize": 11,
+                              "fontWeight": "600"
+                            }
+                          ]
+                        }
+                      ]
+                    },
+                    {
+                      "type": "text",
+                      "id": "pz0ZQ",
+                      "name": "Everything in Free",
+                      "fill": "$text-dark-muted",
+                      "textGrowth": "fixed-width",
+                      "width": "fill_container",
+                      "content": "• Everything in Free",
+                      "lineHeight": 1.35,
+                      "fontFamily": "$font-body",
+                      "fontSize": 14,
+                      "fontWeight": "normal"
+                    },
+                    {
+                      "type": "text",
+                      "id": "Gcpcs",
+                      "name": "Additional capabil",
+                      "fill": "$text-dark-muted",
+                      "textGrowth": "fixed-width",
+                      "width": "fill_container",
+                      "content": "• Additional capabilities coming soon",
+                      "lineHeight": 1.35,
+                      "fontFamily": "$font-body",
+                      "fontSize": 14,
+                      "fontWeight": "normal"
+                    },
+                    {
+                      "type": "text",
+                      "id": "GIcFe",
+                      "name": "Placeholder benefi",
+                      "fill": "$text-dark-muted",
+                      "textGrowth": "fixed-width",
+                      "width": "fill_container",
+                      "content": "• Launch-day pricing for early subscribers",
+                      "lineHeight": 1.35,
+                      "fontFamily": "$font-body",
+                      "fontSize": 14,
+                      "fontWeight": "normal"
+                    }
+                  ]
+                },
+                {
+                  "type": "frame",
+                  "id": "y7l9UG",
+                  "name": "Platinum Plan",
+                  "width": "fill_container",
+                  "fill": "$bg-dark",
+                  "cornerRadius": 16,
+                  "stroke": "$border-dark",
+                  "strokeWidth": 1,
+                  "layout": "vertical",
+                  "gap": 14,
+                  "padding": 24,
+                  "children": [
+                    {
+                      "type": "frame",
+                      "id": "O9P1FT",
+                      "name": "Tier Name Row",
+                      "width": "fill_container",
+                      "gap": 12,
+                      "alignItems": "center",
+                      "children": [
+                        {
+                          "type": "text",
+                          "id": "MVcM6",
+                          "name": "Platinum Name",
+                          "fill": "$white",
+                          "content": "Platinum",
+                          "fontFamily": "$font-heading",
+                          "fontSize": 32,
+                          "fontWeight": "normal"
+                        },
+                        {
+                          "type": "frame",
+                          "id": "FJg9E",
+                          "name": "Coming soon Label",
+                          "cornerRadius": 20,
+                          "stroke": "$accent-dog",
+                          "strokeWidth": 1,
+                          "padding": [
+                            6,
+                            12
+                          ],
+                          "children": [
+                            {
+                              "type": "text",
+                              "id": "O95bWJ",
+                              "name": "Coming soon Text",
+                              "fill": "$accent-dog",
+                              "content": "Coming soon",
+                              "fontFamily": "$font-body",
+                              "fontSize": 11,
+                              "fontWeight": "600"
+                            }
+                          ]
+                        }
+                      ]
+                    },
+                    {
+                      "type": "text",
+                      "id": "xaMYD",
+                      "name": "Everything in Gold",
+                      "fill": "$text-dark-muted",
+                      "textGrowth": "fixed-width",
+                      "width": "fill_container",
+                      "content": "• Everything in Gold",
+                      "lineHeight": 1.35,
+                      "fontFamily": "$font-body",
+                      "fontSize": 14,
+                      "fontWeight": "normal"
+                    },
+                    {
+                      "type": "text",
+                      "id": "wRYZy",
+                      "name": "Premium capabiliti",
+                      "fill": "$text-dark-muted",
+                      "textGrowth": "fixed-width",
+                      "width": "fill_container",
+                      "content": "• Premium capabilities coming soon",
+                      "lineHeight": 1.35,
+                      "fontFamily": "$font-body",
+                      "fontSize": 14,
+                      "fontWeight": "normal"
+                    },
+                    {
+                      "type": "text",
+                      "id": "v6hOCg",
+                      "name": "Placeholder benefi",
+                      "fill": "$text-dark-muted",
+                      "textGrowth": "fixed-width",
+                      "width": "fill_container",
+                      "content": "• Best value when paid tiers go live",
+                      "lineHeight": 1.35,
+                      "fontFamily": "$font-body",
+                      "fontSize": 14,
+                      "fontWeight": "normal"
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "frame",
+          "id": "orotQ",
+          "name": "Safety",
+          "width": "fill_container",
+          "fill": "$surface-dark",
+          "layout": "vertical",
+          "gap": 28,
+          "padding": [
+            72,
+            64
+          ],
+          "children": [
+            {
+              "type": "frame",
+              "id": "t0vFk2",
+              "name": "Safety Header",
+              "width": "fill_container",
+              "layout": "vertical",
+              "gap": 10,
+              "alignItems": "center",
+              "children": [
+                {
+                  "type": "text",
+                  "id": "aw6j2",
+                  "name": "Safety Title",
+                  "fill": "$white",
+                  "content": "Safety",
+                  "fontFamily": "$font-heading",
+                  "fontSize": 40,
+                  "fontWeight": "normal"
+                },
+                {
+                  "type": "text",
+                  "id": "b11Lza",
+                  "name": "Safety Subtitle",
+                  "fill": "$text-dark-muted",
+                  "textGrowth": "fixed-width",
+                  "width": 720,
+                  "content": "Authenticity needs trust. We combine community reports with human review, and we disable videos, not whole accounts, when content crosses the line.",
+                  "lineHeight": 1.45,
+                  "textAlign": "center",
+                  "fontFamily": "$font-body",
+                  "fontSize": 17,
+                  "fontWeight": "normal"
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "zVaGW",
+              "name": "Safety Points",
+              "width": "fill_container",
+              "gap": 20,
+              "children": [
+                {
+                  "type": "frame",
+                  "id": "riPZh",
+                  "name": "Report answers & pro",
+                  "width": "fill_container",
+                  "fill": "$bg-dark",
+                  "cornerRadius": 14,
+                  "layout": "vertical",
+                  "gap": 8,
+                  "padding": 18,
+                  "children": [
+                    {
+                      "type": "text",
+                      "id": "tYqnx",
+                      "name": "Safety Title",
+                      "fill": "$white",
+                      "textGrowth": "fixed-width",
+                      "width": "fill_container",
+                      "content": "Report answers & profiles",
+                      "fontFamily": "$font-body",
+                      "fontSize": 16,
+                      "fontWeight": "600"
+                    },
+                    {
+                      "type": "text",
+                      "id": "TLkYN",
+                      "name": "Safety Body",
+                      "fill": "$text-dark-muted",
+                      "textGrowth": "fixed-width",
+                      "width": "fill_container",
+                      "content": "Use Report from the feed or a profile. Choose Report Only or Report & Block; you're always in control.",
+                      "lineHeight": 1.4,
+                      "fontFamily": "$font-body",
+                      "fontSize": 14,
+                      "fontWeight": "normal"
+                    }
+                  ]
+                },
+                {
+                  "type": "frame",
+                  "id": "X0Ysk",
+                  "name": "Videos reviewed, acc",
+                  "width": "fill_container",
+                  "fill": "$bg-dark",
+                  "cornerRadius": 14,
+                  "layout": "vertical",
+                  "gap": 8,
+                  "padding": 18,
+                  "children": [
+                    {
+                      "type": "text",
+                      "id": "M6S9f3",
+                      "name": "Safety Title",
+                      "fill": "$white",
+                      "textGrowth": "fixed-width",
+                      "width": "fill_container",
+                      "content": "Videos reviewed, accounts stay",
+                      "fontFamily": "$font-body",
+                      "fontSize": 16,
+                      "fontWeight": "600"
+                    },
+                    {
+                      "type": "text",
+                      "id": "cjNwh",
+                      "name": "Safety Body",
+                      "fill": "$text-dark-muted",
+                      "textGrowth": "fixed-width",
+                      "width": "fill_container",
+                      "content": "Enough distinct flags hide that answer from feeds. You’re notified and pointed to Help & Support.",
+                      "lineHeight": 1.4,
+                      "fontFamily": "$font-body",
+                      "fontSize": 14,
+                      "fontWeight": "normal"
+                    }
+                  ]
+                },
+                {
+                  "type": "frame",
+                  "id": "ZuhSt",
+                  "name": "Privacy you control",
+                  "width": "fill_container",
+                  "fill": "$bg-dark",
+                  "cornerRadius": 14,
+                  "layout": "vertical",
+                  "gap": 8,
+                  "padding": 18,
+                  "children": [
+                    {
+                      "type": "text",
+                      "id": "ElIHR",
+                      "name": "Safety Title",
+                      "fill": "$white",
+                      "textGrowth": "fixed-width",
+                      "width": "fill_container",
+                      "content": "Privacy you control",
+                      "fontFamily": "$font-body",
+                      "fontSize": 16,
+                      "fontWeight": "600"
+                    },
+                    {
+                      "type": "text",
+                      "id": "LeW17",
+                      "name": "Safety Body",
+                      "fill": "$text-dark-muted",
+                      "textGrowth": "fixed-width",
+                      "width": "fill_container",
+                      "content": "Turn off followers, manage blocks, and delete your account instantly from Privacy & Safety.",
+                      "lineHeight": 1.4,
+                      "fontFamily": "$font-body",
+                      "fontSize": 14,
+                      "fontWeight": "normal"
+                    }
+                  ]
+                },
+                {
+                  "type": "frame",
+                  "id": "lMwAc",
+                  "name": "Community guidelines",
+                  "width": "fill_container",
+                  "fill": "$bg-dark",
+                  "cornerRadius": 14,
+                  "layout": "vertical",
+                  "gap": 8,
+                  "padding": 18,
+                  "children": [
+                    {
+                      "type": "text",
+                      "id": "v54gcy",
+                      "name": "Safety Title",
+                      "fill": "$white",
+                      "textGrowth": "fixed-width",
+                      "width": "fill_container",
+                      "content": "Community guidelines",
+                      "fontFamily": "$font-body",
+                      "fontSize": 16,
+                      "fontWeight": "600"
+                    },
+                    {
+                      "type": "text",
+                      "id": "JikWq",
+                      "name": "Safety Body",
+                      "fill": "$text-dark-muted",
+                      "textGrowth": "fixed-width",
+                      "width": "fill_container",
+                      "content": "We review responses, profiles, and messages against shared standards, with the same rules for everyone.",
+                      "lineHeight": 1.4,
+                      "fontFamily": "$font-body",
+                      "fontSize": 14,
+                      "fontWeight": "normal"
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "frame",
+          "id": "Gacvf",
+          "name": "Support",
+          "width": "fill_container",
+          "layout": "vertical",
+          "gap": 28,
+          "padding": [
+            72,
+            64
+          ],
+          "children": [
+            {
+              "type": "frame",
+              "id": "S0m4i",
+              "name": "Support Header",
+              "width": "fill_container",
+              "layout": "vertical",
+              "gap": 10,
+              "alignItems": "center",
+              "children": [
+                {
+                  "type": "text",
+                  "id": "swtv9",
+                  "name": "FAQs Title",
+                  "fill": "$white",
+                  "content": "FAQs",
+                  "fontFamily": "$font-heading",
+                  "fontSize": 40,
+                  "fontWeight": "normal"
+                },
+                {
+                  "type": "text",
+                  "id": "IRVFX",
+                  "name": "Support Subtitle",
+                  "fill": "$text-dark-muted",
+                  "textGrowth": "fixed-width",
+                  "width": 720,
+                  "content": "Quick answers while we build out the full help center.",
+                  "lineHeight": 1.45,
+                  "textAlign": "center",
+                  "fontFamily": "$font-body",
+                  "fontSize": 17,
+                  "fontWeight": "normal"
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "CkqwT",
+              "name": "FAQ List",
+              "width": "fill_container",
+              "layout": "vertical",
+              "gap": 12,
+              "children": [
+                {
+                  "type": "frame",
+                  "id": "qKhen",
+                  "name": "FAQ Why record videos",
+                  "width": "fill_container",
+                  "fill": "$surface-dark",
+                  "cornerRadius": 12,
+                  "stroke": "$border-dark",
+                  "strokeWidth": 1,
+                  "layout": "vertical",
+                  "gap": 6,
+                  "padding": 18,
+                  "children": [
+                    {
+                      "type": "text",
+                      "id": "ui1hz",
+                      "name": "Question",
+                      "fill": "$white",
+                      "textGrowth": "fixed-width",
+                      "width": "fill_container",
+                      "content": "Why do I have to record videos of myself?",
+                      "fontFamily": "$font-body",
+                      "fontSize": 16,
+                      "fontWeight": "600"
+                    },
+                    {
+                      "type": "text",
+                      "id": "uZMBu",
+                      "name": "Answer",
+                      "fill": "$text-dark-muted",
+                      "textGrowth": "fixed-width",
+                      "width": "fill_container",
+                      "content": "Still photos and polished profiles let people hide behind a curated version of themselves. Cats or Dogs? is built around short, on-camera answers to the same daily question for everyone. You hear someone's voice, see their face in the moment, and get an honest read on who they are. That is how matches start with substance, not guesswork.",
+                      "lineHeight": 1.45,
+                      "fontFamily": "$font-body",
+                      "fontSize": 14,
+                      "fontWeight": "normal"
+                    }
+                  ]
+                },
+                {
+                  "type": "frame",
+                  "id": "kYI7X",
+                  "name": "FAQ Do I have to answe",
+                  "width": "fill_container",
+                  "fill": "$surface-dark",
+                  "cornerRadius": 12,
+                  "stroke": "$border-dark",
+                  "strokeWidth": 1,
+                  "layout": "vertical",
+                  "gap": 6,
+                  "padding": 18,
+                  "children": [
+                    {
+                      "type": "text",
+                      "id": "X8jiT9",
+                      "name": "Question",
+                      "fill": "$white",
+                      "textGrowth": "fixed-width",
+                      "width": "fill_container",
+                      "content": "Do I have to answer every day?",
+                      "fontFamily": "$font-body",
+                      "fontSize": 16,
+                      "fontWeight": "600"
+                    },
+                    {
+                      "type": "text",
+                      "id": "fhf6c",
+                      "name": "Answer",
+                      "fill": "$text-dark-muted",
+                      "textGrowth": "fixed-width",
+                      "width": "fill_container",
+                      "content": "You can skip, but the feed stays locked until you record today’s answer. Matches, chats, and your profile stay available.",
+                      "lineHeight": 1.45,
+                      "fontFamily": "$font-body",
+                      "fontSize": 14,
+                      "fontWeight": "normal"
+                    }
+                  ]
+                },
+                {
+                  "type": "frame",
+                  "id": "yaYrN",
+                  "name": "FAQ How long can my an",
+                  "width": "fill_container",
+                  "fill": "$surface-dark",
+                  "cornerRadius": 12,
+                  "stroke": "$border-dark",
+                  "strokeWidth": 1,
+                  "layout": "vertical",
+                  "gap": 6,
+                  "padding": 18,
+                  "children": [
+                    {
+                      "type": "text",
+                      "id": "q4Og0m",
+                      "name": "Question",
+                      "fill": "$white",
+                      "textGrowth": "fixed-width",
+                      "width": "fill_container",
+                      "content": "How long can my answer be?",
+                      "fontFamily": "$font-body",
+                      "fontSize": 16,
+                      "fontWeight": "600"
+                    },
+                    {
+                      "type": "text",
+                      "id": "X9yEtq",
+                      "name": "Answer",
+                      "fill": "$text-dark-muted",
+                      "textGrowth": "fixed-width",
+                      "width": "fill_container",
+                      "content": "Up to 14 seconds by default (in the future a paid subscription may unlock more recording time).",
+                      "lineHeight": 1.45,
+                      "fontFamily": "$font-body",
+                      "fontSize": 14,
+                      "fontWeight": "normal"
+                    }
+                  ]
+                },
+                {
+                  "type": "frame",
+                  "id": "s4KEJ",
+                  "name": "FAQ What happens if so",
+                  "width": "fill_container",
+                  "fill": "$surface-dark",
+                  "cornerRadius": 12,
+                  "stroke": "$border-dark",
+                  "strokeWidth": 1,
+                  "layout": "vertical",
+                  "gap": 6,
+                  "padding": 18,
+                  "children": [
+                    {
+                      "type": "text",
+                      "id": "T4BZ0",
+                      "name": "Question",
+                      "fill": "$white",
+                      "textGrowth": "fixed-width",
+                      "width": "fill_container",
+                      "content": "What happens if someone reports my video?",
+                      "fontFamily": "$font-body",
+                      "fontSize": 16,
+                      "fontWeight": "600"
+                    },
+                    {
+                      "type": "text",
+                      "id": "aaXDp",
+                      "name": "Answer",
+                      "fill": "$text-dark-muted",
+                      "textGrowth": "fixed-width",
+                      "width": "fill_container",
+                      "content": "After enough distinct reports, that answer is hidden from other people’s feeds. Your account stays active; you’re notified and pointed to Help & Support.",
+                      "lineHeight": 1.45,
+                      "fontFamily": "$font-body",
+                      "fontSize": 14,
+                      "fontWeight": "normal"
+                    }
+                  ]
+                },
+                {
+                  "type": "frame",
+                  "id": "W7r2eo",
+                  "name": "FAQ Can someone see wh",
+                  "width": "fill_container",
+                  "fill": "$surface-dark",
+                  "cornerRadius": 12,
+                  "stroke": "$border-dark",
+                  "strokeWidth": 1,
+                  "layout": "vertical",
+                  "gap": 6,
+                  "padding": 18,
+                  "children": [
+                    {
+                      "type": "text",
+                      "id": "t2aDbS",
+                      "name": "Question",
+                      "fill": "$white",
+                      "textGrowth": "fixed-width",
+                      "width": "fill_container",
+                      "content": "Can someone see who follows them?",
+                      "fontFamily": "$font-body",
+                      "fontSize": 16,
+                      "fontWeight": "600"
+                    },
+                    {
+                      "type": "text",
+                      "id": "LkJj1",
+                      "name": "Answer",
+                      "fill": "$text-dark-muted",
+                      "textGrowth": "fixed-width",
+                      "width": "fill_container",
+                      "content": "No. The app never reveals follower identities, only that you follow someone. You can turn off followers entirely in Privacy & Safety.",
+                      "lineHeight": 1.45,
+                      "fontFamily": "$font-body",
+                      "fontSize": 14,
+                      "fontWeight": "normal"
+                    }
+                  ]
+                },
+                {
+                  "type": "frame",
+                  "id": "yrCr6",
+                  "name": "FAQ How do I get help ",
+                  "width": "fill_container",
+                  "fill": "$surface-dark",
+                  "cornerRadius": 12,
+                  "stroke": "$border-dark",
+                  "strokeWidth": 1,
+                  "layout": "vertical",
+                  "gap": 6,
+                  "padding": 18,
+                  "children": [
+                    {
+                      "type": "text",
+                      "id": "Nw5lu",
+                      "name": "Question",
+                      "fill": "$white",
+                      "textGrowth": "fixed-width",
+                      "width": "fill_container",
+                      "content": "How do I get help in the app?",
+                      "fontFamily": "$font-body",
+                      "fontSize": 16,
+                      "fontWeight": "600"
+                    },
+                    {
+                      "type": "text",
+                      "id": "knusD",
+                      "name": "Answer",
+                      "fill": "$text-dark-muted",
+                      "textGrowth": "fixed-width",
+                      "width": "fill_container",
+                      "content": "Open Profile → Help & Support to visit our help site. ",
+                      "lineHeight": 1.45,
+                      "fontFamily": "$font-body",
+                      "fontSize": 14,
+                      "fontWeight": "normal"
+                    }
+                  ]
+                },
+                {
+                  "type": "frame",
+                  "id": "FHqbi",
+                  "name": "FAQ How do I delete my",
+                  "width": "fill_container",
+                  "fill": "$surface-dark",
+                  "cornerRadius": 12,
+                  "stroke": "$border-dark",
+                  "strokeWidth": 1,
+                  "layout": "vertical",
+                  "gap": 6,
+                  "padding": 18,
+                  "children": [
+                    {
+                      "type": "text",
+                      "id": "DHave",
+                      "name": "Question",
+                      "fill": "$white",
+                      "textGrowth": "fixed-width",
+                      "width": "fill_container",
+                      "content": "How do I delete my account?",
+                      "fontFamily": "$font-body",
+                      "fontSize": 16,
+                      "fontWeight": "600"
+                    },
+                    {
+                      "type": "text",
+                      "id": "NGLCN",
+                      "name": "Answer",
+                      "fill": "$text-dark-muted",
+                      "textGrowth": "fixed-width",
+                      "width": "fill_container",
+                      "content": "Privacy & Safety → Delete account. This permanently removes your profile, photos, videos, chats, and matches. There is no undo.",
+                      "lineHeight": 1.45,
+                      "fontFamily": "$font-body",
+                      "fontSize": 14,
+                      "fontWeight": "normal"
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "frame",
+          "id": "Dn1sL",
+          "name": "Download",
+          "width": "fill_container",
+          "fill": "$surface-dark",
+          "layout": "vertical",
+          "gap": 24,
+          "padding": [
+            80,
+            64
+          ],
+          "alignItems": "center",
+          "children": [
+            {
+              "type": "text",
+              "id": "a4IrpC",
+              "name": "Download Title",
+              "fill": "$white",
+              "content": "Download Cats or Dogs?",
+              "fontFamily": "$font-heading",
+              "fontSize": 40,
+              "fontWeight": "normal"
+            },
+            {
+              "type": "text",
+              "id": "XfOOs",
+              "name": "Download Subtitle",
+              "fill": "$text-dark-muted",
+              "textGrowth": "fixed-width",
+              "width": 560,
+              "content": "Available soon on iOS and Android. Join the daily question and meet people who show up as themselves.",
+              "lineHeight": 1.45,
+              "textAlign": "center",
+              "fontFamily": "$font-body",
+              "fontSize": 17,
+              "fontWeight": "normal"
+            },
+            {
+              "type": "frame",
+              "id": "dTZ2x",
+              "name": "Download Badges",
+              "gap": 12,
+              "alignItems": "center",
+              "children": [
+                {
+                  "type": "frame",
+                  "id": "hDuzQ",
+                  "name": "App Store Badge DL",
+                  "width": 159,
+                  "height": 46,
+                  "fill": {
+                    "type": "image",
+                    "enabled": true,
+                    "url": "../website/assets/appstore.png",
+                    "mode": "contain"
+                  }
+                },
+                {
+                  "type": "frame",
+                  "id": "s1V56",
+                  "name": "Google Play Badge DL",
+                  "width": 159,
+                  "height": 46,
+                  "fill": {
+                    "type": "image",
+                    "enabled": true,
+                    "url": "../website/assets/googleplay.png",
+                    "mode": "contain"
+                  }
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "frame",
+          "id": "hb3OV",
+          "name": "Footer",
+          "width": "fill_container",
+          "fill": "$bg-dark",
+          "stroke": "$border-dark",
+          "strokeWidth": {
+            "top": 1
+          },
+          "layout": "vertical",
+          "gap": 16,
+          "padding": [
+            32,
+            64,
+            40,
+            64
+          ],
+          "children": [
+            {
+              "type": "frame",
+              "id": "XLGB2",
+              "name": "Footer Top",
+              "width": "fill_container",
+              "justifyContent": "space_between",
+              "alignItems": "center",
+              "children": [
+                {
+                  "type": "text",
+                  "id": "t1IY78",
+                  "name": "Footer Logo",
+                  "fill": "$white",
+                  "content": "Cats or Dogs?",
+                  "fontFamily": "$font-heading",
+                  "fontSize": 20,
+                  "fontWeight": "normal"
+                },
+                {
+                  "type": "frame",
+                  "id": "Mlwsl",
+                  "name": "Footer Links",
+                  "gap": 24,
+                  "children": [
+                    {
+                      "type": "text",
+                      "id": "Z4TS7",
+                      "name": "Privacy",
+                      "fill": "$text-dark-muted",
+                      "content": "Privacy",
+                      "fontFamily": "$font-body",
+                      "fontSize": 13,
+                      "fontWeight": "normal"
+                    },
+                    {
+                      "type": "text",
+                      "id": "T1xREB",
+                      "name": "Terms",
+                      "fill": "$text-dark-muted",
+                      "content": "Terms",
+                      "fontFamily": "$font-body",
+                      "fontSize": 13,
+                      "fontWeight": "normal"
+                    },
+                    {
+                      "type": "text",
+                      "id": "Qv3iu",
+                      "name": "Community guidelines",
+                      "fill": "$text-dark-muted",
+                      "content": "Community guidelines",
+                      "fontFamily": "$font-body",
+                      "fontSize": 13,
+                      "fontWeight": "normal"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "text",
+              "id": "ueKsD",
+              "name": "Copyright",
+              "fill": "$text-dark-faint",
+              "content": "© 2026 Cats or Dogs? Authenticity-first dating.",
+              "fontFamily": "$font-body",
+              "fontSize": 12,
+              "fontWeight": "normal"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "frame",
+      "id": "DTi69",
+      "x": 1520,
+      "y": 0,
+      "name": "Homepage — Mobile",
+      "clip": true,
+      "width": 390,
+      "fill": "$bg-dark",
+      "layout": "vertical",
+      "children": [
+        {
+          "type": "frame",
+          "id": "XLkjz",
+          "name": "Mobile Nav",
+          "width": "fill_container",
+          "padding": [
+            16,
+            20
+          ],
+          "justifyContent": "space_between",
+          "alignItems": "center",
+          "children": [
+            {
+              "type": "text",
+              "id": "LfWEd",
+              "name": "Mobile Logo",
+              "fill": "$accent-dog",
+              "content": "Cats or Dogs?",
+              "fontFamily": "$font-heading",
+              "fontSize": 18,
+              "fontWeight": "normal"
+            },
+            {
+              "type": "frame",
+              "id": "gKVNr",
+              "name": "Hamburger",
+              "width": 40,
+              "height": 40,
+              "layout": "vertical",
+              "gap": 5,
+              "padding": 8,
+              "justifyContent": "center",
+              "alignItems": "end",
+              "children": [
+                {
+                  "type": "rectangle",
+                  "cornerRadius": 1,
+                  "id": "q980t",
+                  "name": "Line 0",
+                  "fill": "$white",
+                  "width": 22,
+                  "height": 2
+                },
+                {
+                  "type": "rectangle",
+                  "cornerRadius": 1,
+                  "id": "J2rJ8",
+                  "name": "Line 1",
+                  "fill": "$white",
+                  "width": 22,
+                  "height": 2
+                },
+                {
+                  "type": "rectangle",
+                  "cornerRadius": 1,
+                  "id": "d38F0R",
+                  "name": "Line 2",
+                  "fill": "$white",
+                  "width": 22,
+                  "height": 2
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "frame",
+          "id": "gYdyl",
+          "name": "Mobile Hero",
+          "width": "fill_container",
+          "layout": "vertical",
+          "gap": 16,
+          "padding": [
+            20,
+            20,
+            28,
+            20
+          ],
+          "alignItems": "center",
+          "children": [
+            {
+              "type": "text",
+              "id": "u6AUo3",
+              "name": "Mobile Headline",
+              "fill": "$white",
+              "textGrowth": "fixed-width",
+              "width": "fill_container",
+              "content": "Meet people through what they actually say",
+              "lineHeight": 1.08,
+              "textAlign": "center",
+              "fontFamily": "$font-heading",
+              "fontSize": 34,
+              "fontWeight": "normal"
+            },
+            {
+              "type": "text",
+              "id": "GhrGo",
+              "name": "Mobile Subhead",
+              "fill": "$text-dark-muted",
+              "textGrowth": "fixed-width",
+              "width": "fill_container",
+              "content": "Every day, everyone answers the same question on camera. Discover real people in a feed built on honesty, not curated photos.",
+              "lineHeight": 1.45,
+              "textAlign": "center",
+              "fontFamily": "$font-body",
+              "fontSize": 15,
+              "fontWeight": "normal"
+            },
+            {
+              "type": "frame",
+              "id": "OPt1v",
+              "name": "Mobile iPhone",
+              "width": 260,
+              "height": 528,
+              "fill": {
+                "type": "image",
+                "enabled": true,
+                "url": "../website/assets/homepagehero.png",
+                "mode": "contain"
+              },
+              "layout": "none"
+            },
+            {
+              "type": "frame",
+              "id": "RTpA6",
+              "name": "Mobile Store Badges",
+              "width": "fill_container",
+              "layout": "vertical",
+              "gap": 12,
+              "alignItems": "center",
+              "children": [
+                {
+                  "type": "frame",
+                  "id": "YyOki",
+                  "name": "m App Store Badge",
+                  "width": 180,
+                  "height": 52,
+                  "fill": {
+                    "type": "image",
+                    "enabled": true,
+                    "url": "../website/assets/appstore.png",
+                    "mode": "contain"
+                  }
+                },
+                {
+                  "type": "frame",
+                  "id": "UnvAQ",
+                  "name": "m Google Play Badge",
+                  "width": 180,
+                  "height": 52,
+                  "fill": {
+                    "type": "image",
+                    "enabled": true,
+                    "url": "../website/assets/googleplay.png",
+                    "mode": "contain"
+                  }
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "frame",
+          "id": "AxbiQ",
+          "name": "Mobile How it works",
+          "width": "fill_container",
+          "fill": "$surface-dark",
+          "layout": "vertical",
+          "gap": 20,
+          "padding": [
+            40,
+            20
+          ],
+          "children": [
+            {
+              "type": "frame",
+              "id": "TJFpx",
+              "name": "How it works Header",
+              "width": "fill_container",
+              "layout": "vertical",
+              "gap": 8,
+              "alignItems": "center",
+              "children": [
+                {
+                  "type": "text",
+                  "id": "mXKZY",
+                  "name": "How it works Title",
+                  "fill": "$white",
+                  "textGrowth": "fixed-width",
+                  "width": "fill_container",
+                  "content": "How it works",
+                  "textAlign": "center",
+                  "fontFamily": "$font-heading",
+                  "fontSize": 32,
+                  "fontWeight": "normal"
+                },
+                {
+                  "type": "text",
+                  "id": "HTtUS",
+                  "name": "How it works Subtitle",
+                  "fill": "$text-dark-muted",
+                  "textGrowth": "fixed-width",
+                  "width": "fill_container",
+                  "content": "One daily question. Real video answers. Relationships that start with voice and face, not filters.",
+                  "lineHeight": 1.4,
+                  "textAlign": "center",
+                  "fontFamily": "$font-body",
+                  "fontSize": 15,
+                  "fontWeight": "normal"
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "FB7KG",
+              "name": "m Step 1",
+              "width": "fill_container",
+              "fill": "$bg-dark",
+              "cornerRadius": 12,
+              "layout": "vertical",
+              "gap": 6,
+              "padding": 16,
+              "children": [
+                {
+                  "type": "text",
+                  "id": "G6Bqr2",
+                  "name": "Step Number",
+                  "fill": "$accent-dog",
+                  "content": "1",
+                  "fontFamily": "$font-heading",
+                  "fontSize": 28,
+                  "fontWeight": "normal"
+                },
+                {
+                  "type": "text",
+                  "id": "p1DFsU",
+                  "name": "Step Title",
+                  "fill": "$white",
+                  "textGrowth": "fixed-width",
+                  "width": "fill_container",
+                  "content": "Get today’s question",
+                  "fontFamily": "$font-body",
+                  "fontSize": 17,
+                  "fontWeight": "600"
+                },
+                {
+                  "type": "text",
+                  "id": "Inkj1",
+                  "name": "Step Body",
+                  "fill": "$text-dark-muted",
+                  "textGrowth": "fixed-width",
+                  "width": "fill_container",
+                  "content": "Everyone sees the same prompt each calendar day, whether it's timely or timeless.",
+                  "lineHeight": 1.4,
+                  "fontFamily": "$font-body",
+                  "fontSize": 14,
+                  "fontWeight": "normal"
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "p6c6b",
+              "name": "m Step 2",
+              "width": "fill_container",
+              "fill": "$bg-dark",
+              "cornerRadius": 12,
+              "layout": "vertical",
+              "gap": 6,
+              "padding": 16,
+              "children": [
+                {
+                  "type": "text",
+                  "id": "JD26Z",
+                  "name": "Step Number",
+                  "fill": "$accent-dog",
+                  "content": "2",
+                  "fontFamily": "$font-heading",
+                  "fontSize": 28,
+                  "fontWeight": "normal"
+                },
+                {
+                  "type": "text",
+                  "id": "dcEUq",
+                  "name": "Step Title",
+                  "fill": "$white",
+                  "textGrowth": "fixed-width",
+                  "width": "fill_container",
+                  "content": "Record your answer",
+                  "fontFamily": "$font-body",
+                  "fontSize": 17,
+                  "fontWeight": "600"
+                },
+                {
+                  "type": "text",
+                  "id": "FuU5N",
+                  "name": "Step Body",
+                  "fill": "$text-dark-muted",
+                  "textGrowth": "fixed-width",
+                  "width": "fill_container",
+                  "content": "Up to 14 seconds on camera. Your first answer unlocks the feed right away.",
+                  "lineHeight": 1.4,
+                  "fontFamily": "$font-body",
+                  "fontSize": 14,
+                  "fontWeight": "normal"
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "EQLuw",
+              "name": "m Step 3",
+              "width": "fill_container",
+              "fill": "$bg-dark",
+              "cornerRadius": 12,
+              "layout": "vertical",
+              "gap": 6,
+              "padding": 16,
+              "children": [
+                {
+                  "type": "text",
+                  "id": "tMGaD",
+                  "name": "Step Number",
+                  "fill": "$accent-dog",
+                  "content": "3",
+                  "fontFamily": "$font-heading",
+                  "fontSize": 28,
+                  "fontWeight": "normal"
+                },
+                {
+                  "type": "text",
+                  "id": "rSe8k",
+                  "name": "Step Title",
+                  "fill": "$white",
+                  "textGrowth": "fixed-width",
+                  "width": "fill_container",
+                  "content": "Explore the feed",
+                  "fontFamily": "$font-body",
+                  "fontSize": 17,
+                  "fontWeight": "600"
+                },
+                {
+                  "type": "text",
+                  "id": "MykuF",
+                  "name": "Step Body",
+                  "fill": "$text-dark-muted",
+                  "textGrowth": "fixed-width",
+                  "width": "fill_container",
+                  "content": "Swipe through real responses. Follow people you want to hear from again.",
+                  "lineHeight": 1.4,
+                  "fontFamily": "$font-body",
+                  "fontSize": 14,
+                  "fontWeight": "normal"
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "FORQ8",
+              "name": "m Step 4",
+              "width": "fill_container",
+              "fill": "$bg-dark",
+              "cornerRadius": 12,
+              "layout": "vertical",
+              "gap": 6,
+              "padding": 16,
+              "children": [
+                {
+                  "type": "text",
+                  "id": "X8AJ0A",
+                  "name": "Step Number",
+                  "fill": "$accent-dog",
+                  "content": "4",
+                  "fontFamily": "$font-heading",
+                  "fontSize": 28,
+                  "fontWeight": "normal"
+                },
+                {
+                  "type": "text",
+                  "id": "LfNcu",
+                  "name": "Step Title",
+                  "fill": "$white",
+                  "textGrowth": "fixed-width",
+                  "width": "fill_container",
+                  "content": "Match & chat",
+                  "fontFamily": "$font-body",
+                  "fontSize": 17,
+                  "fontWeight": "600"
+                },
+                {
+                  "type": "text",
+                  "id": "J8ujR",
+                  "name": "Step Body",
+                  "fill": "$text-dark-muted",
+                  "textGrowth": "fixed-width",
+                  "width": "fill_container",
+                  "content": "Send a match request when someone’s answers resonate. Chat when you both say yes.",
+                  "lineHeight": 1.4,
+                  "fontFamily": "$font-body",
+                  "fontSize": 14,
+                  "fontWeight": "normal"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "frame",
+          "id": "LN8zb",
+          "name": "Mobile Subscriptions",
+          "width": "fill_container",
+          "layout": "vertical",
+          "gap": 16,
+          "padding": [
+            40,
+            20
+          ],
+          "children": [
+            {
+              "type": "frame",
+              "id": "jAhlW",
+              "name": "Subscriptions Header",
+              "width": "fill_container",
+              "layout": "vertical",
+              "gap": 8,
+              "alignItems": "center",
+              "children": [
+                {
+                  "type": "text",
+                  "id": "b1zuo",
+                  "name": "Subscriptions Title",
+                  "fill": "$white",
+                  "textGrowth": "fixed-width",
+                  "width": "fill_container",
+                  "content": "Subscriptions",
+                  "textAlign": "center",
+                  "fontFamily": "$font-heading",
+                  "fontSize": 32,
+                  "fontWeight": "normal"
+                },
+                {
+                  "type": "text",
+                  "id": "BkksR",
+                  "name": "Subscriptions Subtitle",
+                  "fill": "$text-dark-muted",
+                  "textGrowth": "fixed-width",
+                  "width": "fill_container",
+                  "content": "Start free. Upgrade when you're ready for more. Pricing and perks are still being finalized.",
+                  "lineHeight": 1.4,
+                  "textAlign": "center",
+                  "fontFamily": "$font-body",
+                  "fontSize": 15,
+                  "fontWeight": "normal"
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "pn1Nv",
+              "name": "m Free",
+              "width": "fill_container",
+              "fill": "$bg-dark",
+              "cornerRadius": 12,
+              "stroke": "$border-dark",
+              "strokeWidth": 1,
+              "layout": "vertical",
+              "gap": 8,
+              "padding": 18,
+              "children": [
+                {
+                  "type": "text",
+                  "id": "uOuNE",
+                  "name": "Free Name",
+                  "fill": "$white",
+                  "content": "Free",
+                  "fontFamily": "$font-heading",
+                  "fontSize": 32,
+                  "fontWeight": "normal"
+                },
+                {
+                  "type": "text",
+                  "id": "TaL6w",
+                  "name": "Free Price",
+                  "fill": "$text-dark-faint",
+                  "content": "Pricing TBD",
+                  "fontFamily": "$font-body",
+                  "fontSize": 14,
+                  "fontWeight": "normal"
+                },
+                {
+                  "type": "text",
+                  "id": "Mtg0R",
+                  "name": "Daily question & f",
+                  "fill": "$text-dark-muted",
+                  "textGrowth": "fixed-width",
+                  "width": "fill_container",
+                  "content": "• Daily question & feed access",
+                  "lineHeight": 1.35,
+                  "fontFamily": "$font-body",
+                  "fontSize": 14,
+                  "fontWeight": "normal"
+                },
+                {
+                  "type": "text",
+                  "id": "q48g8",
+                  "name": "Record and match a",
+                  "fill": "$text-dark-muted",
+                  "textGrowth": "fixed-width",
+                  "width": "fill_container",
+                  "content": "• Record and match at no cost",
+                  "lineHeight": 1.35,
+                  "fontFamily": "$font-body",
+                  "fontSize": 14,
+                  "fontWeight": "normal"
+                },
+                {
+                  "type": "text",
+                  "id": "yxQeF",
+                  "name": "Core safety and re",
+                  "fill": "$text-dark-muted",
+                  "textGrowth": "fixed-width",
+                  "width": "fill_container",
+                  "content": "• Core safety and reporting tools",
+                  "lineHeight": 1.35,
+                  "fontFamily": "$font-body",
+                  "fontSize": 14,
+                  "fontWeight": "normal"
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "jjvo5",
+              "name": "m Gold",
+              "width": "fill_container",
+              "fill": "$surface-dark",
+              "cornerRadius": 12,
+              "stroke": "$accent-dog",
+              "strokeWidth": 2,
+              "layout": "vertical",
+              "gap": 8,
+              "padding": 18,
+              "children": [
+                {
+                  "type": "frame",
+                  "id": "lKTPm",
+                  "name": "Tier Name Row",
+                  "width": "fill_container",
+                  "gap": 10,
+                  "alignItems": "center",
+                  "children": [
+                    {
+                      "type": "text",
+                      "id": "rrVGl",
+                      "name": "Gold Name",
+                      "fill": "$white",
+                      "content": "Gold",
+                      "fontFamily": "$font-heading",
+                      "fontSize": 32,
+                      "fontWeight": "normal"
+                    },
+                    {
+                      "type": "frame",
+                      "id": "Z9rnHA",
+                      "name": "Coming soon Label",
+                      "cornerRadius": 20,
+                      "stroke": "$accent-dog",
+                      "strokeWidth": 1,
+                      "padding": [
+                        6,
+                        12
+                      ],
+                      "children": [
+                        {
+                          "type": "text",
+                          "id": "KPTy6",
+                          "name": "Coming soon Text",
+                          "fill": "$accent-dog",
+                          "content": "Coming soon",
+                          "fontFamily": "$font-body",
+                          "fontSize": 11,
+                          "fontWeight": "600"
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "type": "text",
+                  "id": "BlZO4",
+                  "name": "Everything in Free",
+                  "fill": "$text-dark-muted",
+                  "textGrowth": "fixed-width",
+                  "width": "fill_container",
+                  "content": "• Everything in Free",
+                  "lineHeight": 1.35,
+                  "fontFamily": "$font-body",
+                  "fontSize": 14,
+                  "fontWeight": "normal"
+                },
+                {
+                  "type": "text",
+                  "id": "LPSbw",
+                  "name": "Additional capabil",
+                  "fill": "$text-dark-muted",
+                  "textGrowth": "fixed-width",
+                  "width": "fill_container",
+                  "content": "• Additional capabilities coming soon",
+                  "lineHeight": 1.35,
+                  "fontFamily": "$font-body",
+                  "fontSize": 14,
+                  "fontWeight": "normal"
+                },
+                {
+                  "type": "text",
+                  "id": "cpLOo",
+                  "name": "Placeholder benefi",
+                  "fill": "$text-dark-muted",
+                  "textGrowth": "fixed-width",
+                  "width": "fill_container",
+                  "content": "• Launch-day pricing for early subscribers",
+                  "lineHeight": 1.35,
+                  "fontFamily": "$font-body",
+                  "fontSize": 14,
+                  "fontWeight": "normal"
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "E1zbH",
+              "name": "m Platinum",
+              "width": "fill_container",
+              "fill": "$bg-dark",
+              "cornerRadius": 12,
+              "stroke": "$border-dark",
+              "strokeWidth": 1,
+              "layout": "vertical",
+              "gap": 8,
+              "padding": 18,
+              "children": [
+                {
+                  "type": "frame",
+                  "id": "xwSAS",
+                  "name": "Tier Name Row",
+                  "width": "fill_container",
+                  "gap": 10,
+                  "alignItems": "center",
+                  "children": [
+                    {
+                      "type": "text",
+                      "id": "OjBRg",
+                      "name": "Platinum Name",
+                      "fill": "$white",
+                      "content": "Platinum",
+                      "fontFamily": "$font-heading",
+                      "fontSize": 32,
+                      "fontWeight": "normal"
+                    },
+                    {
+                      "type": "frame",
+                      "id": "zUP4I",
+                      "name": "Coming soon Label",
+                      "cornerRadius": 20,
+                      "stroke": "$accent-dog",
+                      "strokeWidth": 1,
+                      "padding": [
+                        6,
+                        12
+                      ],
+                      "children": [
+                        {
+                          "type": "text",
+                          "id": "XDm9B",
+                          "name": "Coming soon Text",
+                          "fill": "$accent-dog",
+                          "content": "Coming soon",
+                          "fontFamily": "$font-body",
+                          "fontSize": 11,
+                          "fontWeight": "600"
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "type": "text",
+                  "id": "MuyZy",
+                  "name": "Everything in Gold",
+                  "fill": "$text-dark-muted",
+                  "textGrowth": "fixed-width",
+                  "width": "fill_container",
+                  "content": "• Everything in Gold",
+                  "lineHeight": 1.35,
+                  "fontFamily": "$font-body",
+                  "fontSize": 14,
+                  "fontWeight": "normal"
+                },
+                {
+                  "type": "text",
+                  "id": "Ujtr1",
+                  "name": "Premium capabiliti",
+                  "fill": "$text-dark-muted",
+                  "textGrowth": "fixed-width",
+                  "width": "fill_container",
+                  "content": "• Premium capabilities coming soon",
+                  "lineHeight": 1.35,
+                  "fontFamily": "$font-body",
+                  "fontSize": 14,
+                  "fontWeight": "normal"
+                },
+                {
+                  "type": "text",
+                  "id": "cQfIB",
+                  "name": "Placeholder benefi",
+                  "fill": "$text-dark-muted",
+                  "textGrowth": "fixed-width",
+                  "width": "fill_container",
+                  "content": "• Best value when paid tiers go live",
+                  "lineHeight": 1.35,
+                  "fontFamily": "$font-body",
+                  "fontSize": 14,
+                  "fontWeight": "normal"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "frame",
+          "id": "fSCPs",
+          "name": "Mobile Safety",
+          "width": "fill_container",
+          "fill": "$surface-dark",
+          "layout": "vertical",
+          "gap": 14,
+          "padding": [
+            40,
+            20
+          ],
+          "children": [
+            {
+              "type": "frame",
+              "id": "OumDy",
+              "name": "Safety Header",
+              "width": "fill_container",
+              "layout": "vertical",
+              "gap": 8,
+              "alignItems": "center",
+              "children": [
+                {
+                  "type": "text",
+                  "id": "C7777o",
+                  "name": "Safety Title",
+                  "fill": "$white",
+                  "textGrowth": "fixed-width",
+                  "width": "fill_container",
+                  "content": "Safety",
+                  "textAlign": "center",
+                  "fontFamily": "$font-heading",
+                  "fontSize": 32,
+                  "fontWeight": "normal"
+                },
+                {
+                  "type": "text",
+                  "id": "k8xdf",
+                  "name": "Safety Subtitle",
+                  "fill": "$text-dark-muted",
+                  "textGrowth": "fixed-width",
+                  "width": "fill_container",
+                  "content": "Authenticity needs trust. We combine community reports with human review, and we disable videos, not whole accounts, when content crosses the line.",
+                  "lineHeight": 1.4,
+                  "textAlign": "center",
+                  "fontFamily": "$font-body",
+                  "fontSize": 15,
+                  "fontWeight": "normal"
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "Bppuq",
+              "name": "m Report & block",
+              "width": "fill_container",
+              "fill": "$bg-dark",
+              "cornerRadius": 10,
+              "layout": "vertical",
+              "gap": 4,
+              "padding": 14,
+              "children": [
+                {
+                  "type": "text",
+                  "id": "pofen",
+                  "name": "Safety Title",
+                  "fill": "$white",
+                  "textGrowth": "fixed-width",
+                  "width": "fill_container",
+                  "content": "Report answers & profiles",
+                  "fontFamily": "$font-body",
+                  "fontSize": 16,
+                  "fontWeight": "600"
+                },
+                {
+                  "type": "text",
+                  "id": "loINe",
+                  "name": "Safety Body",
+                  "fill": "$text-dark-muted",
+                  "textGrowth": "fixed-width",
+                  "width": "fill_container",
+                  "content": "Use Report from the feed or a profile. Choose Report Only or Report & Block; you're always in control.",
+                  "lineHeight": 1.4,
+                  "fontFamily": "$font-body",
+                  "fontSize": 14,
+                  "fontWeight": "normal"
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "Vx2vZ",
+              "name": "m Fair enforcement",
+              "width": "fill_container",
+              "fill": "$bg-dark",
+              "cornerRadius": 10,
+              "layout": "vertical",
+              "gap": 4,
+              "padding": 14,
+              "children": [
+                {
+                  "type": "text",
+                  "id": "CJMMw",
+                  "name": "Safety Title",
+                  "fill": "$white",
+                  "textGrowth": "fixed-width",
+                  "width": "fill_container",
+                  "content": "Videos reviewed, accounts stay",
+                  "fontFamily": "$font-body",
+                  "fontSize": 16,
+                  "fontWeight": "600"
+                },
+                {
+                  "type": "text",
+                  "id": "H4n7Xn",
+                  "name": "Safety Body",
+                  "fill": "$text-dark-muted",
+                  "textGrowth": "fixed-width",
+                  "width": "fill_container",
+                  "content": "Enough distinct flags hide that answer from feeds. You’re notified and pointed to Help & Support.",
+                  "lineHeight": 1.4,
+                  "fontFamily": "$font-body",
+                  "fontSize": 14,
+                  "fontWeight": "normal"
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "Tyrew",
+              "name": "m Privacy controls",
+              "width": "fill_container",
+              "fill": "$bg-dark",
+              "cornerRadius": 10,
+              "layout": "vertical",
+              "gap": 4,
+              "padding": 14,
+              "children": [
+                {
+                  "type": "text",
+                  "id": "sfIN1",
+                  "name": "Safety Title",
+                  "fill": "$white",
+                  "textGrowth": "fixed-width",
+                  "width": "fill_container",
+                  "content": "Privacy you control",
+                  "fontFamily": "$font-body",
+                  "fontSize": 16,
+                  "fontWeight": "600"
+                },
+                {
+                  "type": "text",
+                  "id": "bo97B",
+                  "name": "Safety Body",
+                  "fill": "$text-dark-muted",
+                  "textGrowth": "fixed-width",
+                  "width": "fill_container",
+                  "content": "Turn off followers, manage blocks, and delete your account instantly from Privacy & Safety.",
+                  "lineHeight": 1.4,
+                  "fontFamily": "$font-body",
+                  "fontSize": 14,
+                  "fontWeight": "normal"
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "K5Mw6",
+              "name": "m Guidelines",
+              "width": "fill_container",
+              "fill": "$bg-dark",
+              "cornerRadius": 10,
+              "layout": "vertical",
+              "gap": 4,
+              "padding": 14,
+              "children": [
+                {
+                  "type": "text",
+                  "id": "fVvu9",
+                  "name": "Safety Title",
+                  "fill": "$white",
+                  "textGrowth": "fixed-width",
+                  "width": "fill_container",
+                  "content": "Community guidelines",
+                  "fontFamily": "$font-body",
+                  "fontSize": 16,
+                  "fontWeight": "600"
+                },
+                {
+                  "type": "text",
+                  "id": "T9qSWO",
+                  "name": "Safety Body",
+                  "fill": "$text-dark-muted",
+                  "textGrowth": "fixed-width",
+                  "width": "fill_container",
+                  "content": "We review responses, profiles, and messages against shared standards, with the same rules for everyone.",
+                  "lineHeight": 1.4,
+                  "fontFamily": "$font-body",
+                  "fontSize": 14,
+                  "fontWeight": "normal"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "frame",
+          "id": "T789dn",
+          "name": "Mobile Support",
+          "width": "fill_container",
+          "layout": "vertical",
+          "gap": 12,
+          "padding": [
+            40,
+            20
+          ],
+          "children": [
+            {
+              "type": "frame",
+              "id": "iz2Rl",
+              "name": "m FAQ Why record",
+              "width": "fill_container",
+              "fill": "$surface-dark",
+              "cornerRadius": 10,
+              "layout": "vertical",
+              "gap": 4,
+              "padding": 14,
+              "children": [
+                {
+                  "type": "text",
+                  "id": "P9qFm",
+                  "name": "Question",
+                  "fill": "$white",
+                  "textGrowth": "fixed-width",
+                  "width": "fill_container",
+                  "content": "Why do I have to record videos of myself?",
+                  "fontFamily": "$font-body",
+                  "fontSize": 16,
+                  "fontWeight": "600"
+                },
+                {
+                  "type": "text",
+                  "id": "Cl2Pq",
+                  "name": "Answer",
+                  "fill": "$text-dark-muted",
+                  "textGrowth": "fixed-width",
+                  "width": "fill_container",
+                  "content": "Still photos and polished profiles let people hide behind a curated version of themselves. Cats or Dogs? is built around short, on-camera answers to the same daily question for everyone. You hear someone's voice, see their face in the moment, and get an honest read on who they are. That is how matches start with substance, not guesswork.",
+                  "lineHeight": 1.45,
+                  "fontFamily": "$font-body",
+                  "fontSize": 14,
+                  "fontWeight": "normal"
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "RAGVC",
+              "name": "Support Header",
+              "width": "fill_container",
+              "layout": "vertical",
+              "gap": 8,
+              "alignItems": "center",
+              "children": [
+                {
+                  "type": "text",
+                  "id": "euhjc",
+                  "name": "FAQs Title",
+                  "fill": "$white",
+                  "textGrowth": "fixed-width",
+                  "width": "fill_container",
+                  "content": "FAQs",
+                  "textAlign": "center",
+                  "fontFamily": "$font-heading",
+                  "fontSize": 32,
+                  "fontWeight": "normal"
+                },
+                {
+                  "type": "text",
+                  "id": "wS13G",
+                  "name": "Support Subtitle",
+                  "fill": "$text-dark-muted",
+                  "textGrowth": "fixed-width",
+                  "width": "fill_container",
+                  "content": "Quick answers while we build out the full help center.",
+                  "lineHeight": 1.4,
+                  "textAlign": "center",
+                  "fontFamily": "$font-body",
+                  "fontSize": 15,
+                  "fontWeight": "normal"
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "ZGBNx",
+              "name": "m FAQ",
+              "width": "fill_container",
+              "fill": "$surface-dark",
+              "cornerRadius": 10,
+              "layout": "vertical",
+              "gap": 4,
+              "padding": 14,
+              "children": [
+                {
+                  "type": "text",
+                  "id": "zmhwn",
+                  "name": "Question",
+                  "fill": "$white",
+                  "textGrowth": "fixed-width",
+                  "width": "fill_container",
+                  "content": "Do I have to answer every day?",
+                  "fontFamily": "$font-body",
+                  "fontSize": 16,
+                  "fontWeight": "600"
+                },
+                {
+                  "type": "text",
+                  "id": "v0lFb5",
+                  "name": "Answer",
+                  "fill": "$text-dark-muted",
+                  "textGrowth": "fixed-width",
+                  "width": "fill_container",
+                  "content": "You can skip, but the feed stays locked until you record today’s answer. Matches, chats, and your profile stay available.",
+                  "lineHeight": 1.45,
+                  "fontFamily": "$font-body",
+                  "fontSize": 14,
+                  "fontWeight": "normal"
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "eQCMv",
+              "name": "m FAQ",
+              "width": "fill_container",
+              "fill": "$surface-dark",
+              "cornerRadius": 10,
+              "layout": "vertical",
+              "gap": 4,
+              "padding": 14,
+              "children": [
+                {
+                  "type": "text",
+                  "id": "K30DJ",
+                  "name": "Question",
+                  "fill": "$white",
+                  "textGrowth": "fixed-width",
+                  "width": "fill_container",
+                  "content": "How long can my answer be?",
+                  "fontFamily": "$font-body",
+                  "fontSize": 16,
+                  "fontWeight": "600"
+                },
+                {
+                  "type": "text",
+                  "id": "JzeZZ",
+                  "name": "Answer",
+                  "fill": "$text-dark-muted",
+                  "textGrowth": "fixed-width",
+                  "width": "fill_container",
+                  "content": "Up to 14 seconds by default (in the future a paid subscription may unlock more recording time).",
+                  "lineHeight": 1.45,
+                  "fontFamily": "$font-body",
+                  "fontSize": 14,
+                  "fontWeight": "normal"
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "ffo9o",
+              "name": "m FAQ",
+              "width": "fill_container",
+              "fill": "$surface-dark",
+              "cornerRadius": 10,
+              "layout": "vertical",
+              "gap": 4,
+              "padding": 14,
+              "children": [
+                {
+                  "type": "text",
+                  "id": "xdX8l",
+                  "name": "Question",
+                  "fill": "$white",
+                  "textGrowth": "fixed-width",
+                  "width": "fill_container",
+                  "content": "What happens if someone reports my video?",
+                  "fontFamily": "$font-body",
+                  "fontSize": 16,
+                  "fontWeight": "600"
+                },
+                {
+                  "type": "text",
+                  "id": "fCWLv",
+                  "name": "Answer",
+                  "fill": "$text-dark-muted",
+                  "textGrowth": "fixed-width",
+                  "width": "fill_container",
+                  "content": "After enough distinct reports, that answer is hidden from other people’s feeds. Your account stays active; you’re notified and pointed to Help & Support.",
+                  "lineHeight": 1.45,
+                  "fontFamily": "$font-body",
+                  "fontSize": 14,
+                  "fontWeight": "normal"
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "TdPs1",
+              "name": "m FAQ",
+              "width": "fill_container",
+              "fill": "$surface-dark",
+              "cornerRadius": 10,
+              "layout": "vertical",
+              "gap": 4,
+              "padding": 14,
+              "children": [
+                {
+                  "type": "text",
+                  "id": "AA2cT",
+                  "name": "Question",
+                  "fill": "$white",
+                  "textGrowth": "fixed-width",
+                  "width": "fill_container",
+                  "content": "Can someone see who follows them?",
+                  "fontFamily": "$font-body",
+                  "fontSize": 16,
+                  "fontWeight": "600"
+                },
+                {
+                  "type": "text",
+                  "id": "o5vHRZ",
+                  "name": "Answer",
+                  "fill": "$text-dark-muted",
+                  "textGrowth": "fixed-width",
+                  "width": "fill_container",
+                  "content": "No. The app never reveals follower identities, only that you follow someone. You can turn off followers entirely in Privacy & Safety.",
+                  "lineHeight": 1.45,
+                  "fontFamily": "$font-body",
+                  "fontSize": 14,
+                  "fontWeight": "normal"
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "QjTGo",
+              "name": "m FAQ",
+              "width": "fill_container",
+              "fill": "$surface-dark",
+              "cornerRadius": 10,
+              "layout": "vertical",
+              "gap": 4,
+              "padding": 14,
+              "children": [
+                {
+                  "type": "text",
+                  "id": "p23DIB",
+                  "name": "Question",
+                  "fill": "$white",
+                  "textGrowth": "fixed-width",
+                  "width": "fill_container",
+                  "content": "How do I get help in the app?",
+                  "fontFamily": "$font-body",
+                  "fontSize": 16,
+                  "fontWeight": "600"
+                },
+                {
+                  "type": "text",
+                  "id": "mgyax",
+                  "name": "Answer",
+                  "fill": "$text-dark-muted",
+                  "textGrowth": "fixed-width",
+                  "width": "fill_container",
+                  "content": "Open Profile → Help & Support to visit our help site. ",
+                  "lineHeight": 1.45,
+                  "fontFamily": "$font-body",
+                  "fontSize": 14,
+                  "fontWeight": "normal"
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "ipwzW",
+              "name": "m FAQ",
+              "width": "fill_container",
+              "fill": "$surface-dark",
+              "cornerRadius": 10,
+              "layout": "vertical",
+              "gap": 4,
+              "padding": 14,
+              "children": [
+                {
+                  "type": "text",
+                  "id": "J4eYZ4",
+                  "name": "Question",
+                  "fill": "$white",
+                  "textGrowth": "fixed-width",
+                  "width": "fill_container",
+                  "content": "How do I delete my account?",
+                  "fontFamily": "$font-body",
+                  "fontSize": 16,
+                  "fontWeight": "600"
+                },
+                {
+                  "type": "text",
+                  "id": "jzZKw",
+                  "name": "Answer",
+                  "fill": "$text-dark-muted",
+                  "textGrowth": "fixed-width",
+                  "width": "fill_container",
+                  "content": "Privacy & Safety → Delete account. This permanently removes your profile, photos, videos, chats, and matches. There is no undo.",
+                  "lineHeight": 1.45,
+                  "fontFamily": "$font-body",
+                  "fontSize": 14,
+                  "fontWeight": "normal"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "frame",
+          "id": "amRTz",
+          "name": "Mobile Download",
+          "width": "fill_container",
+          "fill": "$surface-dark",
+          "layout": "vertical",
+          "gap": 16,
+          "padding": [
+            48,
+            20
+          ],
+          "alignItems": "center",
+          "children": [
+            {
+              "type": "text",
+              "id": "bcYyH",
+              "name": "Title",
+              "fill": "$white",
+              "textGrowth": "fixed-width",
+              "width": "fill_container",
+              "content": "Download Cats or Dogs?",
+              "textAlign": "center",
+              "fontFamily": "$font-heading",
+              "fontSize": 32,
+              "fontWeight": "normal"
+            },
+            {
+              "type": "text",
+              "id": "Gtik9",
+              "name": "Sub",
+              "fill": "$text-dark-muted",
+              "textGrowth": "fixed-width",
+              "width": "fill_container",
+              "content": "Available soon on iOS and Android. Join the daily question and meet people who show up as themselves.",
+              "textAlign": "center",
+              "fontFamily": "$font-body",
+              "fontSize": 15,
+              "fontWeight": "normal"
+            },
+            {
+              "type": "frame",
+              "id": "nvFSH",
+              "name": "Badges",
+              "width": "fill_container",
+              "layout": "vertical",
+              "gap": 12,
+              "alignItems": "center",
+              "children": [
+                {
+                  "type": "frame",
+                  "id": "OQHAY",
+                  "name": "m DL App Store",
+                  "width": 180,
+                  "height": 52,
+                  "fill": {
+                    "type": "image",
+                    "enabled": true,
+                    "url": "../website/assets/appstore.png",
+                    "mode": "contain"
+                  }
+                },
+                {
+                  "type": "frame",
+                  "id": "A5eQqy",
+                  "name": "m DL Google Play",
+                  "width": 180,
+                  "height": 52,
+                  "fill": {
+                    "type": "image",
+                    "enabled": true,
+                    "url": "../website/assets/googleplay.png",
+                    "mode": "contain"
+                  }
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "frame",
+          "id": "b0fqk",
+          "name": "Mobile Footer",
+          "width": "fill_container",
+          "fill": "$bg-dark",
+          "layout": "vertical",
+          "gap": 14,
+          "padding": [
+            28,
+            20,
+            36,
+            20
+          ],
+          "children": [
+            {
+              "type": "frame",
+              "id": "uN94s",
+              "name": "Links",
+              "width": "fill_container",
+              "layout": "vertical",
+              "gap": 10,
+              "alignItems": "center",
+              "children": [
+                {
+                  "type": "text",
+                  "id": "kEtRJ",
+                  "name": "Privacy",
+                  "fill": "$text-dark-muted",
+                  "content": "Privacy",
+                  "fontFamily": "$font-body",
+                  "fontSize": 13,
+                  "fontWeight": "normal"
+                },
+                {
+                  "type": "text",
+                  "id": "CL3bL",
+                  "name": "Terms",
+                  "fill": "$text-dark-muted",
+                  "content": "Terms",
+                  "fontFamily": "$font-body",
+                  "fontSize": 13,
+                  "fontWeight": "normal"
+                },
+                {
+                  "type": "text",
+                  "id": "FQESX",
+                  "name": "Community guidelines",
+                  "fill": "$text-dark-muted",
+                  "content": "Community guidelines",
+                  "fontFamily": "$font-body",
+                  "fontSize": 13,
+                  "fontWeight": "normal"
+                }
+              ]
+            },
+            {
+              "type": "text",
+              "id": "zvH0J",
+              "name": "Copy",
+              "fill": "$text-dark-faint",
+              "textGrowth": "fixed-width",
+              "width": "fill_container",
+              "content": "© 2026 Cats or Dogs? Authenticity-first dating.",
+              "textAlign": "center",
+              "fontFamily": "$font-body",
+              "fontSize": 11,
+              "fontWeight": "normal"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "frame",
+      "id": "LHdrk",
+      "x": 1945,
+      "y": 0,
+      "name": "Mobile Nav — Menu Open",
+      "opacity": 0.98,
+      "width": 390,
+      "height": 320,
+      "fill": "$surface-dark",
+      "layout": "vertical",
+      "gap": 16,
+      "padding": 20,
+      "alignItems": "end",
+      "children": [
+        {
+          "type": "frame",
+          "id": "F1WZ2",
+          "name": "Menu Header",
+          "width": "fill_container",
+          "justifyContent": "space_between",
+          "alignItems": "center",
+          "children": [
+            {
+              "type": "text",
+              "id": "now85",
+              "name": "Menu Title",
+              "fill": "$white",
+              "textGrowth": "fixed-width",
+              "width": "fill_container",
+              "content": "Menu",
+              "textAlign": "right",
+              "fontFamily": "$font-heading",
+              "fontSize": 22,
+              "fontWeight": "normal"
+            },
+            {
+              "type": "frame",
+              "id": "j0qDC",
+              "name": "Close Menu Button",
+              "width": 40,
+              "height": 40,
+              "cornerRadius": 8,
+              "justifyContent": "center",
+              "alignItems": "center",
+              "children": [
+                {
+                  "type": "icon",
+                  "id": "Mflf6",
+                  "name": "Close Icon",
+                  "width": 22,
+                  "height": 22,
+                  "icon": "x",
+                  "library": "lucide",
+                  "fill": "$white"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "text",
+          "id": "N0luy",
+          "name": "Menu How it works",
+          "fill": "$text-dark-muted",
+          "textGrowth": "fixed-width",
+          "width": "fill_container",
+          "content": "How it works",
+          "textAlign": "right",
+          "fontFamily": "$font-body",
+          "fontSize": 16,
+          "fontWeight": "normal"
+        },
+        {
+          "type": "text",
+          "id": "R4gRAx",
+          "name": "Menu Subscriptions",
+          "fill": "$text-dark-muted",
+          "textGrowth": "fixed-width",
+          "width": "fill_container",
+          "content": "Subscriptions",
+          "textAlign": "right",
+          "fontFamily": "$font-body",
+          "fontSize": 16,
+          "fontWeight": "normal"
+        },
+        {
+          "type": "text",
+          "id": "qxvyM",
+          "name": "Menu Safety",
+          "fill": "$text-dark-muted",
+          "textGrowth": "fixed-width",
+          "width": "fill_container",
+          "content": "Safety",
+          "textAlign": "right",
+          "fontFamily": "$font-body",
+          "fontSize": 16,
+          "fontWeight": "normal"
+        },
+        {
+          "type": "text",
+          "id": "FtJhr",
+          "name": "Menu FAQs",
+          "fill": "$text-dark-muted",
+          "textGrowth": "fixed-width",
+          "width": "fill_container",
+          "content": "FAQs",
+          "textAlign": "right",
+          "fontFamily": "$font-body",
+          "fontSize": 16,
+          "fontWeight": "normal"
+        },
+        {
+          "type": "text",
+          "id": "qhU9z",
+          "name": "Menu Download",
+          "fill": "$text-dark-muted",
+          "textGrowth": "fixed-width",
+          "width": "fill_container",
+          "content": "Download",
+          "textAlign": "right",
+          "fontFamily": "$font-body",
+          "fontSize": 16,
+          "fontWeight": "normal"
+        }
+      ]
+    },
+    {
+      "type": "frame",
+      "id": "MHa5d",
+      "x": 2415,
+      "y": 0,
+      "name": "Download Modal",
+      "width": 390,
+      "fill": "$surface-dark",
+      "cornerRadius": 16,
+      "stroke": "$border-dark",
+      "strokeWidth": 1,
+      "layout": "vertical",
+      "gap": 16,
+      "padding": 28,
+      "children": [
+        {
+          "type": "text",
+          "id": "zx8yb",
+          "name": "Modal Title",
+          "fill": "$white",
+          "content": "Coming Soon",
+          "fontFamily": "Anton",
+          "fontSize": 32,
+          "fontWeight": "normal"
+        },
+        {
+          "type": "text",
+          "id": "upRNc",
+          "name": "Modal Message",
+          "fill": "$text-dark-muted",
+          "textGrowth": "fixed-width",
+          "width": "fill_container",
+          "content": "The Cats or Dogs? app is currently in development. Enter your email and we will notify you when we launch.",
+          "lineHeight": 1.4,
+          "fontFamily": "Funnel Sans",
+          "fontSize": 15,
+          "fontWeight": "normal"
+        },
+        {
+          "type": "frame",
+          "id": "c6RejI",
+          "name": "Email Field",
+          "width": "fill_container",
+          "layout": "vertical",
+          "gap": 8,
+          "children": [
+            {
+              "type": "text",
+              "id": "xVNvt",
+              "name": "Email Label",
+              "fill": "$white",
+              "content": "Email address",
+              "fontFamily": "Funnel Sans",
+              "fontSize": 14,
+              "fontWeight": "600"
+            },
+            {
+              "type": "frame",
+              "id": "JEln2",
+              "name": "Email Input",
+              "width": "fill_container",
+              "height": 48,
+              "fill": "$bg-dark",
+              "cornerRadius": 8,
+              "stroke": "$border-dark",
+              "strokeWidth": 1
+            }
+          ]
+        },
+        {
+          "type": "frame",
+          "id": "BB2gX",
+          "name": "Notify Button",
+          "width": "fill_container",
+          "height": 48,
+          "fill": "$accent-dog",
+          "cornerRadius": 8,
+          "justifyContent": "center",
+          "alignItems": "center",
+          "children": [
+            {
+              "type": "text",
+              "id": "Q3Rhe",
+              "name": "Notify Label",
+              "fill": "$white",
+              "content": "Notify me",
+              "fontFamily": "Funnel Sans",
+              "fontSize": 16,
+              "fontWeight": "600"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "frame",
+      "id": "O12GD",
+      "x": 2885,
+      "y": 0,
+      "name": "Favicon concepts",
+      "clip": true,
+      "width": 1100,
+      "fill": "#141416",
+      "layout": "vertical",
+      "gap": 24,
+      "padding": 40,
+      "children": [
+        {
+          "type": "text",
+          "id": "znQHv",
+          "fill": "#ffffff",
+          "content": "Favicon concepts",
+          "fontFamily": "Anton",
+          "fontSize": 36,
+          "fontWeight": "normal"
+        },
+        {
+          "type": "text",
+          "id": "gapiL",
+          "fill": "#B5B0AC",
+          "textGrowth": "fixed-width",
+          "width": 900,
+          "content": "Explorations for catsordogs.net. Dark #0B0B0C, accent #FF6B35. Pick one direction; export 32px and 180px for the site.",
+          "lineHeight": 1.4,
+          "fontFamily": "Inter",
+          "fontSize": 14,
+          "fontWeight": "normal"
+        },
+        {
+          "type": "frame",
+          "id": "vuthZ",
+          "width": "fill_container",
+          "gap": 32,
+          "children": [
+            {
+              "type": "frame",
+              "id": "mIfTM",
+              "width": 220,
+              "layout": "vertical",
+              "gap": 12,
+              "children": [
+                {
+                  "type": "frame",
+                  "id": "w8TN2b",
+                  "name": "Preview",
+                  "width": 128,
+                  "height": 128,
+                  "fill": "#0B0B0C",
+                  "layout": "none",
+                  "children": [
+                    {
+                      "type": "ellipse",
+                      "id": "p5WNYo",
+                      "x": 28,
+                      "y": 28,
+                      "fill": "#FF6B35",
+                      "width": 72,
+                      "height": 72
+                    },
+                    {
+                      "type": "ellipse",
+                      "id": "HDjSw",
+                      "x": 38,
+                      "y": 38,
+                      "fill": "#0B0B0C",
+                      "width": 52,
+                      "height": 52
+                    },
+                    {
+                      "type": "ellipse",
+                      "id": "K4KOQl",
+                      "x": 56,
+                      "y": 56,
+                      "fill": "#FF6B35",
+                      "width": 16,
+                      "height": 16
+                    }
+                  ]
+                },
+                {
+                  "type": "text",
+                  "id": "RlPs7",
+                  "fill": "#FFFFFF",
+                  "content": "A. Record dot",
+                  "fontFamily": "Inter",
+                  "fontSize": 13,
+                  "fontWeight": "600"
+                },
+                {
+                  "type": "text",
+                  "id": "pJKKZ",
+                  "fill": "#7A7570",
+                  "textGrowth": "fixed-width",
+                  "width": 200,
+                  "content": "Orange record ring. Video / authenticity.",
+                  "lineHeight": 1.35,
+                  "fontFamily": "Inter",
+                  "fontSize": 11,
+                  "fontWeight": "normal"
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "S4AzKu",
+              "width": 220,
+              "layout": "vertical",
+              "gap": 12,
+              "children": [
+                {
+                  "type": "frame",
+                  "id": "aQ52E",
+                  "name": "Preview",
+                  "width": 128,
+                  "height": 128,
+                  "fill": "#0B0B0C",
+                  "layout": "none",
+                  "children": [
+                    {
+                      "type": "text",
+                      "id": "kvl7m",
+                      "x": 28,
+                      "y": 22,
+                      "fill": "#FFFFFF",
+                      "content": "C",
+                      "fontFamily": "Anton",
+                      "fontSize": 64,
+                      "fontWeight": "normal"
+                    },
+                    {
+                      "type": "text",
+                      "id": "nr7aJ",
+                      "x": 72,
+                      "y": 34,
+                      "fill": "#FF6B35",
+                      "content": "?",
+                      "fontFamily": "Anton",
+                      "fontSize": 52,
+                      "fontWeight": "normal"
+                    }
+                  ]
+                },
+                {
+                  "type": "text",
+                  "id": "alIJA",
+                  "fill": "#FFFFFF",
+                  "content": "B. C? mark",
+                  "fontFamily": "Inter",
+                  "fontSize": 13,
+                  "fontWeight": "600"
+                },
+                {
+                  "type": "text",
+                  "id": "R0t82",
+                  "fill": "#7A7570",
+                  "textGrowth": "fixed-width",
+                  "width": 200,
+                  "content": "Daily question hook. Anton type.",
+                  "lineHeight": 1.35,
+                  "fontFamily": "Inter",
+                  "fontSize": 11,
+                  "fontWeight": "normal"
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "k8668",
+              "width": 220,
+              "layout": "vertical",
+              "gap": 12,
+              "children": [
+                {
+                  "type": "frame",
+                  "id": "j8OiF2",
+                  "name": "Preview",
+                  "width": 128,
+                  "height": 128,
+                  "fill": "#0B0B0C",
+                  "layout": "none",
+                  "children": [
+                    {
+                      "type": "text",
+                      "id": "erT3e",
+                      "x": 24,
+                      "y": 30,
+                      "fill": "#FFFFFF",
+                      "content": "CD",
+                      "fontFamily": "Anton",
+                      "fontSize": 56,
+                      "fontWeight": "normal"
+                    },
+                    {
+                      "type": "rectangle",
+                      "id": "wJt23",
+                      "x": 24,
+                      "y": 92,
+                      "fill": "#FF6B35",
+                      "width": 80,
+                      "height": 6
+                    }
+                  ]
+                },
+                {
+                  "type": "text",
+                  "id": "T02fm",
+                  "fill": "#FFFFFF",
+                  "content": "C. CD monogram",
+                  "fontFamily": "Inter",
+                  "fontSize": 13,
+                  "fontWeight": "600"
+                },
+                {
+                  "type": "text",
+                  "id": "kKBTB",
+                  "fill": "#7A7570",
+                  "textGrowth": "fixed-width",
+                  "width": 200,
+                  "content": "Cats / Dogs initials.",
+                  "lineHeight": 1.35,
+                  "fontFamily": "Inter",
+                  "fontSize": 11,
+                  "fontWeight": "normal"
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "lZdKM",
+              "width": 220,
+              "layout": "vertical",
+              "gap": 12,
+              "children": [
+                {
+                  "type": "frame",
+                  "id": "cGyIg",
+                  "name": "Preview",
+                  "width": 128,
+                  "height": 128,
+                  "fill": "#0B0B0C",
+                  "layout": "none",
+                  "children": [
+                    {
+                      "type": "rectangle",
+                      "id": "ylqKB",
+                      "x": 0,
+                      "y": 0,
+                      "fill": "#FF6B35",
+                      "width": 64,
+                      "height": 128
+                    },
+                    {
+                      "type": "rectangle",
+                      "id": "lhPgs",
+                      "x": 64,
+                      "y": 0,
+                      "fill": "#FFFFFF",
+                      "width": 64,
+                      "height": 128
+                    },
+                    {
+                      "type": "ellipse",
+                      "id": "sFW2G",
+                      "x": 50,
+                      "y": 54,
+                      "fill": "#0B0B0C",
+                      "width": 28,
+                      "height": 20
+                    }
+                  ]
+                },
+                {
+                  "type": "text",
+                  "id": "IRRwK",
+                  "fill": "#FFFFFF",
+                  "content": "D. Split mark",
+                  "fontFamily": "Inter",
+                  "fontSize": 13,
+                  "fontWeight": "600"
+                },
+                {
+                  "type": "text",
+                  "id": "p4cLrP",
+                  "fill": "#7A7570",
+                  "textGrowth": "fixed-width",
+                  "width": 200,
+                  "content": "Binary cat vs dog energy.",
+                  "lineHeight": 1.35,
+                  "fontFamily": "Inter",
+                  "fontSize": 11,
+                  "fontWeight": "normal"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "frame",
+          "id": "b3AmL",
+          "width": "fill_container",
+          "gap": 32,
+          "children": [
+            {
+              "type": "frame",
+              "id": "XfS5U",
+              "width": 220,
+              "layout": "vertical",
+              "gap": 12,
+              "children": [
+                {
+                  "type": "frame",
+                  "id": "NRdQS",
+                  "name": "Preview",
+                  "width": 128,
+                  "height": 128,
+                  "fill": "#0B0B0C",
+                  "layout": "none",
+                  "children": [
+                    {
+                      "type": "rectangle",
+                      "cornerRadius": 14,
+                      "id": "rxeo4",
+                      "x": 20,
+                      "y": 28,
+                      "fill": "#FF6B35",
+                      "width": 88,
+                      "height": 64
+                    },
+                    {
+                      "type": "rectangle",
+                      "cornerRadius": 12,
+                      "id": "d2NPoS",
+                      "x": 24,
+                      "y": 32,
+                      "fill": "#1E1E20",
+                      "width": 80,
+                      "height": 56
+                    },
+                    {
+                      "type": "ellipse",
+                      "id": "kCtfL",
+                      "x": 53,
+                      "y": 49,
+                      "fill": "#FF6B35",
+                      "width": 22,
+                      "height": 22
+                    }
+                  ]
+                },
+                {
+                  "type": "text",
+                  "id": "isvl3",
+                  "fill": "#FFFFFF",
+                  "content": "E. Answer frame",
+                  "fontFamily": "Inter",
+                  "fontSize": 13,
+                  "fontWeight": "600"
+                },
+                {
+                  "type": "text",
+                  "id": "aFKb8",
+                  "fill": "#7A7570",
+                  "textGrowth": "fixed-width",
+                  "width": 200,
+                  "content": "On-camera answer bubble.",
+                  "lineHeight": 1.35,
+                  "fontFamily": "Inter",
+                  "fontSize": 11,
+                  "fontWeight": "normal"
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "hNBfe",
+              "width": 220,
+              "layout": "vertical",
+              "gap": 12,
+              "children": [
+                {
+                  "type": "frame",
+                  "id": "o4gx4k",
+                  "name": "Preview",
+                  "width": 128,
+                  "height": 128,
+                  "fill": "#0B0B0C",
+                  "layout": "none",
+                  "children": [
+                    {
+                      "type": "rectangle",
+                      "id": "Rb58g",
+                      "x": 0,
+                      "y": 0,
+                      "fill": "#FF6B35",
+                      "width": 128,
+                      "height": 128
+                    },
+                    {
+                      "type": "text",
+                      "id": "OaYIR",
+                      "x": 42,
+                      "y": 8,
+                      "fill": "#0B0B0C",
+                      "content": "?",
+                      "fontFamily": "Anton",
+                      "fontSize": 88,
+                      "fontWeight": "normal"
+                    }
+                  ]
+                },
+                {
+                  "type": "text",
+                  "id": "w2C6K6",
+                  "fill": "#FFFFFF",
+                  "content": "F. Orange tile",
+                  "fontFamily": "Inter",
+                  "fontSize": 13,
+                  "fontWeight": "600"
+                },
+                {
+                  "type": "text",
+                  "id": "IO185",
+                  "fill": "#7A7570",
+                  "textGrowth": "fixed-width",
+                  "width": 200,
+                  "content": "Max contrast ? on orange.",
+                  "lineHeight": 1.35,
+                  "fontFamily": "Inter",
+                  "fontSize": 11,
+                  "fontWeight": "normal"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "frame",
+          "id": "kcLLQ",
+          "width": "fill_container",
+          "gap": 16,
+          "children": [
+            {
+              "type": "text",
+              "id": "W3yBJr",
+              "fill": "#FFFFFF",
+              "content": "32px check:",
+              "fontFamily": "Inter",
+              "fontSize": 12,
+              "fontWeight": "600"
+            },
+            {
+              "type": "frame",
+              "id": "JmAA2",
+              "gap": 12,
+              "children": [
+                {
+                  "type": "frame",
+                  "id": "YIpJK",
+                  "layout": "vertical",
+                  "gap": 4,
+                  "children": [
+                    {
+                      "type": "frame",
+                      "id": "u2OyA",
+                      "clip": true,
+                      "width": 32,
+                      "height": 32,
+                      "fill": "#0B0B0C",
+                      "layout": "none",
+                      "children": [
+                        {
+                          "type": "frame",
+                          "id": "y7tUBO",
+                          "x": 0,
+                          "y": 0,
+                          "name": "Preview",
+                          "width": 32,
+                          "height": 32,
+                          "fill": "#0B0B0C",
+                          "layout": "none",
+                          "children": [
+                            {
+                              "type": "ellipse",
+                              "id": "oY2iG",
+                              "x": 28,
+                              "y": 28,
+                              "fill": "#FF6B35",
+                              "width": 72,
+                              "height": 72
+                            },
+                            {
+                              "type": "ellipse",
+                              "id": "j4ze1",
+                              "x": 38,
+                              "y": 38,
+                              "fill": "#0B0B0C",
+                              "width": 52,
+                              "height": 52
+                            },
+                            {
+                              "type": "ellipse",
+                              "id": "RjyI3",
+                              "x": 56,
+                              "y": 56,
+                              "fill": "#FF6B35",
+                              "width": 16,
+                              "height": 16
+                            }
+                          ]
+                        }
+                      ]
+                    },
+                    {
+                      "type": "text",
+                      "id": "qvas1",
+                      "fill": "#7A7570",
+                      "content": "A",
+                      "fontFamily": "Inter",
+                      "fontSize": 10,
+                      "fontWeight": "normal"
+                    }
+                  ]
+                },
+                {
+                  "type": "frame",
+                  "id": "x24Mxk",
+                  "layout": "vertical",
+                  "gap": 4,
+                  "children": [
+                    {
+                      "type": "frame",
+                      "id": "yUX8R",
+                      "clip": true,
+                      "width": 32,
+                      "height": 32,
+                      "fill": "#0B0B0C",
+                      "layout": "none",
+                      "children": [
+                        {
+                          "type": "frame",
+                          "id": "i46ur8",
+                          "x": 0,
+                          "y": 0,
+                          "name": "Preview",
+                          "width": 32,
+                          "height": 32,
+                          "fill": "#0B0B0C",
+                          "layout": "none",
+                          "children": [
+                            {
+                              "type": "text",
+                              "id": "IgPDa",
+                              "x": 28,
+                              "y": 22,
+                              "fill": "#FFFFFF",
+                              "content": "C",
+                              "fontFamily": "Anton",
+                              "fontSize": 64,
+                              "fontWeight": "normal"
+                            },
+                            {
+                              "type": "text",
+                              "id": "yCtv8",
+                              "x": 72,
+                              "y": 34,
+                              "fill": "#FF6B35",
+                              "content": "?",
+                              "fontFamily": "Anton",
+                              "fontSize": 52,
+                              "fontWeight": "normal"
+                            }
+                          ]
+                        }
+                      ]
+                    },
+                    {
+                      "type": "text",
+                      "id": "csRkD",
+                      "fill": "#7A7570",
+                      "content": "B",
+                      "fontFamily": "Inter",
+                      "fontSize": 10,
+                      "fontWeight": "normal"
+                    }
+                  ]
+                },
+                {
+                  "type": "frame",
+                  "id": "JxX2I",
+                  "layout": "vertical",
+                  "gap": 4,
+                  "children": [
+                    {
+                      "type": "frame",
+                      "id": "Z3A5HP",
+                      "clip": true,
+                      "width": 32,
+                      "height": 32,
+                      "fill": "#0B0B0C",
+                      "layout": "none",
+                      "children": [
+                        {
+                          "type": "frame",
+                          "id": "YQXqo",
+                          "x": 0,
+                          "y": 0,
+                          "name": "Preview",
+                          "width": 32,
+                          "height": 32,
+                          "fill": "#0B0B0C",
+                          "layout": "none",
+                          "children": [
+                            {
+                              "type": "text",
+                              "id": "VhQOx",
+                              "x": 24,
+                              "y": 30,
+                              "fill": "#FFFFFF",
+                              "content": "CD",
+                              "fontFamily": "Anton",
+                              "fontSize": 56,
+                              "fontWeight": "normal"
+                            },
+                            {
+                              "type": "rectangle",
+                              "id": "Vq8ML",
+                              "x": 24,
+                              "y": 92,
+                              "fill": "#FF6B35",
+                              "width": 80,
+                              "height": 6
+                            }
+                          ]
+                        }
+                      ]
+                    },
+                    {
+                      "type": "text",
+                      "id": "Jr9bY",
+                      "fill": "#7A7570",
+                      "content": "C",
+                      "fontFamily": "Inter",
+                      "fontSize": 10,
+                      "fontWeight": "normal"
+                    }
+                  ]
+                },
+                {
+                  "type": "frame",
+                  "id": "Jr7wg",
+                  "layout": "vertical",
+                  "gap": 4,
+                  "children": [
+                    {
+                      "type": "frame",
+                      "id": "ez0Nl",
+                      "clip": true,
+                      "width": 32,
+                      "height": 32,
+                      "fill": "#0B0B0C",
+                      "layout": "none",
+                      "children": [
+                        {
+                          "type": "frame",
+                          "id": "q3FbeV",
+                          "x": 0,
+                          "y": 0,
+                          "name": "Preview",
+                          "width": 32,
+                          "height": 32,
+                          "fill": "#0B0B0C",
+                          "layout": "none",
+                          "children": [
+                            {
+                              "type": "rectangle",
+                              "id": "PC9I8",
+                              "x": 0,
+                              "y": 0,
+                              "fill": "#FF6B35",
+                              "width": 128,
+                              "height": 128
+                            },
+                            {
+                              "type": "text",
+                              "id": "PQPIh",
+                              "x": 42,
+                              "y": 8,
+                              "fill": "#0B0B0C",
+                              "content": "?",
+                              "fontFamily": "Anton",
+                              "fontSize": 88,
+                              "fontWeight": "normal"
+                            }
+                          ]
+                        }
+                      ]
+                    },
+                    {
+                      "type": "text",
+                      "id": "MMcXu",
+                      "fill": "#7A7570",
+                      "content": "F",
+                      "fontFamily": "Inter",
+                      "fontSize": 10,
+                      "fontWeight": "normal"
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ]
     }
-  ]
+  ],
+  "variables": {
+    "bg-dark": {
+      "type": "color",
+      "value": "#0B0B0C"
+    },
+    "surface-dark": {
+      "type": "color",
+      "value": "#1E1E20"
+    },
+    "border-dark": {
+      "type": "color",
+      "value": "#2E2E30"
+    },
+    "text-dark-muted": {
+      "type": "color",
+      "value": "#B5B0AC"
+    },
+    "text-dark-faint": {
+      "type": "color",
+      "value": "#7A7570"
+    },
+    "accent-dog": {
+      "type": "color",
+      "value": "#FF6B35"
+    },
+    "white": {
+      "type": "color",
+      "value": "#FFFFFF"
+    },
+    "font-heading": {
+      "type": "string",
+      "value": "Anton"
+    },
+    "font-body": {
+      "type": "string",
+      "value": "Funnel Sans"
+    }
+  },
+  "fileToken": "da3d4cfb-58f0-4658-9f20-434c5a2b091d"
 }

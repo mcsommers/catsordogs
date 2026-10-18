@@ -62,5 +62,7 @@ Living log of product questions, options, and Mike’s answers for the public ma
 ### Open design follow-ups
 
 - [x] Link Privacy, Terms, and Community guidelines to `/privacy-policy`, `/terms-of-service`, and `/community-guidelines` (Oct 17, 2026).
+- [x] **Favicon:** **C. CD monogram** from **Favicon concepts** in `website.pen` shipped as `website/public/favicon.svg` (Oct 18, 2026).
+- [ ] **App store launch:** Remove the Coming Soon / notify modal (`DownloadModal.astro`, `SiteLayout` import); wire `StoreBadges.astro` to real App Store and Google Play URLs. Backend signup + owner email can stay or be retired then.
 - [ ] Refine subscription tier bullets when the Free / Gold / Platinum model is defined.
 - [ ] Optional: add anchor IDs / section labels in Pencil for handoff to code (not required for static design).
