@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128" role="img" aria-label="Cats or Dogs?">
+  <rect width="128" height="128" fill="#0B0B0C"/>
+  <text
+    x="24"
+    y="78"
+    font-family="Anton, Impact, 'Arial Black', sans-serif"
+    font-size="56"
+    fill="#FFFFFF"
+    letter-spacing="-2"
+  >CD</text>
+  <rect x="24" y="92" width="80" height="6" fill="#FF6B35"/>
+</svg>

@@ -3,6 +3,10 @@
 A record of questions asked while planning the phone app, the options offered,
 and Mike's answer. Newest phase first.
 
+## App icon concepts (Mike, Oct 17, 2026)
+
+Exploration frame **App icon concepts** in `pencil-new.pen` (six 180pt squircle previews). **7. CD monogram (website favicon)** matches the live site favicon (white CD, orange underline, black). Pick a direction before export to 1024 for `mobile/app.json` store assets.
+
 ## Admin email on every new report (Mike, Oct 17, 2026)
 
 Each new video flag, profile report, or chat message report queues one email to every admin (`admin_alert` / `moderation_report`). Copy names what was reported and points admins to the moderation queue; reporter identities are never included. A second report from the same person on the same target does not send another email. Notification settings cannot turn these off.
