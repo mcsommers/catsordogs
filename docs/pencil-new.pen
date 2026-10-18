@@ -1912,7 +1912,7 @@
                       "fill": "$text-secondary",
                       "textGrowth": "fixed-width",
                       "width": "fill_container(321)",
-                      "content": "Tell people about yourself — your pets, hobbies, what you're looking for...",
+                      "content": "Tell people about yourself: your pets, hobbies, what you're looking for...",
                       "lineHeight": 1.4,
                       "fontFamily": "$font-body",
                       "fontSize": 14,
@@ -3264,7 +3264,7 @@
                       "fill": "$white",
                       "textGrowth": "fixed-width",
                       "width": "fill_container",
-                      "content": "Honestly? I think graffiti gets a bad rap — some of it is genuinely incredible street art.",
+                      "content": "Honestly? I think graffiti gets a bad rap. Some of it is genuinely incredible street art.",
                       "lineHeight": 1.4,
                       "fontFamily": "$font-body",
                       "fontSize": 14,
@@ -3748,7 +3748,7 @@
                       "fill": "$white",
                       "textGrowth": "fixed-width",
                       "width": "fill_container",
-                      "content": "Honestly? I think graffiti gets a bad rap — some of it is genuinely incredible street art.",
+                      "content": "Honestly? I think graffiti gets a bad rap. Some of it is genuinely incredible street art.",
                       "lineHeight": 1.4,
                       "fontFamily": "$font-body",
                       "fontSize": 14,
@@ -3784,7 +3784,7 @@
                   "id": "G0dul",
                   "name": "Caption Helper",
                   "fill": "#FFFFFF99",
-                  "content": "Auto-captioned from your audio — tap to edit",
+                  "content": "Auto-captioned from your audio. Tap to edit",
                   "fontFamily": "$font-body",
                   "fontSize": 11,
                   "fontWeight": "normal"
@@ -4110,7 +4110,7 @@
                           "fill": "$white",
                           "textGrowth": "fixed-width",
                           "width": "fill_container",
-                          "content": "Honestly? I think graffiti gets a bad rap — some of it is real art.",
+                          "content": "Honestly? I think graffiti gets a bad rap. Some of it is real art.",
                           "lineHeight": 1.4,
                           "fontFamily": "$font-body",
                           "fontSize": 14,
@@ -5589,7 +5589,7 @@
                       "fill": "$white",
                       "textGrowth": "fixed-width",
                       "width": "fill_container",
-                      "content": "Coffee or tea — defend your answer.",
+                      "content": "Coffee or tea? Defend your answer.",
                       "lineHeight": 1.35,
                       "fontFamily": "$font-body",
                       "fontSize": 16,
@@ -11486,7 +11486,7 @@
                               "fill": "$white",
                               "textGrowth": "fixed-width",
                               "width": "fill_container",
-                              "content": "Coffee or tea — defend your answer.",
+                              "content": "Coffee or tea? Defend your answer.",
                               "lineHeight": 1.3,
                               "fontFamily": "$font-body",
                               "fontSize": 13,
@@ -12326,7 +12326,7 @@
                                   "fill": "$text-dark-muted",
                                   "textGrowth": "fixed-width",
                                   "width": "fill_container",
-                                  "content": "Liked your answer to “Coffee or tea — defend your answer.” · 2h ago",
+                                  "content": "Liked your answer to “Coffee or tea? Defend your answer.” · 2h ago",
                                   "fontFamily": "$font-body",
                                   "fontSize": 12,
                                   "fontWeight": "normal"
@@ -14800,7 +14800,7 @@
                           "fill": "$white",
                           "textGrowth": "fixed-width",
                           "width": "fill_container",
-                          "content": "Honestly? I think graffiti gets a bad rap — some of it is genuinely incredible street art.",
+                          "content": "Honestly? I think graffiti gets a bad rap. Some of it is genuinely incredible street art.",
                           "lineHeight": 1.4,
                           "fontFamily": "$font-body",
                           "fontSize": 14,
@@ -16438,7 +16438,7 @@
                                   "fill": "$text-dark-muted",
                                   "textGrowth": "fixed-width",
                                   "width": "fill_container",
-                                  "content": "Liked your answer to “Coffee or tea — defend your answer.” · 2h ago",
+                                  "content": "Liked your answer to “Coffee or tea? Defend your answer.” · 2h ago",
                                   "fontFamily": "$font-body",
                                   "fontSize": 12,
                                   "fontWeight": "normal"
@@ -18386,7 +18386,7 @@
                           "fill": "$white",
                           "textGrowth": "fixed-width",
                           "width": "fill_container",
-                          "content": "Honestly? I think graffiti gets a bad rap — some of it is genuinely incredible street art.",
+                          "content": "Honestly? I think graffiti gets a bad rap. Some of it is genuinely incredible street art.",
                           "lineHeight": 1.4,
                           "fontFamily": "$font-body",
                           "fontSize": 14,
@@ -18422,7 +18422,7 @@
                       "id": "x43h4",
                       "name": "Caption Helper",
                       "fill": "#FFFFFF99",
-                      "content": "Auto-captioned from your audio — tap to edit",
+                      "content": "Auto-captioned from your audio. Tap to edit",
                       "fontFamily": "$font-body",
                       "fontSize": 11,
                       "fontWeight": "normal"
@@ -19019,7 +19019,7 @@
                           "fill": "#B5B0AC",
                           "textGrowth": "fixed-width",
                           "width": "fill_container",
-                          "content": "Liked “Coffee or tea — defend your answer.” · 2h ago",
+                          "content": "Liked “Coffee or tea? Defend your answer.” · 2h ago",
                           "lineHeight": 1.35,
                           "fontFamily": "$font-body",
                           "fontSize": 12,
@@ -20190,7 +20190,7 @@
                               "fill": "$white",
                               "textGrowth": "fixed-width",
                               "width": "fill_container",
-                              "content": "Coffee or tea — defend your answer.",
+                              "content": "Coffee or tea? Defend your answer.",
                               "lineHeight": 1.3,
                               "fontFamily": "$font-body",
                               "fontSize": 13,
@@ -21615,7 +21615,7 @@
                                   "fill": "$white",
                                   "textGrowth": "fixed-width",
                                   "width": "fill_container",
-                                  "content": "Coffee or tea — defend your answer.",
+                                  "content": "Coffee or tea? Defend your answer.",
                                   "lineHeight": 1.3,
                                   "fontFamily": "$font-body",
                                   "fontSize": 13,
@@ -23563,7 +23563,7 @@
                               "fill": "$white",
                               "textGrowth": "fixed-width",
                               "width": "fill_container",
-                              "content": "Coffee or tea — defend your answer.",
+                              "content": "Coffee or tea? Defend your answer.",
                               "lineHeight": 1.3,
                               "fontFamily": "$font-body",
                               "fontSize": 13,
@@ -25166,7 +25166,7 @@
                               "fill": "$white",
                               "textGrowth": "fixed-width",
                               "width": "fill_container",
-                              "content": "Coffee or tea — defend your answer.",
+                              "content": "Coffee or tea? Defend your answer.",
                               "lineHeight": 1.3,
                               "fontFamily": "$font-body",
                               "fontSize": 13,
@@ -26957,7 +26957,7 @@
                               "fill": "$white",
                               "textGrowth": "fixed-width",
                               "width": "fill_container",
-                              "content": "Coffee or tea — defend your answer.",
+                              "content": "Coffee or tea? Defend your answer.",
                               "lineHeight": 1.3,
                               "fontFamily": "$font-body",
                               "fontSize": 13,
@@ -28893,7 +28893,7 @@
                               "fill": "$white",
                               "textGrowth": "fixed-width",
                               "width": "fill_container",
-                              "content": "Coffee or tea — defend your answer.",
+                              "content": "Coffee or tea? Defend your answer.",
                               "lineHeight": 1.3,
                               "fontFamily": "$font-body",
                               "fontSize": 13,
@@ -31575,7 +31575,7 @@
                       "fill": "$text-secondary",
                       "textGrowth": "fixed-width",
                       "width": "fill_container(321)",
-                      "content": "Tell people about yourself — your pets, hobbies, what you're looking for...",
+                      "content": "Tell people about yourself: your pets, hobbies, what you're looking for...",
                       "lineHeight": 1.4,
                       "fontFamily": "$font-body",
                       "fontSize": 14,
@@ -34290,7 +34290,7 @@
                           "fill": "$white",
                           "textGrowth": "fixed-width",
                           "width": "fill_container",
-                          "content": "Honestly? I think graffiti gets a bad rap — some of it is genuinely incredible street art.",
+                          "content": "Honestly? I think graffiti gets a bad rap. Some of it is genuinely incredible street art.",
                           "lineHeight": 1.4,
                           "fontFamily": "$font-body",
                           "fontSize": 14,
@@ -36265,7 +36265,7 @@
                               "fill": "$white",
                               "textGrowth": "fixed-width",
                               "width": "fill_container",
-                              "content": "Coffee or tea — defend your answer.",
+                              "content": "Coffee or tea? Defend your answer.",
                               "lineHeight": 1.3,
                               "fontFamily": "$font-body",
                               "fontSize": 13,
@@ -40322,7 +40322,7 @@
                       "fill": "$white",
                       "textGrowth": "fixed-width",
                       "width": "fill_container",
-                      "content": "Honestly? I think graffiti gets a bad rap — some of it is genuinely incredible street art.",
+                      "content": "Honestly? I think graffiti gets a bad rap. Some of it is genuinely incredible street art.",
                       "lineHeight": 1.4,
                       "fontFamily": "$font-body",
                       "fontSize": 14,
@@ -42191,7 +42191,7 @@
                               "fill": "$white",
                               "textGrowth": "fixed-width",
                               "width": "fill_container",
-                              "content": "Coffee or tea — defend your answer.",
+                              "content": "Coffee or tea? Defend your answer.",
                               "lineHeight": 1.3,
                               "fontFamily": "$font-body",
                               "fontSize": 13,
@@ -45487,7 +45487,7 @@
                       "fill": "$text-secondary",
                       "textGrowth": "fixed-width",
                       "width": "fill_container(321)",
-                      "content": "Tell people about yourself — your pets, hobbies, what you're looking for...",
+                      "content": "Tell people about yourself: your pets, hobbies, what you're looking for...",
                       "lineHeight": 1.4,
                       "fontFamily": "$font-body",
                       "fontSize": 14,
@@ -51414,7 +51414,7 @@
                       "fill": "$text-secondary",
                       "textGrowth": "fixed-width",
                       "width": "fill_container(321)",
-                      "content": "Tell people about yourself — your pets, hobbies, what you're looking for...",
+                      "content": "Tell people about yourself: your pets, hobbies, what you're looking for...",
                       "lineHeight": 1.4,
                       "fontFamily": "$font-body",
                       "fontSize": 14,
@@ -76374,7 +76374,7 @@
                               "fill": "$white",
                               "textGrowth": "fixed-width",
                               "width": "fill_container",
-                              "content": "Coffee or tea — defend your answer.",
+                              "content": "Coffee or tea? Defend your answer.",
                               "lineHeight": 1.3,
                               "fontFamily": "$font-body",
                               "fontSize": 13,
@@ -79654,7 +79654,7 @@
                                   "fill": "$white",
                                   "textGrowth": "fixed-width",
                                   "width": "fill_container",
-                                  "content": "Coffee or tea — defend your answer.",
+                                  "content": "Coffee or tea? Defend your answer.",
                                   "lineHeight": 1.3,
                                   "fontFamily": "$font-body",
                                   "fontSize": 13,
@@ -81323,7 +81323,7 @@
                       "fill": "$text-dark-muted",
                       "textGrowth": "fixed-width",
                       "width": "fill_container",
-                      "content": "Thanks — we'll review this response.",
+                      "content": "Thanks. We'll review this response.",
                       "lineHeight": 1.4,
                       "textAlign": "center",
                       "fontFamily": "$font-body",
@@ -81369,6 +81369,567 @@
       "width": 320,
       "height": 120,
       "content": "LOCKED UX: Swiping moves video + all chrome (pill, mute, captions, metadata) together as one vertical page. Not a fixed HUD. See docs/mobile-feed-scroll.md"
+    },
+    {
+      "type": "frame",
+      "id": "jcDFw",
+      "x": 15223,
+      "y": 472,
+      "name": "App icon concepts",
+      "clip": true,
+      "width": 1400,
+      "fill": "#F4F2EF",
+      "layout": "vertical",
+      "gap": 28,
+      "padding": 48,
+      "children": [
+        {
+          "type": "text",
+          "id": "i9k0L",
+          "fill": "#0B0B0C",
+          "content": "App icon concepts",
+          "fontFamily": "Anton",
+          "fontSize": 40,
+          "fontWeight": "normal"
+        },
+        {
+          "type": "text",
+          "id": "ceHUz",
+          "fill": "#5C5854",
+          "textGrowth": "fixed-width",
+          "width": 1000,
+          "content": "iOS / Android store icons. Shown at 180pt with iOS squircle mask. Match app dark UI + orange accent (#FF6B35).",
+          "lineHeight": 1.45,
+          "fontFamily": "Inter",
+          "fontSize": 15,
+          "fontWeight": "normal"
+        },
+        {
+          "type": "frame",
+          "id": "QDPAW",
+          "width": "fill_container",
+          "gap": 40,
+          "children": [
+            {
+              "type": "frame",
+              "id": "oEZQh",
+              "width": 260,
+              "layout": "vertical",
+              "gap": 14,
+              "children": [
+                {
+                  "type": "frame",
+                  "id": "CDuzf",
+                  "name": "Device mask",
+                  "clip": true,
+                  "width": 180,
+                  "height": 180,
+                  "fill": "#0B0B0C",
+                  "cornerRadius": 40,
+                  "layout": "none",
+                  "children": [
+                    {
+                      "type": "ellipse",
+                      "id": "H8i3xX",
+                      "x": 35,
+                      "y": 35,
+                      "fill": "#FF6B35",
+                      "width": 110,
+                      "height": 110
+                    },
+                    {
+                      "type": "ellipse",
+                      "id": "JnEIh",
+                      "x": 51,
+                      "y": 51,
+                      "fill": "#0B0B0C",
+                      "width": 78,
+                      "height": 78
+                    },
+                    {
+                      "type": "ellipse",
+                      "id": "HJOJm",
+                      "x": 77,
+                      "y": 77,
+                      "fill": "#FF6B35",
+                      "width": 26,
+                      "height": 26
+                    }
+                  ]
+                },
+                {
+                  "type": "text",
+                  "id": "V2Q1J",
+                  "fill": "#0B0B0C",
+                  "content": "1. Record hero",
+                  "fontFamily": "Inter",
+                  "fontSize": 14,
+                  "fontWeight": "600"
+                },
+                {
+                  "type": "text",
+                  "id": "sIzKH",
+                  "fill": "#7A7570",
+                  "textGrowth": "fixed-width",
+                  "width": 240,
+                  "content": "Big record ring. Says video-first.",
+                  "lineHeight": 1.35,
+                  "fontFamily": "Inter",
+                  "fontSize": 12,
+                  "fontWeight": "normal"
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "Y9F4o",
+              "width": 260,
+              "layout": "vertical",
+              "gap": 14,
+              "children": [
+                {
+                  "type": "frame",
+                  "id": "FHguE",
+                  "name": "Device mask",
+                  "clip": true,
+                  "width": 180,
+                  "height": 180,
+                  "fill": "#0B0B0C",
+                  "cornerRadius": 40,
+                  "layout": "none",
+                  "children": [
+                    {
+                      "type": "text",
+                      "id": "w6qoi",
+                      "x": 36,
+                      "y": 28,
+                      "fill": "#FFFFFF",
+                      "content": "C",
+                      "fontFamily": "Anton",
+                      "fontSize": 96,
+                      "fontWeight": "normal"
+                    },
+                    {
+                      "type": "text",
+                      "id": "t3VSgg",
+                      "x": 98,
+                      "y": 52,
+                      "fill": "#FF6B35",
+                      "content": "?",
+                      "fontFamily": "Anton",
+                      "fontSize": 72,
+                      "fontWeight": "normal"
+                    }
+                  ]
+                },
+                {
+                  "type": "text",
+                  "id": "h3z97T",
+                  "fill": "#0B0B0C",
+                  "content": "2. Daily question",
+                  "fontFamily": "Inter",
+                  "fontSize": 14,
+                  "fontWeight": "600"
+                },
+                {
+                  "type": "text",
+                  "id": "YsOxG",
+                  "fill": "#7A7570",
+                  "textGrowth": "fixed-width",
+                  "width": 240,
+                  "content": "C + ? lockup. Brand voice.",
+                  "lineHeight": 1.35,
+                  "fontFamily": "Inter",
+                  "fontSize": 12,
+                  "fontWeight": "normal"
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "RuSBl",
+              "width": 260,
+              "layout": "vertical",
+              "gap": 14,
+              "children": [
+                {
+                  "type": "frame",
+                  "id": "bZnSp",
+                  "name": "Device mask",
+                  "clip": true,
+                  "width": 180,
+                  "height": 180,
+                  "fill": "#0B0B0C",
+                  "cornerRadius": 40,
+                  "layout": "none",
+                  "children": [
+                    {
+                      "type": "text",
+                      "id": "B7dkm1",
+                      "x": 38,
+                      "y": 44,
+                      "fill": "#FFFFFF",
+                      "content": "CD",
+                      "fontFamily": "Anton",
+                      "fontSize": 88,
+                      "fontWeight": "normal"
+                    },
+                    {
+                      "type": "rectangle",
+                      "id": "wAMqC",
+                      "x": 30,
+                      "y": 132,
+                      "fill": "#FF6B35",
+                      "width": 120,
+                      "height": 8
+                    }
+                  ]
+                },
+                {
+                  "type": "text",
+                  "id": "c0elFU",
+                  "fill": "#0B0B0C",
+                  "content": "3. CD badge",
+                  "fontFamily": "Inter",
+                  "fontSize": 14,
+                  "fontWeight": "600"
+                },
+                {
+                  "type": "text",
+                  "id": "szNcT",
+                  "fill": "#7A7570",
+                  "textGrowth": "fixed-width",
+                  "width": 240,
+                  "content": "Monogram for small home screen.",
+                  "lineHeight": 1.35,
+                  "fontFamily": "Inter",
+                  "fontSize": 12,
+                  "fontWeight": "normal"
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "FoYvg",
+              "width": 260,
+              "layout": "vertical",
+              "gap": 14,
+              "children": [
+                {
+                  "type": "frame",
+                  "id": "epQvQ",
+                  "name": "Device mask",
+                  "clip": true,
+                  "width": 180,
+                  "height": 180,
+                  "fill": "#0B0B0C",
+                  "cornerRadius": 40,
+                  "layout": "none",
+                  "children": [
+                    {
+                      "type": "rectangle",
+                      "id": "NTAr9",
+                      "x": 0,
+                      "y": 0,
+                      "fill": "#FF6B35",
+                      "width": 90,
+                      "height": 180
+                    },
+                    {
+                      "type": "rectangle",
+                      "id": "aF89i",
+                      "x": 90,
+                      "y": 0,
+                      "fill": "#FFFFFF",
+                      "width": 90,
+                      "height": 180
+                    },
+                    {
+                      "type": "ellipse",
+                      "id": "H5srOq",
+                      "x": 72,
+                      "y": 78,
+                      "fill": "#0B0B0C",
+                      "width": 36,
+                      "height": 26
+                    }
+                  ]
+                },
+                {
+                  "type": "text",
+                  "id": "yJif2",
+                  "fill": "#0B0B0C",
+                  "content": "4. Split duo",
+                  "fontFamily": "Inter",
+                  "fontSize": 14,
+                  "fontWeight": "600"
+                },
+                {
+                  "type": "text",
+                  "id": "IMEaQ",
+                  "fill": "#7A7570",
+                  "textGrowth": "fixed-width",
+                  "width": 240,
+                  "content": "Cats vs dogs without mascots.",
+                  "lineHeight": 1.35,
+                  "fontFamily": "Inter",
+                  "fontSize": 12,
+                  "fontWeight": "normal"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "frame",
+          "id": "GIZRT",
+          "width": "fill_container",
+          "gap": 40,
+          "children": [
+            {
+              "type": "frame",
+              "id": "waRIe",
+              "width": 260,
+              "layout": "vertical",
+              "gap": 14,
+              "children": [
+                {
+                  "type": "frame",
+                  "id": "R3XoBE",
+                  "name": "Device mask",
+                  "clip": true,
+                  "width": 180,
+                  "height": 180,
+                  "fill": "#0B0B0C",
+                  "cornerRadius": 40,
+                  "layout": "none",
+                  "children": [
+                    {
+                      "type": "rectangle",
+                      "cornerRadius": 18,
+                      "id": "TasQl",
+                      "x": 30,
+                      "y": 42,
+                      "fill": "#1E1E20",
+                      "width": 120,
+                      "height": 96
+                    },
+                    {
+                      "type": "rectangle",
+                      "cornerRadius": 16,
+                      "id": "Kj5dW",
+                      "x": 34,
+                      "y": 46,
+                      "fill": "#0B0B0C",
+                      "width": 112,
+                      "height": 88
+                    },
+                    {
+                      "type": "ellipse",
+                      "id": "UhPhW",
+                      "x": 73,
+                      "y": 73,
+                      "fill": "#FF6B35",
+                      "width": 34,
+                      "height": 34
+                    },
+                    {
+                      "type": "rectangle",
+                      "cornerRadius": 4,
+                      "id": "Buio2",
+                      "x": 78,
+                      "y": 34,
+                      "fill": "#FF6B35",
+                      "width": 24,
+                      "height": 12
+                    }
+                  ]
+                },
+                {
+                  "type": "text",
+                  "id": "Icpk8",
+                  "fill": "#0B0B0C",
+                  "content": "5. Camera card",
+                  "fontFamily": "Inter",
+                  "fontSize": 14,
+                  "fontWeight": "600"
+                },
+                {
+                  "type": "text",
+                  "id": "jmNFd",
+                  "fill": "#7A7570",
+                  "textGrowth": "fixed-width",
+                  "width": 240,
+                  "content": "Rounded viewfinder frame.",
+                  "lineHeight": 1.35,
+                  "fontFamily": "Inter",
+                  "fontSize": 12,
+                  "fontWeight": "normal"
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "PEKLe",
+              "width": 260,
+              "layout": "vertical",
+              "gap": 14,
+              "children": [
+                {
+                  "type": "frame",
+                  "id": "yxB3D",
+                  "name": "Device mask",
+                  "clip": true,
+                  "width": 180,
+                  "height": 180,
+                  "fill": "#0B0B0C",
+                  "cornerRadius": 40,
+                  "layout": "none",
+                  "children": [
+                    {
+                      "type": "rectangle",
+                      "id": "ygiA7",
+                      "x": 0,
+                      "y": 0,
+                      "fill": "#FF6B35",
+                      "width": 180,
+                      "height": 180
+                    },
+                    {
+                      "type": "text",
+                      "id": "AthZX",
+                      "x": 58,
+                      "y": 18,
+                      "fill": "#0B0B0C",
+                      "content": "?",
+                      "fontFamily": "Anton",
+                      "fontSize": 120,
+                      "fontWeight": "normal"
+                    }
+                  ]
+                },
+                {
+                  "type": "text",
+                  "id": "iOJg7",
+                  "fill": "#0B0B0C",
+                  "content": "6. Orange splash",
+                  "fontFamily": "Inter",
+                  "fontSize": 14,
+                  "fontWeight": "600"
+                },
+                {
+                  "type": "text",
+                  "id": "HIkDa",
+                  "fill": "#7A7570",
+                  "textGrowth": "fixed-width",
+                  "width": 240,
+                  "content": "Bold ? for shelf standout.",
+                  "lineHeight": 1.35,
+                  "fontFamily": "Inter",
+                  "fontSize": 12,
+                  "fontWeight": "normal"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "frame",
+          "id": "h7BhmW",
+          "width": "fill_container",
+          "fill": "#FFFFFF",
+          "cornerRadius": 12,
+          "layout": "vertical",
+          "gap": 8,
+          "padding": 16,
+          "children": [
+            {
+              "type": "text",
+              "id": "Qspnk",
+              "fill": "#5C5854",
+              "textGrowth": "fixed-width",
+              "width": 1200,
+              "content": "Next step: pick 1 to 2 directions. We can refine with illustrated cat/dog marks, export 1024 PNG, and add to mobile/app.json + website favicon.",
+              "lineHeight": 1.4,
+              "fontFamily": "Inter",
+              "fontSize": 13,
+              "fontWeight": "normal"
+            }
+          ]
+        },
+        {
+          "type": "frame",
+          "id": "sDv2k",
+          "name": "Row 3 — CD from website favicon",
+          "width": "fill_container",
+          "gap": 40,
+          "children": [
+            {
+              "type": "frame",
+              "id": "cEGpa",
+              "width": 280,
+              "layout": "vertical",
+              "gap": 14,
+              "children": [
+                {
+                  "type": "frame",
+                  "id": "SOx4M",
+                  "name": "CD monogram website match",
+                  "clip": true,
+                  "width": 180,
+                  "height": 180,
+                  "fill": "#0B0B0C",
+                  "cornerRadius": 40,
+                  "layout": "none",
+                  "children": [
+                    {
+                      "type": "text",
+                      "id": "ok101",
+                      "x": 38,
+                      "y": 44,
+                      "fill": "#FFFFFF",
+                      "content": "CD",
+                      "fontFamily": "Anton",
+                      "fontSize": 88,
+                      "fontWeight": "normal"
+                    },
+                    {
+                      "type": "rectangle",
+                      "id": "R8DNSt",
+                      "x": 30,
+                      "y": 143,
+                      "fill": "#FF6B35",
+                      "width": 120,
+                      "height": 8
+                    }
+                  ]
+                },
+                {
+                  "type": "text",
+                  "id": "zlpkB",
+                  "fill": "#0B0B0C",
+                  "content": "7. CD monogram (website favicon)",
+                  "fontFamily": "Inter",
+                  "fontSize": 14,
+                  "fontWeight": "600"
+                },
+                {
+                  "type": "text",
+                  "id": "t4LTF",
+                  "fill": "#7A7570",
+                  "textGrowth": "fixed-width",
+                  "width": 260,
+                  "content": "Matches website favicon C: white CD on black with orange underline under the letters.",
+                  "lineHeight": 1.35,
+                  "fontFamily": "Inter",
+                  "fontSize": 12,
+                  "fontWeight": "normal"
+                }
+              ]
+            }
+          ]
+        }
+      ]
     }
   ],
   "variables": {
