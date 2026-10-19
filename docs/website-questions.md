@@ -58,6 +58,7 @@ Living log of product questions, options, and Mike’s answers for the public ma
 | Oct 17, 2026 | **Legal pages:** `/privacy-policy`, `/terms-of-service`, `/community-guidelines` with shared header/footer; footer links wired. Copy in `website/src/data/legal/`. |
 | Oct 17, 2026 | Homepage: **Support** section and nav label renamed to **FAQs** (`#faqs` anchor). |
 | Oct 17, 2026 | FAQs: added **Why do I have to record videos of myself?** as first item (desktop + mobile + site). |
+| Oct 19, 2026 | **Support page:** `/support` with email + question form (required fields), success copy **Thanks for reaching out. We will be in touch shortly.** Footer adds **Support** before Privacy. Backend: `website_support_inquiries`, RPC `submit_website_support_inquiry`, Edge Function `website-support-inquiry` emails **catsordogsapp+support@gmail.com**. Rate limits and honeypot reduce spam. Design frame **Support — Desktop** in `website.pen`. |
 
 ### Open design follow-ups
 

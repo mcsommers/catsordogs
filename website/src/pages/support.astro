@@ -1,0 +1,167 @@
+---
+import { siteName, supportPage } from '../data/homepage';
+import SiteLayout from '../layouts/SiteLayout.astro';
+
+const supabaseUrl = import.meta.env.PUBLIC_SUPABASE_URL ?? '';
+const supabaseAnonKey = import.meta.env.PUBLIC_SUPABASE_ANON_KEY ?? '';
+---
+
+<SiteLayout title={`${supportPage.title} | ${siteName}`} description={supportPage.metaDescription}>
+  <main class="legal-page support-page">
+    <div class="container legal-page__inner">
+      <h1 class="legal-page__title">{supportPage.title}</h1>
+      <p class="legal-page__intro">{supportPage.intro}</p>
+
+      <form
+        class="support-form"
+        id="support-form"
+        novalidate
+        data-supabase-url={supabaseUrl}
+        data-supabase-anon-key={supabaseAnonKey}
+      >
+        <div class="support-form__honeypot" aria-hidden="true">
+          <label for="support-company-website">Company website</label>
+          <input
+            type="text"
+            id="support-company-website"
+            name="company_website"
+            tabindex="-1"
+            autocomplete="off"
+          />
+        </div>
+
+        <label class="support-form__label" for="support-email">{supportPage.emailLabel}</label>
+        <input
+          class="support-form__input"
+          type="email"
+          id="support-email"
+          name="email"
+          autocomplete="email"
+          inputmode="email"
+          required
+        />
+
+        <label class="support-form__label" for="support-question">{supportPage.questionLabel}</label>
+        <textarea
+          class="support-form__textarea"
+          id="support-question"
+          name="question"
+          rows="6"
+          maxlength="4000"
+          required
+        ></textarea>
+
+        <p class="support-form__feedback" id="support-feedback" hidden></p>
+        <button class="support-form__submit" type="submit">{supportPage.submitLabel}</button>
+      </form>
+
+      <p class="support-form__success" id="support-success" hidden>{supportPage.successMessage}</p>
+    </div>
+  </main>
+</SiteLayout>
+
+<script define:vars={{ supportPage, supabaseUrl, supabaseAnonKey }}>
+  (function () {
+    const form = document.getElementById('support-form');
+    const emailInput = document.getElementById('support-email');
+    const questionInput = document.getElementById('support-question');
+    const honeypot = document.getElementById('support-company-website');
+    const feedback = document.getElementById('support-feedback');
+    const success = document.getElementById('support-success');
+
+    if (!form || !emailInput || !questionInput || !honeypot || !feedback || !success) return;
+
+    const MIN_QUESTION = 10;
+    const MAX_QUESTION = 4000;
+
+    function setFeedback(message, isError) {
+      feedback.hidden = !message;
+      feedback.textContent = message;
+      feedback.classList.toggle('support-form__feedback--error', Boolean(isError));
+    }
+
+    function isValidEmail(value) {
+      return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value.trim());
+    }
+
+    async function submitInquiry(email, question, companyWebsite) {
+      const url = supabaseUrl || form.dataset.supabaseUrl;
+      const key = supabaseAnonKey || form.dataset.supabaseAnonKey;
+      if (!url || !key) throw new Error('not_configured');
+
+      const res = await fetch(`${url.replace(/\/$/, '')}/rest/v1/rpc/submit_website_support_inquiry`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          apikey: key,
+          Authorization: `Bearer ${key}`,
+        },
+        body: JSON.stringify({
+          p_email: email.trim(),
+          p_message: question.trim(),
+          p_company_website: companyWebsite.trim() || null,
+        }),
+      });
+
+      if (!res.ok) {
+        const body = await res.json().catch(() => ({}));
+        const msg = typeof body?.message === 'string' ? body.message : '';
+        if (msg.includes('Invalid email')) throw new Error('invalid_email');
+        if (msg.includes('too short')) throw new Error('question_short');
+        if (msg.includes('too long')) throw new Error('question_long');
+        if (msg.includes('Too many requests')) throw new Error('rate_limit');
+        throw new Error('submit');
+      }
+    }
+
+    form.addEventListener('submit', async (event) => {
+      event.preventDefault();
+      const email = emailInput.value.trim();
+      const question = questionInput.value.trim();
+
+      if (!isValidEmail(email)) {
+        setFeedback(supportPage.errorInvalidEmail, true);
+        emailInput.focus();
+        return;
+      }
+      if (question.length < MIN_QUESTION) {
+        setFeedback(supportPage.errorQuestionShort, true);
+        questionInput.focus();
+        return;
+      }
+      if (question.length > MAX_QUESTION) {
+        setFeedback(supportPage.errorQuestionLong, true);
+        questionInput.focus();
+        return;
+      }
+
+      setFeedback('', false);
+      const submitBtn = form.querySelector('button[type="submit"]');
+      if (submitBtn) submitBtn.disabled = true;
+
+      try {
+        await submitInquiry(email, question, honeypot.value);
+        form.hidden = true;
+        success.hidden = false;
+      } catch (err) {
+        if (submitBtn) submitBtn.disabled = false;
+        if (err.message === 'not_configured') {
+          setFeedback(supportPage.errorNotConfigured, true);
+        } else if (err.message === 'invalid_email') {
+          setFeedback(supportPage.errorInvalidEmail, true);
+          emailInput.focus();
+        } else if (err.message === 'question_short') {
+          setFeedback(supportPage.errorQuestionShort, true);
+          questionInput.focus();
+        } else if (err.message === 'question_long') {
+          setFeedback(supportPage.errorQuestionLong, true);
+          questionInput.focus();
+        } else if (err.message === 'rate_limit') {
+          setFeedback(supportPage.errorRateLimit, true);
+        } else {
+          setFeedback(supportPage.errorGeneric, true);
+        }
+      }
+    });
+  })();
+</script>

@@ -920,6 +920,104 @@ summary:focus-visible {
   margin-bottom: 0.5rem;
 }
 
+.support-page .legal-page__intro {
+  margin-bottom: 1.75rem;
+}
+
+.support-form {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.support-form__honeypot {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+.support-form__label {
+  margin-top: 0.75rem;
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: var(--text);
+}
+
+.support-form__input,
+.support-form__textarea {
+  width: 100%;
+  padding: 0.75rem 1rem;
+  font-size: 1rem;
+  font-family: inherit;
+  color: var(--text);
+  background: var(--surface);
+  border: 1px solid var(--border-dark);
+  border-radius: 0.5rem;
+}
+
+.support-form__textarea {
+  resize: vertical;
+  min-height: 8rem;
+  line-height: 1.5;
+}
+
+.support-form__input::placeholder,
+.support-form__textarea::placeholder {
+  color: var(--text-faint);
+}
+
+.support-form__input:focus,
+.support-form__textarea:focus {
+  outline: none;
+  border-color: var(--accent);
+  box-shadow: 0 0 0 2px color-mix(in srgb, var(--accent) 35%, transparent);
+}
+
+.support-form__feedback {
+  margin: 0.5rem 0 0;
+  font-size: 0.875rem;
+  color: var(--text-muted);
+}
+
+.support-form__feedback--error {
+  color: #f87171;
+}
+
+.support-form__submit {
+  margin-top: 1rem;
+  align-self: flex-start;
+  padding: 0.75rem 1.5rem;
+  font-size: 1rem;
+  font-weight: 600;
+  font-family: inherit;
+  color: var(--bg);
+  background: var(--accent);
+  border: none;
+  border-radius: 0.5rem;
+  cursor: pointer;
+}
+
+.support-form__submit:hover {
+  filter: brightness(1.05);
+}
+
+.support-form__submit:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.support-form__success {
+  margin: 0;
+  font-size: 1.0625rem;
+  color: var(--text-muted);
+}
+
 .site-footer__copy {
   margin: 0;
   font-size: 0.75rem;

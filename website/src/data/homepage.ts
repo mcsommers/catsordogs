@@ -158,7 +158,24 @@ export const downloadSection = {
     'Available soon on iOS and Android. Join the daily question and meet people who show up as themselves.',
 };
 
+export const supportPage = {
+  title: 'Support',
+  metaDescription: 'Contact the Cats or Dogs? team with questions about the app or website.',
+  intro: 'Have a question? Send us a message and we will get back to you.',
+  emailLabel: 'Your email',
+  questionLabel: 'Your question',
+  submitLabel: 'Send message',
+  successMessage: 'Thanks for reaching out. We will be in touch shortly.',
+  errorInvalidEmail: 'Enter a valid email address.',
+  errorQuestionShort: 'Please enter at least 10 characters.',
+  errorQuestionLong: 'Please keep your message under 4000 characters.',
+  errorRateLimit: 'Too many messages sent recently. Please try again later.',
+  errorGeneric: 'Something went wrong. Please try again.',
+  errorNotConfigured: 'Support is not available right now. Please try again later.',
+};
+
 export const footerLegalLinks = [
+  { label: 'Support', href: '/support' },
   { label: 'Privacy', href: '/privacy-policy' },
   { label: 'Terms', href: '/terms-of-service' },
   { label: 'Community guidelines', href: '/community-guidelines' },
