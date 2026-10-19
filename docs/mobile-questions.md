@@ -3,6 +3,10 @@
 A record of questions asked while planning the phone app, the options offered,
 and Mike's answer. Newest phase first.
 
+## Interests picker search, expand, and limit modal (Mike, Oct 19, 2026)
+
+**03e Interests:** Header search (with clear **x**) filters pills in real time. The search field is compact until focused, then expands across the remaining header width with padding from the **Interests** title. Selection count lives on **Done (N of 5)**. **Done** stays visible above the keyboard. At 5 picks, tapping another pill opens **Interest limit** / **You can only specify 5 interests.** / **OK**. Pencil: **03e Interests**, **03e Interests Search Focused**, **03e Interests Limit**.
+
 ## Sign Up: hide Apple/Google until store OAuth (Mike, Oct 19, 2026)
 
 **02 Sign Up** does not show Continue with Apple or Continue with Google (no "Coming soon" row) ahead of TestFlight and Play builds. **02b Log In** still shows the dimmed Coming soon social buttons. Re-enable on Sign Up by setting `SHOW_SIGN_UP_SOCIAL_AUTH` to `true` in `mobile/src/lib/authUi.ts` when OAuth is ready. Pencil frame 02 unchanged for now.
@@ -143,7 +147,7 @@ Decided:
 - After Done, the picks show as orange selected pills with an orange **Edit** link in the section header.
 - The 5 picks **replace** the old hobby list in the `interests` column, and feed the Shared Interests ranking (the Interests filter was removed; see below).
 - Lifestyle tags are removed. So are the **Smoking** and **Drinking** filters and the **Lifestyle Compatibility** ranking signal (Feed Settings, 06i, now has five ranking signals). Every screen that said "Lifestyle" now says "Interests".
-- The top row (back arrow, the title **Interests**, and "N of 5 selected" at the right) is sticky, and the space above **Done** equals the space below it (Pencil 03e and 03e Edited updated). The top row has 12 points of space above and below it. On Android the gap above **Done** is 24 points and does not include the phone's navigation bar; on iPhone it matches the gap below (which includes the home indicator).
+- The top row (back arrow, the title **Interests**, and compact **Search** on the right; search expands when focused) is sticky, and the space above **Done** equals the space below it (Pencil 03e and 03e Edited updated). The top row has 12 points of space above and below it. On Android the gap above **Done** is 24 points and does not include the phone's navigation bar; on iPhone it matches the gap below (which includes the home indicator).
 - **Done** is always visible: it is pinned at the bottom of 03e while the pill list scrolls above it (Pencil 03e and 03e Edited now show a phone-height screen with the list clipped and Done fixed at the bottom). The list is strictly alphabetical, ignoring capitals, so acronyms sort by their letters (BBQ falls after Basketball and before Beach Bars; DIY after Diving; EDM after E-Sports); the order is stored in `profile_options.sort_order` and the Pencil pills match it. When 5 are chosen, tapping another unselected pill does nothing.
 
 #### Photo count row on **06j** and **06n** (removed)
