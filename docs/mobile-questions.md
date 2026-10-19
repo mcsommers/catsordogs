@@ -3,6 +3,10 @@
 A record of questions asked while planning the phone app, the options offered,
 and Mike's answer. Newest phase first.
 
+## Sign Up legal links (Mike, Oct 19, 2026)
+
+On **02 Sign Up**, **Terms** and **Privacy Policy** in the agreement line open the marketing site in the system browser: `https://catsordogs.net/terms-of-service` and `https://catsordogs.net/privacy-policy`. URLs come from `mobile/src/lib/legalUrls.ts` (default origin `https://catsordogs.net`; optional override `EXPO_PUBLIC_WEBSITE_URL`). Staging phones still use production legal pages. Same copy on staging and production.
+
 ## App icon concepts (Mike, Oct 17, 2026)
 
 Exploration frame **App icon concepts** in `pencil-new.pen` (six 180pt squircle previews). **7. CD monogram (website favicon)** matches the live site favicon (white CD, orange underline, black). Store listing PNGs live in `docs/store-assets/app-icon/` (1024 Apple, 512 Google Play). Wire into `mobile/app.json` / EAS when you ship store builds.

@@ -14,6 +14,7 @@ import {
   OrDivider,
   PrimaryButton,
   Screen,
+  TermsPrivacyNotice,
   TextField,
   TitleGroup,
   styles,
@@ -105,7 +106,7 @@ export default function SignUp() {
         <FormMessage message={problem} />
       </View>
       <PrimaryButton label="Continue" onPress={submit} loading={busy} />
-      <Text style={[styles.hint, { textAlign: 'center' }]}>By continuing, you agree to our Terms &amp; Privacy Policy</Text>
+      <TermsPrivacyNotice />
     </Screen>
   );
 }
