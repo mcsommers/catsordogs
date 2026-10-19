@@ -7,7 +7,7 @@ const supabaseAnonKey = import.meta.env.PUBLIC_SUPABASE_ANON_KEY ?? '';
 ---
 
 <SiteLayout title={`${supportPage.title} | ${siteName}`} description={supportPage.metaDescription}>
-  <main class="legal-page support-page">
+  <main id="main" class="legal-page support-page">
     <div class="container legal-page__inner">
       <h1 class="legal-page__title">{supportPage.title}</h1>
       <p class="legal-page__intro">{supportPage.intro}</p>

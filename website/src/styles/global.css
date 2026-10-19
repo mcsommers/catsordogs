@@ -869,8 +869,8 @@ summary:focus-visible {
   overflow-x: clip;
 }
 
+/* Keep .container horizontal inset; do not set width: 100% here (it overrides .container). */
 .legal-page__inner {
-  width: 100%;
   max-width: 42rem;
   min-width: 0;
 }
