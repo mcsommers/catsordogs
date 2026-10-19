@@ -13,6 +13,7 @@ import {
   Image,
   Keyboard,
   KeyboardAvoidingView,
+  Linking,
   Modal,
   Platform,
   Pressable,
@@ -28,6 +29,7 @@ import {
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { router } from 'expo-router';
+import { privacyPolicyUrl, termsOfServiceUrl } from '../lib/legalUrls';
 import {
   ArrowLeft,
   Ban,
@@ -212,6 +214,30 @@ export function TextLink({
     <Pressable accessibilityRole="link" onPress={onPress} hitSlop={10}>
       <Text style={[styles.link, { color, fontSize: size }]}>{label}</Text>
     </Pressable>
+  );
+}
+
+/** Sign Up (02): links open Terms and Privacy Policy on the marketing site. */
+export function TermsPrivacyNotice() {
+  return (
+    <Text style={[styles.hint, styles.termsPrivacyNotice]}>
+      By continuing, you agree to our{' '}
+      <Text
+        accessibilityRole="link"
+        style={styles.termsPrivacyLink}
+        onPress={() => void Linking.openURL(termsOfServiceUrl())}
+      >
+        Terms
+      </Text>
+      {' & '}
+      <Text
+        accessibilityRole="link"
+        style={styles.termsPrivacyLink}
+        onPress={() => void Linking.openURL(privacyPolicyUrl())}
+      >
+        Privacy Policy
+      </Text>
+    </Text>
   );
 }
 
@@ -770,6 +796,8 @@ export const styles = StyleSheet.create({
   },
   input: { flex: 1, fontFamily: fonts.body, fontSize: 15, color: colors.textPrimary, paddingVertical: 14 },
   hint: { fontFamily: fonts.body, fontSize: 12, lineHeight: 17, color: colors.textSecondary },
+  termsPrivacyNotice: { textAlign: 'center' },
+  termsPrivacyLink: { fontFamily: fonts.bodyBold, color: colors.accentDog },
   social: {
     flexDirection: 'row',
     alignItems: 'center',

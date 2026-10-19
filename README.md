@@ -80,6 +80,8 @@ The anon key is the staging project's public app key. Print it with
 the file in. Don't point the app at production for testing. The local backend (`127.0.0.1`) only works on the
 iOS simulator, because a phone can't reach your Mac's `127.0.0.1`.
 
+Sign Up **Terms** and **Privacy Policy** links open **catsordogs.net** by default (`EXPO_PUBLIC_WEBSITE_URL` in `mobile/.env.example` is optional).
+
 **Each time you test**
 
 1. Make sure your Mac and phone are online (they don't need to share a Wi-Fi network).
