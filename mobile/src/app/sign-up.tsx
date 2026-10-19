@@ -7,7 +7,7 @@ import { scrollToFieldInScreen } from '../lib/formScroll';
 import { credentialFieldErrors, type CredentialField } from '../lib/validation';
 import { describeAuthError } from '../lib/authErrors';
 import { confirmationRedirect } from '../lib/authRedirects';
-import { SHOW_SIGN_UP_SOCIAL_AUTH } from '../lib/authUi';
+import { SHOW_SOCIAL_AUTH } from '../lib/authUi';
 import {
   BackButton,
   ComingSoonSocialButtons,
@@ -63,7 +63,7 @@ export default function SignUp() {
         <Text style={styles.headerTitle}>Create your account</Text>
       </View>
       <TitleGroup subtitle="Let's make some magic." />
-      {SHOW_SIGN_UP_SOCIAL_AUTH ? (
+      {SHOW_SOCIAL_AUTH ? (
         <>
           <ComingSoonSocialButtons />
           <OrDivider />
