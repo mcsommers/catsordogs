@@ -49,6 +49,17 @@ land.
 Stack: Expo (React Native) for iOS and Android, Supabase (Postgres,
 auth, server functions), a hosted video service, Expo push, an email service.
 
+Marketing website (standing instruction from Mike):
+The public site in `website/` is viewed on phones as much as on desktop.
+Every layout, form, and interaction change must be **mobile optimized**:
+no horizontal scrolling on narrow viewports (about 320px wide and up),
+tap targets and type that read well on a phone, and forms that stay
+within the screen. Before you finish website work, spot-check the pages
+you touched at mobile width (homepage, `/support`, legal pages, download
+modal). `docs/website.pen` includes **Homepage — Mobile** for marketing
+layout; new site pages should still be verified in code at mobile width
+even when Pencil only shows a desktop frame.
+
 Mobile platforms (standing instruction from Mike):
 Unless Mike specifies otherwise, every change to the mobile app applies
 to both Android and iOS — same screens, copy, and behavior. If one

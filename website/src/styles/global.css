@@ -538,7 +538,10 @@ summary:focus-visible {
 }
 
 .download-modal__input {
+  display: block;
   width: 100%;
+  max-width: 100%;
+  min-width: 0;
   padding: 0.75rem 0.875rem;
   margin-bottom: 0.75rem;
   font: inherit;
@@ -863,10 +866,13 @@ summary:focus-visible {
 
 .legal-page {
   padding-block: clamp(2.5rem, 6vw, 4rem) var(--section-pad-y);
+  overflow-x: clip;
 }
 
 .legal-page__inner {
+  width: 100%;
   max-width: 42rem;
+  min-width: 0;
 }
 
 .legal-page__title {
@@ -925,9 +931,13 @@ summary:focus-visible {
 }
 
 .support-form {
+  position: relative;
   display: flex;
   flex-direction: column;
   gap: 0.5rem;
+  width: 100%;
+  max-width: 100%;
+  min-width: 0;
 }
 
 .support-form__honeypot {
@@ -951,7 +961,10 @@ summary:focus-visible {
 
 .support-form__input,
 .support-form__textarea {
+  display: block;
   width: 100%;
+  max-width: 100%;
+  min-width: 0;
   padding: 0.75rem 1rem;
   font-size: 1rem;
   font-family: inherit;
