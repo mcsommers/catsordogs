@@ -3,6 +3,10 @@
 A record of questions asked while planning the phone app, the options offered,
 and Mike's answer. Newest phase first.
 
+## Sign Up: hide Apple/Google until store OAuth (Mike, Oct 19, 2026)
+
+**02 Sign Up** does not show Continue with Apple or Continue with Google (no "Coming soon" row) ahead of TestFlight and Play builds. **02b Log In** still shows the dimmed Coming soon social buttons. Re-enable on Sign Up by setting `SHOW_SIGN_UP_SOCIAL_AUTH` to `true` in `mobile/src/lib/authUi.ts` when OAuth is ready. Pencil frame 02 unchanged for now.
+
 ## Hosted admin URLs (Mike, Oct 19, 2026)
 
 Staging admin: **https://admin-staging.catsordogs.net/admin/** (Cloudflare Pages + staging Supabase). Production admin: **https://admin.catsordogs.net/admin/** (separate Pages project + production Supabase). Two Pages projects so build-time `VITE_SUPABASE_*` never mix environments. Setup steps in root `README.md` (Admin website). Optional: Cloudflare Access on staging only.
