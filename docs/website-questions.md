@@ -59,6 +59,8 @@ Living log of product questions, options, and Mike’s answers for the public ma
 | Oct 17, 2026 | Homepage: **Support** section and nav label renamed to **FAQs** (`#faqs` anchor). |
 | Oct 17, 2026 | FAQs: added **Why do I have to record videos of myself?** as first item (desktop + mobile + site). |
 | Oct 19, 2026 | **Support page:** `/support` with email + question form (required fields), success copy **Thanks for reaching out. We will be in touch shortly.** Footer adds **Support** before Privacy. Backend: `website_support_inquiries`, RPC `submit_website_support_inquiry`, Edge Function `website-support-inquiry` emails **catsordogsapp+support@gmail.com**. Rate limits and honeypot reduce spam. Design frame **Support — Desktop** in `website.pen`. |
+| Oct 19, 2026 | **DNS:** **catsordogs.net** DNS is managed in **Cloudflare** (dashboard → **DNS → Records**). Documented in root `README.md` (marketing Pages hostnames, Resend verification, and other records use this zone). |
+| Oct 19, 2026 | **Admin hostnames:** **admin-staging.catsordogs.net** and **admin.catsordogs.net** (separate Cloudflare Pages projects from `admin/`, not the marketing site). See `README.md` → Admin website. |
 
 ### Open design follow-ups
 

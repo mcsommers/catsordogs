@@ -1,0 +1,3 @@
+# SPA fallback (React Router under /admin/).
+/admin/*  /admin/index.html  200
+/  /admin/  302

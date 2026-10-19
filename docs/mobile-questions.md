@@ -3,6 +3,10 @@
 A record of questions asked while planning the phone app, the options offered,
 and Mike's answer. Newest phase first.
 
+## Hosted admin URLs (Mike, Oct 19, 2026)
+
+Staging admin: **https://admin-staging.catsordogs.net/admin/** (Cloudflare Pages + staging Supabase). Production admin: **https://admin.catsordogs.net/admin/** (separate Pages project + production Supabase). Two Pages projects so build-time `VITE_SUPABASE_*` never mix environments. Setup steps in root `README.md` (Admin website). Optional: Cloudflare Access on staging only.
+
 ## Sign Up legal links (Mike, Oct 19, 2026)
 
 On **02 Sign Up**, **Terms** and **Privacy Policy** in the agreement line open the marketing site in the system browser: `https://catsordogs.net/terms-of-service` and `https://catsordogs.net/privacy-policy`. URLs come from `mobile/src/lib/legalUrls.ts` (default origin `https://catsordogs.net`; optional override `EXPO_PUBLIC_WEBSITE_URL`). Staging phones still use production legal pages. Same copy on staging and production.

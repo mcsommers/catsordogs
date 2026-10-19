@@ -6,7 +6,7 @@
     "dev": "vite",
     "admin": "vite",
     "typecheck": "tsc --noEmit",
-    "build": "tsc --noEmit && vite build"
+    "build": "tsc --noEmit && vite build && node scripts/layout-pages-dist.mjs"
   },
   "dependencies": {
     "@supabase/supabase-js": "^2.117.2",
