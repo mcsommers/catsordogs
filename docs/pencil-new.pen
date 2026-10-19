@@ -44183,18 +44183,6 @@
               ]
             },
             {
-              "id": "FH5oI",
-              "type": "ref",
-              "ref": "FMBP0",
-              "name": "Continue Button",
-              "width": "fill_container",
-              "descendants": {
-                "dcLjE": {
-                  "content": "Back to Log In"
-                }
-              }
-            },
-            {
               "type": "text",
               "id": "uU56v",
               "name": "Terms",
