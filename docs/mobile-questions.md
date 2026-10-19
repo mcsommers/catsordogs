@@ -5,7 +5,7 @@ and Mike's answer. Newest phase first.
 
 ## App icon concepts (Mike, Oct 17, 2026)
 
-Exploration frame **App icon concepts** in `pencil-new.pen` (six 180pt squircle previews). **7. CD monogram (website favicon)** matches the live site favicon (white CD, orange underline, black). Pick a direction before export to 1024 for `mobile/app.json` store assets.
+Exploration frame **App icon concepts** in `pencil-new.pen` (six 180pt squircle previews). **7. CD monogram (website favicon)** matches the live site favicon (white CD, orange underline, black). Store listing PNGs live in `docs/store-assets/app-icon/` (1024 Apple, 512 Google Play). Wire into `mobile/app.json` / EAS when you ship store builds.
 
 ## Admin email on every new report (Mike, Oct 17, 2026)
 
