@@ -45,13 +45,16 @@ Run from the project root unless noted.
 | `cd mobile && npm test` | Runs the app's tests |
 | `cd mobile && npm run typecheck` | Checks the app's TypeScript for errors |
 | `npm run admin` | Opens the admin website locally (run from the **repo root**; open http://localhost:5173/admin/) |
+| `npm run admin:build` | Builds the admin site into `admin/dist/` (for Cloudflare Pages deploy) |
 | `npm run website` | Starts the marketing homepage locally (run from the **repo root**; open http://localhost:4321) |
 | `npm run website:build` | Builds the static marketing site into `website/dist/` (repo root) |
 | `cd website && npm run dev` | Same dev server if you are already inside the `website/` folder |
 
 **Marketing website setup:** `cd website && npm install`, then copy `website/.env.example` to `website/.env`. The public site at **catsordogs.net** uses **production** Supabase (`PUBLIC_SUPABASE_*` in the example file), not staging. Phone UAT stays on staging in `mobile/.env`. Print the production anon key with `npx supabase projects api-keys --project-ref fvnbcofflierdlnnglko` (the line named `anon`). The download badges open a Coming Soon modal; email signups call `submit_website_launch_notify` on Supabase (run `npx supabase db push --project-ref fvnbcofflierdlnnglko` after signup migrations land on production). Each **new** address also emails **mikesommers@gmail.com** through the `website-launch-signup-alert` Edge Function (same Resend secrets as other mail). That call uses `private.worker_config` on the Supabase project; without that row, signups still save but no alert email is sent.
 
-**Marketing website deploy (Cloudflare Pages):** Connect this GitHub repo in the Cloudflare dashboard (**Workers & Pages → Create → Pages → Connect to Git**). Build settings: framework preset **Astro** (or None), root directory **`website`**, build command **`npm ci && npm run build`**, output directory **`dist`**. Astro 7 needs Node **22.22+**; the repo pins **`website/.nvmrc`** (`24`). If the build says Node is too old, add environment variable **`NODE_VERSION`** = **`24`** (Production) in Pages settings. Add production environment variables `PUBLIC_SITE_URL` (`https://catsordogs.net`), `PUBLIC_SUPABASE_URL`, and `PUBLIC_SUPABASE_ANON_KEY` (same values as `website/.env`). Attach custom domains **catsordogs.net** (and **www** if you use it). Each push to `main` that touches the site can trigger a new deploy.
+**DNS for catsordogs.net (Cloudflare):** **Cloudflare** hosts DNS for **catsordogs.net**. Manage records in the Cloudflare dashboard (**Websites → catsordogs.net → DNS → Records**). The marketing site, email (Resend), and any other services all use this same zone. When Resend or Supabase asks you to add SPF, DKIM, or other records, add them here (not at a separate registrar DNS panel unless you are only updating nameservers).
+
+**Marketing website deploy (Cloudflare Pages):** Connect this GitHub repo in the Cloudflare dashboard (**Workers & Pages → Create application**, then choose **Pages** / **Connect to Git** when asked). Build settings: framework preset **Astro** (or None), root directory **`website`**, build command **`npm ci && npm run build`**, output directory **`dist`**. Astro 7 needs Node **22.22+**; the repo pins **`website/.nvmrc`** (`24`). If the build says Node is too old, add environment variable **`NODE_VERSION`** = **`24`** (Production) in Pages settings. Add production environment variables `PUBLIC_SITE_URL` (`https://catsordogs.net`), `PUBLIC_SUPABASE_URL`, and `PUBLIC_SUPABASE_ANON_KEY` (same values as `website/.env`). Attach custom domains **catsordogs.net** (and **www** if you use it); Pages will show which DNS records to use (often applied automatically when DNS is already on Cloudflare). Each push to `main` that touches the site can trigger a new deploy.
 
 ## Running the app on your phone (Expo Go)
 
@@ -183,7 +186,31 @@ Switch back to staging in `mobile/.env` when you are done.
 
 Admins run the app from a website at `/admin`: the question calendar, every setting, the review queue,
 every profile (including photos), every video, and the choices on profile questions. A normal account
-cannot stay signed in. There is no Create Account on this site.
+cannot stay signed in. There is no Create Account on this site. Access is enforced on the server
+(`admin_users` and admin-only RPCs); the hosted login page is public, but only admins get past sign-in.
+
+**Hosted URLs (Cloudflare Pages, separate from the marketing site):**
+
+| Environment | URL | Supabase project |
+| --- | --- | --- |
+| Staging | **https://admin-staging.catsordogs.net/admin/** | Cats or Dogs - Staging (`pgwnqasselhstrechmsa`) |
+| Production | **https://admin.catsordogs.net/admin/** | Cats or Dogs - Production (`fvnbcofflierdlnnglko`) |
+| Local dev | http://localhost:5173/admin/ | Local Docker (`npm run db:start`) |
+
+Use **two Cloudflare Pages projects** (one per row above), both connected to this GitHub repo, so each hostname gets the correct `VITE_SUPABASE_*` build variables and never points at the wrong backend. In the dashboard they appear under **Workers & Pages** next to **catsordogs**; create each with **Create application** (then **Pages** / **Connect to Git**), not by editing the marketing project. DNS for **catsordogs.net** is on Cloudflare; each custom domain is attached in Pages and records are created in **DNS → Records** when prompted.
+
+**Deploy settings (each Pages project):** root directory **`admin`**, build command **`npm ci && npm run build`**, output directory **`dist`**. Pin **`NODE_VERSION`** = **`24`** if the build complains about Node. Set these **production** environment variables on that project (names must match exactly):
+
+- `VITE_SUPABASE_URL` — that environment's `https://<project-ref>.supabase.co`
+- `VITE_SUPABASE_ANON_KEY` — that environment's anon key (`npx supabase projects api-keys --project-ref <ref>`)
+
+After the first deploy, open **Custom domains** and add **admin-staging.catsordogs.net** or **admin.catsordogs.net**. Pushes to `main` can auto-deploy both projects; you can also retry a deployment from the dashboard.
+
+**Supabase Auth (required for hosted admin):** In each Supabase project, open **Authentication → URL Configuration** and add redirect allow-list entries for that admin hostname, for example `https://admin-staging.catsordogs.net/**` on staging and `https://admin.catsordogs.net/**` on production (wildcards are supported). Without this, password login and any email links from the admin origin can fail. Local entries stay in `supabase/config.toml` for Docker only.
+
+**Optional hardening:** Cloudflare **Access** (or IP rules) on **admin-staging** limits who can load the staging login page; production **admin** usually stays open to the internet with strong passwords and few admins.
+
+### Local admin (your Mac)
 
 One-time, from the project folder, after `npm run db:start`:
 
@@ -258,8 +285,8 @@ There are three separate Supabase projects so testing never touches real users' 
 | Environment | Supabase project | Mux environment | Video keys file | Used for |
 | --- | --- | --- | --- | --- |
 | Local | Docker, on your computer | A stand-in (automated tests only) | none | Day-to-day development. The app's keys go in `mobile/.env`. |
-| Staging | "Cats or Dogs - Staging" (`pgwnqasselhstrechmsa`) | Staging, `MUX_TEST_MODE=false` | `supabase/functions/.env.staging` | Phone and admin UAT; full Mux assets on the paid plan |
-| Production | "Cats or Dogs - Production" (`fvnbcofflierdlnnglko`) | Production, test mode off | `supabase/functions/.env.production` | Real users. No real users' video until the legal review in the Build Plan is done. |
+| Staging | "Cats or Dogs - Staging" (`pgwnqasselhstrechmsa`) | Staging, `MUX_TEST_MODE=false` | `supabase/functions/.env.staging` | Phone UAT; hosted admin at **admin-staging.catsordogs.net** |
+| Production | "Cats or Dogs - Production" (`fvnbcofflierdlnnglko`) | Production, test mode off | `supabase/functions/.env.production` | Real users; hosted admin at **admin.catsordogs.net** |
 
 Project IDs are not secret (they appear in the project's web address). Keys and secrets are.
 
@@ -344,7 +371,7 @@ the send time (default 12:03 PM in each person's own time zone, changeable as Da
 emails every admin if the next day has no question. The phone reports its time zone with `set_time_zone`; until it does, a person is treated as UTC. Anyone who has already answered today's
 question is skipped.
 
-**Resend setup (once):** add and verify your sending domain (`catsordogs.net`) in Resend, then create an API key.
+**Resend setup (once):** add and verify your sending domain (`catsordogs.net`) in Resend, then create an API key. Resend will list DNS records to add; put them in **Cloudflare DNS** for **catsordogs.net** (see **DNS for catsordogs.net** above).
 **Per environment (staging and production),** add these to that environment's file in `supabase/functions/` (see
 `.env.example`): `RESEND_API_KEY`, `RESEND_FROM` (an address on the verified domain), and two long random secrets you
 make up, `NOTIFICATION_WORKER_SECRET` and `UNSUBSCRIBE_SECRET` (for example `openssl rand -hex 32`; use different values

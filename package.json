@@ -9,6 +9,7 @@
     "api:test": "sh supabase/tests/api/run.sh",
     "unit:test": "node --test supabase/tests/unit/*.test.ts",
     "admin": "npm --prefix admin run dev",
+    "admin:build": "npm --prefix admin run build",
     "website": "npm --prefix website run dev",
     "website:build": "npm --prefix website run build",
     "db:seed-admin": "node supabase/seed-admin.mjs",

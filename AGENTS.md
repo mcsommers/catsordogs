@@ -83,7 +83,7 @@ points at Cats or Dogs - Staging). He starts the app with `cd mobile && npm run 
   (for example `react-native-quick-crypto`) are unavailable until a dev build exists.
 - Email confirmation and password-reset links must be opened on the **same phone**
   running Expo Go, after a fresh `npm run phone` if the dev server restarted.
-- Admin UAT uses `npm run admin` on the Mac; it is separate from Expo Go.
+- Admin UAT uses the hosted staging panel at **https://admin-staging.catsordogs.net/admin/** when Cloudflare Pages is set up, or `npm run admin` on the Mac (http://localhost:5173/admin/). It is separate from Expo Go.
 
 If a change requires a development build, say so plainly, explain what breaks
 in Expo Go today, and offer an Expo Go–compatible path when one exists.
