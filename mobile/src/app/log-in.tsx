@@ -7,6 +7,7 @@ import { scrollToFieldInScreen } from '../lib/formScroll';
 import { loginFieldErrors, type CredentialField } from '../lib/validation';
 import { describeAuthError } from '../lib/authErrors';
 import { confirmationRedirect } from '../lib/authRedirects';
+import { SHOW_SOCIAL_AUTH } from '../lib/authUi';
 import {
   BackButton,
   ComingSoonSocialButtons,
@@ -74,8 +75,12 @@ export default function LogIn() {
         <BackButton />
       </View>
       <TitleGroup title="Welcome back" subtitle="Log in to answer today's question." />
-      <ComingSoonSocialButtons />
-      <OrDivider />
+      {SHOW_SOCIAL_AUTH ? (
+        <>
+          <ComingSoonSocialButtons />
+          <OrDivider />
+        </>
+      ) : null}
       <View style={{ gap: 16 }}>
         <View ref={emailAnchorRef} collapsable={false}>
           <TextField

@@ -7,9 +7,9 @@ and Mike's answer. Newest phase first.
 
 **03e Interests:** Header search (with clear **x**) filters pills in real time. The search field is compact until focused, then expands across the remaining header width with padding from the **Interests** title. Selection count lives on **Done (N of 5)**. **Done** stays visible above the keyboard. At 5 picks, tapping another pill opens **Interest limit** / **You can only specify 5 interests.** / **OK**. Pencil: **03e Interests**, **03e Interests Search Focused**, **03e Interests Limit**.
 
-## Sign Up: hide Apple/Google until store OAuth (Mike, Oct 19, 2026)
+## Sign Up and Log In: hide Apple/Google until store OAuth (Mike, Oct 19, 2026)
 
-**02 Sign Up** does not show Continue with Apple or Continue with Google (no "Coming soon" row) ahead of TestFlight and Play builds. **02b Log In** still shows the dimmed Coming soon social buttons. Re-enable on Sign Up by setting `SHOW_SIGN_UP_SOCIAL_AUTH` to `true` in `mobile/src/lib/authUi.ts` when OAuth is ready. Pencil frame 02 unchanged for now.
+**02 Sign Up** and **02b Log In** do not show Continue with Apple or Continue with Google (no "Coming soon" row) ahead of TestFlight and Play builds. Re-enable both by setting `SHOW_SOCIAL_AUTH` to `true` in `mobile/src/lib/authUi.ts` when OAuth is ready. Pencil **02b Log In** updated to match; frame **02 Sign Up** unchanged from the earlier pass.
 
 ## Hosted admin URLs (Mike, Oct 19, 2026)
 

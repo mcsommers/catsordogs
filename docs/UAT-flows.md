@@ -42,7 +42,7 @@ Covers: Welcome (01), Sign Up (02), Log In (02b), Forgot Password (02c), Check Y
 
 ### Log in
 
-- [ ] **A-08 Log In screen.** From Welcome, tap Log In. Expected: Log In (02b) with "Welcome back", dimmed Apple and Google buttons with "Coming soon", **Email** and **Password** fields that are empty (no "you@example.com" and no dots inside either field), a "Forgot password?" link, a **Log In** button, and "New here? Get Started" (which opens Sign Up).
+- [ ] **A-08 Log In screen.** From Welcome, tap Log In. Expected: Log In (02b) with "Welcome back" and **no** Apple or Google buttons (email log-in only until store OAuth is ready). **Email** and **Password** fields are empty (no "you@example.com" and no dots inside either field), a "Forgot password?" link, a **Log In** button, and "New here? Get Started" (which opens Sign Up).
 - [ ] **A-09 Wrong password doesn't say which part was wrong.** Enter a real account's email with the wrong password. Then try an email that has no account. Expected: both show the same message: "That email and password don't match. Try again."
 - [ ] **A-10 Unconfirmed account.** Sign up with a new email but don't tap the link. Go to Log In and try that email and password. Expected: "Confirm your email first. Tap the link we sent you, or send a new one." and a **Resend confirmation email** link that sends a new email.
 - [ ] **A-11 Where Log In takes you.** Log in with three accounts. Expected:
