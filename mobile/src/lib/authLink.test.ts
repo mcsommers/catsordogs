@@ -1,4 +1,4 @@
-import { parseAuthLink, parseAuthLinkFromParams, resolveAuthLink } from './authLink';
+import { parseAuthLink, parseAuthLinkFromParams, resolveAuthLink, routeParam } from './authLink';
 
 describe('reading sign-in links', () => {
   it('reads the one-time code from an email confirmation link', () => {
@@ -30,5 +30,13 @@ describe('reading sign-in links', () => {
   it('prefers a full URL but falls back to route params', () => {
     expect(resolveAuthLink(null, { code: 'router' })?.code).toBe('router');
     expect(resolveAuthLink('catsordogs://auth-callback?code=url', { code: 'router' })?.code).toBe('url');
+  });
+});
+
+describe('routeParam', () => {
+  it('reads string or first array entry', () => {
+    expect(routeParam('a@b.co')).toBe('a@b.co');
+    expect(routeParam(['x@y.co', 'other'])).toBe('x@y.co');
+    expect(routeParam(undefined)).toBe('');
   });
 });

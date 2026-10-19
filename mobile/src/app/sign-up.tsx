@@ -1,11 +1,12 @@
-import { useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { ScrollView, Text, TextInput, View } from 'react-native';
-import { router } from 'expo-router';
+import { router, useLocalSearchParams } from 'expo-router';
 import { Lock, Mail } from 'lucide-react-native';
 import { supabase } from '../lib/supabase';
 import { scrollToFieldInScreen } from '../lib/formScroll';
 import { credentialFieldErrors, type CredentialField } from '../lib/validation';
 import { describeAuthError } from '../lib/authErrors';
+import { routeParam } from '../lib/authLink';
 import { confirmationRedirect } from '../lib/authRedirects';
 import { SHOW_SOCIAL_AUTH } from '../lib/authUi';
 import {
@@ -22,6 +23,7 @@ import {
 } from '../components/ui';
 
 export default function SignUp() {
+  const { email: emailParam } = useLocalSearchParams<{ email?: string | string[] }>();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [problem, setProblem] = useState<string | null>(null);
@@ -32,6 +34,15 @@ export default function SignUp() {
   const emailAnchorRef = useRef<View>(null);
   const passwordAnchorRef = useRef<View>(null);
   const passwordRef = useRef<TextInput>(null);
+
+  useEffect(() => {
+    const prefilled = routeParam(emailParam).trim();
+    if (!prefilled) return;
+    setEmail(prefilled);
+    setPassword('');
+    setFieldErrors({});
+    setProblem(null);
+  }, [emailParam]);
 
   async function submit() {
     const errors = credentialFieldErrors(email, password);

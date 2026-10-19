@@ -4,17 +4,30 @@ import { router, useLocalSearchParams } from 'expo-router';
 import { MailCheck } from 'lucide-react-native';
 import { supabase } from '../lib/supabase';
 import { describeAuthError } from '../lib/authErrors';
+import { routeParam } from '../lib/authLink';
 import { confirmationRedirect, resetRedirect } from '../lib/authRedirects';
 import { BackButton, FormMessage, PrimaryButton, Screen, TextLink, TitleGroup, styles as ui } from '../components/ui';
 import { colors } from '../theme';
 
 /** Shown after Sign Up (kind=signup) and after Forgot Password (kind=reset). */
 export default function CheckEmail() {
-  const { email = '', kind = 'signup', sent } = useLocalSearchParams<{ email?: string; kind?: string; sent?: string }>();
+  const params = useLocalSearchParams<{ email?: string | string[]; kind?: string; sent?: string }>();
+  const email = routeParam(params.email);
+  const kind = params.kind ?? 'signup';
+  const sent = params.sent;
+  const isSignup = kind !== 'reset';
   const [note, setNote] = useState<{ text: string; tone: 'error' | 'info' } | null>(
     sent === '1' ? { text: 'Sent. Check your inbox.', tone: 'info' } : null
   );
   const [busy, setBusy] = useState(false);
+
+  function goBack() {
+    if (isSignup) {
+      router.replace({ pathname: '/sign-up', params: { email: email.trim() } });
+      return;
+    }
+    router.replace('/log-in');
+  }
 
   async function sendAgain() {
     setBusy(true);
@@ -29,7 +42,7 @@ export default function CheckEmail() {
   return (
     <Screen scroll>
       <View style={ui.header}>
-        <BackButton onPress={() => router.replace('/log-in')} />
+        <BackButton onPress={goBack} />
       </View>
       <View style={styles.badge}>
         <MailCheck size={32} color={colors.accentCat} />
@@ -38,7 +51,9 @@ export default function CheckEmail() {
         title="Check your email"
         subtitle={`We sent a link to ${email || 'your email'}. Open it on this phone to continue. The link works once.`}
       />
-      <PrimaryButton label="Back to Log In" onPress={() => router.replace('/log-in')} />
+      {!isSignup ? (
+        <PrimaryButton label="Back to Log In" onPress={() => router.replace('/log-in')} />
+      ) : null}
       <TextLink label={busy ? 'Sending…' : "Didn't get it? Resend email"} onPress={() => !busy && sendAgain()} />
       <FormMessage message={note?.text ?? null} tone={note?.tone} />
     </Screen>

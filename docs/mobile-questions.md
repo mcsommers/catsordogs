@@ -3,6 +3,10 @@
 A record of questions asked while planning the phone app, the options offered,
 and Mike's answer. Newest phase first.
 
+## Check Your Email after Sign Up (Mike, Oct 19, 2026)
+
+On **02d** after Sign Up: remove **Back to Log In**; the header back arrow goes to **02 Sign Up** (not Log In) with the submitted email prefilled and password cleared so a wrong email can be corrected. Password-reset **02d** (`kind=reset`) keeps **Back to Log In** and back goes to Log In.
+
 ## Interests picker search, expand, and limit modal (Mike, Oct 19, 2026)
 
 **03e Interests:** Header search (with clear **x**) filters pills in real time. The search field is compact until focused, then expands across the remaining header width with padding from the **Interests** title. Selection count lives on **Done (N of 5)**. **Done** stays visible above the keyboard. At 5 picks, tapping another pill opens **Interest limit** / **You can only specify 5 interests.** / **OK**. Pencil: **03e Interests**, **03e Interests Search Focused**, **03e Interests Limit**.
