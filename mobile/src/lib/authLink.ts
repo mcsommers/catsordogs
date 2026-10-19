@@ -9,11 +9,16 @@ export type AuthLink = {
 
 type ParamBag = Record<string, string | string[] | undefined>;
 
-function firstParam(params: ParamBag, key: string): string | null {
-  const value = params[key];
+/** Single Expo Router search param (string or string[]). */
+export function routeParam(value: string | string[] | undefined): string {
   if (typeof value === 'string') return value;
   if (Array.isArray(value) && value[0]) return value[0];
-  return null;
+  return '';
+}
+
+function firstParam(params: ParamBag, key: string): string | null {
+  const value = routeParam(params[key]);
+  return value || null;
 }
 
 /** Expo Router often passes the code as a route param on Android instead of a full URL string. */
