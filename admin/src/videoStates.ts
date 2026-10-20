@@ -1,4 +1,4 @@
-/** Matches the State column on the Videos page: answer status when present, else video status. */
+/** Matches the Status column on the Videos page: answer status when present, else video status. */
 export function videoDisplayState(row: {
   answer_status: string | null;
   video_status: string;
@@ -6,7 +6,7 @@ export function videoDisplayState(row: {
   return row.answer_status ?? row.video_status;
 }
 
-/** Every value that can appear in the State column, in a sensible order for admins. */
+/** Every value that can appear in the Status column, in a sensible order for admins. */
 export const VIDEO_STATE_OPTIONS: { value: string; label: string }[] = [
   { value: 'live', label: 'Live' },
   { value: 'disabled', label: 'Hidden' },
@@ -18,3 +18,7 @@ export const VIDEO_STATE_OPTIONS: { value: string; label: string }[] = [
   { value: 'failed', label: 'Failed' },
   { value: 'cancelled', label: 'Cancelled' },
 ];
+
+export function videoStateLabel(value: string): string {
+  return VIDEO_STATE_OPTIONS.find((option) => option.value === value)?.label ?? value;
+}

@@ -10,37 +10,35 @@ export default function Player({ url, onClose }: { url: string; onClose?: () => 
     const video = ref.current;
     if (!video) return;
 
-    const onVideoError = () => {
-      setPlayError('The browser could not play this video. Try Chrome or Safari, or use Watch again.');
-    };
-    video.addEventListener('error', onVideoError);
+    // Use hls.js whenever the browser can run it. Chrome 147 and later answers
+    // canPlayType('application/vnd.apple.mpegurl') with "maybe", then fails to
+    // play these streams natively. Cursor's browser does not claim that support,
+    // so it already took this path and played. Native playback is only for
+    // browsers that cannot run hls.js (Safari).
+    if (Hls.isSupported()) {
+      const hls = new Hls();
+      hls.on(Hls.Events.ERROR, (_event, detail) => {
+        if (detail.fatal) {
+          setPlayError('The player could not load this video. The link may have expired; close and tap Watch again.');
+        }
+      });
+      hls.loadSource(url);
+      hls.attachMedia(video);
+      return () => {
+        hls.destroy();
+      };
+    }
 
     if (video.canPlayType('application/vnd.apple.mpegurl')) {
+      const onVideoError = () => {
+        setPlayError('The browser could not play this video. Close and tap Watch again.');
+      };
+      video.addEventListener('error', onVideoError);
       video.src = url;
-      void video.play().catch(() => {
-        // Autoplay is blocked until the user taps play on the controls; that is normal.
-      });
-      video.load();
       return () => video.removeEventListener('error', onVideoError);
     }
 
-    if (!Hls.isSupported()) {
-      setPlayError('This browser cannot play HLS video. Try Chrome or Safari.');
-      return () => video.removeEventListener('error', onVideoError);
-    }
-
-    const hls = new Hls();
-    hls.on(Hls.Events.ERROR, (_event, detail) => {
-      if (detail.fatal) {
-        setPlayError('The player could not load this video. The link may have expired; close and tap Watch again.');
-      }
-    });
-    hls.loadSource(url);
-    hls.attachMedia(video);
-    return () => {
-      video.removeEventListener('error', onVideoError);
-      hls.destroy();
-    };
+    setPlayError('This browser cannot play this video. Try Chrome or Safari.');
   }, [url]);
 
   return (
