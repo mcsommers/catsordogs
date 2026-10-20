@@ -59,42 +59,67 @@
       <p class="hint">If nothing happens, install Cats or Dogs? from the App Store, then try again.</p>
     </main>
     <script>
-      const appPath = window.location.pathname;
-      const schemePath = appPath.replace(/^\//, '');
-      const appUrl = 'catsordogs://' + schemePath;
-      const httpsUrl = window.location.origin + appPath;
-      const androidIntent =
-        'intent://' + window.location.host + appPath + '#Intent;scheme=https;package=net.catsordogs.app;end';
+      function resolveAppPath() {
+        const fromQuery = new URLSearchParams(window.location.search).get('path');
+        if (fromQuery && fromQuery.startsWith('/')) return fromQuery;
 
-      if (appPath.startsWith('/chat/')) {
-        document.getElementById('title').textContent = 'Chat';
-        document.getElementById('lead').textContent =
-          'Open Cats or Dogs? to read and reply in this conversation.';
-      } else if (appPath.startsWith('/user/')) {
-        document.getElementById('title').textContent = 'Profile';
-        document.getElementById('lead').textContent =
-          'Open Cats or Dogs? to view this profile and respond to a match request.';
+        const path = window.location.pathname;
+        if (
+          path.startsWith('/user/') ||
+          path.startsWith('/chat/') ||
+          path === '/question' ||
+          path === '/matches'
+        ) {
+          return path;
+        }
+
+        const deep = window.location.href.match(/\/(user|chat)\/[0-9a-f-]{36}/i);
+        if (deep) return deep[0];
+
+        return null;
       }
 
-      const link = document.getElementById('open-app');
-      link.href = httpsUrl;
+      const appPath = resolveAppPath();
+      if (!appPath) {
+        document.getElementById('lead').textContent =
+          'This link could not be read. Open Cats or Dogs? and check Matches.';
+      } else {
+        const schemePath = appPath.replace(/^\//, '');
+        const appUrl = 'catsordogs://' + schemePath;
+        const httpsUrl = window.location.origin + appPath;
+        const androidIntent =
+          'intent://' + window.location.host + appPath + '#Intent;scheme=https;package=net.catsordogs.app;end';
 
-      const isAndroid = /Android/i.test(navigator.userAgent);
-      const openApp = () => {
-        if (isAndroid) {
-          window.location.href = androidIntent;
-          return;
+        if (appPath.startsWith('/chat/')) {
+          document.getElementById('title').textContent = 'Chat';
+          document.getElementById('lead').textContent =
+            'Open Cats or Dogs? to read and reply in this conversation.';
+        } else if (appPath.startsWith('/user/')) {
+          document.getElementById('title').textContent = 'Profile';
+          document.getElementById('lead').textContent =
+            'Open Cats or Dogs? to view this profile and respond to a match request.';
         }
-        window.location.href = appUrl;
-        window.setTimeout(() => {
-          window.location.href = httpsUrl;
-        }, 1200);
-      };
-      link.addEventListener('click', (e) => {
-        e.preventDefault();
+
+        const link = document.getElementById('open-app');
+        link.href = httpsUrl;
+
+        const isAndroid = /Android/i.test(navigator.userAgent);
+        const openApp = () => {
+          if (isAndroid) {
+            window.location.href = androidIntent;
+            return;
+          }
+          window.location.href = appUrl;
+          window.setTimeout(() => {
+            window.location.href = httpsUrl;
+          }, 1200);
+        };
+        link.addEventListener('click', (e) => {
+          e.preventDefault();
+          openApp();
+        });
         openApp();
-      });
-      openApp();
+      }
     </script>
   </body>
 </html>

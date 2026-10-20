@@ -3,6 +3,10 @@
 A record of questions asked while planning the phone app, the options offered,
 and Mike's answer. Newest phase first.
 
+## Email Open in the app fallback (Mike, Oct 20, 2026)
+
+Cloudflare rewrites `/user/*` and `/chat/*` to `open-app.html` for static hosting. The browser pathname can become `/open-app.html`, which wrongly opened `catsordogs://open-app`. Rewrites now pass `?path=/user/:splat` (or `/chat/…`); the fallback page reads that query before building the custom-scheme URL. Prefer universal links (`https://catsordogs.net/user/…`) when iOS has cached AASA.
+
 ## Match push on TestFlight (Mike, Oct 20, 2026)
 
 Staging showed match-request push **sent** to the TestFlight Expo token; the Matches tab heart is **in-app** (Realtime/poll), not push. Banners were easy to miss with **Do Not Disturb** on. We still install the Expo foreground notification handler at startup and refresh the push token when the app becomes active; that is normal hardening, not a fix for a broken server path.

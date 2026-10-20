@@ -9,11 +9,18 @@ import { useSession } from './session';
 function pathFromUrl(url: string): string | null {
   try {
     const parsed = Linking.parse(url);
-    const path = parsed.path?.replace(/^\//, '') ?? '';
-    if (!path) return null;
+    let path = parsed.path?.replace(/^\//, '') ?? '';
+    if (parsed.hostname && parsed.hostname !== 'catsordogs.net') {
+      // Custom scheme: catsordogs://user/uuid
+    } else if (parsed.hostname === 'catsordogs.net' && path) {
+      path = path.replace(/^\//, '');
+    }
+    if (!path || path === 'open-app' || path === 'open-app.html') return null;
     if (path === 'question' || path === 'matches') return `/${path}`;
     if (path.startsWith('chat/')) return `/${path}`;
     if (path.startsWith('user/')) return `/${path}`;
+    const deep = url.match(/\/(user|chat)\/[0-9a-f-]{36}/i);
+    if (deep) return deep[0];
     return null;
   } catch {
     return null;
