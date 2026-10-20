@@ -1,13 +1,10 @@
 import { Platform } from 'react-native';
-import Constants, { ExecutionEnvironment } from 'expo-constants';
+import Constants from 'expo-constants';
+import { canRegisterForRemotePush } from './canRegisterForRemotePush';
 import { ensureForegroundNotificationHandler } from './notificationHandler';
 import { registerDeviceToken } from './social';
 
-/** Remote push tokens are not available in Expo Go (SDK 53+). Use a development build to test push. */
-export function canRegisterForRemotePush(): boolean {
-  if (Platform.OS === 'web') return false;
-  return Constants.executionEnvironment !== ExecutionEnvironment.StoreClient;
-}
+export { canRegisterForRemotePush } from './canRegisterForRemotePush';
 
 export async function registerForPushNotifications(): Promise<string | null> {
   if (!canRegisterForRemotePush()) return null;

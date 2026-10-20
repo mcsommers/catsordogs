@@ -1,5 +1,5 @@
 import { getLocalActiveChatMatchId } from './activeChatPresence';
-import { canRegisterForRemotePush } from './push';
+import { canRegisterForRemotePush } from './canRegisterForRemotePush';
 
 let installed = false;
 
