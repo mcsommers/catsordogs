@@ -1,9 +1,10 @@
-import { useEffect } from 'react';
+import { useEffect, useRef } from 'react';
 import { AppState } from 'react-native';
 import * as Linking from 'expo-linking';
 import { useRouter } from 'expo-router';
 import { canRegisterForRemotePush, registerForPushNotifications } from './push';
 import { navigateFromNotificationPayload } from './notificationNavigation';
+import { runNavigationAction } from './deferredNavigation';
 import { useSession } from './session';
 
 function pathFromUrl(url: string): string | null {
@@ -31,6 +32,7 @@ function pathFromUrl(url: string): string | null {
 export function usePushAndNotificationLinks() {
   const { session, loading } = useSession();
   const router = useRouter();
+  const handledColdStartNotificationId = useRef<string | null>(null);
 
   useEffect(() => {
     if (loading || !session) return;
@@ -49,7 +51,9 @@ export function usePushAndNotificationLinks() {
     if (loading || !session) return;
 
     const openPath = (href: string) => {
-      router.push(href as `/question`);
+      runNavigationAction(() => {
+        router.push(href as `/question`);
+      });
     };
 
     const handleUrl = (url: string | null) => {
@@ -64,19 +68,29 @@ export function usePushAndNotificationLinks() {
   }, [loading, session?.user.id, router]);
 
   useEffect(() => {
-    if (!canRegisterForRemotePush()) return;
+    if (loading || !session || !canRegisterForRemotePush()) return;
     let remove: (() => void) | undefined;
 
     (async () => {
       const Notifications = await import('expo-notifications');
-      const open = (response: { notification: { request: { content: { data: Record<string, unknown> } } } }) => {
-        navigateFromNotificationPayload(router, response.notification.request.content.data);
+      const open = (response: {
+        notification: { request: { identifier: string; content: { data: Record<string, unknown> } } };
+      }) => {
+        runNavigationAction(() => {
+          navigateFromNotificationPayload(router, response.notification.request.content.data);
+        });
       };
       const last = await Notifications.getLastNotificationResponseAsync();
-      if (last) open(last);
-      remove = Notifications.addNotificationResponseReceivedListener(open).remove;
+      if (last) {
+        const id = last.notification.request.identifier;
+        if (handledColdStartNotificationId.current !== id) {
+          handledColdStartNotificationId.current = id;
+          open(last);
+        }
+      }
+      remove = Notifications.addNotificationResponseReceivedListener((e) => open(e)).remove;
     })();
 
     return () => remove?.();
-  }, [router]);
+  }, [loading, session?.user.id, router]);
 }

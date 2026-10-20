@@ -10,6 +10,7 @@ import {
   type LayoutChangeEvent,
   type ViewToken,
 } from 'react-native';
+import { useIsFocused } from '@react-navigation/native';
 import { Redirect, router, useFocusEffect, useLocalSearchParams } from 'expo-router';
 import { VideoView, useVideoPlayer } from 'expo-video';
 import { getGate, type Gate } from '../../lib/api';
@@ -22,6 +23,7 @@ import {
   type FeedItem,
 } from '../../lib/feed';
 import { loadFilterPreferencesUpdatedAt } from '../../lib/feedSettings';
+import { registerFeedPlaybackPause } from '../../lib/feedPlaybackCoordinator';
 import { FeedEndScreen } from '../../components/FeedEndScreen';
 import { FeedOverlay } from '../../components/FeedOverlay';
 import { FeedLocked, NoQuestionToday } from '../../components/QuestionStates';
@@ -52,6 +54,7 @@ const FEED_END_KEY = '__feed_caught_up__';
 const FEED_REFRESH_SPINNER_OFFSET = 50;
 
 export default function Feed() {
+  const isFocused = useIsFocused();
   const { session, loading: sessionLoading } = useSession();
   const { date: feedDate, feedReload } = useLocalSearchParams<{ date?: string; feedReload?: string }>();
   const lastFeedReloadRef = useRef<string | undefined>(undefined);
@@ -160,6 +163,10 @@ export default function Feed() {
   useEffect(() => {
     safeSetMuted(player, muted);
   }, [muted, player]);
+
+  useEffect(() => {
+    return registerFeedPlaybackPause(() => safePause(player));
+  }, [player]);
 
   useEffect(() => {
     if (!session) {
@@ -426,7 +433,7 @@ export default function Feed() {
     [activeItem?.answerId, lookbackDays, muted, openFeedSettings, pageHeight, social.onHeartPress, social.openMenu, videoProgress]
   );
 
-  const showVideo = !!session && !!playbackUrl && gate?.state === 'open';
+  const showVideo = isFocused && !!session && !!playbackUrl && gate?.state === 'open';
 
   if (sessionLoading || !session) return <CenteredSpinner dark />;
 

@@ -356,3 +356,9 @@ export async function registerDeviceToken(token: string, platform: 'ios' | 'andr
   const { error } = await supabase.rpc('register_device_token', { p_token: token, p_platform: platform });
   if (error) throw error;
 }
+
+/** Tell the server you are viewing this chat (suppresses message push). Pass null when leaving. */
+export async function setActiveChat(matchId: string | null): Promise<void> {
+  const { error } = await supabase.rpc('set_active_chat', { p_match_id: matchId });
+  if (error) throw error;
+}

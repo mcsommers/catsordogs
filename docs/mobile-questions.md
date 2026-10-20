@@ -5,7 +5,17 @@ and Mike's answer. Newest phase first.
 
 ## Email Open in the app fallback (Mike, Oct 20, 2026)
 
-Marketing `/user/*` and `/chat/*` must keep that path in the browser bar (for universal links and email). Cloudflare Pages serves `open-app.html` via a 200 rewrite and `website/functions/user/[id].js` (and `chat/[matchId].js`) so the URL is not stripped to `/open-app`. Do not add a dashboard redirect from `/user/*` to `/open-app`; that breaks match emails.
+Notification emails link to `https://catsordogs.net/user/…`, `/chat/…`, `/question`, or `/matches` (not `catsordogs://`). On the marketing site, **Cloudflare Pages Functions** (`website/functions/user/[id].js` and `chat/[matchId].js`) serve `open-app.html` while the browser address bar **stays** on `/user/{id}` or `/chat/{id}`. That matters for Apple universal links and for the fallback script, which reads the path from the URL.
+
+**Do not** add a Cloudflare dashboard redirect from `/user/*` or `/chat/*` to `/open-app` (with or without a 308). That strips the id, shows "This link could not be read", and can open `catsordogs://open-app` in the app (unmatched route).
+
+**What testers see on iPhone:** Mail often opens Safari first on a short **Open in the app** page (title **Profile** or **Chat** for match/message links). That is normal. Tap **Open in the app** once; allow opening Cats or Dogs? if iOS asks. The installed app should land on the right profile, chat, question, or matches list. Universal links may skip Safari when AASA and Associated Domains are set; the web page is the fallback.
+
+## Message push while in chat and feed video on push tap (Mike, Oct 20, 2026)
+
+**In chat (07c):** While a chat is open, the app heartbeats `set_active_chat` on staging/production. The server skips **push** for new messages in that match while the heartbeat is fresh (90 seconds). Foreground banners for that match are suppressed too. Email is unchanged (still rate-limited per hour per thread).
+
+**Push tap crash (build 3):** TestFlight crash log showed `expo-video` releasing the feed player while React reported a fatal JS error during navigation to chat. Mitigations: pause/unmount feed `VideoView` when the feed tab is not focused, pause before `router.push` from notifications, and defer navigation until after interactions. Ship in the next iOS build.
 
 ## Match push on TestFlight (Mike, Oct 20, 2026)
 
