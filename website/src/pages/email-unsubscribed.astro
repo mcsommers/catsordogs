@@ -1,36 +1,14 @@
 ---
 import AppOpenPage from '../components/AppOpenPage.astro';
-
-const rawType = Astro.url.searchParams.get('type') ?? '';
-const allowed = new Set(['daily_question', 'matches', 'messages', 'nudges', 'all']);
-const type = allowed.has(rawType) ? rawType : '';
-
-const labels: Record<string, string> = {
-  daily_question: 'Daily question',
-  matches: 'Matches',
-  messages: 'Messages',
-  nudges: 'Nudges',
-};
-
-function leadSentence(t: string): string {
-  if (t === 'all') {
-    return 'You are unsubscribed from all Cats or Dogs? notification emails.';
-  }
-  const label = labels[t];
-  if (!label) {
-    return 'You are unsubscribed from these Cats or Dogs? emails.';
-  }
-  return `You are unsubscribed from Cats or Dogs? emails regarding ${label}.`;
-}
-
-const lead = leadSentence(type);
 ---
 
 <AppOpenPage
   appPath="/notifications"
   title="Unsubscribed"
-  lead={lead}
+  lead="You are unsubscribed from these Cats or Dogs? emails."
   settingsNote="You can change this any time in the app's notification settings."
   openButtonLabel="Open notification settings"
-  desktopHint="On a computer? Open the button below on the phone where you use the app, or install Cats or Dogs? on your phone, sign in, and tap Open in the app."
+  desktopHint="On a computer? Open the button below on the phone where you use the app, or install Cats or Dogs? on your phone, sign in, and tap Open notification settings."
+  leadFromUnsubscribeQuery={true}
+  skipAutoOpen={true}
 />

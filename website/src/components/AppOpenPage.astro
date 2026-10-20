@@ -9,9 +9,22 @@ interface Props {
   /** Optional line before the Open in the app button (e.g. after email unsubscribe). */
   settingsNote?: string;
   openButtonLabel?: string;
+  /** Read ?type= on /email-unsubscribed (static build has no query at build time). */
+  leadFromUnsubscribeQuery?: boolean;
+  /** Do not auto-launch the app on load (unsubscribe confirmation). */
+  skipAutoOpen?: boolean;
 }
 
-const { appPath, title, lead, desktopHint, settingsNote, openButtonLabel = 'Open in the app' } = Astro.props;
+const {
+  appPath,
+  title,
+  lead,
+  desktopHint,
+  settingsNote,
+  openButtonLabel = 'Open in the app',
+  leadFromUnsubscribeQuery = false,
+  skipAutoOpen = false,
+} = Astro.props;
 const site = Astro.site?.href?.replace(/\/$/, '') ?? 'https://catsordogs.net';
 const httpsUrl = `${site}${appPath}`;
 const schemePath = appPath.replace(/^\//, '');
@@ -79,13 +92,32 @@ const androidIntent = `intent://${site.replace(/^https:\/\//, '')}${appPath}#Int
   <body>
     <main>
       <h1>{title}</h1>
-      <p>{lead}</p>
+      <p id="lead">{lead}</p>
       {settingsNote ? <p>{settingsNote}</p> : null}
       <a class="btn" id="open-app" href={httpsUrl}>{openButtonLabel}</a>
       <p class="hint">If nothing happens, install Cats or Dogs? from the App Store or Google Play, then try again.</p>
       {desktopHint ? <p class="hint">{desktopHint}</p> : null}
     </main>
-    <script define:vars={{ appUrl, androidIntent, httpsUrl }}>
+    <script define:vars={{ appUrl, androidIntent, httpsUrl, leadFromUnsubscribeQuery, skipAutoOpen }}>
+      if (leadFromUnsubscribeQuery) {
+        const labels = {
+          daily_question: 'Daily question',
+          matches: 'Matches',
+          messages: 'Messages',
+          nudges: 'Nudges',
+        };
+        const raw = new URLSearchParams(window.location.search).get('type') || '';
+        const allowed = ['daily_question', 'matches', 'messages', 'nudges', 'all'];
+        const type = allowed.includes(raw) ? raw : '';
+        let sentence = 'You are unsubscribed from these Cats or Dogs? emails.';
+        if (type === 'all') {
+          sentence = 'You are unsubscribed from all Cats or Dogs? notification emails.';
+        } else if (labels[type]) {
+          sentence = 'You are unsubscribed from Cats or Dogs? emails regarding ' + labels[type] + '.';
+        }
+        const leadEl = document.getElementById('lead');
+        if (leadEl) leadEl.textContent = sentence;
+      }
       const isAndroid = /Android/i.test(navigator.userAgent);
       const openApp = () => {
         if (isAndroid) {
@@ -101,7 +133,7 @@ const androidIntent = `intent://${site.replace(/^https:\/\//, '')}${appPath}#Int
         e.preventDefault();
         openApp();
       });
-      openApp();
+      if (!skipAutoOpen) openApp();
     </script>
   </body>
 </html>
