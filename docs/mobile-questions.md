@@ -3,6 +3,10 @@
 A record of questions asked while planning the phone app, the options offered,
 and Mike's answer. Newest phase first.
 
+## Profile build label and camera on question screen (Mike, Oct 20, 2026)
+
+**08 Profile (own):** Below **Log Out**, right-aligned muted text shows **Version X.Y.Z (build)** from the installed binary (TestFlight, Play, or production). **04 Today's Question:** Camera and microphone permissions are requested when the screen opens, not only when tapping record, so the preview starts in store builds.
+
 ## Notification email deep links and push on sign-in (Mike, Oct 20, 2026)
 
 Notification emails (daily question, nudge, match, match request, message) include **Open in the app** using `https://catsordogs.net/...` so one link works on iPhone and Android. Installed builds use universal / app links when the marketing site serves `.well-known` files with `PUBLIC_IOS_TEAM_ID` and Android cert fingerprints. Auth emails still use `catsordogs://` or `exp://` per device at sign-up time. Push registers when the user is signed in on a dev or store build, not only from **08c**.

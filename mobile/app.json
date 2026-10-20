@@ -13,6 +13,10 @@
       "associatedDomains": [
         "applinks:catsordogs.net"
       ],
+      "infoPlist": {
+        "NSCameraUsageDescription": "Cats or Dogs? uses your camera to record your answer to the daily question.",
+        "NSMicrophoneUsageDescription": "Cats or Dogs? uses your microphone so your answer has sound and captions."
+      },
       "config": {
         "usesNonExemptEncryption": false
       }

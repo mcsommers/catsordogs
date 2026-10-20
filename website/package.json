@@ -7,9 +7,9 @@
     "node": ">=22.22.0"
   },
   "scripts": {
-    "dev": "astro dev",
-    "website": "astro dev",
-    "build": "astro check && astro build",
+    "dev": "node scripts/generate-well-known.mjs && astro dev",
+    "website": "node scripts/generate-well-known.mjs && astro dev",
+    "build": "node scripts/generate-well-known.mjs && astro check && astro build",
     "preview": "astro preview",
     "typecheck": "astro check"
   },

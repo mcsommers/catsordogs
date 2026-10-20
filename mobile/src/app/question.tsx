@@ -82,13 +82,23 @@ export default function TodaysQuestion() {
     loadScreen();
   }, [attempt, loadScreen]);
 
-  async function ensurePermissions(): Promise<boolean> {
+  const ensurePermissions = useCallback(async (): Promise<boolean> => {
     const cam = cameraPermission?.granted ? cameraPermission : await requestCamera();
     const mic = micPermission?.granted ? micPermission : await requestMic();
     if (cam.granted && mic.granted) return true;
     setMessage('Cats or Dogs? needs your camera and microphone to record your answer. You can allow them in Settings.');
     return false;
-  }
+  }, [cameraPermission, micPermission, requestCamera, requestMic]);
+
+  // Ask on arrival (TestFlight and Expo Go), not only when the record button is tapped.
+  useEffect(() => {
+    if (!question || !lengthSeconds) return;
+    void ensurePermissions();
+  }, [question, lengthSeconds, ensurePermissions]);
+
+  useEffect(() => {
+    setCameraReady(false);
+  }, [cameraPermission?.granted, micPermission?.granted, facing]);
 
   async function onRecordPress() {
     if (phase === 'recording') {
@@ -190,7 +200,7 @@ export default function TodaysQuestion() {
       </View>
 
       <View style={styles.preview}>
-        {cameraPermission?.granted ? (
+        {cameraPermission?.granted && micPermission?.granted ? (
           <CameraView
             ref={camera}
             style={StyleSheet.absoluteFill}
@@ -198,8 +208,16 @@ export default function TodaysQuestion() {
             mode="video"
             onCameraReady={() => setCameraReady(true)}
           />
+        ) : (
+          <Text style={styles.previewPlaceholder}>
+            {permissionBlocked
+              ? 'Camera and microphone are off for this app. Turn them on in Settings to record.'
+              : 'Allow camera and microphone when your phone asks, then your preview will appear here.'}
+          </Text>
+        )}
+        {cameraPermission?.granted && micPermission?.granted ? (
+          <View style={styles.faceGuide} pointerEvents="none" />
         ) : null}
-        <View style={styles.faceGuide} pointerEvents="none" />
         {phase === 'countdown' ? (
           <Text style={styles.countdown} accessibilityLiveRegion="assertive">
             {count}
@@ -308,6 +326,15 @@ const styles = StyleSheet.create({
     overflow: 'hidden',
     alignItems: 'center',
     justifyContent: 'center',
+  },
+  previewPlaceholder: {
+    fontFamily: fonts.body,
+    fontSize: 14,
+    lineHeight: 20,
+    color: colors.textDarkMuted,
+    textAlign: 'center',
+    paddingHorizontal: 24,
+    maxWidth: 280,
   },
   faceGuide: { width: 170, height: 220, borderRadius: 110, borderWidth: 2, borderColor: '#FFFFFF33' },
   countdown: { position: 'absolute', fontFamily: fonts.heading, fontSize: 120, color: colors.white },

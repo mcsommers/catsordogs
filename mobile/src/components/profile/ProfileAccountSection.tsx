@@ -5,6 +5,7 @@ import { useEffect, useState } from 'react';
 import { useSession } from '../../lib/session';
 import { supabase } from '../../lib/supabase';
 import { colors, fonts } from '../../theme';
+import { formatAppVersionLabel } from '../../lib/appVersion';
 import { profileType } from './profileTypography';
 
 const ROWS: { label: string; route?: string }[] = [
@@ -23,6 +24,7 @@ type Props = { onLogOut: () => void };
 export function ProfileAccountSection({ onLogOut }: Props) {
   const { session } = useSession();
   const signedInEmail = session?.user.email?.trim() ?? '';
+  const versionLabel = formatAppVersionLabel();
   const [helpUrl, setHelpUrl] = useState<string | null>(null);
 
   useEffect(() => {
@@ -65,10 +67,17 @@ export function ProfileAccountSection({ onLogOut }: Props) {
           {signedInEmail}
         </Text>
       ) : null}
-      <Pressable style={styles.logOutRow} onPress={onLogOut} accessibilityRole="button">
-        <LogOut size={15} color="#FF5C5C" />
-        <Text style={styles.logOutLabel}>Log Out</Text>
-      </Pressable>
+      <View style={styles.logOutBlock}>
+        <Pressable style={styles.logOutRow} onPress={onLogOut} accessibilityRole="button">
+          <LogOut size={15} color="#FF5C5C" />
+          <Text style={styles.logOutLabel}>Log Out</Text>
+        </Pressable>
+        {versionLabel ? (
+          <Text style={styles.versionLabel} accessibilityLabel={versionLabel}>
+            {versionLabel}
+          </Text>
+        ) : null}
+      </View>
     </View>
   );
 }
@@ -93,6 +102,14 @@ const styles = StyleSheet.create({
     paddingTop: 8,
     paddingBottom: 4,
   },
+  logOutBlock: { gap: 6 },
   logOutRow: { flexDirection: 'row', alignItems: 'center', gap: 10, paddingVertical: 14 },
   logOutLabel: { fontFamily: fonts.body, fontSize: 14, color: '#FF5C5C' },
+  versionLabel: {
+    fontFamily: fonts.body,
+    fontSize: 12,
+    color: colors.textDarkFaint,
+    textAlign: 'right',
+    paddingBottom: 4,
+  },
 });
