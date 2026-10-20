@@ -10,8 +10,7 @@ import {
   type LayoutChangeEvent,
   type ViewToken,
 } from 'react-native';
-import { useIsFocused } from '@react-navigation/native';
-import { Redirect, router, useFocusEffect, useLocalSearchParams } from 'expo-router';
+import { Redirect, router, useFocusEffect, useIsFocused, useLocalSearchParams } from 'expo-router';
 import { VideoView, useVideoPlayer } from 'expo-video';
 import { getGate, type Gate } from '../../lib/api';
 import {
