@@ -4,9 +4,14 @@ interface Props {
   appPath: string;
   title: string;
   lead: string;
+  /** Shown under the main hint when the visitor may be on desktop mail. */
+  desktopHint?: string;
+  /** Optional line before the Open in the app button (e.g. after email unsubscribe). */
+  settingsNote?: string;
+  openButtonLabel?: string;
 }
 
-const { appPath, title, lead } = Astro.props;
+const { appPath, title, lead, desktopHint, settingsNote, openButtonLabel = 'Open in the app' } = Astro.props;
 const site = Astro.site?.href?.replace(/\/$/, '') ?? 'https://catsordogs.net';
 const httpsUrl = `${site}${appPath}`;
 const schemePath = appPath.replace(/^\//, '');
@@ -75,8 +80,10 @@ const androidIntent = `intent://${site.replace(/^https:\/\//, '')}${appPath}#Int
     <main>
       <h1>{title}</h1>
       <p>{lead}</p>
-      <a class="btn" id="open-app" href={httpsUrl}>Open in the app</a>
+      {settingsNote ? <p>{settingsNote}</p> : null}
+      <a class="btn" id="open-app" href={httpsUrl}>{openButtonLabel}</a>
       <p class="hint">If nothing happens, install Cats or Dogs? from the App Store or Google Play, then try again.</p>
+      {desktopHint ? <p class="hint">{desktopHint}</p> : null}
     </main>
     <script define:vars={{ appUrl, androidIntent, httpsUrl }}>
       const isAndroid = /Android/i.test(navigator.userAgent);
