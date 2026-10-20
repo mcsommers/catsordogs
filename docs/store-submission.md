@@ -196,8 +196,10 @@ Do this in order. App Store Connect will not let you type a bundle ID. You choos
 5. Fill in:
    - **Description:** `Cats or Dogs` (a label only you see in the developer portal).
    - **Bundle ID:** choose **Explicit**, then enter exactly `net.catsordogs.app`.
-6. Under **Capabilities**, turn on **Push Notifications** (store builds use Expo push for daily questions and matches). Leave the rest off unless you add a feature later. **Sign in with Apple** is not in the app yet.
+6. Under **Capabilities**, turn on **Push Notifications** (store builds use Expo push for daily questions and matches) and **Associated Domains** (so notification email links on `catsordogs.net` can open the installed app). Leave the rest off unless you add a feature later. **Sign in with Apple** is not in the app yet.
 7. Click **Continue**, then **Register**.
+
+**Already registered the ID before Associated Domains was required?** In **Identifiers**, open `net.catsordogs.app` → **Capabilities** → enable **Associated Domains** → **Save**. Then run a new `eas build` for iOS. Expo will create a new provisioning profile that includes that capability. If a build fails with a message that the profile does not include Associated Domains, you skipped this step.
 
 If `net.catsordogs.app` does not show up in App Store Connect right away, wait a minute and refresh the page. If it still missing, confirm the Apple Developer Program enrollment is **active** (not pending) and that you are on the same Apple team in both portals.
 
