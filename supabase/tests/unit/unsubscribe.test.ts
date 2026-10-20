@@ -1,6 +1,10 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { unsubscribeUrl, verifyUnsubscribe } from '../../functions/_shared/unsubscribe.ts';
+import {
+  unsubscribeConfirmationMessage,
+  unsubscribeUrl,
+  verifyUnsubscribe,
+} from '../../functions/_shared/unsubscribe.ts';
 
 const secret = 'test-secret-that-is-long-enough';
 const user = '11111111-2222-3333-4444-555555555555';
@@ -31,4 +35,15 @@ test('a link cannot be reused for another person, another type, or with another 
 test('unknown types are refused even with a matching signature', async () => {
   const p = await parts('spam');
   assert.equal(await verifyUnsubscribe(secret, p.u, p.t, p.s), false);
+});
+
+test('confirmation text names the notification category', () => {
+  assert.match(unsubscribeConfirmationMessage('matches'), /regarding Matches\./);
+  assert.match(unsubscribeConfirmationMessage('daily_question'), /regarding Daily question\./);
+  assert.match(unsubscribeConfirmationMessage('all'), /all Cats or Dogs\? notification emails\./);
+});
+
+test('confirmation text can include the notification settings web URL', () => {
+  const url = 'https://catsordogs.net/notifications';
+  assert.match(unsubscribeConfirmationMessage('messages', url), new RegExp(`notification settings: ${url}$`));
 });

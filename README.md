@@ -4,7 +4,8 @@ An authenticity-first dating app. Every day, everyone answers the same question 
 (14 seconds by default) to unlock the feed of everyone else's answers.
 
 Product docs and screen designs live in [`docs/`](docs/). Start with the
-MVP Scope & Requirements doc. Rules for the AI coding agent are in [`AGENTS.md`](AGENTS.md).
+MVP Scope & Requirements doc. Notification triggers and message copy are indexed in
+[`docs/notifications.md`](docs/notifications.md). Rules for the AI coding agent are in [`AGENTS.md`](AGENTS.md).
 
 ## Project layout
 
@@ -13,7 +14,7 @@ MVP Scope & Requirements doc. Rules for the AI coding agent are in [`AGENTS.md`]
 | `mobile/` | The Expo (React Native, TypeScript) app for iOS and Android |
 | `website/` | Public marketing homepage (Astro static site; design in `docs/website.pen`) |
 | `supabase/` | The backend: database migrations, server functions, and database tests |
-| `docs/` | Requirements, build plan, concept doc, and the Pencil design file |
+| `docs/` | Requirements, build plan, [notifications catalog](docs/notifications.md), concept doc, and the Pencil design file |
 
 ## One-time setup
 
@@ -370,6 +371,8 @@ they are blocking the **recordings per day** limit; never do this on production 
 Never paste these values into chat, an issue, or a commit.
 
 ## Notifications (push and email)
+
+See [`docs/notifications.md`](docs/notifications.md) for every type, trigger, title/body, and deep link.
 
 Notifications go through a queue in the database. A worker (the `process-notifications` Edge Function) sends them:
 push through Expo, email through [Resend](https://resend.com), honoring each person's settings (push on for everything;

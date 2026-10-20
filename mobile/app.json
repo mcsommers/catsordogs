@@ -54,6 +54,11 @@
               "scheme": "https",
               "host": "catsordogs.net",
               "pathPrefix": "/matches"
+            },
+            {
+              "scheme": "https",
+              "host": "catsordogs.net",
+              "pathPrefix": "/notifications"
             }
           ],
           "category": [
