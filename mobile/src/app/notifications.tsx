@@ -6,7 +6,7 @@ import {
   setNotificationPreference,
   type NotificationPreference,
 } from '../lib/social';
-import { canRegisterForRemotePush, registerForPushNotifications } from '../lib/push';
+import { canRegisterForRemotePush } from '../lib/push';
 import { BackButton, CenteredSpinner, Screen, ToggleSwitch, styles as ui } from '../components/ui';
 import { colors, fonts } from '../theme';
 
@@ -26,7 +26,6 @@ export default function NotificationsScreen() {
   }, []);
 
   useEffect(() => {
-    registerForPushNotifications().catch(() => {});
     load()
       .catch(() => {})
       .finally(() => setLoading(false));
@@ -62,8 +61,8 @@ export default function NotificationsScreen() {
       <Text style={styles.lead}>Choose how we reach you for each type of update.</Text>
       {!canRegisterForRemotePush() ? (
         <Text style={styles.expoGoNote}>
-          Push notifications need a development build. In Expo Go you can still change these settings; delivery is tested
-          after you install a dev build.
+          Push notifications need a development build. In Expo Go you can still change these settings; push registers automatically
+          after you install a TestFlight or Play build and sign in.
         </Text>
       ) : null}
       {prefs.map((row) => (

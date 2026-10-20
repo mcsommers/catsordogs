@@ -3,6 +3,10 @@
 A record of questions asked while planning the phone app, the options offered,
 and Mike's answer. Newest phase first.
 
+## Notification email deep links and push on sign-in (Mike, Oct 20, 2026)
+
+Notification emails (daily question, nudge, match, match request, message) include **Open in the app** using `https://catsordogs.net/...` so one link works on iPhone and Android. Installed builds use universal / app links when the marketing site serves `.well-known` files with `PUBLIC_IOS_TEAM_ID` and Android cert fingerprints. Auth emails still use `catsordogs://` or `exp://` per device at sign-up time. Push registers when the user is signed in on a dev or store build, not only from **08c**.
+
 ## Check Your Email after Sign Up (Mike, Oct 19, 2026)
 
 On **02d** after Sign Up: remove **Back to Log In**; the header back arrow goes to **02 Sign Up** (not Log In) with the submitted email prefilled and password cleared so a wrong email can be corrected. Password-reset **02d** (`kind=reset`) keeps **Back to Log In** and back goes to Log In.

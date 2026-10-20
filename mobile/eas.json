@@ -1,0 +1,19 @@
+{
+  "cli": {
+    "appVersionSource": "remote"
+  },
+  "build": {
+    "preview": {
+      "distribution": "store",
+      "environment": "preview",
+      "autoIncrement": true
+    }
+  },
+  "submit": {
+    "preview": {
+      "android": {
+        "track": "internal"
+      }
+    }
+  }
+}

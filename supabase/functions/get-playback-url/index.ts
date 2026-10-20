@@ -39,7 +39,16 @@ Deno.serve(async (req) => {
   if (!playbackId) return json({ error: 'That video is not available.' }, 404);
 
   const mux = muxClient();
-  const tokens = await mux.jwt.signPlaybackId(playbackId, { type: ['video', 'thumbnail'], expiration: LINK_LIFETIME });
+  let tokens: Record<string, string>;
+  try {
+    tokens = await mux.jwt.signPlaybackId(playbackId, { type: ['video', 'thumbnail'], expiration: LINK_LIFETIME });
+  } catch (e) {
+    console.error('get-playback-url: Mux signing failed', e);
+    return json(
+      { error: 'Playback signing failed. Check MUX_SIGNING_KEY and MUX_PRIVATE_KEY for this environment.' },
+      502,
+    );
+  }
   return json({
     playback_url: `${streamBaseUrl()}/${playbackId}.m3u8?token=${tokens['playback-token']}`,
     thumbnail_url: `${imageBaseUrl()}/${playbackId}/thumbnail.jpg?token=${tokens['thumbnail-token']}`,
