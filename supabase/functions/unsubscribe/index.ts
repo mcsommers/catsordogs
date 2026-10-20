@@ -2,14 +2,25 @@
 // unsubscribe, which POSTs to it) turns email off for that type, or for all
 // types. No login is needed, so it checks the link's signature instead.
 //
-// It answers in plain text: Supabase does not display HTML pages from Edge
-// Functions on its default address.
+// GET redirects to the marketing site (HTML renders correctly; Supabase function
+// URLs often show raw HTML in the browser). POST returns plain text for one-click
+// unsubscribe in mail clients.
 import { requireEnv } from '../_shared/http.ts';
 import { serviceClient } from '../_shared/clients.ts';
-import { verifyUnsubscribe } from '../_shared/unsubscribe.ts';
+import { websiteOriginFromEnv } from '../_shared/notificationDeepLink.ts';
+import {
+  NOTIFICATION_SETTINGS_WEB_PATH,
+  emailUnsubscribedLandingUrl,
+  unsubscribeConfirmationMessage,
+  verifyUnsubscribe,
+} from '../_shared/unsubscribe.ts';
 
 const text = (body: string, status = 200) =>
   new Response(body, { status, headers: { 'Content-Type': 'text/plain; charset=utf-8' } });
+
+function notificationSettingsUrl(): string {
+  return `${websiteOriginFromEnv()}${NOTIFICATION_SETTINGS_WEB_PATH}`;
+}
 
 Deno.serve(async (req) => {
   if (req.method !== 'GET' && req.method !== 'POST') return text('Use GET or POST.', 405);
@@ -26,9 +37,10 @@ Deno.serve(async (req) => {
     console.error('unsubscribe failed', error);
     return text('Something went wrong. Please try again.', 500);
   }
-  return text(
-    type === 'all'
-      ? 'You are unsubscribed from all Cats or Dogs? emails. You can change this any time in the app\'s notification settings.'
-      : 'You are unsubscribed from these Cats or Dogs? emails. You can change this any time in the app\'s notification settings.',
-  );
+
+  const settingsUrl = notificationSettingsUrl();
+  if (req.method === 'POST') {
+    return text(unsubscribeConfirmationMessage(type, settingsUrl));
+  }
+  return Response.redirect(emailUnsubscribedLandingUrl(websiteOriginFromEnv(), type), 302);
 });

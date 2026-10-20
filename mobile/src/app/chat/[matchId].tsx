@@ -384,7 +384,9 @@ export default function ChatScreen() {
             return (
               <View style={[styles.bubbleWrap, mine ? styles.bubbleWrapMine : styles.bubbleWrapTheirs]}>
                 <View style={[styles.bubble, mine ? styles.bubbleMine : styles.bubbleTheirs]}>
-                  <Text style={styles.bubbleText}>{item.body}</Text>
+                  <Text style={[styles.bubbleText, mine ? styles.bubbleTextMine : styles.bubbleTextTheirs]}>
+                    {item.body}
+                  </Text>
                 </View>
               </View>
             );
@@ -479,9 +481,11 @@ const styles = StyleSheet.create({
   bubbleWrapMine: { alignSelf: 'flex-end' },
   bubbleWrapTheirs: { alignSelf: 'flex-start' },
   bubble: { borderRadius: 16, paddingHorizontal: 14, paddingVertical: 10 },
-  bubbleMine: { backgroundColor: colors.accentDog },
+  bubbleMine: { backgroundColor: '#E0E0E4' },
   bubbleTheirs: { backgroundColor: colors.surfaceDark, borderWidth: 1, borderColor: colors.borderDark },
-  bubbleText: { fontFamily: fonts.body, fontSize: 15, color: colors.white, lineHeight: 20 },
+  bubbleText: { fontFamily: fonts.body, fontSize: 15, lineHeight: 20 },
+  bubbleTextMine: { color: colors.textPrimary },
+  bubbleTextTheirs: { color: colors.white },
   composer: {
     flexDirection: 'row',
     alignItems: 'flex-end',

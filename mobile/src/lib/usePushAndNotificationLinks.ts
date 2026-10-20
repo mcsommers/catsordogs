@@ -19,7 +19,7 @@ function pathFromUrl(url: string): string | null {
       path = path.replace(/^\//, '');
     }
     if (!path || path === 'open-app' || path === 'open-app.html') return null;
-    if (path === 'question' || path === 'matches') return `/${path}`;
+    if (path === 'question' || path === 'matches' || path === 'notifications') return `/${path}`;
     if (path.startsWith('chat/')) return `/${path}`;
     if (path.startsWith('user/')) return `/${path}`;
     const deep = url.match(/\/(user|chat)\/[0-9a-f-]{36}/i);

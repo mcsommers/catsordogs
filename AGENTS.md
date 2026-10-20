@@ -145,6 +145,7 @@ and code. Do not wait to be asked and do not treat any of these as optional
 follow-ups.
 
 Under docs/, keep in sync at minimum:
+- `docs/notifications.md` when notification triggers, copy, deep links, or delivery rules change
 - `docs/mobile-feed-scroll.md` when feed paging, touch handling, or chrome layout changes
 - MVP Scope & Requirements when behavior, copy, or rules change
 - Build Plan when scope, data model, or phase deliverables change

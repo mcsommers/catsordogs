@@ -11,6 +11,10 @@ Notification emails link to `https://catsordogs.net/user/…`, `/chat/…`, `/qu
 
 **What testers see on iPhone:** Mail often opens Safari first on a short **Open in the app** page (title **Profile** or **Chat** for match/message links). That is normal. Tap **Open in the app** once; allow opening Cats or Dogs? if iOS asks. The installed app should land on the right profile, chat, question, or matches list. Universal links may skip Safari when AASA and Associated Domains are set; the web page is the fallback.
 
+## Chat sent-message bubble color (Mike, Oct 20, 2026)
+
+On **07c**, bubbles you send use a light gray background (`#E0E0E4`) and dark text (`textPrimary`). Incoming bubbles stay dark surface with white text. **Send** stays orange.
+
 ## Message push while in chat and feed video on push tap (Mike, Oct 20, 2026)
 
 **In chat (07c):** While a chat is open, the app heartbeats `set_active_chat` on staging/production. The server skips **push** for new messages in that match while the heartbeat is fresh (90 seconds). Foreground banners for that match are suppressed too. Email is unchanged (still rate-limited per hour per thread).
@@ -55,7 +59,7 @@ Exploration frame **App icon concepts** in `pencil-new.pen` (six 180pt squircle 
 
 ## Admin email on every new report (Mike, Oct 17, 2026)
 
-Each new video flag, profile report, or chat message report queues one email to every admin (`admin_alert` / `moderation_report`). Copy names what was reported and points admins to the moderation queue; reporter identities are never included. A second report from the same person on the same target does not send another email. Notification settings cannot turn these off.
+Each new video flag, profile report, or chat message report queues one email to every admin (`admin_alert` / `moderation_report`). Copy names what was reported and points admins to the moderation queue; reporter identities are never included. A second report from the same person on the same target does not send another email. Notification settings cannot turn these off. See [notifications.md](notifications.md) for subjects and bodies.
 
 ## Following badge outline pill (Mike, Oct 17, 2026)
 
