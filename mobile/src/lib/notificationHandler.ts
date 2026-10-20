@@ -1,4 +1,3 @@
-import * as Notifications from 'expo-notifications';
 import { getLocalActiveChatMatchId } from './activeChatPresence';
 import { canRegisterForRemotePush } from './push';
 
@@ -13,22 +12,23 @@ function shouldSuppressForegroundNotification(
   return matchId === getLocalActiveChatMatchId();
 }
 
-/** Must run before any remote notification arrives while the app is open. */
+/** Must run before any remote notification arrives while the app is open. No-op in Expo Go (SDK 53+). */
 export function ensureForegroundNotificationHandler(): void {
   if (installed || !canRegisterForRemotePush()) return;
   installed = true;
-  Notifications.setNotificationHandler({
-    handleNotification: async (notification) => {
-      const data = notification.request.content.data as Record<string, unknown> | undefined;
-      const suppress = shouldSuppressForegroundNotification(data);
-      return {
-        shouldShowBanner: !suppress,
-        shouldShowList: !suppress,
-        shouldPlaySound: !suppress,
-        shouldSetBadge: false,
-      };
-    },
-  });
+  void (async () => {
+    const Notifications = await import('expo-notifications');
+    Notifications.setNotificationHandler({
+      handleNotification: async (notification) => {
+        const data = notification.request.content.data as Record<string, unknown> | undefined;
+        const suppress = shouldSuppressForegroundNotification(data);
+        return {
+          shouldShowBanner: !suppress,
+          shouldShowList: !suppress,
+          shouldPlaySound: !suppress,
+          shouldSetBadge: false,
+        };
+      },
+    });
+  })();
 }
-
-ensureForegroundNotificationHandler();

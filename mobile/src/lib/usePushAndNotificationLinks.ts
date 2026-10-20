@@ -2,6 +2,7 @@ import { useEffect, useRef } from 'react';
 import { AppState } from 'react-native';
 import * as Linking from 'expo-linking';
 import { useRouter } from 'expo-router';
+import { ensureForegroundNotificationHandler } from './notificationHandler';
 import { canRegisterForRemotePush, registerForPushNotifications } from './push';
 import { navigateFromNotificationPayload } from './notificationNavigation';
 import { runNavigationAction } from './deferredNavigation';
@@ -33,6 +34,11 @@ export function usePushAndNotificationLinks() {
   const { session, loading } = useSession();
   const router = useRouter();
   const handledColdStartNotificationId = useRef<string | null>(null);
+
+  useEffect(() => {
+    if (!canRegisterForRemotePush()) return;
+    ensureForegroundNotificationHandler();
+  }, []);
 
   useEffect(() => {
     if (loading || !session) return;

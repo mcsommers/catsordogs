@@ -1,4 +1,3 @@
-import '../lib/notificationHandler';
 import { useEffect, type ReactNode } from 'react';
 import { Stack, useRouter, useSegments } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
