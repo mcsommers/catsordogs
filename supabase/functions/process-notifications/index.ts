@@ -42,6 +42,7 @@ async function sendPush(work: Work, db: ReturnType<typeof serviceClient>): Promi
         body: work.body,
         data: { ...work.data, type: work.type, kind: work.kind },
         sound: 'default',
+        priority: 'high',
       })),
     ),
   });

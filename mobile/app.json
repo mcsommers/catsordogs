@@ -96,7 +96,12 @@
           "photosPermission": "Cats or Dogs? uses your photos so you can add them to your profile."
         }
       ],
-      "expo-notifications",
+      [
+        "expo-notifications",
+        {
+          "enableBackgroundRemoteNotifications": true
+        }
+      ],
       "react-native-quick-crypto"
     ],
     "extra": {

@@ -1,4 +1,5 @@
 import { useEffect } from 'react';
+import { AppState } from 'react-native';
 import * as Linking from 'expo-linking';
 import { useRouter } from 'expo-router';
 import { canRegisterForRemotePush, registerForPushNotifications } from './push';
@@ -27,6 +28,14 @@ export function usePushAndNotificationLinks() {
   useEffect(() => {
     if (loading || !session) return;
     registerForPushNotifications().catch(() => {});
+  }, [loading, session?.user.id]);
+
+  useEffect(() => {
+    if (loading || !session) return;
+    const sub = AppState.addEventListener('change', (state) => {
+      if (state === 'active') registerForPushNotifications().catch(() => {});
+    });
+    return () => sub.remove();
   }, [loading, session?.user.id]);
 
   useEffect(() => {

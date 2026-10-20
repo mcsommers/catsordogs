@@ -3,6 +3,10 @@
 A record of questions asked while planning the phone app, the options offered,
 and Mike's answer. Newest phase first.
 
+## Match push while app is open (Mike, Oct 20, 2026)
+
+Staging showed match-request push **sent** to the TestFlight Expo token; the Matches tab heart is **in-app** (Realtime/poll), not push. On iOS, if `setNotificationHandler` is not registered before a remote notification arrives while the app is in the foreground, Expo **drops** the banner. The handler now installs at app startup; token registration also refreshes when the app returns to the foreground.
+
 ## Profile build label and camera on question screen (Mike, Oct 20, 2026)
 
 **08 Profile (own):** Below **Log Out**, right-aligned muted text shows **Version X.Y.Z (build)** from the installed binary (TestFlight, Play, or production). **04 Today's Question:** Camera and microphone permissions are requested when the screen opens, not only when tapping record, so the preview starts in store builds.
