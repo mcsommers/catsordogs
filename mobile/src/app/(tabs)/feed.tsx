@@ -523,7 +523,11 @@ export default function Feed() {
         extraData={{ activeId: activeItem?.answerId, muted, videoProgress }}
         keyExtractor={(item) => item.answerId}
         pagingEnabled
-        decelerationRate="fast"
+        // iOS "fast" is a light flick. On Android the same prop sets fling friction
+        // about 7x higher than normal, so a short swipe dies and the next video
+        // does not load until the finger has been dragged past halfway. Leave
+        // Android on the platform default. See docs/mobile-feed-scroll.md.
+        {...(Platform.OS === 'ios' ? { decelerationRate: 'fast' as const } : {})}
         showsVerticalScrollIndicator={false}
         viewabilityConfigCallbackPairs={viewabilityConfigCallbackPairs}
         bounces={activeIndex === 0}
