@@ -1,2 +1,0 @@
-/user/* /open-app.html?path=/user/:splat 200
-/chat/* /open-app.html?path=/chat/:splat 200

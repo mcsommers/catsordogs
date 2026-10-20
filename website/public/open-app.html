@@ -83,6 +83,10 @@
       if (!appPath) {
         document.getElementById('lead').textContent =
           'This link could not be read. Open Cats or Dogs? and check Matches.';
+        const broken = document.getElementById('open-app');
+        broken.textContent = 'Open Cats or Dogs?';
+        broken.href = 'https://apps.apple.com/app/id6824766057';
+        broken.removeAttribute('id');
       } else {
         const schemePath = appPath.replace(/^\//, '');
         const appUrl = 'catsordogs://' + schemePath;
@@ -101,18 +105,15 @@
         }
 
         const link = document.getElementById('open-app');
-        link.href = httpsUrl;
-
         const isAndroid = /Android/i.test(navigator.userAgent);
+        link.href = isAndroid ? androidIntent : appUrl;
+
         const openApp = () => {
           if (isAndroid) {
             window.location.href = androidIntent;
             return;
           }
           window.location.href = appUrl;
-          window.setTimeout(() => {
-            window.location.href = httpsUrl;
-          }, 1200);
         };
         link.addEventListener('click', (e) => {
           e.preventDefault();

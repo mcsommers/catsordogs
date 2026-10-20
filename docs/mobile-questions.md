@@ -5,7 +5,7 @@ and Mike's answer. Newest phase first.
 
 ## Email Open in the app fallback (Mike, Oct 20, 2026)
 
-Cloudflare rewrites `/user/*` and `/chat/*` to `open-app.html` for static hosting. The browser pathname can become `/open-app.html`, which wrongly opened `catsordogs://open-app`. Rewrites now pass `?path=/user/:splat` (or `/chat/…`); the fallback page reads that query before building the custom-scheme URL. Prefer universal links (`https://catsordogs.net/user/…`) when iOS has cached AASA.
+Marketing `/user/*` and `/chat/*` must keep that path in the browser bar (for universal links and email). Cloudflare Pages serves `open-app.html` via a 200 rewrite and `website/functions/user/[id].js` (and `chat/[matchId].js`) so the URL is not stripped to `/open-app`. Do not add a dashboard redirect from `/user/*` to `/open-app`; that breaks match emails.
 
 ## Match push on TestFlight (Mike, Oct 20, 2026)
 
