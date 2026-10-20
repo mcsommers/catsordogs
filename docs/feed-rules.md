@@ -150,3 +150,19 @@ A followed person who fails the filters still counts toward `day_total`, which c
 4. If the score ties, the answer id, descending.
 
 Opening the feed with no date always starts from today again. Choosing a past question (`p_date`) returns that day only, with the same filters, score, and follow cap.
+
+## Pagination
+
+Ranking and follow-cap rules above apply to the **full** eligible list first. `get_feed` then returns **one page** of that list; it does not change who is eligible or how they are scored.
+
+| Parameter | Role |
+| --------- | ---- |
+| `p_limit` | Page size. Default **20** on the server if omitted. Clamped to **1** through **50** (values outside that range are brought inside before the query runs). |
+| `p_offset` | How many rows to skip after ordering. Default **0**. |
+| `p_date` | Optional. When set, only that calendar day is considered (must be today or earlier in the viewer's local sense). When null, all days in the look-back window are included in one ordered list. |
+
+Every row in the response includes **`total_count`**: the number of eligible rows **after** exclusions, filters, and follow-cap visibility, **before** `p_offset` / `p_limit`. It is the same on every row in a given response. An empty gate (`gate_state` not open) returns **no rows** and no count.
+
+**Sort order for paging** matches the list above: question date (newest first), then top-slot followed within the day, then score, then answer id. `offset` and `limit` slice that single ordered list. Page 2 continues where page 1 left off; it does not re-rank.
+
+**Mobile app (screen 06):** the first load and pull-to-refresh call `get_feed` with **`p_limit` 12** and **`p_offset` 0**. When the user swipes near the end of the loaded list, the app requests the next page with the same limit and `p_offset` equal to how many items are already loaded, until `items.length` reaches `total_count`. The day switcher passes `p_date` for that day only; paging uses the same page size and offset pattern within that day.
