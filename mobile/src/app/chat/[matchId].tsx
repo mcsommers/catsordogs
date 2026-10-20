@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 import {
+  AppState,
   Dimensions,
   FlatList,
   Image,
@@ -20,11 +21,13 @@ import {
   markConversationRead,
   reportMessage,
   sendMessage,
+  setActiveChat,
   setConversationMuted,
   blockUser,
   unmatchUser,
   type ChatMessage,
 } from '../../lib/social';
+import { setLocalActiveChatMatchId } from '../../lib/activeChatPresence';
 import { signPhotoPaths } from '../../lib/profile';
 import { supabase } from '../../lib/supabase';
 import { useMatchesAlert } from '../../lib/matchesAlertContext';
@@ -159,6 +162,34 @@ export default function ChatScreen() {
         .then(() => scrollToLatest(false))
         .catch(() => {});
     }, [loading, syncThread, scrollToLatest])
+  );
+
+  const pingActiveChat = useCallback(() => {
+    if (!matchId) return;
+    setLocalActiveChatMatchId(matchId);
+    void setActiveChat(matchId).catch(() => {});
+  }, [matchId]);
+
+  const clearActiveChat = useCallback(() => {
+    setLocalActiveChatMatchId(null);
+    void setActiveChat(null).catch(() => {});
+  }, []);
+
+  useFocusEffect(
+    useCallback(() => {
+      if (!matchId) return;
+      pingActiveChat();
+      const heartbeat = setInterval(pingActiveChat, 45_000);
+      const appSub = AppState.addEventListener('change', (state) => {
+        if (state === 'active') pingActiveChat();
+        else clearActiveChat();
+      });
+      return () => {
+        clearInterval(heartbeat);
+        appSub.remove();
+        clearActiveChat();
+      };
+    }, [matchId, pingActiveChat, clearActiveChat])
   );
 
   useEffect(() => {

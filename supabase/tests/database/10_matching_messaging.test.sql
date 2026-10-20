@@ -2,7 +2,7 @@
 -- block ending a match, avatars, and that the app cannot read who requested
 -- whom except through the Incoming / Outgoing lists.
 begin;
-select plan(115);
+select plan(118);
 
 delete from public.answers;
 delete from public.videos;
@@ -467,6 +467,39 @@ select is((select send_email from claimed where user_id = pg_temp.uid(7) and bod
   'the first message may go by email');
 select is((select send_email from claimed where user_id = pg_temp.uid(7) and body = 'second'), false,
   'the second email in the same hour is held back');
+reset role;
+
+-- active chat: no message push while viewing that thread
+reset role;
+select pg_temp.become(7);
+set local role authenticated;
+select public.set_active_chat((select match_id from public.get_conversations() where user_id = pg_temp.uid(2)));
+reset role;
+select pg_temp.become(2);
+set local role authenticated;
+select public.send_message((select match_id from public.get_conversations()), 'while you are in chat');
+reset role;
+set local role service_role;
+select is(
+  (select send_push from public.claim_notifications(20) where user_id = pg_temp.uid(7) and body = 'while you are in chat'),
+  false,
+  'message push is skipped when the recipient is active in that chat'
+);
+reset role;
+select pg_temp.become(7);
+set local role authenticated;
+select public.set_active_chat(null);
+reset role;
+select pg_temp.become(2);
+set local role authenticated;
+select public.send_message((select match_id from public.get_conversations()), 'after you left chat');
+reset role;
+set local role service_role;
+select is(
+  (select send_push from public.claim_notifications(20) where user_id = pg_temp.uid(7) and body = 'after you left chat'),
+  true,
+  'message push returns after active chat is cleared'
+);
 reset role;
 
 select * from finish();
