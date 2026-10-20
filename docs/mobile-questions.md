@@ -3,6 +3,10 @@
 A record of questions asked while planning the phone app, the options offered,
 and Mike's answer. Newest phase first.
 
+## Email unsubscribe landing and settings link (Mike, Oct 20, 2026)
+
+Tapping **Unsubscribe from these emails** in notification mail hits the **`unsubscribe`** Edge Function, turns off **email only** for that **08c** category, then **redirects (GET)** to **`https://catsordogs.net/email-unsubscribed?type=…`** so users never see raw HTML on the Supabase URL. The landing page shows a **type-specific** lead sentence (for example `… regarding Matches.`), the note `You can change this any time in the app's notification settings.`, and orange **Open notification settings**, which links to **`https://catsordogs.net/notifications`** and should open **08c** in an installed build. **POST** one-click unsubscribe in some mail clients returns plain text only (no browser page), with the same settings URL in the body. Full catalog: [notifications.md](notifications.md). **TestFlight / Play:** universal link to **08c** from `/notifications` needs a store build that includes `mobile/app.json` Android intent for `/notifications` and the in-app route handler (**iOS build 6+** in Oct 2026). Unsubscribe and landing pages work without a new app build; only opening **08c** from that HTTPS link needs the newer binary.
+
 ## Email Open in the app fallback (Mike, Oct 20, 2026)
 
 Notification emails link to `https://catsordogs.net/user/…`, `/chat/…`, `/question`, or `/matches` (not `catsordogs://`). On the marketing site, **Cloudflare Pages Functions** (`website/functions/user/[id].js` and `chat/[matchId].js`) serve `open-app.html` while the browser address bar **stays** on `/user/{id}` or `/chat/{id}`. That matters for Apple universal links and for the fallback script, which reads the path from the URL.
