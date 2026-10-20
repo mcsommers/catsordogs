@@ -28,7 +28,7 @@ export function MultiSelectDropdown({
   const labels = options.filter((o) => selected.has(o.value)).map((o) => o.label);
   const summary =
     selected.size === 0
-      ? 'All states'
+      ? 'All statuses'
       : labels.length <= 2
         ? labels.join(', ')
         : `${selected.size} selected`;

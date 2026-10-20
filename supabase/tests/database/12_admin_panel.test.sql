@@ -2,7 +2,7 @@
 -- count as a view, unhiding restores one video only, profile-question lists
 -- are admin-only, and a missing next-day question emails each admin once.
 begin;
-select plan(62);
+select plan(66);
 
 delete from public.moderation_actions;
 delete from public.flags;
@@ -50,7 +50,12 @@ values
   ('d1000000-0000-0000-0000-000000000001', pg_temp.uid(1), (select id from public.questions where question_date = public.utc_today()),
    'ready', 'play-hidden', 8, 'unavailable', '[]'),
   ('d1000000-0000-0000-0000-000000000002', pg_temp.uid(1), (select id from public.questions where question_date = public.utc_today() + 1),
-   'ready', 'play-live', 8, 'unavailable', '[]');
+   'ready', 'play-live', 8, 'unavailable', '[]'),
+  ('d1000000-0000-0000-0000-000000000003', pg_temp.uid(1), (select id from public.questions where question_date = public.utc_today()),
+   'processing', null, null, 'pending', '[]');
+update public.videos
+  set auto_caption_segments = '[{"start":0,"end":1,"text":"Mux said this"}]'::jsonb
+  where id = 'd1000000-0000-0000-0000-000000000001';
 -- Two answers cannot share a question for one person, so the live one is tomorrow's question
 -- filed as a recording that is not today's answer. The hidden answer is today's.
 insert into public.answers (id, user_id, question_id, video_id, duration_seconds, caption_text, status)
@@ -131,6 +136,14 @@ select is((select last_sign_in_at from public.admin_list_people() where id = pg_
 
 select is((select count(*) from public.admin_list_videos() where answer_status = 'disabled'), 2::bigint,
   'an admin can see hidden videos');
+select is((select email from public.admin_list_videos() where video_id = 'd1000000-0000-0000-0000-000000000001'),
+  'ada@example.com', 'the video list includes the account email');
+select is((select caption_text from public.admin_list_videos() where video_id = 'd1000000-0000-0000-0000-000000000001'),
+  'hidden caption', 'the video list includes the caption viewers see');
+select is((select auto_caption_text from public.admin_list_videos() where video_id = 'd1000000-0000-0000-0000-000000000001'),
+  'Mux said this', 'the video list includes the original automatic caption');
+select is((select answer_submitted_at from public.admin_list_videos() where video_id = 'd1000000-0000-0000-0000-000000000003'),
+  null, 'a recording that was never submitted has no answer date');
 select is((select mux_playback_id from public.admin_get_video_for_playback(null, 'd2000000-0000-0000-0000-000000000001')),
   'play-hidden', 'an admin can watch a hidden video');
 reset role;

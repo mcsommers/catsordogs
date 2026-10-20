@@ -20,10 +20,10 @@ const links = [
   ['/email-list', 'Email list'],
 ] as const;
 
-function Shell({ children }: { children: ReactNode }) {
+function Shell({ children, wide = false }: { children: ReactNode; wide?: boolean }) {
   const { email, signOut } = useAuth();
   return (
-    <div className="app-shell">
+    <div className={wide ? 'app-shell wide' : 'app-shell'}>
       <div className="top">
         <h1>Cats or Dogs? admin</h1>
         <div className="row">
@@ -51,7 +51,7 @@ export default function App() {
       <Route path="/settings" element={<RequireAdmin><Shell><Settings /></Shell></RequireAdmin>} />
       <Route path="/queue" element={<RequireAdmin><Shell><Queue /></Shell></RequireAdmin>} />
       <Route path="/people" element={<RequireAdmin><Shell><People /></Shell></RequireAdmin>} />
-      <Route path="/videos" element={<RequireAdmin><Shell><Videos /></Shell></RequireAdmin>} />
+      <Route path="/videos" element={<RequireAdmin><Shell wide><Videos /></Shell></RequireAdmin>} />
       <Route path="/profile-questions" element={<RequireAdmin><Shell><ProfileQuestions /></Shell></RequireAdmin>} />
       <Route path="/email-list" element={<RequireAdmin><Shell><EmailList /></Shell></RequireAdmin>} />
       <Route path="*" element={<Navigate to="/" replace />} />
