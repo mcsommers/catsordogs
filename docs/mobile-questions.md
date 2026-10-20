@@ -3,9 +3,9 @@
 A record of questions asked while planning the phone app, the options offered,
 and Mike's answer. Newest phase first.
 
-## Match push while app is open (Mike, Oct 20, 2026)
+## Match push on TestFlight (Mike, Oct 20, 2026)
 
-Staging showed match-request push **sent** to the TestFlight Expo token; the Matches tab heart is **in-app** (Realtime/poll), not push. On iOS, if `setNotificationHandler` is not registered before a remote notification arrives while the app is in the foreground, Expo **drops** the banner. The handler now installs at app startup; token registration also refreshes when the app returns to the foreground.
+Staging showed match-request push **sent** to the TestFlight Expo token; the Matches tab heart is **in-app** (Realtime/poll), not push. Banners were easy to miss with **Do Not Disturb** on. We still install the Expo foreground notification handler at startup and refresh the push token when the app becomes active; that is normal hardening, not a fix for a broken server path.
 
 ## Profile build label and camera on question screen (Mike, Oct 20, 2026)
 
