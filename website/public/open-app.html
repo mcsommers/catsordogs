@@ -68,7 +68,8 @@
           path.startsWith('/user/') ||
           path.startsWith('/chat/') ||
           path === '/question' ||
-          path === '/matches'
+          path === '/matches' ||
+          path === '/notifications'
         ) {
           return path;
         }
@@ -102,6 +103,10 @@
           document.getElementById('title').textContent = 'Profile';
           document.getElementById('lead').textContent =
             'Open Cats or Dogs? to view this profile and respond to a match request.';
+        } else if (appPath === '/notifications') {
+          document.getElementById('title').textContent = 'Notification settings';
+          document.getElementById('lead').textContent =
+            'Open Cats or Dogs? to manage push and email notifications.';
         }
 
         const link = document.getElementById('open-app');
