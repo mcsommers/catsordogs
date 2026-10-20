@@ -55,15 +55,40 @@
     <main>
       <h1 id="title">Open in the app</h1>
       <p id="lead">Open Cats or Dogs? to continue.</p>
+      <p id="settings-note" class="hint" hidden></p>
       <a class="btn" id="open-app" href="#">Open in the app</a>
-      <p class="hint">If nothing happens, install Cats or Dogs? from the App Store, then try again.</p>
+      <p class="hint">If nothing happens, install Cats or Dogs? from the App Store or Google Play, then try again.</p>
+      <p id="desktop-hint" class="hint" hidden></p>
     </main>
     <script>
+      function normalizePath(pathname) {
+        const path = pathname.replace(/\/$/, '') || '/';
+        return path;
+      }
+
+      function unsubscribeLead(type) {
+        const labels = {
+          daily_question: 'Daily question',
+          matches: 'Matches',
+          messages: 'Messages',
+          nudges: 'Nudges',
+        };
+        if (type === 'all') {
+          return 'You are unsubscribed from all Cats or Dogs? notification emails.';
+        }
+        if (labels[type]) {
+          return 'You are unsubscribed from Cats or Dogs? emails regarding ' + labels[type] + '.';
+        }
+        return 'You are unsubscribed from these Cats or Dogs? emails.';
+      }
+
       function resolveAppPath() {
         const fromQuery = new URLSearchParams(window.location.search).get('path');
         if (fromQuery && fromQuery.startsWith('/')) return fromQuery;
 
-        const path = window.location.pathname;
+        const path = normalizePath(window.location.pathname);
+        if (path === '/email-unsubscribed') return '/notifications';
+
         if (
           path.startsWith('/user/') ||
           path.startsWith('/chat/') ||
@@ -80,6 +105,7 @@
         return null;
       }
 
+      const pagePath = normalizePath(window.location.pathname);
       const appPath = resolveAppPath();
       if (!appPath) {
         document.getElementById('lead').textContent =
@@ -94,6 +120,7 @@
         const httpsUrl = window.location.origin + appPath;
         const androidIntent =
           'intent://' + window.location.host + appPath + '#Intent;scheme=https;package=net.catsordogs.app;end';
+        const link = document.getElementById('open-app');
 
         if (appPath.startsWith('/chat/')) {
           document.getElementById('title').textContent = 'Chat';
@@ -104,12 +131,29 @@
           document.getElementById('lead').textContent =
             'Open Cats or Dogs? to view this profile and respond to a match request.';
         } else if (appPath === '/notifications') {
-          document.getElementById('title').textContent = 'Notification settings';
-          document.getElementById('lead').textContent =
-            'Open Cats or Dogs? to manage push and email notifications.';
+          if (pagePath === '/email-unsubscribed') {
+            document.title = 'Unsubscribed | Cats or Dogs?';
+            document.getElementById('title').textContent = 'Unsubscribed';
+            const rawType = new URLSearchParams(window.location.search).get('type') || '';
+            const allowed = ['daily_question', 'matches', 'messages', 'nudges', 'all'];
+            const type = allowed.includes(rawType) ? rawType : '';
+            document.getElementById('lead').textContent = unsubscribeLead(type);
+            const note = document.getElementById('settings-note');
+            note.hidden = false;
+            note.textContent =
+              "You can change this any time in the app's notification settings.";
+            const desktop = document.getElementById('desktop-hint');
+            desktop.hidden = false;
+            desktop.textContent =
+              'On a computer? Open the button below on the phone where you use the app, or install Cats or Dogs? on your phone, sign in, and tap Open notification settings.';
+            link.textContent = 'Open notification settings';
+          } else {
+            document.getElementById('title').textContent = 'Notification settings';
+            document.getElementById('lead').textContent =
+              'Open Cats or Dogs? to manage push and email notifications.';
+          }
         }
 
-        const link = document.getElementById('open-app');
         const isAndroid = /Android/i.test(navigator.userAgent);
         link.href = isAndroid ? androidIntent : appUrl;
 
@@ -124,7 +168,9 @@
           e.preventDefault();
           openApp();
         });
-        openApp();
+        if (pagePath !== '/email-unsubscribed') {
+          openApp();
+        }
       }
     </script>
   </body>
