@@ -7,9 +7,10 @@
 import { json, requireEnv } from '../_shared/http.ts';
 import { serviceClient } from '../_shared/clients.ts';
 import { unsubscribeUrl } from '../_shared/unsubscribe.ts';
+import { notificationOpenUrl, websiteOriginFromEnv } from '../_shared/notificationDeepLink.ts';
 
 type Work = {
-  id: string; user_id: string; type: string; title: string; body: string; data: Record<string, unknown>;
+  id: string; user_id: string; type: string; kind: string; title: string; body: string; data: Record<string, unknown>;
   email: string | null; push_tokens: string[]; send_push: boolean; send_email: boolean;
 };
 
@@ -34,7 +35,15 @@ async function sendPush(work: Work, db: ReturnType<typeof serviceClient>): Promi
       Accept: 'application/json',
       ...(Deno.env.get('EXPO_ACCESS_TOKEN') ? { Authorization: `Bearer ${Deno.env.get('EXPO_ACCESS_TOKEN')}` } : {}),
     },
-    body: JSON.stringify(work.push_tokens.map((to) => ({ to, title: work.title, body: work.body, data: { ...work.data, type: work.type }, sound: 'default' }))),
+    body: JSON.stringify(
+      work.push_tokens.map((to) => ({
+        to,
+        title: work.title,
+        body: work.body,
+        data: { ...work.data, type: work.type, kind: work.kind },
+        sound: 'default',
+      })),
+    ),
   });
   if (!res.ok) throw new Error(`Expo push failed with status ${res.status}.`);
   const tickets: { status: string; details?: { error?: string } }[] = (await res.json()).data ?? [];
@@ -55,6 +64,18 @@ async function sendEmail(work: Work): Promise<void> {
   const safety = work.type === 'moderation' || work.type === 'admin_alert';
   const base = Deno.env.get('PUBLIC_FUNCTIONS_URL') || `${requireEnv('SUPABASE_URL')}/functions/v1`;
   const link = safety ? null : await unsubscribeUrl(base, requireEnv('UNSUBSCRIBE_SECRET'), work.user_id, work.type);
+  let openUrl: string | null = null;
+  if (!safety) {
+    try {
+      openUrl = notificationOpenUrl(websiteOriginFromEnv(), work.kind, work.data);
+    } catch (e) {
+      console.error('notification open url', e);
+    }
+  }
+  const openText = openUrl ? `\n\nOpen in the app: ${openUrl}` : '';
+  const openHtml = openUrl
+    ? `<p><a href="${escapeHtml(openUrl)}">Open in the app</a></p>`
+    : '';
   const res = await fetch(`${Deno.env.get('RESEND_BASE_URL') || 'https://api.resend.com'}/emails`, {
     method: 'POST',
     headers: { Authorization: `Bearer ${apiKey}`, 'Content-Type': 'application/json' },
@@ -62,10 +83,12 @@ async function sendEmail(work: Work): Promise<void> {
       from: Deno.env.get('RESEND_FROM') || 'Cats or Dogs? <noreply@catsordogs.net>',
       to: [work.email],
       subject: work.title,
-      text: link ? `${work.body}\n\nYou can turn these emails off any time: ${link}` : work.body,
+      text: link
+        ? `${work.body}${openText}\n\nYou can turn these emails off any time: ${link}`
+        : `${work.body}${openText}`,
       html: link
-        ? `<p>${escapeHtml(work.body)}</p><p style="color:#888;font-size:12px"><a href="${escapeHtml(link)}">Unsubscribe from these emails</a></p>`
-        : `<p>${escapeHtml(work.body)}</p>`,
+        ? `<p>${escapeHtml(work.body)}</p>${openHtml}<p style="color:#888;font-size:12px"><a href="${escapeHtml(link)}">Unsubscribe from these emails</a></p>`
+        : `<p>${escapeHtml(work.body)}</p>${openHtml}`,
       ...(link ? { headers: { 'List-Unsubscribe': `<${link}>`, 'List-Unsubscribe-Post': 'List-Unsubscribe=One-Click' } } : {}),
     }),
   });

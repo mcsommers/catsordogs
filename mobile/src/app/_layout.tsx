@@ -9,6 +9,7 @@ import { ConfirmationProvider } from '../components/ConfirmationProvider';
 import { MatchesAlertProvider } from '../lib/matchesAlertContext';
 import { SessionProvider, useSession } from '../lib/session';
 import { needsSignIn } from '../lib/routing';
+import { usePushAndNotificationLinks } from '../lib/usePushAndNotificationLinks';
 import { colors } from '../theme';
 
 export const unstable_settings = {
@@ -31,6 +32,7 @@ export default function RootLayout() {
       <SessionProvider>
         <MatchesAlertProvider>
         <ConfirmationProvider>
+        <PushAndLinks />
         <StatusBar style="auto" />
         <SignedOutGuard>
           <Stack screenOptions={{ headerShown: false, contentStyle: { backgroundColor: colors.bg } }}>
@@ -56,6 +58,11 @@ export default function RootLayout() {
       </SessionProvider>
     </SafeAreaProvider>
   );
+}
+
+function PushAndLinks() {
+  usePushAndNotificationLinks();
+  return null;
 }
 
 /** If a signed-out person lands on a signed-in screen (common on Android QR scans), send them to Welcome once. */

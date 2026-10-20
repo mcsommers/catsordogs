@@ -56,6 +56,8 @@ Run from the project root unless noted.
 
 **Marketing website deploy (Cloudflare Pages):** Connect this GitHub repo in the Cloudflare dashboard (**Workers & Pages → Create application**, then choose **Pages** / **Connect to Git** when asked). Build settings: framework preset **Astro** (or None), root directory **`website`**, build command **`npm ci && npm run build`**, output directory **`dist`**. Astro 7 needs Node **22.22+**; the repo pins **`website/.nvmrc`** (`24`). If the build says Node is too old, add environment variable **`NODE_VERSION`** = **`24`** (Production) in Pages settings. Add production environment variables `PUBLIC_SITE_URL` (`https://catsordogs.net`), `PUBLIC_SUPABASE_URL`, and `PUBLIC_SUPABASE_ANON_KEY` (same values as `website/.env`). Attach custom domains **catsordogs.net** (and **www** if you use it); Pages will show which DNS records to use (often applied automatically when DNS is already on Cloudflare). Each push to `main` that touches the site can trigger a new deploy.
 
+**App links from notification email:** After store builds ship, set Cloudflare Pages variables `PUBLIC_IOS_TEAM_ID` (Apple Developer Team ID) and `PUBLIC_ANDROID_SHA256_CERT_FINGERPRINTS` (comma-separated SHA-256 fingerprints from Play Console or `eas credentials`) so `https://catsordogs.net/question`, `/chat/…`, and `/user/…` open the installed app. Until those are set, the same URLs still show an **Open in the app** page that tries `catsordogs://`.
+
 ## Running the app on your phone (Expo Go)
 
 While the app is being built, you run it on your phone with **Expo Go**, a free app that loads our app
@@ -159,7 +161,11 @@ The hands-on tests to run on the phone are in [`docs/UAT-flows.md`](docs/UAT-flo
 | --- | --- |
 | **Database / server updated for production** | Someone ran `npx supabase db push --project-ref fvnbcofflierdlnnglko` (and related deploy steps). Production’s rules and schema change. Your phone does **not** switch unless you change `mobile/.env`. |
 | **App talking to production APIs** | `mobile/.env` points at the production Supabase URL and anon key. Stop `npm run phone` and start it again so the app picks up the new values. |
-| **Real production for users** | A **TestFlight, internal Android build, or store build** of Cats or Dogs? built with production keys—not Expo Go loading code from your Mac. |
+| **Real production for users** | A **TestFlight, internal Android build, or store build** of Cats or Dogs? built with production keys. The app is installed on the phone. Expo Go is not loading code from your Mac. |
+
+The current testing build for other people's phones (TestFlight and Google Play testing) points at **staging**, not this production row. Steps are in [`docs/store-submission.md`](docs/store-submission.md). A later public launch is what uses production keys.
+
+**EAS (store testing builds):** The Expo project is [@mcsommers/cats-or-dogs](https://expo.dev/accounts/mcsommers/projects/cats-or-dogs). `mobile/eas.json` uses the **preview** profile (`distribution: store`, staging keys in Expo's preview environment). When you are ready to build after Apple and Google setup in the store doc, run from `mobile`: `npx eas-cli@latest build --platform ios --profile preview` (and the same for `android`). `mobile/.env` is still only for Expo Go on your Mac.
 
 ### Keep phone UAT on staging
 

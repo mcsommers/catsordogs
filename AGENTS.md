@@ -60,6 +60,16 @@ modal). `docs/website.pen` includes **Homepage — Mobile** for marketing
 layout; new site pages should still be verified in code at mobile width
 even when Pencil only shows a desktop frame.
 
+**Marketing and admin hosting (standing instruction from Mike):**
+The public marketing site (`website/`, **catsordogs.net**) and the hosted admin
+panels (**admin-staging.catsordogs.net**, **admin.catsordogs.net**) deploy through
+**Cloudflare Pages** projects connected to this GitHub repo. **A merge to `main`
+triggers an automatic production deploy** for each project (no manual upload from
+the Mac). After you change `website/` or `admin/`, merge to `main` and confirm the
+new deployment succeeded in the Cloudflare dashboard before telling Mike to retest
+hosted URLs. Site-specific env vars (for example `PUBLIC_IOS_TEAM_ID` on the
+marketing project) are set in Cloudflare Pages settings, not in git.
+
 Mobile platforms (standing instruction from Mike):
 Unless Mike specifies otherwise, every change to the mobile app applies
 to both Android and iOS — same screens, copy, and behavior. If one

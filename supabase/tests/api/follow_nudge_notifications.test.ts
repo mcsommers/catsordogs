@@ -140,6 +140,8 @@ test('email goes only to people who turned it on, with a working unsubscribe lin
   assert.match(daveMail[0].body.from, /noreply@catsordogs\.net/);
   assert.equal(daveMail[0].body.subject, 'Today\'s question is live');
   assert.match(daveMail[0].body.text, /unsubscribe|turn these emails off/i);
+  assert.match(daveMail[0].body.text, /Open in the app: https:\/\/catsordogs\.net\/question/);
+  assert.match(daveMail[0].body.html, /href="https:\/\/catsordogs\.net\/question"/);
   const listUnsub = daveMail[0].body.headers['List-Unsubscribe'] as string;
   assert.match(listUnsub, /unsubscribe\?u=/);
   assert.equal(daveMail[0].body.headers['List-Unsubscribe-Post'], 'List-Unsubscribe=One-Click');

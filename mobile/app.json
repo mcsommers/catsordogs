@@ -8,24 +8,73 @@
     "icon": "./assets/icon.png",
     "userInterfaceStyle": "light",
     "ios": {
-      "supportsTablet": true
+      "bundleIdentifier": "net.catsordogs.app",
+      "supportsTablet": false,
+      "associatedDomains": [
+        "applinks:catsordogs.net"
+      ],
+      "config": {
+        "usesNonExemptEncryption": false
+      }
     },
     "android": {
+      "package": "net.catsordogs.app",
       "softwareKeyboardLayoutMode": "resize",
       "adaptiveIcon": {
-        "backgroundColor": "#E6F4FE",
+        "backgroundColor": "#0B0B0C",
         "foregroundImage": "./assets/android-icon-foreground.png",
         "backgroundImage": "./assets/android-icon-background.png",
         "monochromeImage": "./assets/android-icon-monochrome.png"
       },
-      "predictiveBackGestureEnabled": false
+      "intentFilters": [
+        {
+          "action": "VIEW",
+          "autoVerify": true,
+          "data": [
+            {
+              "scheme": "https",
+              "host": "catsordogs.net",
+              "pathPrefix": "/question"
+            },
+            {
+              "scheme": "https",
+              "host": "catsordogs.net",
+              "pathPrefix": "/chat"
+            },
+            {
+              "scheme": "https",
+              "host": "catsordogs.net",
+              "pathPrefix": "/user"
+            },
+            {
+              "scheme": "https",
+              "host": "catsordogs.net",
+              "pathPrefix": "/matches"
+            }
+          ],
+          "category": [
+            "BROWSABLE",
+            "DEFAULT"
+          ]
+        }
+      ],
+      "predictiveBackGestureEnabled": false,
+      "permissions": [
+        "android.permission.CAMERA",
+        "android.permission.RECORD_AUDIO"
+      ]
     },
     "web": {
       "favicon": "./assets/favicon.png"
     },
     "plugins": [
       "expo-video",
-      "expo-router",
+      [
+        "expo-router",
+        {
+          "origin": "https://catsordogs.net"
+        }
+      ],
       "expo-font",
       "@react-native-community/datetimepicker",
       "expo-splash-screen",
@@ -45,6 +94,13 @@
       ],
       "expo-notifications",
       "react-native-quick-crypto"
-    ]
+    ],
+    "extra": {
+      "router": {},
+      "eas": {
+        "projectId": "50bf2ee6-7e99-4f00-960c-46123308779e"
+      }
+    },
+    "owner": "mcsommers"
   }
 }

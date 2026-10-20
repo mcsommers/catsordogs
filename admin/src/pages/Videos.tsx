@@ -5,6 +5,7 @@ import { formatDay, formatWhen } from '../dates';
 import Player from '../Player';
 import { MultiSelectDropdown } from '../MultiSelectDropdown';
 import { VIDEO_STATE_OPTIONS, videoDisplayState } from '../videoStates';
+import { invokeFunctionErrorMessage } from '../invokeFunction';
 
 type VideoRow = {
   video_id: string;
@@ -50,11 +51,18 @@ export default function Videos() {
 
   async function watch(row: VideoRow) {
     setError(null);
+    setWatchUrl(null);
     const { data, error: watchError } = await supabase.functions.invoke('get-playback-url', {
-      body: { as_admin: true, video_id: row.video_id, answer_id: row.answer_id },
+      body: {
+        as_admin: true,
+        video_id: row.video_id,
+        ...(row.answer_id ? { answer_id: row.answer_id } : {}),
+      },
     });
-    if (watchError) return setError(watchError.message);
-    if (!data?.playback_url) return setError(data?.error ?? 'That video is not available to watch yet.');
+    if (watchError) return setError(await invokeFunctionErrorMessage(watchError, data));
+    if (!data?.playback_url) {
+      return setError(await invokeFunctionErrorMessage(null, data) || 'That video is not available to watch yet.');
+    }
     setWatchUrl(data.playback_url);
   }
 
