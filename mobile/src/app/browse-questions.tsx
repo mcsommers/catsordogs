@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
-import { FlatList, Pressable, StyleSheet, Text, View } from 'react-native';
-import { router } from 'expo-router';
+import { FlatList, Pressable, StyleSheet, Text, TextInput, View } from 'react-native';
+import { router, useLocalSearchParams } from 'expo-router';
 import { Search, X } from 'lucide-react-native';
 import { fetchBrowseQuestions, type BrowseQuestion } from '../lib/feed';
 import { historyQuestionDate } from '../lib/format';
@@ -26,11 +26,13 @@ function HighlightedQuestion({ text, query }: { text: string; query: string }) {
 }
 
 export default function BrowseQuestions() {
+  const { focusSearch } = useLocalSearchParams<{ focusSearch?: string }>();
   const [query, setQuery] = useState('');
   const [items, setItems] = useState<BrowseQuestion[]>([]);
   const [loading, setLoading] = useState(true);
   const [failed, setFailed] = useState(false);
   const debounceRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const searchRef = useRef<TextInput | null>(null);
 
   const load = useCallback(async (q: string) => {
     setFailed(false);
@@ -48,6 +50,13 @@ export default function BrowseQuestions() {
   useEffect(() => {
     load('');
   }, [load]);
+
+  useEffect(() => {
+    if (focusSearch === '1') {
+      const t = setTimeout(() => searchRef.current?.focus(), 300);
+      return () => clearTimeout(t);
+    }
+  }, [focusSearch]);
 
   useEffect(() => {
     if (debounceRef.current) clearTimeout(debounceRef.current);
@@ -74,6 +83,7 @@ export default function BrowseQuestions() {
       <View style={[styles.search, searching && styles.searchActive]}>
         <Search size={18} color={searching ? colors.accentDog : colors.textDarkMuted} />
         <AppTextInput
+          ref={searchRef}
           style={styles.input}
           placeholder="Search past questions..."
           placeholderTextColor={colors.textDarkMuted}

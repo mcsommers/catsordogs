@@ -12,6 +12,10 @@ export const BIRTHDAY_ERROR = 'You must be 18 or older to join. Check your birth
 
 export const MIN_SIGNUP_AGE = 18;
 
+export const PROFILE_CITY_FIELD_LABEL = 'City';
+export const PROFILE_SCHOOL_FIELD_LABEL = 'School (high school, college, whatever)';
+export const PROFILE_ADDITIONAL_PHOTOS_LABEL = 'Additional photos';
+
 /** Matches the server’s `private.age_in_years` (whole years on a calendar date). */
 export function ageInYears(birthdayIso: string, today = new Date()): number {
   const [y, m, d] = birthdayIso.split('-').map(Number);

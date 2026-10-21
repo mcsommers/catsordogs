@@ -1,6 +1,7 @@
 import { Image, Pressable, StyleSheet, Text, View } from 'react-native';
 import { ImagePlus, Plus, X } from 'lucide-react-native';
 import { FieldLabelRow, SectionHeader } from '../ui';
+import { PROFILE_ADDITIONAL_PHOTOS_LABEL } from '../../lib/profileForm';
 import { colors, fonts } from '../../theme';
 
 export type ProfileBuildPhoto = {
@@ -70,7 +71,7 @@ export function ProfileBuildPhotos({ section, photos, photoBusy, onAddAvatar, on
   return (
       <View style={{ gap: 10 }}>
         <View style={{ gap: 4 }}>
-          <FieldLabelRow label="More photos" requirement="optional" />
+          <FieldLabelRow label={PROFILE_ADDITIONAL_PHOTOS_LABEL} requirement="optional" />
           <Text style={styles.avatarHint}>Up to 6 more. Shown on your profile grid (not your profile photo).</Text>
         </View>
         {[0, 1].map((row) => (

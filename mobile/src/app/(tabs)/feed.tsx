@@ -421,6 +421,7 @@ export default function Feed() {
             onToggleMute={() => setMuted((m) => !m)}
             onOpenProfile={() => router.push({ pathname: '/user/[id]', params: { id: item.userId } })}
             onBrowse={() => router.push('/browse-questions')}
+            onSearchQuestions={() => router.push({ pathname: '/browse-questions', params: { focusSearch: '1' } })}
             onFeedSettings={openFeedSettings}
             onMoreOptions={social.openMenu}
             onHeart={social.onHeartPress}

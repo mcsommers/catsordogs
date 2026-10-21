@@ -58,6 +58,12 @@ export function questionPillLabel(isoDate: string, questionText: string): string
   return `${shortQuestionDate(isoDate)} · ${questionText}`;
 }
 
+/** City only on feed poster row (06), e.g. "Brooklyn, NY". */
+export function formatFeedPosterCity(city: string | null | undefined): string | null {
+  const trimmed = city?.trim();
+  return trimmed ? trimmed : null;
+}
+
 export function formatDistanceMiles(miles: number | null): string | null {
   if (miles == null) return null;
   if (miles <= 1) return '1 mile away';
