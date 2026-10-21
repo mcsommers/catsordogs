@@ -250,7 +250,7 @@ export function ProfileView({ userId, showBack }: Props) {
         age: profile.age != null ? String(profile.age) : '',
         city: profile.city ?? '',
         distanceMiles: profile.distanceMiles != null ? String(profile.distanceMiles) : '',
-        streakDays: profile.streakDays != null ? String(profile.streakDays) : '',
+        isFollowed: isFollowed ? '1' : '0',
       },
     });
   };

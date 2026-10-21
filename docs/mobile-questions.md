@@ -31,7 +31,7 @@ Staging showed match-request push **sent** to the TestFlight Expo token; the Mat
 
 ## Profile build label and camera on question screen (Mike, Oct 20, 2026)
 
-**08 Profile (own):** Below **Log Out**, right-aligned muted text shows **Version X.Y.Z (build)** from the installed binary (TestFlight, Play, or production). **04 Today's Question:** Camera and microphone permissions are requested when the screen opens, not only when tapping record, so the preview starts in store builds.
+**08 Profile (own):** Below **Log Out**, right-aligned muted text shows **Version X.Y.Z (build)** from the installed binary (TestFlight, Play, or production). The number in parentheses is that binary's build number (the same number TestFlight shows after the version, or the Play version code on Android). Expo Go has no app build number, so it shows **Version X.Y.Z** only. **04 Today's Question:** Camera and microphone permissions are requested when the screen opens, not only when tapping record, so the preview starts in store builds.
 
 ## Notification email deep links and push on sign-in (Mike, Oct 20, 2026)
 
@@ -44,6 +44,18 @@ On **02d** after Sign Up: remove **Back to Log In**; the header back arrow goes 
 ## Interests picker search, expand, and limit modal (Mike, Oct 19, 2026)
 
 **03e Interests:** Header search (with clear **x**) filters pills in real time. The search field is compact until focused, then expands across the remaining header width with padding from the **Interests** title. Selection count lives on **Done (N of 5)**. **Done** stays visible above the keyboard. At 5 picks, tapping another pill opens **Interest limit** / **You can only specify 5 interests.** / **OK**. Pencil: **03e Interests**, **03e Interests Search Focused**, **03e Interests Limit**.
+
+## Profile photo required hint above Finish / Save (Mike, Oct 21, 2026)
+
+On **03** and **08d**, when there is no profile photo (position 1), bold red centered text **Profile photos are required** appears above **Finish Setup** or **Save Changes**. It hides as soon as a profile photo is present. Pencil: **03**, **08d** (no hint on **03a** when the avatar is filled).
+
+## Build / Edit Profile field labels: City and School (Mike, Oct 21, 2026)
+
+On **03** and **08d**, the city autocomplete field label is **City** (was **Location**). The school text field label is **School (high school, college, whatever)**. Constants: `PROFILE_CITY_FIELD_LABEL` and `PROFILE_SCHOOL_FIELD_LABEL` in `mobile/src/lib/profileForm.ts`.
+
+## Build Profile featured interests and counter (Mike, Oct 21, 2026)
+
+**03 Build Profile** shows 21 featured interest pills (Art through Yoga, alphabetical) plus **View more >**, with **(N of 5)** beside the **Interests** title. Pills toggle on the profile form; **View more >** opens **03e** with the same picks already selected (`mobile/src/lib/featuredInterests.ts`). A sixth pick on 03 or 03e opens the same limit modal. **Finish Setup** with zero interests opens **No interests?** (primary **Go back and add interests** scrolls to Interests; secondary **Proceed without interests** continues save). Same modal on **08d** **Save Changes**. Pencil: **03**, **03f Build Profile Interests Limit**, **03g Build Profile No Interests Submit**, **08d Edit Profile No Interests Submit**. **08d Edit Profile** uses the same featured grid, **(N of 5)**, and **View more >** as **03** (opens **03e** with current picks).
 
 ## Sign Up and Log In: hide Apple/Google until store OAuth (Mike, Oct 19, 2026)
 
@@ -65,9 +77,9 @@ Exploration frame **App icon concepts** in `pencil-new.pen` (six 180pt squircle 
 
 Each new video flag, profile report, or chat message report queues one email to every admin (`admin_alert` / `moderation_report`). Copy names what was reported and points admins to the moderation queue; reporter identities are never included. A second report from the same person on the same target does not send another email. Notification settings cannot turn these off. See [notifications.md](notifications.md) for subjects and bodies.
 
-## Following badge outline pill (Mike, Oct 17, 2026)
+## Following badge icon (Mike, Oct 21, 2026)
 
-On feed (**06**), profile heroes (**06j**, **06n**, …), and answer detail (**06k**), the **Following** badge is a pill with **transparent** fill, **orange** 1.5pt border, and **orange** **Following** label (11pt semibold)—not a solid orange fill with white text.
+On feed (**06**), profile heroes (**06j**, **06n**, …), and answer detail (**06k**), the **Following** indicator is a **20×20** orange circle with a white **user-check** icon (Lucide; person outline with check at the shoulder). Reusable Pencil component **Following Badge** (`vveCW`). Accessibility label remains **Following**. Replaces the earlier outlined **Following** text pill (Oct 17, 2026).
 
 ## Question history list UI (06c / 06d) (Mike, Oct 16, 2026)
 
@@ -80,6 +92,10 @@ If the user picked a past question from Browse Questions and is viewing that day
 ## No "Earlier answers" day-change banner (Mike, Oct 16, 2026)
 
 When the feed rolls to a previous day, only the question pill updates (date and question text). There is no **Earlier answers** banner or other day-change banner on **06** / **06u**.
+
+**Feed chrome (06, Oct 2026):** Question pill = orange bold date · question (no quote/chevron). Top-right: feed settings, then search (opens **06c** with search focused). Bottom: name/age + city; caption (48px collapsed, 2 lines + ellipsis, tap to expand); profile photo, heart, and more stacked on the right (photo on top); progress bar + mute on the row below. No distance or streak on the feed. Pencil: **06 Feed**, **06 Feed Caption Expanded**, **06u**.
+
+**Answer detail (06k / 06ka, Oct 2026):** Same bottom pattern as **06**, plus map pin + **city · distance** under the name; **back** + non-tappable question pill at top (no settings/search). No streak on **06k**. Pencil: **06k Answer Detail**, **06ka Answer Detail (Your Answer)**.
 
 ## Feed Settings unsaved changes and save (Mike, Oct 16, 2026)
 
@@ -99,7 +115,7 @@ On another person’s profile (**06j**, **06n**, **07h**, and the same hero on r
 
 ## Orientation and gender next to age on profiles (Mike, Oct 15, 2026)
 
-On a profile hero (**08**, **06j**, **06n**, **07h**, and the same hero on related overlays), show sexual orientation then gender in smaller type next to age, e.g. **Alex, 29 (straight male)**. Woman displays as **female**, Man as **male**. Only include a value if that person turned the matching **Show … on my profile** switch on. The parenthetical is **bottom-aligned** with the name and age; the orange **Following** badge stays **vertically centered** on that row, to the right of the parenthetical. Own profile never shows Following.
+On a profile hero (**08**, **06j**, **06n**, **07h**, and the same hero on related overlays), show sexual orientation then gender in smaller type next to age, e.g. **Alex, 29 (straight male)**. Woman displays as **female**, Man as **male**. Only include a value if that person turned the matching **Show … on my profile** switch on. The parenthetical is **bottom-aligned** with the name and age; the orange **Following** icon stays **vertically centered** on that row, to the right of the parenthetical. Own profile never shows Following.
 
 ## Notification defaults at sign-up (Mike, Oct 13, 2026)
 
@@ -164,7 +180,7 @@ Answer: **One profile photo (avatar)** plus **at most 6 gallery photos**, displa
 
 #### Build / Edit Profile photo entry (03 / 08d, Oct 2026)
 
-On **Build Profile** and **Edit Profile**, photo entry is split: a required **Profile photo** (circular avatar, position 1) at the top, and optional **More photos** (2×3 grid for gallery positions 2–7) above the primary button. Viewing profiles (**06j**, **08**) shows the avatar in the hero and **only gallery photos** in the grid.
+On **Build Profile** and **Edit Profile**, photo entry is split: a required **Profile photo** (circular avatar, position 1) at the top, and optional **Additional photos** (2×3 grid for gallery positions 2–7) above the primary button. Viewing profiles (**06j**, **08**) shows the avatar in the hero and **only gallery photos** in the grid.
 
 #### Gender on Build / Edit Profile (03 / 03d / 08d, Oct 2026)
 
@@ -180,13 +196,13 @@ Decided: the chips are now Straight, Gay, Lesbian, Bisexual, Asexual, Demisexual
 
 Decided:
 
-- The **Lifestyle** section is now **Interests**. An empty section shows one **Select Interests >** pill; it opens screen **03e**, which lists all 278 interests as pills in strict alphabetical order. Up to 5 can be chosen, with a live "N of 5 selected" counter.
-- **Done** on 03e stays disabled until something on that screen has changed. Leaving 03e with unsaved changes shows the existing **Discard changes?** dialog.
-- After Done, the picks show as orange selected pills with an orange **Edit** link in the section header.
+- The **Lifestyle** section is now **Interests**. On **Build Profile (03)**, the header shows **Interests**, **(N of 5)** beside the title, and **Optional** on the right. A wrap grid lists 21 featured pills in alphabetical order (Art through Yoga) plus **View more >**, which opens **03e** with whatever is already selected on 03. Featured pills toggle on or off inline; a sixth pick opens the **Interest limit** modal (same copy as on 03e). On **Edit Profile (08d)**, **Interests** matches **03**: featured pills, **(N of 5)**, **Optional**, and **View more >** to **03e** with picks carried over.
+- Screen **03e** lists all configured interests as pills in strict alphabetical order. **Done (N of 5)** stays disabled until something on that screen has changed. Leaving 03e with unsaved changes shows the existing **Discard changes?** dialog.
+- After **Done** on 03e, Build Profile shows those picks as orange on the featured grid where they appear; picks chosen only on 03e still count toward the **(N of 5)** counter on 03.
 - The 5 picks **replace** the old hobby list in the `interests` column, and feed the Shared Interests ranking (the Interests filter was removed; see below).
 - Lifestyle tags are removed. So are the **Smoking** and **Drinking** filters and the **Lifestyle Compatibility** ranking signal (Feed Settings, 06i, now has five ranking signals). Every screen that said "Lifestyle" now says "Interests".
 - The top row (back arrow, the title **Interests**, and compact **Search** on the right; search expands when focused) is sticky, and the space above **Done** equals the space below it (Pencil 03e and 03e Edited updated). The top row has 12 points of space above and below it. On Android the gap above **Done** is 24 points and does not include the phone's navigation bar; on iPhone it matches the gap below (which includes the home indicator).
-- **Done** is always visible: it is pinned at the bottom of 03e while the pill list scrolls above it (Pencil 03e and 03e Edited now show a phone-height screen with the list clipped and Done fixed at the bottom). The list is strictly alphabetical, ignoring capitals, so acronyms sort by their letters (BBQ falls after Basketball and before Beach Bars; DIY after Diving; EDM after E-Sports); the order is stored in `profile_options.sort_order` and the Pencil pills match it. When 5 are chosen, tapping another unselected pill does nothing.
+- **Done** is always visible: it is pinned at the bottom of 03e while the pill list scrolls above it (Pencil 03e and 03e Edited now show a phone-height screen with the list clipped and Done fixed at the bottom). The list is strictly alphabetical, ignoring capitals, so acronyms sort by their letters (BBQ falls after Basketball and before Beach Bars; DIY after Diving; EDM after E-Sports); the order is stored in `profile_options.sort_order` and the Pencil pills match it. When 5 are chosen, tapping another unselected pill on 03e or on the featured grid on 03 opens **Interest limit** / **You can only specify 5 interests.** / **OK** (Pencil **03f Build Profile Interests Limit**).
 
 #### Photo count row on **06j** and **06n** (removed)
 

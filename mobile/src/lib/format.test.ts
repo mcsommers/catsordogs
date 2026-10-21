@@ -5,6 +5,7 @@ import {
   formatHeightFeetInches,
   formatProfileIdentityLabel,
   formatVisibleProfileIdentity,
+  formatFeedPosterCity,
   formatStreakBadge,
   longDate,
   questionPillLabel,
@@ -51,6 +52,8 @@ describe('formatting', () => {
     expect(formatDistanceMiles(2)).toBe('2 miles away');
     expect(formatDistanceMiles(1)).toBe('1 mile away');
     expect(formatStreakBadge(14)).toBe('14-day streak');
+    expect(formatFeedPosterCity('Brooklyn, NY')).toBe('Brooklyn, NY');
+    expect(formatFeedPosterCity('  ')).toBeNull();
   });
 
   it('shows when you followed someone', () => {

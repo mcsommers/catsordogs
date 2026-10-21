@@ -23,18 +23,22 @@ import {
   birthdayFieldProblem,
   firstProfileFinishIssue,
   parseHeightFtIn,
+  PROFILE_CITY_FIELD_LABEL,
+  PROFILE_SCHOOL_FIELD_LABEL,
   profileSaveProblem,
   toggleChoice,
 } from '../lib/profileForm';
 import { DiscardProfileChangesDialog } from '../components/profile/DiscardProfileChangesDialog';
 import {
+  BuildProfileInterestsSection,
   GenderSection,
-  InterestsSection,
   OrientationSection,
   moreGenderOptions,
 } from '../components/profile/ProfileChoiceSections';
 import { setProfilePickerRequest } from '../lib/profilePicker';
 import { ProfileBuildPhotos } from '../components/profile/ProfileBuildPhotos';
+import { hasProfilePhoto, ProfilePhotoRequiredHint } from '../components/profile/ProfilePhotoRequiredHint';
+import { NoInterestsOnSubmitDialog } from '../components/profile/NoInterestsOnSubmitDialog';
 import { LocationField } from '../components/LocationField';
 import { useProfileLeaveGuard } from '../hooks/useProfileLeaveGuard';
 import {
@@ -130,7 +134,9 @@ export default function BuildProfile() {
   const morePhotosRef = useRef<View>(null);
   const schoolRef = useRef<View>(null);
   const aboutRef = useRef<View>(null);
+  const interestsRef = useRef<View>(null);
   const addRowRef = useRef<View>(null);
+  const [noInterestsDialogVisible, setNoInterestsDialogVisible] = useState(false);
   const scrollOffsetRef = useRef(0);
 
   const leaveBuildProfile = useCallback(() => signOutToWelcome(router), []);
@@ -299,6 +305,10 @@ export default function BuildProfile() {
     scrollToFieldInScreen(scrollRef, contentRef, map[field]);
   }
 
+  function scrollToInterests() {
+    scrollToFieldInScreen(scrollRef, contentRef, interestsRef);
+  }
+
   async function finish() {
     if (!userId) return;
     setBanner(null);
@@ -322,6 +332,15 @@ export default function BuildProfile() {
       scrollToFinishField(issue.field);
       return;
     }
+    if (defs.interests && form.interests.length === 0) {
+      setNoInterestsDialogVisible(true);
+      return;
+    }
+    await finishSave();
+  }
+
+  async function finishSave() {
+    if (!userId) return;
     const height = parseHeightFtIn(form.height_feet, form.height_inches);
 
     setSaving(true);
@@ -428,6 +447,17 @@ export default function BuildProfile() {
         onKeepEditing={leaveGuard.keepEditing}
         onLeave={leaveGuard.confirmLeave}
       />
+      <NoInterestsOnSubmitDialog
+        visible={noInterestsDialogVisible}
+        onGoBack={() => {
+          setNoInterestsDialogVisible(false);
+          scrollToInterests();
+        }}
+        onProceed={() => {
+          setNoInterestsDialogVisible(false);
+          finishSave();
+        }}
+      />
       <View style={ui.headerWithTitle}>
         <BackButton onPress={leaveGuard.attemptLeave} />
         <Text style={ui.headerTitle}>Build your profile</Text>
@@ -526,7 +556,7 @@ export default function BuildProfile() {
         </View>
         <View ref={locationRef} collapsable={false}>
           <LocationField
-            label="Location"
+            label={PROFILE_CITY_FIELD_LABEL}
             icon={MapPin}
             requirement="optional"
             value={form.city}
@@ -547,7 +577,7 @@ export default function BuildProfile() {
       </View>
       <View ref={schoolRef} collapsable={false}>
         <TextField
-          label="School"
+          label={PROFILE_SCHOOL_FIELD_LABEL}
           icon={GraduationCap}
           requirement="optional"
           value={form.school}
@@ -579,7 +609,17 @@ export default function BuildProfile() {
         onShowChange={(v) => set('show_orientation', v)}
       />
       {multiSection('interested_in', 'Interested in', 'Select all that apply')}
-      {defs.interests ? <InterestsSection value={form.interests} onOpen={openInterests} /> : null}
+      {defs.interests ? (
+        <View ref={interestsRef} collapsable={false}>
+          <BuildProfileInterestsSection
+            value={form.interests}
+            max={defs.interests?.max_selected ?? 5}
+            allOptions={choices('interests').map((o) => o.value)}
+            onChange={(next) => set('interests', next)}
+            onOpenFull={openInterests}
+          />
+        </View>
+      ) : null}
 
       <View style={{ gap: 12 }}>
         <SectionHeader title="Relationship Goals" requirement="optional" />
@@ -605,14 +645,17 @@ export default function BuildProfile() {
         />
       </View>
 
-      <PrimaryButton
-        label="Finish Setup"
-        onPress={finish}
-        loading={saving}
-        disabled={
-          !photos.some((p) => p.position === 1 && !String(p.id).startsWith('pending-')) || photoBusy
-        }
-      />
+      <View style={{ gap: 8, width: '100%' }}>
+        <ProfilePhotoRequiredHint visible={!hasProfilePhoto(photos)} />
+        <PrimaryButton
+          label="Finish Setup"
+          onPress={finish}
+          loading={saving}
+          disabled={
+            !photos.some((p) => p.position === 1 && !String(p.id).startsWith('pending-')) || photoBusy
+          }
+        />
+      </View>
 
       {pickingBirthday ? (
         <BirthdayPicker

@@ -1,7 +1,11 @@
+import { useState } from 'react';
 import { Pressable, StyleSheet, Text, View, type StyleProp, type ViewStyle } from 'react-native';
-import { ChevronRight, Pencil } from 'lucide-react-native';
+import { ChevronRight } from 'lucide-react-native';
 import { Chip, SectionHeader, styles as ui } from '../ui';
 import { colors, fonts } from '../../theme';
+import { featuredInterestsOnProfile } from '../../lib/featuredInterests';
+import { tryToggleInterest } from '../../lib/tryToggleInterest';
+import { InterestsLimitDialog } from './InterestsLimitDialog';
 
 const QUICK_GENDERS = ['Woman', 'Man'];
 const SHOW_HELPER = 'When off, only you can see it. It still helps with matching.';
@@ -11,7 +15,7 @@ export function moreGenderOptions(all: string[]): string[] {
   return all.filter((v) => !QUICK_GENDERS.includes(v));
 }
 
-/** Chip with a chevron: "More >" or "Select Interests >" (Pencil 03 More Chip / Select Interests Chip). */
+/** Chip with a chevron: "More >" or "View more >" (Pencil 03 / 08d). */
 function ChevronChip({
   label,
   selected,
@@ -129,30 +133,47 @@ export function OrientationSection({
   );
 }
 
-export function InterestsSection({ value, onOpen }: { value: string[]; onOpen: () => void }) {
-  if (value.length === 0) {
-    return (
-      <View style={{ gap: 12 }}>
-        <SectionHeader title="Interests" requirement="optional" />
-        <View style={styles.chips}>
-          <ChevronChip label="Select Interests" selected={false} onPress={onOpen} />
-        </View>
-      </View>
-    );
+/** Build Profile (03) and Edit Profile (08d): featured pills, live counter, View more opens 03e with current picks. */
+export function BuildProfileInterestsSection({
+  value,
+  max,
+  allOptions,
+  onChange,
+  onOpenFull,
+}: {
+  value: string[];
+  max: number;
+  allOptions: string[];
+  onChange: (next: string[]) => void;
+  onOpenFull: () => void;
+}) {
+  const [limitVisible, setLimitVisible] = useState(false);
+  const pills = featuredInterestsOnProfile(allOptions);
+
+  function toggleInterest(interest: string) {
+    const next = tryToggleInterest(value, interest, max);
+    if (next.blockedByLimit) {
+      setLimitVisible(true);
+      return;
+    }
+    onChange(next.list);
   }
+
   return (
     <View style={{ gap: 12 }}>
+      <InterestsLimitDialog visible={limitVisible} onDismiss={() => setLimitVisible(false)} />
       <View style={ui.sectionHeader}>
-        <Text style={ui.sectionTitle}>Interests</Text>
-        <Pressable accessibilityRole="button" accessibilityLabel="Edit Interests" onPress={onOpen} hitSlop={8} style={styles.editLink}>
-          <Pencil size={14} color={colors.accentDog} />
-          <Text style={styles.editLabel}>Edit</Text>
-        </Pressable>
+        <View style={styles.titleWithCounter}>
+          <Text style={ui.sectionTitle}>Interests</Text>
+          <Text style={styles.selectionCounter}>({value.length} of {max})</Text>
+        </View>
+        <Text style={ui.sectionHelper}>Optional</Text>
       </View>
       <View style={styles.chips}>
-        {value.map((v) => (
-          <Chip key={v} label={v} selected onPress={onOpen} />
+        {pills.map((label) => (
+          <Chip key={label} label={label} selected={value.includes(label)} onPress={() => toggleInterest(label)} />
         ))}
+        <ChevronChip label="View more" selected={false} onPress={onOpenFull} />
       </View>
     </View>
   );
@@ -192,6 +213,6 @@ const styles = StyleSheet.create({
   toggleOn: { backgroundColor: colors.accentDog, alignItems: 'flex-end' },
   toggleOff: { backgroundColor: colors.borderSubtle, alignItems: 'flex-start' },
   knob: { width: 20, height: 20, borderRadius: 10, backgroundColor: colors.white },
-  editLink: { flexDirection: 'row', alignItems: 'center', gap: 4 },
-  editLabel: { fontFamily: fonts.bodyBold, fontSize: 13, color: colors.accentDog },
+  titleWithCounter: { flexDirection: 'row', alignItems: 'center', gap: 6, flexShrink: 1 },
+  selectionCounter: { fontFamily: fonts.bodySemi, fontSize: 14, color: colors.textSecondary },
 });

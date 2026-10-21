@@ -46,7 +46,6 @@ const EMPTY_SUBJECT = {
   age: null as number | null,
   city: null as string | null,
   distanceMiles: null as number | null,
-  streakDays: null as number | null,
 };
 
 function oneParam(value: string | string[] | undefined): string | undefined {
@@ -72,7 +71,8 @@ export default function AnswerDetailScreen() {
     age?: string;
     city?: string;
     distanceMiles?: string;
-    streakDays?: string;
+    /** From profile when opening 06k: whether you already follow this person. */
+    isFollowed?: string;
   }>();
   const answerId = oneParam(params.answerId);
   const userId = oneParam(params.userId);
@@ -83,7 +83,6 @@ export default function AnswerDetailScreen() {
     age: numParam(params.age),
     city: oneParam(params.city) || null,
     distanceMiles: numParam(params.distanceMiles),
-    streakDays: numParam(params.streakDays),
   };
   const { height: windowHeight } = useWindowDimensions();
   const [measuredHeight, setMeasuredHeight] = useState(0);
@@ -102,7 +101,7 @@ export default function AnswerDetailScreen() {
   const [subjectUserId, setSubjectUserId] = useState<string | null>(null);
   const [subjectGender, setSubjectGender] = useState<string | null>(null);
   const [subjectAvatarUri, setSubjectAvatarUri] = useState<string | null>(null);
-  const [isFollowed, setIsFollowed] = useState(false);
+  const [isFollowed, setIsFollowed] = useState(() => oneParam(params.isFollowed) === '1');
   const [matchState, setMatchState] = useState<FeedMatchState>('none');
   const [loading, setLoading] = useState(true);
   const [gateOpen, setGateOpen] = useState(true);
@@ -170,6 +169,22 @@ export default function AnswerDetailScreen() {
     setMuted((m) => !m);
   }, []);
 
+  const refreshFollowState = useCallback(async () => {
+    if (isSelf || !targetUserId) return;
+    try {
+      const fs = await getFollowState(targetUserId);
+      setIsFollowed(fs.following);
+    } catch {
+      // Keep route or prior state if the check fails.
+    }
+  }, [isSelf, targetUserId]);
+
+  useFocusEffect(
+    useCallback(() => {
+      refreshFollowState();
+    }, [refreshFollowState])
+  );
+
   useEffect(() => {
     let cancelled = false;
     (async () => {
@@ -184,15 +199,13 @@ export default function AnswerDetailScreen() {
             age: profile.age ?? subjectFromRoute.age,
             city: profile.city ?? subjectFromRoute.city,
             distanceMiles: profile.distanceMiles ?? subjectFromRoute.distanceMiles,
-            streakDays: profile.streakDays ?? subjectFromRoute.streakDays,
           });
           if (!isSelf && profile.userId) {
             setSubjectUserId(profile.userId);
             setSubjectGender(profile.gender);
             setSubjectAvatarUri(profile.photos[0]?.url ?? null);
             setMatchState((profile.matchState as FeedMatchState) || 'none');
-            const fs = await getFollowState(profile.userId);
-            setIsFollowed(fs.following);
+            await refreshFollowState();
           }
         } else {
           setSubject(EMPTY_SUBJECT);
@@ -224,7 +237,7 @@ export default function AnswerDetailScreen() {
     return () => {
       cancelled = true;
     };
-  }, [answerId, targetUserId]);
+  }, [answerId, targetUserId, refreshFollowState]);
 
   useEffect(() => {
     if (loading || answers.length === 0 || !isFocused) return;
@@ -260,6 +273,11 @@ export default function AnswerDetailScreen() {
     onBlocked: () => leaveScreen(),
     onNotInterested: () => leaveScreen(),
   });
+
+  const openSubjectProfile = useCallback(() => {
+    if (isSelf || !subjectUserId) return;
+    router.push({ pathname: '/user/[id]', params: { id: subjectUserId } });
+  }, [isSelf, subjectUserId]);
 
   useEffect(() => {
     if (!active || active.status !== 'live') {
@@ -338,9 +356,11 @@ export default function AnswerDetailScreen() {
           <AnswerDetailOverlay
             answer={item}
             subject={subject}
+            avatarUrl={subjectAvatarUri}
             muted={muted}
             onToggleMute={toggleMute}
             onBack={leaveScreen}
+            onOpenProfile={isSelf ? undefined : openSubjectProfile}
             onMoreOptions={isSelf ? () => setOwnMenuOpen(true) : social.openMenu}
             onHeart={isSelf ? () => {} : social.onHeartPress}
             hideHeart={isSelf}
@@ -353,7 +373,23 @@ export default function AnswerDetailScreen() {
         </View>
       );
     },
-    [activeIndex, isFollowed, isSelf, leaveScreen, matchState, muted, pageHeight, playbackError, social.onHeartPress, social.openMenu, subject, toggleMute, videoProgress]
+    [
+      activeIndex,
+      isFollowed,
+      isSelf,
+      leaveScreen,
+      matchState,
+      muted,
+      openSubjectProfile,
+      pageHeight,
+      playbackError,
+      social.onHeartPress,
+      social.openMenu,
+      subject,
+      subjectAvatarUri,
+      toggleMute,
+      videoProgress,
+    ]
   );
 
   const reportViewIfNeeded = useCallback(() => {
