@@ -606,6 +606,7 @@ export default function EditProfile() {
       {defs.interests ? (
         <View ref={interestsRef} collapsable={false}>
           <BuildProfileInterestsSection
+            variant="edit"
             value={form.interests}
             max={defs.interests?.max_selected ?? 5}
             allOptions={choices('interests').map((o) => o.value)}

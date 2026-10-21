@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useRef, useState } from 'react';
 import { Pressable, StyleSheet, Text, View, type StyleProp, type ViewStyle } from 'react-native';
 import { ChevronRight } from 'lucide-react-native';
 import { Chip, SectionHeader, styles as ui } from '../ui';
@@ -133,22 +133,36 @@ export function OrientationSection({
   );
 }
 
-/** Build Profile (03) and Edit Profile (08d): featured pills, live counter, View more opens 03e with current picks. */
+/** Build Profile (03): featured pills + extras from 03e, plus View more. Edit Profile (08d): same when empty; saved picks only when N > 0. */
 export function BuildProfileInterestsSection({
   value,
   max,
   allOptions,
   onChange,
   onOpenFull,
+  variant = 'build',
 }: {
   value: string[];
   max: number;
   allOptions: string[];
   onChange: (next: string[]) => void;
   onOpenFull: () => void;
+  variant?: 'build' | 'edit';
 }) {
   const [limitVisible, setLimitVisible] = useState(false);
-  const pills = featuredInterestsOnProfile(allOptions);
+  const featured = featuredInterestsOnProfile(allOptions);
+  const savedPicks = value.filter((interest) => allOptions.includes(interest));
+  const savedCountAtMount = useRef<number | undefined>(undefined);
+  if (variant === 'edit' && savedCountAtMount.current === undefined) {
+    savedCountAtMount.current = savedPicks.length;
+  }
+  const openedEditWithNoInterests = (savedCountAtMount.current ?? 0) === 0;
+  const showFeaturedGrid =
+    variant === 'build' ||
+    (variant === 'edit' && (openedEditWithNoInterests || savedPicks.length === 0));
+  const extraPicks = showFeaturedGrid
+    ? savedPicks.filter((interest) => !featured.includes(interest))
+    : [];
 
   function toggleInterest(interest: string) {
     const next = tryToggleInterest(value, interest, max);
@@ -170,9 +184,25 @@ export function BuildProfileInterestsSection({
         <Text style={ui.sectionHelper}>Optional</Text>
       </View>
       <View style={styles.chips}>
-        {pills.map((label) => (
-          <Chip key={label} label={label} selected={value.includes(label)} onPress={() => toggleInterest(label)} />
-        ))}
+        {showFeaturedGrid ? (
+          <>
+            {featured.map((label) => (
+              <Chip
+                key={label}
+                label={label}
+                selected={value.includes(label)}
+                onPress={() => toggleInterest(label)}
+              />
+            ))}
+            {extraPicks.map((label) => (
+              <Chip key={label} label={label} selected onPress={() => toggleInterest(label)} />
+            ))}
+          </>
+        ) : (
+          savedPicks.map((label) => (
+            <Chip key={label} label={label} selected onPress={() => toggleInterest(label)} />
+          ))
+        )}
         <ChevronChip label="View more" selected={false} onPress={onOpenFull} />
       </View>
     </View>
