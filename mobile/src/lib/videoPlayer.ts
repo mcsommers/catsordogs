@@ -55,6 +55,14 @@ export function safePlayerTime(player: VideoPlayer): number {
   }
 }
 
+export function safePlayerPlaying(player: VideoPlayer): boolean {
+  try {
+    return player.playing;
+  } catch {
+    return false;
+  }
+}
+
 export function safePlayerDuration(player: VideoPlayer, fallbackSeconds: number): number {
   try {
     if (player.duration > 0) return player.duration;

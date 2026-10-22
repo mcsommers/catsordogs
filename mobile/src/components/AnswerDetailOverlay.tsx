@@ -1,7 +1,8 @@
 import { Image, Pressable, StyleSheet, Text, View } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import { EllipsisVertical, Heart, MapPin, Volume2, VolumeX } from 'lucide-react-native';
+import { EllipsisVertical, Heart, MapPin } from 'lucide-react-native';
+import { VideoProgressControls } from './VideoProgressControls';
 import type { ProfileAnswer } from '../lib/profile';
 import { formatProfileLocation, shortQuestionDate } from '../lib/format';
 import { FollowingBadge } from './FollowingBadge';
@@ -35,6 +36,8 @@ type Props = {
   videoProgress: number;
   showProgress: boolean;
   playbackError: string | null;
+  isPlaying: boolean;
+  onTogglePlayPause: () => void;
 };
 
 function QuestionPillLabel({ questionDate, questionText }: { questionDate: string; questionText: string }) {
@@ -63,11 +66,12 @@ export function AnswerDetailOverlay({
   videoProgress,
   showProgress,
   playbackError,
+  isPlaying,
+  onTogglePlayPause,
 }: Props) {
   const insets = useSafeAreaInsets();
   const heartOn = matchState === 'sent' || matchState === 'matched';
   const locationLine = formatProfileLocation(subject.city, subject.distanceMiles);
-  const progress = showProgress ? Math.min(100, Math.max(0, videoProgress * 100)) : 0;
   const ageLabel =
     subject.age != null && Number.isFinite(subject.age) ? `, ${subject.age}` : '';
 
@@ -143,14 +147,15 @@ export function AnswerDetailOverlay({
             </Pressable>
           </View>
         </View>
-        <View style={styles.progressMuteRow}>
-          <View style={styles.progressTrack}>
-            <View style={[styles.progressFill, { width: `${progress}%` }]} />
-          </View>
-          <Pressable style={styles.actionBtn} onPress={onToggleMute} accessibilityLabel={muted ? 'Unmute' : 'Mute'}>
-            {muted ? <VolumeX size={22} color={colors.white} /> : <Volume2 size={22} color={colors.white} />}
-          </Pressable>
-        </View>
+        {showProgress ? (
+          <VideoProgressControls
+            videoProgress={videoProgress}
+            muted={muted}
+            isPlaying={isPlaying}
+            onTogglePlayPause={onTogglePlayPause}
+            onToggleMute={onToggleMute}
+          />
+        ) : null}
       </View>
 
       {playbackError ? (
@@ -191,9 +196,6 @@ const styles = StyleSheet.create({
   metaRow: { flexDirection: 'row', alignItems: 'center', gap: 6 },
   meta: { fontFamily: fonts.body, fontSize: 13, lineHeight: 17, color: '#FFFFFFB3', flexShrink: 1 },
   actionStrip: { gap: 14, alignItems: 'center' },
-  progressMuteRow: { flexDirection: 'row', alignItems: 'center', gap: 12 },
-  progressTrack: { flex: 1, height: 3, borderRadius: 2, backgroundColor: '#FFFFFF2E', overflow: 'hidden' },
-  progressFill: { height: 3, backgroundColor: colors.white, borderRadius: 2 },
   actionBtn: {
     width: 48,
     height: 48,

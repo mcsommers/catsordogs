@@ -42,10 +42,16 @@ export function pronouns(gender: string | null | undefined) {
   };
 }
 
+export const ABOUT_FOLLOWING_TITLE = 'About following';
+export const ABOUT_FOLLOWING_BODY =
+  "Following is a quiet way to see someone's daily answers at the top of your feed. It is not matching, and they are not told who follows them.\n\nYou can nudge them once per day if they have not answered yet. They only hear that a follower nudged them, not who. Unfollowing is silent.";
+
+const FOLLOW_NOT_MATCHING = 'Following is not matching, and they do not need to follow you back.';
+
 /** Follow confirmation body (06l). Mid-sentence pronouns stay lowercase. */
 export function followDialogBody(gender: string | null | undefined): string {
   const p = pronouns(gender);
-  return `${p.Subject} won't know you're following ${p.object}. ${p.Possessive} answer will show up at the top of your feed every day ${p.subject} posts.`;
+  return `${p.Subject} won't know you're following ${p.object}. ${p.Possessive} answer will show up at the top of your feed every day ${p.subject} posts.\n\n${FOLLOW_NOT_MATCHING}`;
 }
 
 /** Nudge card title (06n). */
