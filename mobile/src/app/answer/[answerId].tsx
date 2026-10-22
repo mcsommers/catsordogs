@@ -3,6 +3,7 @@ import {
   Alert,
   FlatList,
   Platform,
+  Pressable,
   StyleSheet,
   Text,
   useWindowDimensions,
@@ -32,11 +33,11 @@ import { useSocialActions, type SocialSubject } from '../../components/social/us
 import {
   hlsSource,
   safePause,
-  safePlay,
   safeRemoveListener,
   safeSetMuted,
   safeTimeUpdateInterval,
 } from '../../lib/videoPlayer';
+import { useVideoPlaybackControl } from '../../hooks/useVideoPlaybackControl';
 import { colors, fonts } from '../../theme';
 
 const GATE_MESSAGE = "Answer today's question to watch other people's videos.";
@@ -121,6 +122,13 @@ export default function AnswerDetailScreen() {
     p.muted = true;
   });
 
+  const activeAnswerId = answers[activeIndex]?.answerId;
+  const playback = useVideoPlaybackControl(
+    player,
+    activeAnswerId,
+    isFocused && !!playbackUrl && !playbackError && !loading && answers.length > 0,
+  );
+
   useEffect(() => {
     safeSetMuted(player, muted);
   }, [muted, player]);
@@ -130,9 +138,9 @@ export default function AnswerDetailScreen() {
       updatesAllowedRef.current = true;
       return () => {
         updatesAllowedRef.current = false;
-        safePause(player);
+        playback.pauseForNavigation();
       };
-    }, [player])
+    }, [playback.pauseForNavigation])
   );
 
   const leaveScreen = useCallback(() => {
@@ -323,19 +331,14 @@ export default function AnswerDetailScreen() {
     viewReportedRef.current = null;
     const onTime = player.addListener('timeUpdate', syncProgress);
     const onStatus = player.addListener('statusChange', ({ status }) => {
-      if (status === 'readyToPlay') {
-        if (updatesAllowedRef.current) safePlay(player);
-        syncProgress();
-      }
+      if (status === 'readyToPlay') syncProgress();
     });
-    if (updatesAllowedRef.current) safePlay(player);
     const tick = setInterval(syncProgress, 250);
     return () => {
       safeRemoveListener(onTime);
       safeRemoveListener(onStatus);
       clearInterval(tick);
       safeTimeUpdateInterval(player, 0);
-      safePause(player);
     };
   }, [playbackUrl, active?.answerId, active?.durationSeconds, player, active, isFocused]);
 
@@ -353,6 +356,14 @@ export default function AnswerDetailScreen() {
       const isActive = index === activeIndex;
       return (
         <View style={{ height: pageHeight }} pointerEvents="box-none">
+          {isActive && !playbackError ? (
+            <Pressable
+              style={StyleSheet.absoluteFill}
+              onPress={playback.togglePlayPause}
+              accessibilityLabel={playback.isPlaying ? 'Pause video' : 'Play video'}
+              accessibilityRole="button"
+            />
+          ) : null}
           <AnswerDetailOverlay
             answer={item}
             subject={subject}
@@ -369,6 +380,8 @@ export default function AnswerDetailScreen() {
             videoProgress={isActive ? videoProgress : 0}
             showProgress={isActive}
             playbackError={isActive ? playbackError : null}
+            isPlaying={isActive ? playback.isPlaying : false}
+            onTogglePlayPause={playback.togglePlayPause}
           />
         </View>
       );
@@ -389,6 +402,9 @@ export default function AnswerDetailScreen() {
       subjectAvatarUri,
       toggleMute,
       videoProgress,
+      playback.isPlaying,
+      playback.togglePlayPause,
+      playbackError,
     ]
   );
 
@@ -442,6 +458,9 @@ export default function AnswerDetailScreen() {
         <MoreOptionsMenu
           visible={social.menuOpen}
           isFollowed={isFollowed}
+          firstName={subject.firstName}
+          age={subject.age}
+          avatarUri={subjectAvatarUri}
           onDismiss={social.closeMenu}
           onSelect={social.runMenuAction}
         />
@@ -450,6 +469,9 @@ export default function AnswerDetailScreen() {
           own
           visible={ownMenuOpen}
           isFollowed={false}
+          firstName={subject.firstName}
+          age={subject.age}
+          avatarUri={subjectAvatarUri}
           onDismiss={() => setOwnMenuOpen(false)}
           onSelect={onOwnMenuSelect}
         />

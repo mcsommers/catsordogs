@@ -292,6 +292,9 @@ export function ProfileView({ userId, showBack }: Props) {
         <MoreOptionsMenu
           visible={social.menuOpen}
           isFollowed={isFollowed}
+          firstName={profile.firstName}
+          age={profile.age}
+          avatarUri={heroUrl}
           onDismiss={social.closeMenu}
           onSelect={social.runMenuAction}
         />

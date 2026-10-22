@@ -3,6 +3,10 @@
 A record of questions asked while planning the phone app, the options offered,
 and Mike's answer. Newest phase first.
 
+## Following education in More options and follow confirm (Mike, Oct 21, 2026)
+
+Testers asked what following means. **06e** (and **06p** / **06k**): the **Follow** row has an **About following** pill on the right (not on **Unfollow**). Tapping it opens dialog **06eh** (info icon, explains private follow, not matching, nudge once per day, silent unfollow) with **OK**; the more-options sheet stays open. **06l** adds a second paragraph: **Following is not matching, and they do not need to follow you back.** Copy lives in `mobile/src/components/social/socialCopy.ts`.
+
 ## Email unsubscribe landing and settings link (Mike, Oct 20, 2026)
 
 Tapping **Unsubscribe from these emails** in notification mail hits the **`unsubscribe`** Edge Function, turns off **email only** for that **08c** category, then **redirects (GET)** to **`https://catsordogs.net/email-unsubscribed?type=…`** so users never see raw HTML on the Supabase URL. The landing page shows a **type-specific** lead sentence (for example `… regarding Matches.`), the note `You can change this any time in the app's notification settings.`, and orange **Open notification settings**, which links to **`https://catsordogs.net/notifications`** and should open **08c** in an installed build. **POST** one-click unsubscribe in some mail clients returns plain text only (no browser page), with the same settings URL in the body. Full catalog: [notifications.md](notifications.md). **TestFlight / Play:** universal link to **08c** from `/notifications` needs a store build that includes `mobile/app.json` Android intent for `/notifications` and the in-app route handler (**iOS build 6+** in Oct 2026). Unsubscribe and landing pages work without a new app build; only opening **08c** from that HTTPS link needs the newer binary.

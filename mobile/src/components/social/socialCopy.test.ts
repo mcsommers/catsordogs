@@ -38,10 +38,10 @@ describe('confirmation pronouns', () => {
 
   it('keeps mid-sentence follow pronouns lowercase', () => {
     expect(followDialogBody('Man')).toBe(
-      "He won't know you're following him. His answer will show up at the top of your feed every day he posts."
+      "He won't know you're following him. His answer will show up at the top of your feed every day he posts.\n\nFollowing is not matching, and they do not need to follow you back."
     );
     expect(followDialogBody('Woman')).toBe(
-      "She won't know you're following her. Her answer will show up at the top of your feed every day she posts."
+      "She won't know you're following her. Her answer will show up at the top of your feed every day she posts.\n\nFollowing is not matching, and they do not need to follow you back."
     );
   });
 

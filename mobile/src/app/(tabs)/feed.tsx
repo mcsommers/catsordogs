@@ -2,6 +2,7 @@ import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import {
   FlatList,
   Platform,
+  Pressable,
   RefreshControl,
   StyleSheet,
   Text,
@@ -29,8 +30,6 @@ import { FeedLocked, NoQuestionToday } from '../../components/QuestionStates';
 import { CenteredSpinner, PrimaryButton, Screen } from '../../components/ui';
 import {
   hlsSource,
-  safePause,
-  safePlay,
   safePlayerDuration,
   safePlayerTime,
   safeRemoveListener,
@@ -41,6 +40,7 @@ import { useSession } from '../../lib/session';
 import { colors, fonts } from '../../theme';
 import { MoreOptionsMenu } from '../../components/social/MoreOptionsMenu';
 import { useSocialActions, type SocialSubject } from '../../components/social/useSocialActions';
+import { useVideoPlaybackControl } from '../../hooks/useVideoPlaybackControl';
 
 /**
  * Feed tab (Pencil 06). UX invariant: unified vertical page scroll — see
@@ -159,45 +159,38 @@ export default function Feed() {
     p.muted = true;
   });
 
+  const isFocusedForPlayback = isFocused && !!session && gate?.state === 'open' && !onEndPage && items.length > 0;
+  const playback = useVideoPlaybackControl(
+    player,
+    activeItem?.answerId,
+    isFocusedForPlayback && !!playbackUrl,
+  );
+
   useEffect(() => {
     safeSetMuted(player, muted);
   }, [muted, player]);
 
   useEffect(() => {
-    return registerFeedPlaybackPause(() => safePause(player));
-  }, [player]);
+    return registerFeedPlaybackPause(playback.pauseForNavigation);
+  }, [playback.pauseForNavigation]);
 
   useEffect(() => {
     if (!session) {
       setPlaybackUrl(null);
-      safePause(player);
+      playback.pauseForNavigation();
     }
-  }, [session, player]);
+  }, [session, playback.pauseForNavigation]);
 
   useFocusEffect(
     useCallback(() => {
       const shouldPlay = gate?.state === 'open' && !onEndPage && items.length > 0;
       feedActiveRef.current = shouldPlay;
-      if (shouldPlay && playbackUrl) safePlay(player);
-      else safePause(player);
       return () => {
         feedActiveRef.current = false;
-        safePause(player);
+        playback.pauseForNavigation();
       };
-    }, [gate?.state, onEndPage, items.length, playbackUrl, player])
+    }, [gate?.state, onEndPage, items.length, playback.pauseForNavigation])
   );
-
-  useEffect(() => {
-    if (!playbackUrl) return;
-    const playIfActive = () => {
-      if (feedActiveRef.current) safePlay(player);
-    };
-    playIfActive();
-    const sub = player.addListener('statusChange', ({ status }) => {
-      if (status === 'readyToPlay') playIfActive();
-    });
-    return () => safeRemoveListener(sub);
-  }, [playbackUrl, player]);
 
   const loadGate = useCallback(async () => {
     if (!session) return;
@@ -378,7 +371,6 @@ export default function Feed() {
       safeRemoveListener(onStatus);
       clearInterval(tick);
       safeTimeUpdateInterval(player, 0);
-      safePause(player);
     };
   }, [activeItem?.answerId, activeItem?.durationSeconds, playbackUrl, minWatch, player]);
 
@@ -415,6 +407,14 @@ export default function Feed() {
       const isActive = item.answerId === activeItem?.answerId;
       return (
         <View style={{ height: pageHeight }} pointerEvents="box-none">
+          {isActive ? (
+            <Pressable
+              style={StyleSheet.absoluteFill}
+              onPress={playback.togglePlayPause}
+              accessibilityLabel={playback.isPlaying ? 'Pause video' : 'Play video'}
+              accessibilityRole="button"
+            />
+          ) : null}
           <FeedOverlay
             item={item}
             muted={muted}
@@ -426,11 +426,24 @@ export default function Feed() {
             onMoreOptions={social.openMenu}
             onHeart={social.onHeartPress}
             videoProgress={isActive ? videoProgress : 0}
+            isPlaying={isActive ? playback.isPlaying : false}
+            onTogglePlayPause={playback.togglePlayPause}
           />
         </View>
       );
     },
-    [activeItem?.answerId, lookbackDays, muted, openFeedSettings, pageHeight, social.onHeartPress, social.openMenu, videoProgress]
+    [
+      activeItem?.answerId,
+      lookbackDays,
+      muted,
+      openFeedSettings,
+      pageHeight,
+      playback.isPlaying,
+      playback.togglePlayPause,
+      social.onHeartPress,
+      social.openMenu,
+      videoProgress,
+    ]
   );
 
   const showVideo = isFocused && !!session && !!playbackUrl && gate?.state === 'open';
@@ -503,6 +516,9 @@ export default function Feed() {
       <MoreOptionsMenu
         visible={social.menuOpen}
         isFollowed={activeItem?.isFollowed ?? false}
+        firstName={activeItem?.firstName ?? ''}
+        age={activeItem?.age}
+        avatarUri={activeItem?.avatarUrl}
         onDismiss={social.closeMenu}
         onSelect={social.runMenuAction}
       />
@@ -521,7 +537,7 @@ export default function Feed() {
       <FlatList
         ref={flatRef}
         data={listRows}
-        extraData={{ activeId: activeItem?.answerId, muted, videoProgress }}
+        extraData={{ activeId: activeItem?.answerId, muted, videoProgress, isPlaying: playback.isPlaying }}
         keyExtractor={(item) => item.answerId}
         pagingEnabled
         // iOS "fast" is a light flick. On Android the same prop sets fling friction

@@ -1,14 +1,8 @@
 import { Image, Platform, Pressable, StyleSheet, Text, View } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import {
-  EllipsisVertical,
-  Heart,
-  Search,
-  SlidersHorizontal,
-  Volume2,
-  VolumeX,
-} from 'lucide-react-native';
+import { EllipsisVertical, Heart, Search, SlidersHorizontal } from 'lucide-react-native';
+import { VideoProgressControls } from './VideoProgressControls';
 /** Chrome for one feed page; parent is a paging FlatList row — docs/mobile-feed-scroll.md */
 import type { FeedItem } from '../lib/feed';
 import { formatFeedPosterCity, shortQuestionDate } from '../lib/format';
@@ -33,6 +27,8 @@ type Props = {
   onHeart: () => void;
   /** 0–1 progress through the current video playback. */
   videoProgress: number;
+  isPlaying: boolean;
+  onTogglePlayPause: () => void;
 };
 
 function QuestionPillLabel({ questionDate, questionText }: { questionDate: string; questionText: string }) {
@@ -55,6 +51,8 @@ export function FeedOverlay({
   onMoreOptions,
   onHeart,
   videoProgress,
+  isPlaying,
+  onTogglePlayPause,
 }: Props) {
   const insets = useSafeAreaInsets();
   const heartOn = item.matchState === 'sent' || item.matchState === 'matched';
@@ -137,14 +135,13 @@ export function FeedOverlay({
             </Pressable>
           </View>
         </View>
-        <View style={styles.progressMuteRow}>
-          <View style={styles.progressTrack}>
-            <View style={[styles.progressFill, { width: `${Math.min(100, Math.max(0, videoProgress * 100))}%` }]} />
-          </View>
-          <Pressable style={styles.actionBtn} onPress={onToggleMute} accessibilityLabel={muted ? 'Unmute' : 'Mute'}>
-            {muted ? <VolumeX size={22} color={colors.white} /> : <Volume2 size={22} color={colors.white} />}
-          </Pressable>
-        </View>
+        <VideoProgressControls
+          videoProgress={videoProgress}
+          muted={muted}
+          isPlaying={isPlaying}
+          onTogglePlayPause={onTogglePlayPause}
+          onToggleMute={onToggleMute}
+        />
       </View>
     </View>
   );
@@ -202,9 +199,6 @@ const styles = StyleSheet.create({
   },
   followingWrap: { marginLeft: 4 },
   actionStrip: { gap: 14, alignItems: 'center' },
-  progressMuteRow: { flexDirection: 'row', alignItems: 'center', gap: 12 },
-  progressTrack: { flex: 1, height: 3, borderRadius: 2, backgroundColor: '#FFFFFF2E', overflow: 'hidden' },
-  progressFill: { height: 3, backgroundColor: colors.white, borderRadius: 2 },
   actionBtn: {
     width: 48,
     height: 48,
