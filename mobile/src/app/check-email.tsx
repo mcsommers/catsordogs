@@ -54,8 +54,9 @@ export default function CheckEmail() {
       />
       {__DEV__ ? (
         <Text style={styles.devReturn} selectable>
-          Dev only: return address for this session is {returnAddress}. In the email, confirm redirect_to matches
-          (exp:// in Expo Go, https://catsordogs.net/auth-callback in an installed build).
+          Dev only: return address for this session is {returnAddress}. In the email, redirect_to must match this.
+          Expo Go should show exp:// with your trycloudflare host. catsordogs:// in the mail means reload after npm
+          run phone.
         </Text>
       ) : null}
       {!isSignup ? (

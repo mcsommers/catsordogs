@@ -1,10 +1,10 @@
 import { Platform } from 'react-native';
-import Constants, { AppOwnership } from 'expo-constants';
+import Constants, { AppOwnership, ExecutionEnvironment } from 'expo-constants';
 
-/** True when running inside the Expo Go app (not a dev client or store build). */
+/** True when running inside Expo Go (not a store/TestFlight build). */
 export function isExpoGo(): boolean {
+  if (Constants.executionEnvironment === ExecutionEnvironment.StoreClient) return true;
   if (Constants.appOwnership === AppOwnership.Expo) return true;
-  // SDK 58+ may omit appOwnership; Expo Go always sets expoGoConfig.
   return Constants.expoGoConfig != null;
 }
 

@@ -1,6 +1,11 @@
 import Constants from 'expo-constants';
 import * as Linking from 'expo-linking';
-import { AUTH_CALLBACK_HTTPS, confirmationRedirect, resetRedirect } from './authRedirects';
+import {
+  AUTH_CALLBACK_HTTPS,
+  confirmationRedirect,
+  expoGoLinkingOrigin,
+  resetRedirect,
+} from './authRedirects';
 import { isExpoGo } from './canRegisterForRemotePush';
 
 jest.mock('expo-linking', () => ({
@@ -19,11 +24,17 @@ jest.mock('./canRegisterForRemotePush', () => ({
 const mockIsExpoGo = isExpoGo as jest.MockedFunction<typeof isExpoGo>;
 
 describe('authRedirects', () => {
-  const originalLinkingUri = Constants.linkingUri;
+  const original = {
+    linkingUri: Constants.linkingUri,
+    experienceUrl: Constants.experienceUrl,
+    hostUri: Constants.expoConfig?.hostUri,
+  };
 
   afterEach(() => {
     mockIsExpoGo.mockReset();
-    (Constants as { linkingUri?: string }).linkingUri = originalLinkingUri;
+    (Constants as { linkingUri?: string }).linkingUri = original.linkingUri;
+    (Constants as { experienceUrl?: string }).experienceUrl = original.experienceUrl;
+    if (Constants.expoConfig) Constants.expoConfig.hostUri = original.hostUri;
     jest.mocked(Linking.createURL).mockImplementation((path: string, opts?: { queryParams?: Record<string, string> }) => {
       const base = `exp://test/--/${path}`;
       if (!opts?.queryParams) return base;
@@ -40,21 +51,31 @@ describe('authRedirects', () => {
 
   it('uses Expo Go deep link in Expo Go', () => {
     mockIsExpoGo.mockReturnValue(true);
-    expect(confirmationRedirect()).toBe('exp://test/--/auth-callback');
-    expect(resetRedirect()).toBe('exp://test/--/auth-callback?next=reset');
+    (Constants as { linkingUri?: string }).linkingUri = 'exp://tunnel.trycloudflare.com/--/';
+    expect(confirmationRedirect()).toBe('exp://tunnel.trycloudflare.com/--/auth-callback');
+    expect(resetRedirect()).toBe('exp://tunnel.trycloudflare.com/--/auth-callback?next=reset');
   });
 
-  it('rebuilds when createURL returns catsordogs://', () => {
+  it('prefers tunnel origin when createURL returns catsordogs://', () => {
     mockIsExpoGo.mockReturnValue(true);
     (Constants as { linkingUri?: string }).linkingUri = 'exp://tunnel.trycloudflare.com/--/';
     jest.mocked(Linking.createURL).mockReturnValue('catsordogs://auth-callback');
     expect(confirmationRedirect()).toBe('exp://tunnel.trycloudflare.com/--/auth-callback');
   });
 
-  it('rebuilds broken exp://auth-callback (no dev host)', () => {
+  it('falls back to HTTPS in Expo Go when no exp origin is available', () => {
     mockIsExpoGo.mockReturnValue(true);
-    (Constants as { linkingUri?: string }).linkingUri = 'exp://tunnel.trycloudflare.com/--/';
-    jest.mocked(Linking.createURL).mockReturnValue('exp://auth-callback');
-    expect(confirmationRedirect()).toBe('exp://tunnel.trycloudflare.com/--/auth-callback');
+    (Constants as { linkingUri?: string }).linkingUri = 'catsordogs://';
+    (Constants as { experienceUrl?: string }).experienceUrl = 'catsordogs://expo-go';
+    if (Constants.expoConfig) Constants.expoConfig.hostUri = undefined;
+    jest.mocked(Linking.createURL).mockReturnValue('catsordogs://auth-callback');
+    expect(confirmationRedirect()).toBe(AUTH_CALLBACK_HTTPS);
+  });
+
+  it('parses hostUri without scheme', () => {
+    (Constants as { linkingUri?: string }).linkingUri = '';
+    (Constants as { experienceUrl?: string }).experienceUrl = '';
+    if (Constants.expoConfig) Constants.expoConfig.hostUri = 'tunnel.trycloudflare.com';
+    expect(expoGoLinkingOrigin()).toBe('exp://tunnel.trycloudflare.com');
   });
 });
