@@ -17,7 +17,7 @@ const aasa = {
     details: [
       {
         appID: `${teamId}.net.catsordogs.app`,
-        paths: ['/question', '/matches', '/notifications', '/chat/*', '/user/*'],
+        paths: ['/question', '/matches', '/notifications', '/auth-callback', '/chat/*', '/user/*'],
       },
     ],
   },

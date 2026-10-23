@@ -1,13 +1,5 @@
-import { useEffect, useMemo, useState } from 'react';
-import {
-  Image,
-  Modal,
-  Pressable,
-  StyleSheet,
-  Text,
-  View,
-  type ComponentType,
-} from 'react-native';
+import { useEffect, useMemo, useState, type ComponentType } from 'react';
+import { Image, Modal, Pressable, StyleSheet, Text, View } from 'react-native';
 import {
   Ban,
   EyeOff,

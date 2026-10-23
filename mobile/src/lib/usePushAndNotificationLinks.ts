@@ -2,7 +2,7 @@ import { useEffect, useRef } from 'react';
 import { AppState } from 'react-native';
 import * as Linking from 'expo-linking';
 import { useRouter } from 'expo-router';
-import { canRegisterForRemotePush } from './canRegisterForRemotePush';
+import { canRegisterForRemotePush, canUseExpoNotificationsModule } from './canRegisterForRemotePush';
 import { ensureForegroundNotificationHandler } from './notificationHandler';
 import { registerForPushNotifications } from './push';
 import { navigateFromNotificationPayload } from './notificationNavigation';
@@ -37,7 +37,7 @@ export function usePushAndNotificationLinks() {
   const handledColdStartNotificationId = useRef<string | null>(null);
 
   useEffect(() => {
-    if (!canRegisterForRemotePush()) return;
+    if (!canUseExpoNotificationsModule()) return;
     ensureForegroundNotificationHandler();
   }, []);
 
@@ -75,16 +75,15 @@ export function usePushAndNotificationLinks() {
   }, [loading, session?.user.id, router]);
 
   useEffect(() => {
-    if (loading || !session || !canRegisterForRemotePush()) return;
+    if (loading || !session || !canUseExpoNotificationsModule()) return;
     let remove: (() => void) | undefined;
 
     (async () => {
       const Notifications = await import('expo-notifications');
-      const open = (response: {
-        notification: { request: { identifier: string; content: { data: Record<string, unknown> } } };
-      }) => {
+      const open = (response: import('expo-notifications').NotificationResponse) => {
+        const data = response.notification.request.content.data;
         runNavigationAction(() => {
-          navigateFromNotificationPayload(router, response.notification.request.content.data);
+          navigateFromNotificationPayload(router, data ? { ...data } : undefined);
         });
       };
       const last = await Notifications.getLastNotificationResponseAsync();

@@ -59,6 +59,27 @@
               "scheme": "https",
               "host": "catsordogs.net",
               "pathPrefix": "/notifications"
+            },
+            {
+              "scheme": "https",
+              "host": "catsordogs.net",
+              "pathPrefix": "/auth-callback"
+            }
+          ],
+          "category": [
+            "BROWSABLE",
+            "DEFAULT"
+          ]
+        },
+        {
+          "action": "VIEW",
+          "data": [
+            {
+              "scheme": "catsordogs",
+              "host": "auth-callback"
+            },
+            {
+              "scheme": "catsordogs"
             }
           ],
           "category": [

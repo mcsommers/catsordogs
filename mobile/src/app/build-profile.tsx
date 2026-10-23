@@ -5,7 +5,6 @@ import * as ImagePicker from 'expo-image-picker';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import { Briefcase, Cake, GraduationCap, MapPin, Ruler, User } from 'lucide-react-native';
 import { attachPhotoUrls } from '../lib/profile';
-import { MAX_GALLERY_PHOTOS, galleryPhotoCount, nextGalleryPosition } from '../lib/profilePhotos';
 import {
   PROFILE_PHOTO_CONTENT_TYPE,
   PROFILE_PHOTO_EXT,
@@ -16,7 +15,7 @@ import { signOutToWelcome } from '../lib/signOut';
 import { supabase } from '../lib/supabase';
 import { useSession } from '../lib/session';
 import { longDate, splitHeightInches, toIsoDate } from '../lib/format';
-import { restoreScrollY, scrollToFieldInScreen } from '../lib/formScroll';
+import { scrollToFieldInScreen } from '../lib/formScroll';
 import {
   BIRTHDAY_ERROR,
   SAVE_ERROR,
@@ -101,7 +100,7 @@ const EMPTY: Form = {
 
 const ABOUT_MAX = 500;
 const PROFILE_SUBTITLE =
-  'Required: profile photo, first name, birthday, and gender. Everything else is optional.';
+  'Required: first name, birthday, and gender. Profile photo is required before you finish. Everything else is optional.';
 
 type MultiField = 'interested_in';
 
@@ -131,13 +130,11 @@ export default function BuildProfile() {
   const heightRef = useRef<View>(null);
   const locationRef = useRef<View>(null);
   const occupationRef = useRef<View>(null);
-  const morePhotosRef = useRef<View>(null);
   const schoolRef = useRef<View>(null);
   const aboutRef = useRef<View>(null);
   const interestsRef = useRef<View>(null);
   const addRowRef = useRef<View>(null);
   const [noInterestsDialogVisible, setNoInterestsDialogVisible] = useState(false);
-  const scrollOffsetRef = useRef(0);
 
   const leaveBuildProfile = useCallback(() => signOutToWelcome(router), []);
   const leaveGuard = useProfileLeaveGuard({
@@ -232,18 +229,16 @@ export default function BuildProfile() {
     setCustomText('');
   }
 
-  async function addPhotoAt(position: number, aspect: [number, number]) {
-    if (!userId || photos.some((p) => p.position === position)) return;
-    if (position > 1 && galleryPhotoCount(photos) >= MAX_GALLERY_PHOTOS) return;
+  async function addAvatarPhoto() {
+    if (!userId || photos.some((p) => p.position === 1)) return;
     const perm = await ImagePicker.requestMediaLibraryPermissionsAsync();
     if (!perm.granted) return;
-    const restoreScrollYAfter = position > 1 ? scrollOffsetRef.current : null;
     Keyboard.dismiss();
     const picked = await ImagePicker.launchImageLibraryAsync({
       mediaTypes: ['images'],
       quality: 0.8,
       allowsEditing: true,
-      aspect,
+      aspect: [1, 1],
       base64: true,
     });
     if (picked.canceled || !picked.assets[0]) return;
@@ -252,34 +247,22 @@ export default function BuildProfile() {
     const asset = picked.assets[0];
     const path = `${userId}/${Date.now()}.${PROFILE_PHOTO_EXT}`;
     const previewUri = profilePhotoPreviewUri(asset);
-    setPhotos((prev) => [...prev, { id: `pending-${position}`, position, storage_path: path, url: previewUri }]);
+    setPhotos((prev) => [...prev, { id: 'pending-1', position: 1, storage_path: path, url: previewUri }]);
     try {
       const bytes = await readProfilePhotoBytes(asset);
       const up = await supabase.storage
         .from('profile-photos')
         .upload(path, bytes, { contentType: PROFILE_PHOTO_CONTENT_TYPE, upsert: false });
       if (up.error) throw up.error;
-      const ins = await supabase.from('profile_photos').insert({ user_id: userId, position, storage_path: path });
+      const ins = await supabase.from('profile_photos').insert({ user_id: userId, position: 1, storage_path: path });
       if (ins.error) throw ins.error;
       await loadPhotos();
     } catch (e) {
-      setPhotos((prev) => prev.filter((p) => p.storage_path !== path && p.id !== `pending-${position}`));
+      setPhotos((prev) => prev.filter((p) => p.storage_path !== path && p.id !== 'pending-1'));
       setBanner(profileSaveProblem(e as Error, 'photo').banner);
     } finally {
       setPhotoBusy(false);
-      if (restoreScrollYAfter != null) {
-        restoreScrollY(scrollRef, restoreScrollYAfter);
-      }
     }
-  }
-
-  function addAvatarPhoto() {
-    void addPhotoAt(1, [1, 1]);
-  }
-
-  function addMorePhoto() {
-    const position = nextGalleryPosition(photos);
-    if (position) void addPhotoAt(position, [4, 5]);
   }
 
   async function removePhoto(photo: Photo) {
@@ -438,9 +421,6 @@ export default function BuildProfile() {
       scroll
       scrollRef={scrollRef}
       scrollContentRef={contentRef}
-      onScroll={(e) => {
-        scrollOffsetRef.current = e.nativeEvent.contentOffset.y;
-      }}
     >
       <DiscardProfileChangesDialog
         visible={leaveGuard.discardVisible}
@@ -464,17 +444,6 @@ export default function BuildProfile() {
       </View>
       <TitleGroup subtitle={PROFILE_SUBTITLE} />
       {banner ? <ErrorBanner message={banner} /> : null}
-
-      <View ref={photosRef} collapsable={false}>
-        <ProfileBuildPhotos
-          section="avatar"
-          photos={photos}
-          photoBusy={photoBusy}
-          onAddAvatar={addAvatarPhoto}
-          onAddMore={addMorePhoto}
-          onRemove={removePhoto}
-        />
-      </View>
 
       <View style={{ gap: 16 }}>
         <View ref={firstNameRef} collapsable={false}>
@@ -634,13 +603,13 @@ export default function BuildProfile() {
         ))}
       </View>
 
-      <View ref={morePhotosRef} collapsable={false}>
+      <View ref={photosRef} collapsable={false}>
         <ProfileBuildPhotos
-          section="more"
+          section="avatar"
           photos={photos}
           photoBusy={photoBusy}
           onAddAvatar={addAvatarPhoto}
-          onAddMore={addMorePhoto}
+          onAddMore={() => {}}
           onRemove={removePhoto}
         />
       </View>

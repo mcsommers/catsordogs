@@ -63,7 +63,7 @@ export function useFeedSettingsLeaveGuard({
     if (!dirty) return;
     const unsubscribe = navigation.addListener('beforeRemove', (event) => {
       if (allowLeaveRef.current) return;
-      event.preventDefault();
+      (event as unknown as { preventDefault: () => void }).preventDefault();
       if (!discardVisible) queueLeave();
     });
     return unsubscribe;

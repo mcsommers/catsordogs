@@ -16,7 +16,7 @@ type TabBarProps = BottomTabBarProps & {
   onMatchesPress: () => void;
 };
 
-function TabBar({ state, navigation, matchesAlert, onMatchesPress }: TabBarProps) {
+function TabBar({ state, emitter, navigateToTab, matchesAlert, onMatchesPress }: TabBarProps) {
   const insets = useSafeAreaInsets();
 
   return (
@@ -39,7 +39,7 @@ function TabBar({ state, navigation, matchesAlert, onMatchesPress }: TabBarProps
                   : LABELS[name]
               }
               onPress={() => {
-                const event = navigation.emit({ type: 'tabPress', target: route.key, canPreventDefault: true });
+                const event = emitter.emit({ type: 'tabPress', target: route.key, canPreventDefault: true });
                 if (active && name === 'feed') {
                   router.replace({
                     pathname: '/(tabs)/feed',
@@ -49,7 +49,7 @@ function TabBar({ state, navigation, matchesAlert, onMatchesPress }: TabBarProps
                 }
                 if (!active && !event.defaultPrevented) {
                   if (name === 'matches') onMatchesPress();
-                  navigation.navigate(route.name);
+                  navigateToTab(route.key);
                 }
               }}
               style={[styles.tab, active && { backgroundColor: colors.accentDog }]}

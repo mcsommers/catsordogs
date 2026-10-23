@@ -1,7 +1,7 @@
 import { StyleSheet, Text } from 'react-native';
 import { colors, fonts } from '../../theme';
 
-export const PROFILE_PHOTO_REQUIRED_HINT = 'Profile photos are required';
+export const PROFILE_PHOTO_REQUIRED_HINT = 'Profile photo is required';
 
 /** True when the user has chosen a profile photo (position 1), including a not-yet-uploaded pick. */
 export function hasProfilePhoto(photos: { position: number }[]): boolean {
