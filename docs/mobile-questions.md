@@ -7,7 +7,7 @@ and Mike's answer. Newest phase first.
 
 On an **installed Android build** (not Expo Go), tapping the sign-up link in Gmail could leave the user in Chrome on a Google-wrapped Supabase verify URL with `redirect_to=catsordogs://auth-callback`, with no handoff to the app. **iPhone Expo Go** was fine because it uses `exp://`.
 
-**Fix:** Installed builds pass `emailRedirectTo: https://catsordogs.net/auth-callback` (`mobile/src/lib/authRedirects.ts`). Expo Go forces `scheme: 'exp'` in `Linking.createURL` so confirmation mail uses `exp://…`, not `catsordogs://`. Check Your Email (02d) shows the return address in **dev** only so Mike can match it to `redirect_to` in the mail. Marketing site + app links: `website/functions/auth-callback.js`, `open-app.html`. **Staging Supabase** must allow **`https://catsordogs.net/auth-callback`**. Deploy the site, add the redirect URL on staging, ship a new installed build, then **resend** confirmation (old mail may still say `catsordogs://`).
+**Fix:** Installed builds pass `emailRedirectTo: https://catsordogs.net/auth-callback`. Expo Go builds `exp://<tunnel-host>/--/auth-callback` from `Constants.linkingUri` when `Linking.createURL` returns `catsordogs://` or a hostless `exp://auth-callback` (forcing `scheme: 'exp'` alone crashed Android Expo Go). Check Your Email (02d) shows the return address in **dev** only. Marketing site + app links: `website/functions/auth-callback.js`, `open-app.html`. **Staging Supabase** must allow **`https://catsordogs.net/auth-callback`**. Deploy the site, add the redirect URL on staging, ship a new installed build, then **resend** confirmation (old mail may still say `catsordogs://`).
 
 ## Following education in More options and follow confirm (Mike, Oct 21, 2026)
 
