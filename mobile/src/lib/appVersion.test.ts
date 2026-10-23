@@ -1,7 +1,5 @@
 const constants = {
   expoConfig: { version: '1.0.0' } as { version: string } | null,
-  expoVersion: null as string | null,
-  appOwnership: null as string | null,
 };
 
 const application = {
@@ -16,13 +14,19 @@ jest.mock('expo-constants', () => ({
 
 jest.mock('expo-application', () => application);
 
+jest.mock('./canRegisterForRemotePush', () => ({
+  isExpoGo: jest.fn(() => false),
+}));
+
+import { isExpoGo } from './canRegisterForRemotePush';
 import { formatAppVersionLabel } from './appVersion';
+
+const mockIsExpoGo = isExpoGo as jest.MockedFunction<typeof isExpoGo>;
 
 describe('formatAppVersionLabel', () => {
   beforeEach(() => {
     constants.expoConfig = { version: '1.0.0' };
-    constants.expoVersion = null;
-    constants.appOwnership = null;
+    mockIsExpoGo.mockReturnValue(false);
     application.nativeApplicationVersion = '1.0.0';
     application.nativeBuildVersion = '6';
   });
@@ -32,8 +36,7 @@ describe('formatAppVersionLabel', () => {
   });
 
   it('omits the build number in Expo Go', () => {
-    constants.expoVersion = '58.0.0';
-    constants.appOwnership = 'expo';
+    mockIsExpoGo.mockReturnValue(true);
     application.nativeBuildVersion = '1017700';
     expect(formatAppVersionLabel()).toBe('Version 1.0.0');
   });

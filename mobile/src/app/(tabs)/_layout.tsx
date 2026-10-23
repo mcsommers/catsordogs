@@ -39,7 +39,12 @@ function TabBar({ state, emitter, navigateToTab, matchesAlert, onMatchesPress }:
                   : LABELS[name]
               }
               onPress={() => {
-                const event = emitter.emit({ type: 'tabPress', target: route.key, canPreventDefault: true });
+                const event =
+                  emitter?.emit?.({
+                    type: 'tabPress',
+                    target: route.key,
+                    canPreventDefault: true,
+                  }) ?? { defaultPrevented: false };
                 if (active && name === 'feed') {
                   router.replace({
                     pathname: '/(tabs)/feed',
@@ -49,7 +54,8 @@ function TabBar({ state, emitter, navigateToTab, matchesAlert, onMatchesPress }:
                 }
                 if (!active && !event.defaultPrevented) {
                   if (name === 'matches') onMatchesPress();
-                  navigateToTab(route.key);
+                  if (navigateToTab) navigateToTab(route.key);
+                  else router.replace(`/(tabs)/${name}` as '/(tabs)/feed' | '/(tabs)/matches' | '/(tabs)/profile');
                 }
               }}
               style={[styles.tab, active && { backgroundColor: colors.accentDog }]}

@@ -1,9 +1,18 @@
-import * as Application from 'expo-application';
 import Constants from 'expo-constants';
+import { isExpoGo } from './canRegisterForRemotePush';
 
-/** Expo Go's own binary, not this project's packaged build. */
-function runningInExpoGo(): boolean {
-  return Constants.expoVersion != null || Constants.appOwnership === 'expo';
+function nativeApplicationVersions(): { version: string | null; build: string | null } {
+  if (isExpoGo()) return { version: null, build: null };
+  try {
+    // Top-level import crashes Android Expo Go SDK 58 (ExpoApplication native module missing).
+    const Application = require('expo-application') as typeof import('expo-application');
+    return {
+      version: Application.nativeApplicationVersion ?? null,
+      build: Application.nativeBuildVersion ?? null,
+    };
+  } catch {
+    return { version: null, build: null };
+  }
 }
 
 /**
@@ -12,8 +21,9 @@ function runningInExpoGo(): boolean {
  * Expo Go has no app build number, so the label is the version only.
  */
 export function formatAppVersionLabel(): string {
-  const version = Constants.expoConfig?.version ?? Application.nativeApplicationVersion;
-  const build = runningInExpoGo() ? null : Application.nativeBuildVersion;
+  const native = nativeApplicationVersions();
+  const version = Constants.expoConfig?.version ?? native.version;
+  const build = isExpoGo() ? null : native.build;
   if (version && build) return `Version ${version} (${build})`;
   if (version) return `Version ${version}`;
   return '';
