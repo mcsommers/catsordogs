@@ -1,8 +1,7 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
-import { Keyboard, Modal, Platform, Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
+import { Keyboard, Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
 import { router } from 'expo-router';
 import * as ImagePicker from 'expo-image-picker';
-import DateTimePicker from '@react-native-community/datetimepicker';
 import { Briefcase, Cake, GraduationCap, MapPin, Ruler, User } from 'lucide-react-native';
 import { attachPhotoUrls } from '../lib/profile';
 import { pickAndAddGalleryPhoto } from '../lib/addGalleryPhoto';
@@ -15,7 +14,7 @@ import {
 } from '../lib/profilePhotoUpload';
 import { supabase } from '../lib/supabase';
 import { useSession } from '../lib/session';
-import { longDate, splitHeightInches, toIsoDate } from '../lib/format';
+import { longDate, splitHeightInches } from '../lib/format';
 import { restoreScrollY, scrollToFieldInScreen } from '../lib/formScroll';
 import {
   BIRTHDAY_ERROR,
@@ -36,6 +35,7 @@ import {
   moreGenderOptions,
 } from '../components/profile/ProfileChoiceSections';
 import { setProfilePickerRequest } from '../lib/profilePicker';
+import { BirthdayPicker } from '../components/profile/BirthdayPicker';
 import { ProfileBuildPhotos } from '../components/profile/ProfileBuildPhotos';
 import { hasProfilePhoto, ProfilePhotoRequiredHint } from '../components/profile/ProfilePhotoRequiredHint';
 import { NoInterestsOnSubmitDialog } from '../components/profile/NoInterestsOnSubmitDialog';
@@ -666,39 +666,6 @@ export default function EditProfile() {
   );
 }
 
-function BirthdayPicker({ value, onDone }: { value: string | null; onDone: (iso: string | null) => void }) {
-  const initial = value ? new Date(`${value}T12:00:00`) : new Date(2000, 0, 1);
-  const [picked, setPicked] = useState(initial);
-  if (Platform.OS === 'android') {
-    return (
-      <DateTimePicker
-        value={initial}
-        mode="date"
-        maximumDate={new Date()}
-        onValueChange={(_event, date) => onDone(toIsoDate(date))}
-        onDismiss={() => onDone(null)}
-      />
-    );
-  }
-  return (
-    <Modal transparent animationType="slide" onRequestClose={() => onDone(null)}>
-      <View style={styles.sheetScrim}>
-        <View style={styles.sheet}>
-          <DateTimePicker
-            value={picked}
-            mode="date"
-            display="spinner"
-            maximumDate={new Date()}
-            onValueChange={(_event, date) => setPicked(date)}
-            textColor={colors.textPrimary}
-          />
-          <PrimaryButton label="Done" onPress={() => onDone(toIsoDate(picked))} />
-        </View>
-      </View>
-    </Modal>
-  );
-}
-
 const styles = StyleSheet.create({
   chips: { flexDirection: 'row', flexWrap: 'wrap', gap: 8 },
   bio: {
@@ -730,6 +697,4 @@ const styles = StyleSheet.create({
   },
   addButton: { backgroundColor: colors.accentDog, borderRadius: 9999, paddingHorizontal: 18, paddingVertical: 10 },
   addButtonLabel: { fontFamily: fonts.bodyBold, fontSize: 14, color: colors.white },
-  sheetScrim: { flex: 1, justifyContent: 'flex-end', backgroundColor: '#00000066' },
-  sheet: { backgroundColor: colors.bg, padding: 20, paddingBottom: 40, borderTopLeftRadius: 24, borderTopRightRadius: 24, gap: 12 },
 });

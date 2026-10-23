@@ -3,6 +3,8 @@ import {
   SAVE_ERROR,
   ageInYears,
   birthdayFieldProblem,
+  birthdayPickerMinimumDate,
+  MAX_BIRTHDAY_AGE_YEARS,
   firstProfileFinishIssue,
   parseHeightFtIn,
   profileSaveProblem,
@@ -28,6 +30,12 @@ describe('choosing chips', () => {
 
 describe('birthday on Build Profile', () => {
   const today = new Date(2026, 9, 11);
+
+  it('sets picker minimum to MAX_BIRTHDAY_AGE_YEARS before today', () => {
+    const min = birthdayPickerMinimumDate(today);
+    expect(today.getFullYear() - min.getFullYear()).toBe(MAX_BIRTHDAY_AGE_YEARS);
+    expect(min.getFullYear()).toBeLessThan(1969);
+  });
 
   it('rejects someone under 18 immediately', () => {
     const teen = `${today.getFullYear() - 17}-01-01`;

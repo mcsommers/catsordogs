@@ -11,6 +11,12 @@ export const SAVE_ERROR = 'We couldn\u2019t save your profile. Check your connec
 export const BIRTHDAY_ERROR = 'You must be 18 or older to join. Check your birthday.';
 
 export const MIN_SIGNUP_AGE = 18;
+export const MAX_BIRTHDAY_AGE_YEARS = 120;
+
+/** Android needs an explicit minimum; otherwise the picker stops around 1969/1970. */
+export function birthdayPickerMinimumDate(today = new Date()): Date {
+  return new Date(today.getFullYear() - MAX_BIRTHDAY_AGE_YEARS, today.getMonth(), today.getDate());
+}
 
 export const PROFILE_CITY_FIELD_LABEL = 'City';
 export const PROFILE_SCHOOL_FIELD_LABEL = 'School (high school, college, whatever)';
@@ -35,7 +41,7 @@ export function birthdayFieldProblem(birthdayIso: string | null, today = new Dat
   const ref = new Date(today.getFullYear(), today.getMonth(), today.getDate());
   if (birth > ref) return 'Birthday cannot be in the future.';
   const years = ageInYears(birthdayIso, today);
-  if (years > 120) return 'Please enter a valid birthday.';
+  if (years > MAX_BIRTHDAY_AGE_YEARS) return 'Please enter a valid birthday.';
   if (years < MIN_SIGNUP_AGE) return BIRTHDAY_ERROR;
   return null;
 }
