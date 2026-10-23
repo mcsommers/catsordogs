@@ -134,7 +134,7 @@ If one doesn't arrive, check spam.
 | "Could not connect to Expo CLI" or the phone keeps loading | Check you started with `npm run phone` (not `npm start`) and scanned the QR code from this run. Don't use `npx expo start --tunnel`: Expo's built-in tunnel is currently broken (its old ngrok version is rejected). |
 | **"Packager is not running at"** a `trycloudflare.com` URL (often a *different* name than the QR code shows) | Expo Go is still trying an **old** tunnel from a previous run, or Metro started on the wrong port. In the terminal running `npm run phone`, press **Ctrl+C**. Start again with `cd mobile && npm run phone` (the script now stops stale servers on port 8081). In Expo Go, open the **new** QR from this run — do not reopen a saved project or an old link. On Android, you can remove the old project from Expo Go's recent list first. |
 | "cloudflared is missing" or "The Cloudflare tunnel didn't start" | Run `brew install cloudflared` once, check the Mac is online, and try again. |
-| Expo Go says the project needs a newer or different version | Update Expo Go from the App Store or Google Play. This app uses Expo SDK 57. |
+| Expo Go says the project needs a newer or different version | Update Expo Go from the App Store or Google Play. This app uses Expo SDK 58. |
 | "Cats or Dogs? needs your camera and microphone" | Allow both when asked. If you said no before, tap **Open Settings** in the app and turn them on for Expo Go. |
 | "You're signed into Expo Go as … but not signed in to Expo CLI" | Run `cd mobile && npx expo login -b` on the Mac and sign in to the same Expo account, then restart `npm run phone`. |
 | Tapping an email link says "The application couldn't be opened" | The link is from before the last restart, the server was started with `npm start`, or the link was opened on a different phone. Make sure `npm run phone` is running, then in the app use "Resend" to get a fresh link. |
@@ -401,10 +401,11 @@ with the app screens.
 
 ## Email confirmation
 
-Signing up with email does not sign the person in. They get a link. Tapping it opens the app
-(`catsordogs://auth-callback`), signs them in, and lands on Build Profile (03). Password-reset links
-open Set New Password (02e) the same way. Apple and Google sign-in are still later; their buttons show
-"Coming soon".
+Signing up with email does not sign the person in. They get a link. Tapping it opens the app at
+**auth-callback**, signs them in, and lands on Build Profile (03). **Expo Go** uses an `exp://…/auth-callback`
+address. **Installed builds** use **`https://catsordogs.net/auth-callback`** so Gmail and Chrome on Android can
+reach the app (marketing **open-app** page plus app links). Password-reset links open Set New Password (02e) the
+same way. Apple and Google sign-in are still later; their buttons show "Coming soon".
 
 **Who sends these emails:** locally they land in the email catcher (http://127.0.0.1:54324). Staging and
 production send them through Resend from "Cats or Dogs?" <noreply@catsordogs.net> (set in each project under
@@ -413,9 +414,11 @@ address every 30 seconds. Supabase's built-in sender is not used: it only delive
 Both projects require passwords of at least 8 characters.
 
 This is on for the local database, staging, and production. A new email account is not signed in
-until the person taps the link. The links are allowed to open the installed app
-(`catsordogs://auth-callback`). Only staging also lets them open Expo Go (`exp://` addresses), which is
-what makes phone testing work. Production deliberately does not, so a production link can only open the real app.
+until the person taps the link. Allow-listed return URLs include **`https://catsordogs.net/auth-callback`**
+(installed builds), **`catsordogs://auth-callback`** (legacy and deep links), and on **staging only** **`exp://**`
+(Expo Go). Add the HTTPS URL in each hosted Supabase project under **Authentication → URL Configuration → Redirect URLs**
+(`supabase/config.toml` is for local Docker only). Production does not allow `exp://`, so production links cannot
+open Expo Go.
 
 ## Workflow
 

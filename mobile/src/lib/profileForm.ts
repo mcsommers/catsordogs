@@ -52,10 +52,10 @@ export function firstProfileFinishIssue(args: {
   heightInches: string;
 }): { field: ProfileFinishField; banner: string; birthdayError: boolean; heightError: boolean } | null {
   const missing: { field: ProfileFinishField; part: string }[] = [];
-  if (args.photoCount === 0) missing.push({ field: 'photos', part: 'a profile photo' });
   if (!args.firstName.trim()) missing.push({ field: 'first_name', part: 'your first name' });
   if (!args.birthday) missing.push({ field: 'birthday', part: 'your birthday' });
   if (!args.gender) missing.push({ field: 'gender', part: 'your gender' });
+  if (args.photoCount === 0) missing.push({ field: 'photos', part: 'a profile photo' });
   if (missing.length) {
     return {
       field: missing[0].field,

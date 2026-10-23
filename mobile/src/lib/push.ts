@@ -1,13 +1,13 @@
 import { Platform } from 'react-native';
 import Constants from 'expo-constants';
-import { canRegisterForRemotePush } from './canRegisterForRemotePush';
+import { canRegisterForRemotePush, canUseExpoNotificationsModule } from './canRegisterForRemotePush';
 import { ensureForegroundNotificationHandler } from './notificationHandler';
 import { registerDeviceToken } from './social';
 
 export { canRegisterForRemotePush } from './canRegisterForRemotePush';
 
 export async function registerForPushNotifications(): Promise<string | null> {
-  if (!canRegisterForRemotePush()) return null;
+  if (!canRegisterForRemotePush() || !canUseExpoNotificationsModule()) return null;
 
   try {
     ensureForegroundNotificationHandler();

@@ -94,7 +94,8 @@
           path.startsWith('/chat/') ||
           path === '/question' ||
           path === '/matches' ||
-          path === '/notifications'
+          path === '/notifications' ||
+          path === '/auth-callback'
         ) {
           return path;
         }
@@ -116,10 +117,15 @@
         broken.removeAttribute('id');
       } else {
         const schemePath = appPath.replace(/^\//, '');
-        const appUrl = 'catsordogs://' + schemePath;
-        const httpsUrl = window.location.origin + appPath;
+        const search = window.location.search || '';
+        const appUrl = 'catsordogs://' + schemePath + search;
+        const httpsUrl = window.location.origin + appPath + search;
         const androidIntent =
-          'intent://' + window.location.host + appPath + '#Intent;scheme=https;package=net.catsordogs.app;end';
+          'intent://' +
+          window.location.host +
+          appPath +
+          search +
+          '#Intent;scheme=https;package=net.catsordogs.app;end';
         const link = document.getElementById('open-app');
 
         if (appPath.startsWith('/chat/')) {
@@ -130,6 +136,10 @@
           document.getElementById('title').textContent = 'Profile';
           document.getElementById('lead').textContent =
             'Open Cats or Dogs? to view this profile and respond to a match request.';
+        } else if (appPath === '/auth-callback') {
+          document.getElementById('title').textContent = 'Confirm your email';
+          document.getElementById('lead').textContent =
+            'Open Cats or Dogs? to finish signing up or reset your password.';
         } else if (appPath === '/notifications') {
           if (pagePath === '/email-unsubscribed') {
             document.title = 'Unsubscribed | Cats or Dogs?';

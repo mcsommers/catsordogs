@@ -1,5 +1,19 @@
 import { createContext, useCallback, useContext, type RefObject } from 'react';
-import { Keyboard, Platform, type ScrollView, type View } from 'react-native';
+import { Keyboard, Platform } from 'react-native';
+
+type ScrollableRef = {
+  scrollTo: (options: { x?: number; y?: number; animated?: boolean }) => void;
+  scrollToEnd?: (options?: { animated?: boolean }) => void;
+};
+
+type MeasurableView = {
+  measureInWindow: (callback: (x: number, y: number, width: number, height: number) => void) => void;
+  measureLayout: (
+    relativeToNativeNode: MeasurableView,
+    onSuccess: (x: number, y: number, width: number, height: number) => void,
+    onFail?: () => void
+  ) => void;
+};
 
 const KEYBOARD_GAP = 20;
 
@@ -23,8 +37,8 @@ function ensureKeyboardTracking() {
 }
 
 type FormScrollValue = {
-  scrollRef: RefObject<ScrollView | null>;
-  contentRef: RefObject<View | null>;
+  scrollRef: RefObject<ScrollableRef | null>;
+  contentRef: RefObject<MeasurableView | null>;
 } | null;
 
 export const FormScrollContext = createContext<FormScrollValue>(null);
@@ -33,7 +47,7 @@ export function useFormScroll() {
   return useContext(FormScrollContext);
 }
 
-export function useScrollOnFieldFocus(fieldRef: RefObject<View | null>) {
+export function useScrollOnFieldFocus(fieldRef: RefObject<MeasurableView | null>) {
   const ctx = useFormScroll();
   return useCallback(() => {
     if (!ctx) return;
@@ -41,21 +55,21 @@ export function useScrollOnFieldFocus(fieldRef: RefObject<View | null>) {
   }, [ctx, fieldRef]);
 }
 
-export function scrollScreenToEnd(scrollRef: RefObject<ScrollView | null>) {
-  setTimeout(() => scrollRef.current?.scrollToEnd({ animated: true }), 120);
+export function scrollScreenToEnd(scrollRef: RefObject<ScrollableRef | null>) {
+  setTimeout(() => scrollRef.current?.scrollToEnd?.({ animated: true }), 120);
 }
 
 /** Keep scroll position after modal flows (e.g. image picker) that confuse keyboard insets on iOS. */
-export function restoreScrollY(scrollRef: RefObject<ScrollView | null>, y: number) {
+export function restoreScrollY(scrollRef: RefObject<ScrollableRef | null>, y: number) {
   Keyboard.dismiss();
   const delay = Platform.OS === 'ios' ? 80 : 0;
   setTimeout(() => scrollRef.current?.scrollTo({ y, animated: false }), delay);
 }
 
 function scrollFieldToVisible(
-  scroll: ScrollView,
-  content: View,
-  field: View,
+  scroll: ScrollableRef,
+  content: MeasurableView,
+  field: MeasurableView,
   keyboardTop: number | null,
   offsetTop: number
 ) {
@@ -80,9 +94,9 @@ function scrollFieldToVisible(
 
 /** Scroll so a field inside a `Screen scroll` stays above the keyboard. */
 export function scrollToFieldInScreen(
-  scrollRef: RefObject<ScrollView | null>,
-  contentRef: RefObject<View | null>,
-  fieldRef: RefObject<View | null>,
+  scrollRef: RefObject<ScrollableRef | null>,
+  contentRef: RefObject<MeasurableView | null>,
+  fieldRef: RefObject<MeasurableView | null>,
   offsetTop = FIELD_LABEL_VIEWPORT_TOP
 ) {
   ensureKeyboardTracking();
@@ -115,9 +129,9 @@ export function scrollToFieldInScreen(
 
 /** Use as `onFocus` on inputs inside a scrolling `Screen`. */
 export function fieldFocusScroll(
-  scrollRef: RefObject<ScrollView | null>,
-  contentRef: RefObject<View | null>,
-  fieldRef: RefObject<View | null>
+  scrollRef: RefObject<ScrollableRef | null>,
+  contentRef: RefObject<MeasurableView | null>,
+  fieldRef: RefObject<MeasurableView | null>
 ) {
   return () => scrollToFieldInScreen(scrollRef, contentRef, fieldRef);
 }

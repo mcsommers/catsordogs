@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { StyleSheet, View } from 'react-native';
+import { StyleSheet, Text, View } from 'react-native';
 import { router, useLocalSearchParams } from 'expo-router';
 import { MailCheck } from 'lucide-react-native';
 import { supabase } from '../lib/supabase';
@@ -20,6 +20,7 @@ export default function CheckEmail() {
     sent === '1' ? { text: 'Sent. Check your inbox.', tone: 'info' } : null
   );
   const [busy, setBusy] = useState(false);
+  const returnAddress = isSignup ? confirmationRedirect() : resetRedirect();
 
   function goBack() {
     if (isSignup) {
@@ -51,6 +52,12 @@ export default function CheckEmail() {
         title="Check your email"
         subtitle={`We sent a link to ${email || 'your email'}. Open it on this phone to continue. The link works once.`}
       />
+      {__DEV__ ? (
+        <Text style={styles.devReturn} selectable>
+          Dev only: return address for this session is {returnAddress}. In the email, confirm redirect_to matches
+          (exp:// in Expo Go, https://catsordogs.net/auth-callback in an installed build).
+        </Text>
+      ) : null}
       {!isSignup ? (
         <PrimaryButton label="Back to Log In" onPress={() => router.replace('/log-in')} />
       ) : null}
@@ -61,6 +68,12 @@ export default function CheckEmail() {
 }
 
 const styles = StyleSheet.create({
+  devReturn: {
+    ...ui.subtitle,
+    fontSize: 12,
+    lineHeight: 18,
+    opacity: 0.85,
+  },
   badge: {
     width: 72,
     height: 72,

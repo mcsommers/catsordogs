@@ -1,4 +1,4 @@
-import type { Router } from 'expo-router';
+import type { ImperativeRouter } from 'expo-router';
 
 type NotificationPayload = {
   kind?: string;
@@ -8,7 +8,10 @@ type NotificationPayload = {
 };
 
 /** Navigate after a push tap or a universal link (paths match notification email links). */
-export function navigateFromNotificationPayload(router: Router, raw: Record<string, unknown> | undefined): boolean {
+export function navigateFromNotificationPayload(
+  router: ImperativeRouter,
+  raw: Record<string, unknown> | undefined
+): boolean {
   if (!raw) return false;
   const data = raw as NotificationPayload;
   const kind = typeof data.kind === 'string' ? data.kind : undefined;

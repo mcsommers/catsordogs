@@ -7,7 +7,7 @@ import {
 import type { ProfilePhoto } from './profile';
 
 function photo(position: number): ProfilePhoto {
-  return { id: String(position), position, storage_path: `u/${position}.jpg`, url: `https://x/${position}` };
+  return { position, storage_path: `u/${position}.jpg`, url: `https://x/${position}` };
 }
 
 describe('profilePhotos', () => {

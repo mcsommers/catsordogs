@@ -3,6 +3,12 @@
 A record of questions asked while planning the phone app, the options offered,
 and Mike's answer. Newest phase first.
 
+## Android installed build: email confirmation stuck in Chrome (Mike, Oct 23, 2026)
+
+On an **installed Android build** (not Expo Go), tapping the sign-up link in Gmail could leave the user in Chrome on a Google-wrapped Supabase verify URL with `redirect_to=catsordogs://auth-callback`, with no handoff to the app. **iPhone Expo Go** was fine because it uses `exp://`.
+
+**Fix:** Installed builds pass `emailRedirectTo: https://catsordogs.net/auth-callback` (`mobile/src/lib/authRedirects.ts`). Expo Go forces `scheme: 'exp'` in `Linking.createURL` so confirmation mail uses `exp://…`, not `catsordogs://`. Check Your Email (02d) shows the return address in **dev** only so Mike can match it to `redirect_to` in the mail. Marketing site + app links: `website/functions/auth-callback.js`, `open-app.html`. **Staging Supabase** must allow **`https://catsordogs.net/auth-callback`**. Deploy the site, add the redirect URL on staging, ship a new installed build, then **resend** confirmation (old mail may still say `catsordogs://`).
+
 ## Following education in More options and follow confirm (Mike, Oct 21, 2026)
 
 Testers asked what following means. **06e** (and **06p** / **06k**): the **Follow** row has an **About following** pill on the right (not on **Unfollow**). Tapping it opens dialog **06eh** (info icon, explains private follow, not matching, nudge once per day, silent unfollow) with **OK**; the more-options sheet stays open. **06l** adds a second paragraph: **Following is not matching, and they do not need to follow you back.** Copy lives in `mobile/src/components/social/socialCopy.ts`.
@@ -49,9 +55,17 @@ On **02d** after Sign Up: remove **Back to Log In**; the header back arrow goes 
 
 **03e Interests:** Header search (with clear **x**) filters pills in real time. The search field is compact until focused, then expands across the remaining header width with padding from the **Interests** title. Selection count lives on **Done (N of 5)**. **Done** stays visible above the keyboard. At 5 picks, tapping another pill opens **Interest limit** / **You can only specify 5 interests.** / **OK**. Pencil: **03e Interests**, **03e Interests Search Focused**, **03e Interests Limit**.
 
-## Profile photo required hint above Finish / Save (Mike, Oct 21, 2026)
+## Profile photo required hint above Finish / Save (Mike, Oct 21, 2026; hint copy Oct 23, 2026)
 
-On **03** and **08d**, when there is no profile photo (position 1), bold red centered text **Profile photos are required** appears above **Finish Setup** or **Save Changes**. It hides as soon as a profile photo is present. Pencil: **03**, **08d** (no hint on **03a** when the avatar is filled).
+On **03** and **08d**, when there is no profile photo (position 1), bold red centered text **Profile photo is required** appears above **Finish Setup** or **Save Changes**. It hides as soon as a profile photo is present. Pencil: **03**, **08d** (no hint on **03a** when the avatar is filled).
+
+## Expo SDK 58 (Mike, Oct 23, 2026)
+
+**mobile/** upgraded from SDK 57 to **SDK 58** (React Native 0.88, React 19.3) so current App Store / Play **Expo Go** can open the project. Run `cd mobile && npm install` after pulling. `npx expo-doctor` should pass. React Native removed **InteractionManager**; push/deep-link navigation uses `requestIdleCallback` instead (`deferredNavigation.ts`). Custom tab bar on **(tabs)** uses SDK 58 `emitter` / `navigateToTab` (not `navigation.emit` / `navigation.navigate`). **expo-notifications** is not imported in Expo Go (Android crashes otherwise).
+
+## Build Profile profile photo placement (Mike, Oct 23, 2026)
+
+UAT showed people skipped the circular **Profile photo** at the top of **03**, filled text fields, then added images under **Additional photos** above **Finish Setup** instead of setting position 1. **03** now starts with **First Name**, **Birthday**, and **Gender**; **Profile photo** is the last section before **Finish Setup**, with no **Additional photos** on signup. **08d** is unchanged: avatar at the top and **Additional photos** above **Save Changes**. Subtitle on **03**: **Required: first name, birthday, and gender. Profile photo is required before you finish. Everything else is optional.** Finish-setup validation scroll order matches top-to-bottom field order (photo last).
 
 ## Build / Edit Profile field labels: City and School (Mike, Oct 21, 2026)
 
@@ -184,7 +198,7 @@ Answer: **One profile photo (avatar)** plus **at most 6 gallery photos**, displa
 
 #### Build / Edit Profile photo entry (03 / 08d, Oct 2026)
 
-On **Build Profile** and **Edit Profile**, photo entry is split: a required **Profile photo** (circular avatar, position 1) at the top, and optional **Additional photos** (2×3 grid for gallery positions 2–7) above the primary button. Viewing profiles (**06j**, **08**) shows the avatar in the hero and **only gallery photos** in the grid.
+On **Build Profile**, only the required **Profile photo** (circular avatar, position 1) appears, immediately above **Finish Setup**. On **Edit Profile**, photo entry is split: **Profile photo** at the top and optional **Additional photos** (2×3 grid for gallery positions 2–7) above **Save Changes**. Viewing profiles (**06j**, **08**) shows the avatar in the hero and **only gallery photos** in the grid.
 
 #### Gender on Build / Edit Profile (03 / 03d / 08d, Oct 2026)
 

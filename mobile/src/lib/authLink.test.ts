@@ -7,6 +7,11 @@ describe('reading sign-in links', () => {
     expect(link.next).toBeNull();
   });
 
+  it('reads the code from the HTTPS app-link callback (installed build)', () => {
+    const link = parseAuthLink('https://catsordogs.net/auth-callback?code=abc123');
+    expect(link.code).toBe('abc123');
+  });
+
   it('knows a password reset link (Expo Go address)', () => {
     const link = parseAuthLink('exp://192.168.1.20:8081/--/auth-callback?next=reset&code=xyz');
     expect(link).toMatchObject({ code: 'xyz', next: 'reset' });

@@ -32,7 +32,7 @@ describe('formatAppVersionLabel', () => {
   });
 
   it('omits the build number in Expo Go', () => {
-    constants.expoVersion = '57.0.0';
+    constants.expoVersion = '58.0.0';
     constants.appOwnership = 'expo';
     application.nativeBuildVersion = '1017700';
     expect(formatAppVersionLabel()).toBe('Version 1.0.0');

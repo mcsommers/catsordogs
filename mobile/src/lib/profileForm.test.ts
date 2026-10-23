@@ -45,9 +45,17 @@ describe('Finish Setup validation order', () => {
   it('scrolls to the first missing required field', () => {
     expect(
       firstProfileFinishIssue({ photoCount: 0, firstName: '', birthday: null, gender: null, heightFeet: '', heightInches: '' })?.field
-    ).toBe(
-      'photos'
-    );
+    ).toBe('first_name');
+    expect(
+      firstProfileFinishIssue({
+        photoCount: 0,
+        firstName: 'Alex',
+        birthday: '2000-01-01',
+        gender: 'Woman',
+        heightFeet: '',
+        heightInches: '',
+      })?.field
+    ).toBe('photos');
     expect(
       firstProfileFinishIssue({
         photoCount: 1,

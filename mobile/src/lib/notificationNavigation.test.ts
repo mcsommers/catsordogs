@@ -2,7 +2,7 @@ import { navigateFromNotificationPayload } from './notificationNavigation';
 
 describe('navigateFromNotificationPayload', () => {
   const push = jest.fn();
-  const router = { push } as unknown as import('expo-router').Router;
+  const router = { push } as unknown as import('expo-router').ImperativeRouter;
 
   beforeEach(() => push.mockClear());
 
