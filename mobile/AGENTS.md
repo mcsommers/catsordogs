@@ -23,6 +23,10 @@ npx expo install --fix      # fix incompatible package versions
 
 Run lint and typecheck before declaring any task done.
 
+## npm audit (mobile)
+
+`npm audit` in `mobile/` often reports several **high** findings (commonly five) for `node-forge` and `zod` inside **Expo's bundled `@expo/cli`**, not app runtime code. This is normal for Expo SDK 58. Do **not** run `npm audit fix --force` (it can downgrade Expo). Do not add overrides or force-upgrades to "clear" audit unless Mike explicitly asks and you have verified compatibility with the current SDK.
+
 ## Navigation & Routing
 
 - Use **Expo Router** for all navigation. Routes live in `src/app/` — every file there is a screen, `_layout.tsx` files define navigators. Keep non-route code (components, hooks, utils) outside `src/app/`.

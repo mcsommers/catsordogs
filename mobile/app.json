@@ -23,6 +23,7 @@
     },
     "android": {
       "package": "net.catsordogs.app",
+      "backgroundColor": "#0B0B0C",
       "softwareKeyboardLayoutMode": "resize",
       "adaptiveIcon": {
         "backgroundColor": "#0B0B0C",
