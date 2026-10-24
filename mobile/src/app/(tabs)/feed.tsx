@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react';
 import {
   FlatList,
   Platform,
@@ -89,6 +89,8 @@ export default function Feed() {
   const flatRef = useRef<FlatList<FeedItem>>(null);
   /** After pull-to-refresh clears a browse `date` param, skip the duplicate load from the param change. */
   const skipFeedDateEffectRef = useRef(false);
+  /** `date` query from Question History; used so empty state is spinner until that day finishes loading. */
+  const loadedBrowseDateRef = useRef<string | null | undefined>(undefined);
 
   const listRows = useMemo((): FeedItem[] => {
     if (items.length === 0) return [];
@@ -240,6 +242,7 @@ export default function Feed() {
       if (epoch === feedLoadEpochRef.current) {
         loadingFeedRef.current = false;
         setLoadingFeed(false);
+        loadedBrowseDateRef.current = dateFilter;
       }
     }
   }, [gate, feedDate]);
@@ -264,6 +267,19 @@ export default function Feed() {
       setFeedRefreshing(false);
     }
   }, [refreshTodayFeed]);
+
+  /** Question History passes `date`; clear stale list before paint so Android does not flash the caught-up empty state. */
+  useLayoutEffect(() => {
+    if (!feedDate) return;
+    loadedBrowseDateRef.current = undefined;
+    setLoadingFeed(true);
+    setFeedFailed(false);
+    setItems([]);
+    setTotalCount(0);
+    setActiveIndex(0);
+    setPlaybackUrl(null);
+    flatRef.current?.scrollToOffset({ offset: 0, animated: false });
+  }, [feedDate]);
 
   useEffect(() => {
     if (skipFeedDateEffectRef.current) {
@@ -502,6 +518,9 @@ export default function Feed() {
   }
 
   if (!loadingFeed && items.length === 0) {
+    if (feedDate && loadedBrowseDateRef.current !== feedDate) {
+      return <CenteredSpinner dark />;
+    }
     return (
       <Screen dark edges={['top']}>
         <FeedEndScreen
