@@ -27,6 +27,8 @@ cd mobile && npm install # installs the app's dependencies
 cp mobile/.env.example mobile/.env   # then fill in the values (see below)
 ```
 
+After `cd mobile && npm install`, npm may report **high severity vulnerabilities** (often five, all in the same dependency chain). That is **expected** for this Expo SDK: they live in **Expo's CLI / build tooling** (`node-forge`, `zod` under `@expo/cli`), not in code that runs on users' phones in production. You do **not** need to fix them for everyday development. **Do not run `npm audit fix --force` in `mobile/`**; npm may try to install an older Expo SDK and break the app. A normal `npm audit fix` (without `--force`) is safe but usually does not clear these; they go away when a future Expo SDK bumps those packages. The **repo root** `npm install` is separate and typically reports zero vulnerabilities.
+
 ## Everyday commands
 
 Run from the project root unless noted.
@@ -147,6 +149,7 @@ If one doesn't arrive, check spam.
 | Record on iOS looks dead (button stuck on "Starting…") | Reload the app. A failed upload should show the red error above the button; if it does not, shake and **Reload**, then try again after upload errors are fixed (see row above). |
 | **expo-notifications** error on Android in Expo Go | Expected: **remote push is not supported in Expo Go** (SDK 53+). The app skips push registration in Expo Go so you can keep testing everything else. To test real push (UAT **D-33**), use a **development build** ([Expo docs](https://docs.expo.dev/develop/development-builds/introduction/)). |
 | **"Recording limit reached"** right after midnight or on your first try today | The limit is per **daily question**, not per clock tick. Failed starts and re-records without submitting all count. Ask the agent to check your account on staging, or wait for the next question. Also confirm the app has synced your time zone (open the app while online); until it does, "today" follows **UTC** (for US Eastern, that flips at 8 PM, not local midnight). |
+| **`npm audit` shows 5 high severity vulnerabilities** after `cd mobile && npm install` | Expected Expo tooling noise (see the note under **One-time setup**). Ignore for UAT unless Expo ships an SDK update that clears them. Never run `npm audit fix --force` in `mobile/`. |
 
 On **Profile**, your sign-in **email** is shown above **Log Out** so you can tell staging test accounts apart.
 

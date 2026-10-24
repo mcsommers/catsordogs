@@ -1,6 +1,9 @@
-import { useEffect, type ReactNode } from 'react';
+import { useEffect, useMemo, type ReactNode } from 'react';
+import { Platform, View } from 'react-native';
+import { ThemeProvider, DefaultTheme } from '@react-navigation/native';
 import { Stack, useRouter, useSegments } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
+import * as SystemUI from 'expo-system-ui';
 import * as SplashScreen from 'expo-splash-screen';
 import { useFonts, Anton_400Regular } from '@expo-google-fonts/anton';
 import { FunnelSans_400Regular, FunnelSans_600SemiBold, FunnelSans_700Bold } from '@expo-google-fonts/funnel-sans';
@@ -33,25 +36,8 @@ export default function RootLayout() {
         <MatchesAlertProvider>
         <ConfirmationProvider>
         <PushAndLinks />
-        <StatusBar style="auto" />
         <SignedOutGuard>
-          <Stack screenOptions={{ headerShown: false, contentStyle: { backgroundColor: colors.bg } }}>
-            <Stack.Screen name="question" options={{ gestureEnabled: false, contentStyle: { backgroundColor: colors.bgDark } }} />
-            <Stack.Screen name="review" options={{ gestureEnabled: false, contentStyle: { backgroundColor: colors.bgDark } }} />
-            <Stack.Screen name="(tabs)" options={{ gestureEnabled: false }} />
-            <Stack.Screen name="browse-questions" options={{ contentStyle: { backgroundColor: colors.bgDark } }} />
-            <Stack.Screen name="my-answers" options={{ contentStyle: { backgroundColor: colors.bgDark } }} />
-            <Stack.Screen name="user/[id]" options={{ contentStyle: { backgroundColor: colors.bgDark } }} />
-            <Stack.Screen name="user/[id]/photos" options={{ contentStyle: { backgroundColor: colors.bgDark } }} />
-            <Stack.Screen name="answer/[answerId]" options={{ contentStyle: { backgroundColor: colors.bgDark }, gestureEnabled: true }} />
-            <Stack.Screen name="feed-settings" options={{ contentStyle: { backgroundColor: colors.bgDark } }} />
-            <Stack.Screen name="edit-profile" options={{ contentStyle: { backgroundColor: colors.bg } }} />
-            <Stack.Screen name="notifications" options={{ contentStyle: { backgroundColor: colors.bgDark } }} />
-            <Stack.Screen name="privacy-safety" options={{ contentStyle: { backgroundColor: colors.bgDark } }} />
-            <Stack.Screen name="blocked-list" options={{ contentStyle: { backgroundColor: colors.bgDark } }} />
-            <Stack.Screen name="people-i-follow" options={{ contentStyle: { backgroundColor: colors.bgDark } }} />
-            <Stack.Screen name="chat/[matchId]" options={{ contentStyle: { backgroundColor: colors.bgDark } }} />
-          </Stack>
+          <RootNavigator />
         </SignedOutGuard>
         </ConfirmationProvider>
         </MatchesAlertProvider>
@@ -63,6 +49,76 @@ export default function RootLayout() {
 function PushAndLinks() {
   usePushAndNotificationLinks();
   return null;
+}
+
+/** Signed-in flows use dark shell colors so Android stack transitions do not flash cream (#FFF8F2). */
+function RootNavigator() {
+  const { session } = useSession();
+  const signedIn = !!session;
+  const shellBg = signedIn ? colors.bgDark : colors.bg;
+
+  const navigationTheme = useMemo(
+    () => ({
+      ...DefaultTheme,
+      dark: signedIn,
+      colors: {
+        ...DefaultTheme.colors,
+        background: shellBg,
+        card: shellBg,
+      },
+    }),
+    [shellBg, signedIn],
+  );
+
+  useEffect(() => {
+    void SystemUI.setBackgroundColorAsync(shellBg);
+  }, [shellBg]);
+
+  const androidSignedInStack = Platform.OS === 'android' && signedIn
+    ? {
+        detachInactiveScreens: false,
+        navigationBarColor: colors.bgDark,
+        statusBarBackgroundColor: colors.bgDark,
+      }
+    : Platform.OS === 'android'
+      ? { detachInactiveScreens: false }
+      : null;
+
+  const browseQuestionsOptions = {
+    contentStyle: { backgroundColor: colors.bgDark },
+    ...(Platform.OS === 'android' ? { animation: 'fade' as const } : null),
+  };
+
+  return (
+    <ThemeProvider value={navigationTheme}>
+      <View style={{ flex: 1, backgroundColor: shellBg }}>
+        <StatusBar style={signedIn ? 'light' : 'auto'} />
+        <Stack
+          screenOptions={{
+            headerShown: false,
+            contentStyle: { backgroundColor: shellBg },
+            ...androidSignedInStack,
+          }}
+        >
+          <Stack.Screen name="question" options={{ gestureEnabled: false, contentStyle: { backgroundColor: colors.bgDark } }} />
+          <Stack.Screen name="review" options={{ gestureEnabled: false, contentStyle: { backgroundColor: colors.bgDark } }} />
+          <Stack.Screen name="(tabs)" options={{ gestureEnabled: false, contentStyle: { backgroundColor: colors.bgDark } }} />
+          <Stack.Screen name="browse-questions" options={browseQuestionsOptions} />
+          <Stack.Screen name="my-answers" options={{ contentStyle: { backgroundColor: colors.bgDark } }} />
+          <Stack.Screen name="user/[id]" options={{ contentStyle: { backgroundColor: colors.bgDark } }} />
+          <Stack.Screen name="user/[id]/photos" options={{ contentStyle: { backgroundColor: colors.bgDark } }} />
+          <Stack.Screen name="answer/[answerId]" options={{ contentStyle: { backgroundColor: colors.bgDark }, gestureEnabled: true }} />
+          <Stack.Screen name="feed-settings" options={{ contentStyle: { backgroundColor: colors.bgDark } }} />
+          <Stack.Screen name="edit-profile" options={{ contentStyle: { backgroundColor: colors.bg } }} />
+          <Stack.Screen name="notifications" options={{ contentStyle: { backgroundColor: colors.bgDark } }} />
+          <Stack.Screen name="privacy-safety" options={{ contentStyle: { backgroundColor: colors.bgDark } }} />
+          <Stack.Screen name="blocked-list" options={{ contentStyle: { backgroundColor: colors.bgDark } }} />
+          <Stack.Screen name="people-i-follow" options={{ contentStyle: { backgroundColor: colors.bgDark } }} />
+          <Stack.Screen name="chat/[matchId]" options={{ contentStyle: { backgroundColor: colors.bgDark } }} />
+        </Stack>
+      </View>
+    </ThemeProvider>
+  );
 }
 
 /** If a signed-out person lands on a signed-in screen (common on Android QR scans), send them to Welcome once. */

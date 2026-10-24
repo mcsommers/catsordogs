@@ -421,7 +421,7 @@ export default function Feed() {
             onToggleMute={() => setMuted((m) => !m)}
             onOpenProfile={() => router.push({ pathname: '/user/[id]', params: { id: item.userId } })}
             onBrowse={() => router.push('/browse-questions')}
-            onSearchQuestions={() => router.push({ pathname: '/browse-questions', params: { focusSearch: '1' } })}
+            onSearchQuestions={() => router.push('/browse-questions')}
             onFeedSettings={openFeedSettings}
             onMoreOptions={social.openMenu}
             onHeart={social.onHeartPress}
@@ -446,7 +446,9 @@ export default function Feed() {
     ]
   );
 
-  const showVideo = isFocused && !!session && !!playbackUrl && gate?.state === 'open';
+  // Keep the player view mounted while another stack screen covers the feed. Tearing down
+  // VideoView on blur remounts Android TextureView and flashes on pop; playback still pauses via isFocusedForPlayback.
+  const showVideo = !!session && !!playbackUrl && gate?.state === 'open';
 
   if (sessionLoading || !session) return <CenteredSpinner dark />;
 
