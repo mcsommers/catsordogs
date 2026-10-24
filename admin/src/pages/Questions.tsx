@@ -23,7 +23,7 @@ export default function Questions() {
   const [error, setError] = useState<string | null>(null);
   const [drafts, setDrafts] = useState<Record<string, string>>({});
   const [editingId, setEditingId] = useState<string | null>(null);
-  const [aheadDate, setAheadDate] = useState(addUtcDays(today, WINDOW_DAYS));
+  const [aheadDate, setAheadDate] = useState(tomorrow);
   const [aheadText, setAheadText] = useState('');
   const [confirmSwap, setConfirmSwap] = useState<Question | null>(null);
   const [search, setSearch] = useState('');
@@ -42,7 +42,9 @@ export default function Questions() {
       setError(q.error?.message ?? o.error?.message ?? c.error?.message ?? 'Could not load the calendar.');
       return;
     }
-    setQuestions(q.data ?? []);
+    const loaded = q.data ?? [];
+    setQuestions(loaded);
+    setAheadDate(firstDateWithoutQuestion(addUtcDays(localToday(), 1), loaded));
     setOverrides(o.data ?? []);
     const next: Record<string, number> = {};
     for (const row of (c.data ?? []) as AnswerCount[]) next[row.question_id] = Number(row.answer_count);
@@ -403,6 +405,14 @@ function answerCount(row: DayRow, counts: Record<string, number>): number {
 
 function answeredLabel(count: number): string {
   return count === 1 ? '1 person answered' : `${count} people answered`;
+}
+
+/** First calendar day from start onward with no question row (start is usually tomorrow). */
+function firstDateWithoutQuestion(start: string, questions: Question[]): string {
+  const taken = new Set(questions.map((q) => q.question_date));
+  let date = start;
+  while (taken.has(date)) date = addUtcDays(date, 1);
+  return date;
 }
 
 function emptyMessage(showPast: boolean, query: string, pastCount: number): string {
