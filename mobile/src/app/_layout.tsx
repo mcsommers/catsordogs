@@ -74,15 +74,17 @@ function RootNavigator() {
     void SystemUI.setBackgroundColorAsync(shellBg);
   }, [shellBg]);
 
-  const androidSignedInStack = Platform.OS === 'android' && signedIn
-    ? {
-        detachInactiveScreens: false,
-        navigationBarColor: colors.bgDark,
-        statusBarBackgroundColor: colors.bgDark,
-      }
-    : Platform.OS === 'android'
-      ? { detachInactiveScreens: false }
-      : null;
+  const signedInStackKeepMounted = signedIn ? { detachInactiveScreens: false } : null;
+  const androidSignedInStack =
+    Platform.OS === 'android' && signedIn
+      ? {
+          ...signedInStackKeepMounted,
+          navigationBarColor: colors.bgDark,
+          statusBarBackgroundColor: colors.bgDark,
+        }
+      : Platform.OS === 'android'
+        ? { detachInactiveScreens: false }
+        : signedInStackKeepMounted;
 
   const browseQuestionsOptions = {
     contentStyle: { backgroundColor: colors.bgDark },
