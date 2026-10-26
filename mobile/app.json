@@ -9,6 +9,7 @@
     "userInterfaceStyle": "light",
     "ios": {
       "bundleIdentifier": "net.catsordogs.app",
+      "deploymentTarget": "17.0",
       "supportsTablet": false,
       "associatedDomains": [
         "applinks:catsordogs.net"
@@ -128,8 +129,7 @@
         {
           "enableBackgroundRemoteNotifications": true
         }
-      ],
-      "react-native-quick-crypto"
+      ]
     ],
     "extra": {
       "router": {},
