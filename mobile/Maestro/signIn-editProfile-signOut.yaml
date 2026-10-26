@@ -1,0 +1,41 @@
+appId: host.exp.Exponent
+---
+- tapOn: "Log In"
+- tapOn:
+    text: "Email"
+    index: 1
+- inputText: "catsordogsapp+avery@gmail.com"
+- tapOn:
+    text: "Password"
+    index: 1
+- inputText: "aaaaaaaa"
+- tapOn: "done"
+- tapOn: "Profile"
+- scrollUntilVisible:
+    element: "Edit Profile"
+- tapOn: "Edit Profile"
+- scrollUntilVisible:
+    element:
+      text: "Feet"
+      index: 1
+- tapOn:
+    text: "Feet"
+    index: 1
+- tapOn: "Delete"
+- inputText: "5"
+- tapOn:
+    text: "Inches"
+    index: 1
+- tapOn: "Delete"
+- inputText: "4"
+- tapOn: "City"
+- scrollUntilVisible:
+    element: "Save Changes"
+- tapOn: "Save Changes"
+- scrollUntilVisible:
+    element: "Log Out"
+- tapOn: "Log Out"
+
+
+
+

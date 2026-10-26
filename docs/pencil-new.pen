@@ -42,7 +42,7 @@
       "id": "NmLPi",
       "x": -622,
       "y": 66,
-      "fill": "#CCCCCC",
+      "fill": "#141414",
       "width": 9616,
       "height": 3392
     },
@@ -1178,100 +1178,9 @@
                   "fill": "$text-secondary",
                   "textGrowth": "fixed-width",
                   "width": "fill_container",
-                  "content": "Required: profile photo, first name, birthday, and gender. Everything else is optional.",
+                  "content": "Required: first name, birthday, and gender. Profile photo is required before you finish. Everything else is optional.",
                   "fontFamily": "$font-body",
                   "fontSize": 15,
-                  "fontWeight": "normal"
-                }
-              ]
-            },
-            {
-              "type": "frame",
-              "id": "jGqp2",
-              "name": "Profile Photo Header",
-              "width": "fill_container",
-              "justifyContent": "space_between",
-              "alignItems": "center",
-              "children": [
-                {
-                  "type": "text",
-                  "id": "xhcQp",
-                  "name": "Title",
-                  "fill": "$text-primary",
-                  "content": "Profile photo",
-                  "fontFamily": "$font-heading",
-                  "fontSize": 18,
-                  "fontWeight": "normal"
-                },
-                {
-                  "type": "frame",
-                  "id": "i0GZv",
-                  "name": "Required Tag",
-                  "fill": "#FF6B3526",
-                  "cornerRadius": 9999,
-                  "padding": [
-                    4,
-                    10
-                  ],
-                  "children": [
-                    {
-                      "type": "text",
-                      "id": "RmuzF",
-                      "name": "Label",
-                      "fill": "$accent-dog",
-                      "content": "Required",
-                      "fontFamily": "$font-body",
-                      "fontSize": 11,
-                      "fontWeight": "700",
-                      "letterSpacing": 0.3
-                    }
-                  ]
-                }
-              ]
-            },
-            {
-              "type": "frame",
-              "id": "spZvn",
-              "name": "Profile Avatar Wrap",
-              "width": "fill_container",
-              "layout": "vertical",
-              "gap": 8,
-              "alignItems": "center",
-              "children": [
-                {
-                  "type": "frame",
-                  "id": "JiK09",
-                  "name": "Avatar Tile",
-                  "width": 120,
-                  "height": 120,
-                  "fill": "$accent-dog-tint",
-                  "cornerRadius": 60,
-                  "justifyContent": "center",
-                  "alignItems": "center",
-                  "children": [
-                    {
-                      "type": "icon",
-                      "id": "wf2cb",
-                      "name": "Icon",
-                      "width": 28,
-                      "height": 28,
-                      "icon": "image-plus",
-                      "library": "lucide",
-                      "fill": "$accent-dog"
-                    }
-                  ]
-                },
-                {
-                  "type": "text",
-                  "id": "fsKOV",
-                  "name": "Avatar Helper",
-                  "fill": "$text-secondary",
-                  "textGrowth": "fixed-width",
-                  "width": "fill_container",
-                  "content": "Used as your avatar in matches, chats, and lists.",
-                  "textAlign": "center",
-                  "fontFamily": "$font-body",
-                  "fontSize": 12,
                   "fontWeight": "normal"
                 }
               ]
@@ -2982,229 +2891,92 @@
             },
             {
               "type": "frame",
-              "id": "osbt0",
-              "name": "More Photos Section",
+              "id": "jGqp2",
+              "name": "Profile Photo Header",
               "width": "fill_container",
-              "layout": "vertical",
-              "gap": 12,
+              "justifyContent": "space_between",
+              "alignItems": "center",
               "children": [
                 {
+                  "type": "text",
+                  "id": "xhcQp",
+                  "name": "Title",
+                  "fill": "$text-primary",
+                  "content": "Profile photo",
+                  "fontFamily": "$font-heading",
+                  "fontSize": 18,
+                  "fontWeight": "normal"
+                },
+                {
                   "type": "frame",
-                  "id": "ROBfk",
-                  "name": "Section Header",
-                  "width": "fill_container",
-                  "justifyContent": "space_between",
-                  "alignItems": "center",
+                  "id": "i0GZv",
+                  "name": "Required Tag",
+                  "fill": "#FF6B3526",
+                  "cornerRadius": 9999,
+                  "padding": [
+                    4,
+                    10
+                  ],
                   "children": [
                     {
                       "type": "text",
-                      "id": "QfsDr",
-                      "name": "Title",
-                      "fill": "$text-primary",
-                      "content": "Additional photos",
-                      "fontFamily": "$font-heading",
-                      "fontSize": 18,
-                      "fontWeight": "normal"
-                    },
-                    {
-                      "type": "text",
-                      "id": "GXghM",
-                      "name": "Optional Tag",
-                      "fill": "$text-secondary",
-                      "content": "Optional",
+                      "id": "RmuzF",
+                      "name": "Label",
+                      "fill": "$accent-dog",
+                      "content": "Required",
                       "fontFamily": "$font-body",
-                      "fontSize": 12,
-                      "fontWeight": "600"
+                      "fontSize": 11,
+                      "fontWeight": "700",
+                      "letterSpacing": 0.3
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "spZvn",
+              "name": "Profile Avatar Wrap",
+              "width": "fill_container",
+              "layout": "vertical",
+              "gap": 8,
+              "alignItems": "center",
+              "children": [
+                {
+                  "type": "frame",
+                  "id": "JiK09",
+                  "name": "Avatar Tile",
+                  "width": 120,
+                  "height": 120,
+                  "fill": "$accent-dog-tint",
+                  "cornerRadius": 60,
+                  "justifyContent": "center",
+                  "alignItems": "center",
+                  "children": [
+                    {
+                      "type": "icon",
+                      "id": "wf2cb",
+                      "name": "Icon",
+                      "width": 28,
+                      "height": 28,
+                      "icon": "image-plus",
+                      "library": "lucide",
+                      "fill": "$accent-dog"
                     }
                   ]
                 },
                 {
                   "type": "text",
-                  "id": "rkyuS",
-                  "name": "Helper",
+                  "id": "fsKOV",
+                  "name": "Avatar Helper",
                   "fill": "$text-secondary",
-                  "content": "Up to 6 more. Shown on your profile grid (not your profile photo).",
+                  "textGrowth": "fixed-width",
+                  "width": "fill_container",
+                  "content": "Used as your avatar in matches, chats, and lists.",
+                  "textAlign": "center",
                   "fontFamily": "$font-body",
                   "fontSize": 12,
                   "fontWeight": "normal"
-                },
-                {
-                  "type": "frame",
-                  "id": "YZTJH",
-                  "name": "Photo Grid",
-                  "width": "fill_container",
-                  "layout": "vertical",
-                  "gap": 10,
-                  "children": [
-                    {
-                      "type": "frame",
-                      "id": "I7kV5A",
-                      "name": "Row 1",
-                      "width": "fill_container",
-                      "gap": 10,
-                      "children": [
-                        {
-                          "type": "frame",
-                          "id": "e08aj",
-                          "name": "Tile 1",
-                          "width": "fill_container",
-                          "height": 112,
-                          "fill": "$surface",
-                          "cornerRadius": 16,
-                          "stroke": "$border-subtle",
-                          "strokeWidth": 1.5,
-                          "justifyContent": "center",
-                          "alignItems": "center",
-                          "children": [
-                            {
-                              "type": "icon",
-                              "id": "M89UQH",
-                              "name": "Icon",
-                              "width": 22,
-                              "height": 22,
-                              "icon": "plus",
-                              "library": "lucide",
-                              "fill": "$text-secondary"
-                            }
-                          ]
-                        },
-                        {
-                          "type": "frame",
-                          "id": "tndww",
-                          "name": "Tile 2",
-                          "width": "fill_container",
-                          "height": 112,
-                          "fill": "$surface",
-                          "cornerRadius": 16,
-                          "stroke": "$border-subtle",
-                          "strokeWidth": 1.5,
-                          "justifyContent": "center",
-                          "alignItems": "center",
-                          "children": [
-                            {
-                              "type": "icon",
-                              "id": "BxB9l",
-                              "name": "Icon",
-                              "width": 22,
-                              "height": 22,
-                              "icon": "plus",
-                              "library": "lucide",
-                              "fill": "$text-secondary"
-                            }
-                          ]
-                        },
-                        {
-                          "type": "frame",
-                          "id": "wDWGz",
-                          "name": "Tile 3",
-                          "width": "fill_container",
-                          "height": 112,
-                          "fill": "$surface",
-                          "cornerRadius": 16,
-                          "stroke": "$border-subtle",
-                          "strokeWidth": 1.5,
-                          "justifyContent": "center",
-                          "alignItems": "center",
-                          "children": [
-                            {
-                              "type": "icon",
-                              "id": "skWhq",
-                              "name": "Icon",
-                              "width": 22,
-                              "height": 22,
-                              "icon": "plus",
-                              "library": "lucide",
-                              "fill": "$text-secondary"
-                            }
-                          ]
-                        }
-                      ]
-                    },
-                    {
-                      "type": "frame",
-                      "id": "anEnL",
-                      "name": "Row 2",
-                      "width": "fill_container",
-                      "gap": 10,
-                      "children": [
-                        {
-                          "type": "frame",
-                          "id": "HYhSF",
-                          "name": "Tile 4",
-                          "width": "fill_container",
-                          "height": 112,
-                          "fill": "$surface",
-                          "cornerRadius": 16,
-                          "stroke": "$border-subtle",
-                          "strokeWidth": 1.5,
-                          "justifyContent": "center",
-                          "alignItems": "center",
-                          "children": [
-                            {
-                              "type": "icon",
-                              "id": "F6RuX",
-                              "name": "Icon",
-                              "width": 22,
-                              "height": 22,
-                              "icon": "plus",
-                              "library": "lucide",
-                              "fill": "$text-secondary"
-                            }
-                          ]
-                        },
-                        {
-                          "type": "frame",
-                          "id": "CDKec",
-                          "name": "Tile 5",
-                          "width": "fill_container",
-                          "height": 112,
-                          "fill": "$surface",
-                          "cornerRadius": 16,
-                          "stroke": "$border-subtle",
-                          "strokeWidth": 1.5,
-                          "justifyContent": "center",
-                          "alignItems": "center",
-                          "children": [
-                            {
-                              "type": "icon",
-                              "id": "p1VfI",
-                              "name": "Icon",
-                              "width": 22,
-                              "height": 22,
-                              "icon": "plus",
-                              "library": "lucide",
-                              "fill": "$text-secondary"
-                            }
-                          ]
-                        },
-                        {
-                          "type": "frame",
-                          "id": "tmGgp",
-                          "name": "Tile 6",
-                          "width": "fill_container",
-                          "height": 112,
-                          "fill": "$surface",
-                          "cornerRadius": 16,
-                          "stroke": "$border-subtle",
-                          "strokeWidth": 1.5,
-                          "justifyContent": "center",
-                          "alignItems": "center",
-                          "children": [
-                            {
-                              "type": "icon",
-                              "id": "fjqmZ",
-                              "name": "Icon",
-                              "width": 22,
-                              "height": 22,
-                              "icon": "plus",
-                              "library": "lucide",
-                              "fill": "$text-secondary"
-                            }
-                          ]
-                        }
-                      ]
-                    }
-                  ]
                 }
               ]
             },
@@ -3224,7 +2996,7 @@
                   "fill": "#C93636",
                   "textGrowth": "fixed-width",
                   "width": "fill_container",
-                  "content": "Profile photos are required",
+                  "content": "Profile photo is required",
                   "textAlign": "center",
                   "fontFamily": "$font-body",
                   "fontSize": 13,
@@ -33660,7 +33432,7 @@
                   "fill": "#C93636",
                   "textGrowth": "fixed-width",
                   "width": "fill_container",
-                  "content": "Profile photos are required",
+                  "content": "Profile photo is required",
                   "textAlign": "center",
                   "fontFamily": "$font-body",
                   "fontSize": 13,

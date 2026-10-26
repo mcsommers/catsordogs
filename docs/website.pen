@@ -3854,6 +3854,164 @@
           ]
         }
       ]
+    },
+    {
+      "type": "frame",
+      "id": "CpEBN",
+      "x": 4065,
+      "y": 0,
+      "name": "Support — Desktop",
+      "clip": true,
+      "width": 1440,
+      "height": 900,
+      "fill": "#0B0B0F",
+      "layout": "vertical",
+      "gap": 24,
+      "padding": 80,
+      "children": [
+        {
+          "type": "text",
+          "id": "hGJzO",
+          "name": "Support title",
+          "fill": "#F5F5F5",
+          "content": "Support",
+          "fontFamily": "Anton",
+          "fontSize": 56,
+          "fontWeight": "normal"
+        },
+        {
+          "type": "text",
+          "id": "zZsb5",
+          "name": "Support intro",
+          "fill": "#A1A1AA",
+          "textGrowth": "fixed-width",
+          "width": 720,
+          "content": "Have a question? Send us a message and we will get back to you.",
+          "fontFamily": "Funnel Sans",
+          "fontSize": 18,
+          "fontWeight": "normal"
+        },
+        {
+          "type": "frame",
+          "id": "oJ1AX",
+          "name": "Support form",
+          "width": 480,
+          "layout": "vertical",
+          "gap": 12,
+          "children": [
+            {
+              "type": "text",
+              "id": "ZfIKn",
+              "name": "Email label",
+              "fill": "#F5F5F5",
+              "content": "Your email",
+              "fontFamily": "Funnel Sans",
+              "fontSize": 14,
+              "fontWeight": "normal"
+            },
+            {
+              "type": "frame",
+              "id": "ZMOI2",
+              "name": "Email field",
+              "width": "fill_container",
+              "height": 48,
+              "fill": "#16161D",
+              "cornerRadius": 8
+            },
+            {
+              "type": "text",
+              "id": "YOOYj",
+              "name": "Question label",
+              "fill": "#F5F5F5",
+              "content": "Your question",
+              "fontFamily": "Funnel Sans",
+              "fontSize": 14,
+              "fontWeight": "normal"
+            },
+            {
+              "type": "frame",
+              "id": "mfz2J",
+              "name": "Question field",
+              "width": "fill_container",
+              "height": 160,
+              "fill": "#16161D",
+              "cornerRadius": 8
+            },
+            {
+              "type": "frame",
+              "id": "ZjXpi",
+              "name": "Send message button",
+              "fill": "#E8772E",
+              "cornerRadius": 8,
+              "padding": [
+                12,
+                24
+              ],
+              "children": [
+                {
+                  "type": "text",
+                  "id": "ZvBWc",
+                  "name": "Send message label",
+                  "fill": "#0B0B0F",
+                  "content": "Send message",
+                  "fontFamily": "Funnel Sans",
+                  "fontSize": 16,
+                  "fontWeight": "normal"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "frame",
+          "id": "Jf95N",
+          "name": "Support footer links",
+          "width": "fill_container",
+          "gap": 24,
+          "children": [
+            {
+              "type": "text",
+              "id": "EslTc",
+              "name": "Footer Support",
+              "fill": "#A1A1AA",
+              "content": "Support",
+              "fontFamily": "Funnel Sans",
+              "fontSize": 14,
+              "fontWeight": "normal"
+            },
+            {
+              "type": "text",
+              "id": "U2ymc",
+              "name": "Footer Privacy",
+              "fill": "#A1A1AA",
+              "content": "Privacy",
+              "fontFamily": "Funnel Sans",
+              "fontSize": 14,
+              "fontWeight": "normal"
+            },
+            {
+              "type": "text",
+              "id": "mBdOL",
+              "name": "Footer Terms",
+              "fill": "#A1A1AA",
+              "content": "Terms",
+              "fontFamily": "Funnel Sans",
+              "fontSize": 14,
+              "fontWeight": "normal"
+            },
+            {
+              "type": "text",
+              "id": "Qtlq7",
+              "name": "Footer Community",
+              "fill": "#A1A1AA",
+              "content": "Community guidelines",
+              "fontFamily": "Funnel Sans",
+              "fontSize": 14,
+              "fontWeight": "normal"
+            }
+          ]
+        }
+      ]
     }
   ],
   "variables": {
