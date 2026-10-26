@@ -67,7 +67,7 @@ Your day-to-day phone setup is already staging. `mobile/.env` points at `https:/
 
 Expo store prep (steps 2 and 3) is done on this Mac:
 
-- `mobile/app.json`: bundle id and package `net.catsordogs.app`, iPad off, export compliance flag set, linked to EAS project `50bf2ee6-7e99-4f00-960c-46123308779e` ([@mcsommers/cats-or-dogs](https://expo.dev/accounts/mcsommers/projects/cats-or-dogs)).
+- `mobile/app.json`: bundle id and package `net.catsordogs.app`, **iOS deployment target 17.0** (installed iPhone builds require **iOS 17+**), iPad off, export compliance flag set, linked to EAS project `50bf2ee6-7e99-4f00-960c-46123308779e` ([@mcsommers/cats-or-dogs](https://expo.dev/accounts/mcsommers/projects/cats-or-dogs)).
 - `mobile/eas.json`: **preview** profile for store binaries against staging.
 - Expo **preview** environment variables: staging Supabase URL and anon key, plus `EXPO_PUBLIC_WEBSITE_URL`.
 
@@ -85,6 +85,16 @@ Still yours to confirm before the first build:
 | Your Mac | Has to be on, with `npm run phone` running | Can be off |
 
 The word "production" shows up in Expo and in the stores for a different idea: a store binary, as opposed to Expo Go. That name does not mean the production database. This testing build is a store binary pointed at staging.
+
+### Minimum iOS version (TestFlight and App Store)
+
+| | Expo Go on your phone | Installed TestFlight / Play build |
+| --- | --- | --- |
+| **iOS** | Same as Expo Go supports (including **iOS 16.7** on iPhone 8 class hardware) | **iOS 17.0 or later** (`ios.deploymentTarget` in `mobile/app.json`) |
+| **Why it changed** | JavaScript from your Mac; not the TestFlight binary | **Expo SDK 58** shipped with **TestFlight build 11** (Oct 23, 2026). Builds **10 and below** used SDK 57 and ran on iOS 16.7. **Build 11+** quit immediately on iOS 16.7 (native load error). Do not ask testers on **iPhone 8 / 8 Plus** (max iOS 16.7) to install **build 11+**; they can keep using **Expo Go** for staging or use a phone on **iOS 17+** for TestFlight. |
+| **Android** | Expo Go | Unchanged for this doc; follow Play Console minimum when you set it for release |
+
+Sign-in PKCE in store builds uses **expo-crypto** (no `react-native-quick-crypto` native module).
 
 Email still behaves the way it does now. A link requested from Expo Go opens Expo Go. A link requested from the installed app opens the installed app. Staging allows both. Production is not involved.
 
@@ -110,7 +120,8 @@ In `mobile/app.json`:
 - iOS bundle id: `net.catsordogs.app`
 - Android package name: `net.catsordogs.app`
 - iPad: turn **off** tablet support (`supportsTablet` is currently true). The screens are designed for a phone. Leaving iPad on makes Apple ask for iPad screenshots and offer the app on iPad.
-- Encryption flag: set iOS `usesNonExemptEncryption` to false. The app uses ordinary sign-in encryption and HTTPS, including a helper (`react-native-quick-crypto`) so sign-in works outside Expo Go. Recording the flag here stops TestFlight from sitting on "Missing Compliance" after every upload. If Apple's form still asks, say the app only uses encryption for sign-in and secure connections.
+- iOS **deployment target**: `17.0` (installed builds do not support iOS 16; SDK 58 landed with **TestFlight build 11**).
+- Encryption flag: set iOS `usesNonExemptEncryption` to false. The app uses ordinary sign-in encryption and HTTPS, including **expo-crypto** for PKCE so sign-in works in Expo Go and store builds. Recording the flag here stops TestFlight from sitting on "Missing Compliance" after every upload. If Apple's form still asks, say the app only uses encryption for sign-in and secure connections.
 
 Add `mobile/eas.json` with a preview profile that:
 

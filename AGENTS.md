@@ -87,10 +87,10 @@ points at Cats or Dogs - Staging). He starts the app with `cd mobile && npm run 
   explicitly wants to leave Expo Go or you have confirmed a feature cannot work
   in Expo Go at all.
 - **Expo Go limits that are normal for this project:** remote push on Android
-  (SDK 53+) does not work in Expo Go — use email for notification UAT; a yellow
-  **"WebCrypto API is not supported"** warning after sign-up is expected in Expo Go
-  (Supabase still completes email sign-up); native modules not in the Expo SDK
-  (for example `react-native-quick-crypto`) are unavailable until a dev build exists.
+  (SDK 53+) does not work in Expo Go — use email for notification UAT. PKCE uses
+  **expo-crypto** in Expo Go and store builds. **TestFlight / App Store iOS builds
+  require iOS 17+** (`ios.deploymentTarget`); SDK 58 shipped with **build 11**;
+  iPhone 8 class (max iOS 16.7) cannot run those store builds.
 - Email confirmation and password-reset links must be opened on the **same phone**
   running Expo Go, after a fresh `npm run phone` if the dev server restarted.
 - Admin UAT uses the hosted staging panel at **https://admin-staging.catsordogs.net/admin/** when Cloudflare Pages is set up, or `npm run admin` on the Mac (http://localhost:5173/admin/). It is separate from Expo Go.
