@@ -9,6 +9,8 @@ import {
   useWindowDimensions,
   View,
   type LayoutChangeEvent,
+  type NativeScrollEvent,
+  type NativeSyntheticEvent,
   type ViewToken,
 } from 'react-native';
 import { Redirect, router, useFocusEffect, useIsFocused, useLocalSearchParams } from 'expo-router';
@@ -23,7 +25,10 @@ import {
   type FeedItem,
 } from '../../lib/feed';
 import { loadFilterPreferencesUpdatedAt } from '../../lib/feedSettings';
-import { registerFeedPlaybackPause } from '../../lib/feedPlaybackCoordinator';
+import {
+  pauseFeedPlaybackBeforeNavigation,
+  registerFeedPlaybackPause,
+} from '../../lib/feedPlaybackCoordinator';
 import { FeedEndScreen } from '../../components/FeedEndScreen';
 import { FeedOverlay } from '../../components/FeedOverlay';
 import { FeedLocked, NoQuestionToday } from '../../components/QuestionStates';
@@ -67,6 +72,8 @@ export default function Feed() {
   }, [measuredHeight]);
 
   const [gate, setGate] = useState<Gate | null>(null);
+  const gateRef = useRef<Gate | null>(null);
+  gateRef.current = gate;
   const [failed, setFailed] = useState(false);
   const [checking, setChecking] = useState(false);
 
@@ -87,6 +94,11 @@ export default function Feed() {
   const feedLoadEpochRef = useRef(0);
   const viewReportedRef = useRef<string | null>(null);
   const flatRef = useRef<FlatList<FeedItem>>(null);
+  const scrollOffsetRef = useRef(0);
+  /** Index when the feed last lost focus (from scroll offset), for return from Question History / settings. */
+  const feedIndexOnBlurRef = useRef(0);
+  const activeIndexRef = useRef(0);
+  const suppressViewabilityRef = useRef(false);
   /** After pull-to-refresh clears a browse `date` param, skip the duplicate load from the param change. */
   const skipFeedDateEffectRef = useRef(false);
   /** `date` query from Question History; used so empty state is spinner until that day finishes loading. */
@@ -154,7 +166,75 @@ export default function Feed() {
     },
   });
 
-  const openFeedSettings = useCallback(() => router.push('/feed-settings'), []);
+  useEffect(() => {
+    activeIndexRef.current = activeIndex;
+  }, [activeIndex]);
+
+  const feedScrollRef = useRef({ items, pageHeight, listRowCount: 0 });
+  feedScrollRef.current = { items, pageHeight, listRowCount: listRows.length };
+  const loadMoreRef = useRef<() => void>(() => {});
+
+  const indexForScrollOffset = useCallback((offsetY: number) => {
+    const { pageHeight: h, listRowCount } = feedScrollRef.current;
+    if (h <= 0) return 0;
+    const max = Math.max(0, listRowCount - 1);
+    return Math.min(max, Math.max(0, Math.round(offsetY / h)));
+  }, []);
+
+  const applyFeedPageIndex = useCallback(
+    (idx: number) => {
+      const { listRowCount } = feedScrollRef.current;
+      const max = Math.max(0, listRowCount - 1);
+      const clamped = Math.min(max, Math.max(0, idx));
+      feedIndexOnBlurRef.current = clamped;
+      activeIndexRef.current = clamped;
+      setActiveIndex(clamped);
+      const { pageHeight: h } = feedScrollRef.current;
+      if (h > 0) scrollOffsetRef.current = clamped * h;
+      return clamped;
+    },
+    [],
+  );
+
+  const rememberFeedPage = useCallback(() => {
+    const fromScroll = indexForScrollOffset(scrollOffsetRef.current);
+    const idx = Math.max(fromScroll, activeIndexRef.current);
+    return applyFeedPageIndex(idx);
+  }, [applyFeedPageIndex, indexForScrollOffset]);
+
+  const restoreFeedPage = useCallback(() => {
+    const { pageHeight: h, listRowCount } = feedScrollRef.current;
+    if (h <= 0 || listRowCount === 0) return;
+    suppressViewabilityRef.current = true;
+    const idx = applyFeedPageIndex(feedIndexOnBlurRef.current);
+    requestAnimationFrame(() => {
+      flatRef.current?.scrollToOffset({ offset: idx * h, animated: false });
+    });
+    setTimeout(() => {
+      suppressViewabilityRef.current = false;
+    }, 400);
+  }, [applyFeedPageIndex]);
+
+  const openBrowse = useCallback(() => {
+    rememberFeedPage();
+    pauseFeedPlaybackBeforeNavigation();
+    router.push('/browse-questions');
+  }, [rememberFeedPage]);
+
+  const openFeedSettings = useCallback(() => {
+    rememberFeedPage();
+    pauseFeedPlaybackBeforeNavigation();
+    router.push('/feed-settings');
+  }, [rememberFeedPage]);
+
+  useFocusEffect(
+    useCallback(() => {
+      restoreFeedPage();
+      return () => {
+        feedIndexOnBlurRef.current = activeIndexRef.current;
+      };
+    }, [restoreFeedPage]),
+  );
 
   const player = useVideoPlayer(hlsSource(playbackUrl), (p) => {
     p.loop = true;
@@ -217,35 +297,52 @@ export default function Feed() {
     loadGate();
   }, [sessionLoading, session, loadGate]);
 
-  const loadInitialFeed = useCallback(async (questionDate?: string | null) => {
-    if (!gate || gate.state !== 'open') return;
-    const dateFilter = questionDate !== undefined ? questionDate : (feedDate ?? null);
-    const epoch = ++feedLoadEpochRef.current;
-    loadingMoreRef.current = false;
-    loadingFeedRef.current = true;
-    setLoadingFeed(true);
-    setFeedFailed(false);
-    try {
-      const [config, page] = await Promise.all([
-        fetchAppFeedConfig(),
-        fetchFeedPage(0, PAGE_SIZE, dateFilter),
-      ]);
-      if (epoch !== feedLoadEpochRef.current) return;
-      setMinWatch(config.minWatchSeconds);
-      setLookbackDays(config.feedLookbackDays);
-      setItems(page.items);
-      setTotalCount(page.totalCount);
-      setActiveIndex(0);
-    } catch {
-      if (epoch === feedLoadEpochRef.current) setFeedFailed(true);
-    } finally {
-      if (epoch === feedLoadEpochRef.current) {
-        loadingFeedRef.current = false;
-        setLoadingFeed(false);
-        loadedBrowseDateRef.current = dateFilter;
+  const loadInitialFeed = useCallback(
+    async (questionDate?: string | null, options?: { force?: boolean }) => {
+      const g = gateRef.current;
+      if (!g || g.state !== 'open') return;
+      const dateFilter = questionDate !== undefined ? questionDate : (feedDate ?? null);
+      const { items: currentItems } = feedScrollRef.current;
+      const alreadyLoaded =
+        !options?.force &&
+        currentItems.length > 0 &&
+        loadedBrowseDateRef.current === dateFilter &&
+        !feedFailed;
+      if (alreadyLoaded) {
+        applyFeedPageIndex(indexForScrollOffset(scrollOffsetRef.current));
+        return;
       }
-    }
-  }, [gate, feedDate]);
+      const epoch = ++feedLoadEpochRef.current;
+      loadingMoreRef.current = false;
+      loadingFeedRef.current = true;
+      setLoadingFeed(true);
+      setFeedFailed(false);
+      try {
+        const [config, page] = await Promise.all([
+          fetchAppFeedConfig(),
+          fetchFeedPage(0, PAGE_SIZE, dateFilter),
+        ]);
+        if (epoch !== feedLoadEpochRef.current) return;
+        setMinWatch(config.minWatchSeconds);
+        setLookbackDays(config.feedLookbackDays);
+        setItems(page.items);
+        setTotalCount(page.totalCount);
+        setActiveIndex(0);
+        scrollOffsetRef.current = 0;
+        feedIndexOnBlurRef.current = 0;
+        flatRef.current?.scrollToOffset({ offset: 0, animated: false });
+      } catch {
+        if (epoch === feedLoadEpochRef.current) setFeedFailed(true);
+      } finally {
+        if (epoch === feedLoadEpochRef.current) {
+          loadingFeedRef.current = false;
+          setLoadingFeed(false);
+          loadedBrowseDateRef.current = dateFilter;
+        }
+      }
+    },
+    [applyFeedPageIndex, feedDate, feedFailed, indexForScrollOffset],
+  );
 
   const refreshTodayFeed = useCallback(async () => {
     if (!gate || gate.state !== 'open') return;
@@ -256,7 +353,7 @@ export default function Feed() {
       skipFeedDateEffectRef.current = true;
       router.replace({ pathname: '/(tabs)/feed' });
     }
-    await loadInitialFeed(browsingPastDay ? null : undefined);
+    await loadInitialFeed(browsingPastDay ? null : undefined, { force: true });
   }, [gate, feedDate, loadInitialFeed]);
 
   const onPullRefresh = useCallback(async () => {
@@ -277,6 +374,8 @@ export default function Feed() {
     setItems([]);
     setTotalCount(0);
     setActiveIndex(0);
+    scrollOffsetRef.current = 0;
+    feedIndexOnBlurRef.current = 0;
     setPlaybackUrl(null);
     flatRef.current?.scrollToOffset({ offset: 0, animated: false });
   }, [feedDate]);
@@ -286,8 +385,9 @@ export default function Feed() {
       skipFeedDateEffectRef.current = false;
       return;
     }
+    if (gate?.state !== 'open') return;
     loadInitialFeed();
-  }, [loadInitialFeed]);
+  }, [loadInitialFeed, gate?.state]);
 
   useEffect(() => {
     if (!feedReload || feedReload === lastFeedReloadRef.current) return;
@@ -308,7 +408,7 @@ export default function Feed() {
           if (ts !== filtersUpdatedAtRef.current) {
             filtersUpdatedAtRef.current = ts;
             flatRef.current?.scrollToOffset({ offset: 0, animated: false });
-            loadInitialFeed();
+            loadInitialFeed(undefined, { force: true });
           }
         })
         .catch(() => {});
@@ -332,6 +432,27 @@ export default function Feed() {
       if (epoch === feedLoadEpochRef.current) loadingMoreRef.current = false;
     }
   }, [items.length, totalCount, feedDate]);
+
+  loadMoreRef.current = loadMore;
+  feedScrollRef.current = { items, pageHeight, listRowCount: listRows.length };
+
+  const onViewableItemsChanged = useCallback(({ viewableItems }: { viewableItems: ViewToken[] }) => {
+    if (suppressViewabilityRef.current) return;
+    const first = viewableItems.find((v) => v.isViewable);
+    if (first?.index == null) return;
+    const { items: rows } = feedScrollRef.current;
+    const idx = first.index;
+    applyFeedPageIndex(idx);
+    if (idx >= rows.length - 3) loadMoreRef.current();
+  }, [applyFeedPageIndex]);
+
+  const onFeedScrollEnd = useCallback(
+    (e: NativeSyntheticEvent<NativeScrollEvent>) => {
+      scrollOffsetRef.current = e.nativeEvent.contentOffset.y;
+      applyFeedPageIndex(indexForScrollOffset(e.nativeEvent.contentOffset.y));
+    },
+    [applyFeedPageIndex, indexForScrollOffset],
+  );
 
   useEffect(() => {
     if (!activeItem) {
@@ -390,18 +511,6 @@ export default function Feed() {
     };
   }, [activeItem?.answerId, activeItem?.durationSeconds, playbackUrl, minWatch, player]);
 
-  const feedScrollRef = useRef({ items: items, loadMore });
-  feedScrollRef.current = { items, loadMore };
-
-  const onViewableItemsChanged = useCallback(({ viewableItems }: { viewableItems: ViewToken[] }) => {
-    const first = viewableItems.find((v) => v.isViewable);
-    if (first?.index == null) return;
-    const idx = first.index;
-    setActiveIndex(idx);
-    const { items: rows, loadMore: more } = feedScrollRef.current;
-    if (idx >= rows.length - 3) more();
-  }, []);
-
   const viewabilityConfig = useRef({ itemVisiblePercentThreshold: 80 }).current;
   const viewabilityConfigCallbackPairs = useRef([
     { viewabilityConfig, onViewableItemsChanged },
@@ -414,7 +523,7 @@ export default function Feed() {
           <View style={{ height: pageHeight, backgroundColor: colors.bgDark }}>
             <FeedEndScreen
               lookbackDays={lookbackDays}
-              onBrowse={() => router.push('/browse-questions')}
+              onBrowse={openBrowse}
               onFeedSettings={openFeedSettings}
             />
           </View>
@@ -436,8 +545,8 @@ export default function Feed() {
             muted={muted}
             onToggleMute={() => setMuted((m) => !m)}
             onOpenProfile={() => router.push({ pathname: '/user/[id]', params: { id: item.userId } })}
-            onBrowse={() => router.push('/browse-questions')}
-            onSearchQuestions={() => router.push('/browse-questions')}
+            onBrowse={openBrowse}
+            onSearchQuestions={openBrowse}
             onFeedSettings={openFeedSettings}
             onMoreOptions={social.openMenu}
             onHeart={social.onHeartPress}
@@ -452,6 +561,7 @@ export default function Feed() {
       activeItem?.answerId,
       lookbackDays,
       muted,
+      openBrowse,
       openFeedSettings,
       pageHeight,
       playback.isPlaying,
@@ -511,7 +621,11 @@ export default function Feed() {
       <Screen dark edges={['top']}>
         <View style={styles.center}>
           <Text style={styles.body}>We couldn&apos;t load the feed. Check your connection and try again.</Text>
-          <PrimaryButton label="Try Again" onPress={loadInitialFeed} style={{ alignSelf: 'stretch' }} />
+          <PrimaryButton
+            label="Try Again"
+            onPress={() => loadInitialFeed(undefined, { force: true })}
+            style={{ alignSelf: 'stretch' }}
+          />
         </View>
       </Screen>
     );
@@ -525,7 +639,7 @@ export default function Feed() {
       <Screen dark edges={['top']}>
         <FeedEndScreen
           lookbackDays={lookbackDays}
-          onBrowse={() => router.push('/browse-questions')}
+          onBrowse={openBrowse}
           onFeedSettings={openFeedSettings}
         />
       </Screen>
@@ -568,6 +682,12 @@ export default function Feed() {
         {...(Platform.OS === 'ios' ? { decelerationRate: 'fast' as const } : {})}
         showsVerticalScrollIndicator={false}
         viewabilityConfigCallbackPairs={viewabilityConfigCallbackPairs}
+        onScroll={(e) => {
+          scrollOffsetRef.current = e.nativeEvent.contentOffset.y;
+        }}
+        scrollEventThrottle={16}
+        onMomentumScrollEnd={onFeedScrollEnd}
+        onScrollEndDrag={onFeedScrollEnd}
         bounces={activeIndex === 0}
         overScrollMode={activeIndex === 0 ? 'always' : 'never'}
         refreshControl={
