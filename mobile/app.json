@@ -9,6 +9,7 @@
     "userInterfaceStyle": "light",
     "ios": {
       "bundleIdentifier": "net.catsordogs.app",
+      "buildNumber": "13",
       "deploymentTarget": "17.0",
       "supportsTablet": false,
       "associatedDomains": [

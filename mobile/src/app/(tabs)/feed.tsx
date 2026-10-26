@@ -2,7 +2,6 @@ import { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } fr
 import {
   FlatList,
   Platform,
-  Pressable,
   RefreshControl,
   StyleSheet,
   Text,
@@ -14,48 +13,38 @@ import {
   type ViewToken,
 } from 'react-native';
 import { Redirect, router, useFocusEffect, useIsFocused, useLocalSearchParams } from 'expo-router';
-import { VideoView, useVideoPlayer } from 'expo-video';
 import { getGate, type Gate } from '../../lib/api';
 import {
   fetchAppFeedConfig,
   appendUniqueFeedItems,
   fetchFeedPage,
   fetchPlaybackForAnswer,
-  reportAnswerView,
   type FeedItem,
 } from '../../lib/feed';
 import { loadFilterPreferencesUpdatedAt } from '../../lib/feedSettings';
-import {
-  pauseFeedPlaybackBeforeNavigation,
-  registerFeedPlaybackPause,
-} from '../../lib/feedPlaybackCoordinator';
+import { pauseFeedPlaybackBeforeNavigation, registerFeedPlaybackPause } from '../../lib/feedPlaybackCoordinator';
+import { clearFeedPlayerPool, pauseAllFeedPlayers } from '../../lib/feedPlayerPool';
 import { FeedEndScreen } from '../../components/FeedEndScreen';
-import { FeedOverlay } from '../../components/FeedOverlay';
+import { FeedPageRow } from '../../components/FeedPageRow';
 import { FeedLocked, NoQuestionToday } from '../../components/QuestionStates';
 import { CenteredSpinner, PrimaryButton, Screen } from '../../components/ui';
-import {
-  hlsSource,
-  safePlayerDuration,
-  safePlayerTime,
-  safeRemoveListener,
-  safeSetMuted,
-  safeTimeUpdateInterval,
-} from '../../lib/videoPlayer';
 import { useSession } from '../../lib/session';
 import { colors, fonts } from '../../theme';
 import { MoreOptionsMenu } from '../../components/social/MoreOptionsMenu';
 import { useSocialActions, type SocialSubject } from '../../components/social/useSocialActions';
-import { useVideoPlaybackControl } from '../../hooks/useVideoPlaybackControl';
 
 /**
  * Feed tab (Pencil 06). UX invariant: unified vertical page scroll — see
- * docs/mobile-feed-scroll.md and AGENTS.md rule 6. FeedOverlay must live inside
- * FlatList renderItem; never float a full-screen overlay sibling above the list.
+ * docs/mobile-feed-scroll.md and AGENTS.md rule 6. Each row uses FeedPageRow
+ * (video + FeedOverlay in renderItem); never float a full-screen overlay sibling above the list.
  */
 const PAGE_SIZE = 12;
 const FEED_END_KEY = '__feed_caught_up__';
 /** Pull-to-refresh spinner sits below the status bar / playback progress chrome. */
 const FEED_REFRESH_SPINNER_OFFSET = 50;
+/** Prefetch playback URLs for clips near the active row (see FeedPageRow mount radius). */
+const PREFETCH_AHEAD = 2;
+const PREFETCH_BEHIND = 1;
 
 export default function Feed() {
   const isFocused = useIsFocused();
@@ -83,17 +72,16 @@ export default function Feed() {
   const [feedRefreshing, setFeedRefreshing] = useState(false);
   const [feedFailed, setFeedFailed] = useState(false);
   const [activeIndex, setActiveIndex] = useState(0);
-  const [playbackUrl, setPlaybackUrl] = useState<string | null>(null);
+  const [playbackUrls, setPlaybackUrls] = useState<Record<string, string>>({});
   const [muted, setMuted] = useState(true);
   const [minWatch, setMinWatch] = useState(3);
   const [lookbackDays, setLookbackDays] = useState(7);
-  const [watchedSeconds, setWatchedSeconds] = useState(0);
-  const [videoProgress, setVideoProgress] = useState(0);
   const loadingMoreRef = useRef(false);
   const loadingFeedRef = useRef(false);
   const feedLoadEpochRef = useRef(0);
-  const viewReportedRef = useRef<string | null>(null);
   const flatRef = useRef<FlatList<FeedItem>>(null);
+  const playbackUrlsRef = useRef(playbackUrls);
+  playbackUrlsRef.current = playbackUrls;
   const scrollOffsetRef = useRef(0);
   /** Index when the feed last lost focus (from scroll offset), for return from Question History / settings. */
   const feedIndexOnBlurRef = useRef(0);
@@ -135,8 +123,6 @@ export default function Feed() {
 
   const onEndPage = items.length > 0 && activeIndex >= items.length;
   const activeItem = !onEndPage ? items[activeIndex] ?? null : null;
-  const feedActiveRef = useRef(true);
-
   const patchFeedUser = useCallback((userId: string, patch: Partial<Pick<FeedItem, 'isFollowed' | 'matchState'>>) => {
     setItems((prev) => prev.map((it) => (it.userId === userId ? { ...it, ...patch } : it)));
   }, []);
@@ -236,42 +222,27 @@ export default function Feed() {
     }, [restoreFeedPage]),
   );
 
-  const player = useVideoPlayer(hlsSource(playbackUrl), (p) => {
-    p.loop = true;
-    p.muted = true;
-  });
-
-  const isFocusedForPlayback = isFocused && !!session && gate?.state === 'open' && !onEndPage && items.length > 0;
-  const playback = useVideoPlaybackControl(
-    player,
-    activeItem?.answerId,
-    isFocusedForPlayback && !!playbackUrl,
-  );
+  const feedPlaybackActive =
+    isFocused && !!session && gate?.state === 'open' && !onEndPage && items.length > 0;
 
   useEffect(() => {
-    safeSetMuted(player, muted);
-  }, [muted, player]);
-
-  useEffect(() => {
-    return registerFeedPlaybackPause(playback.pauseForNavigation);
-  }, [playback.pauseForNavigation]);
+    return registerFeedPlaybackPause(pauseAllFeedPlayers);
+  }, []);
 
   useEffect(() => {
     if (!session) {
-      setPlaybackUrl(null);
-      playback.pauseForNavigation();
+      pauseAllFeedPlayers();
+      setPlaybackUrls({});
+      clearFeedPlayerPool();
     }
-  }, [session, playback.pauseForNavigation]);
+  }, [session]);
 
   useFocusEffect(
     useCallback(() => {
-      const shouldPlay = gate?.state === 'open' && !onEndPage && items.length > 0;
-      feedActiveRef.current = shouldPlay;
       return () => {
-        feedActiveRef.current = false;
-        playback.pauseForNavigation();
+        pauseAllFeedPlayers();
       };
-    }, [gate?.state, onEndPage, items.length, playback.pauseForNavigation])
+    }, []),
   );
 
   const loadGate = useCallback(async () => {
@@ -327,6 +298,8 @@ export default function Feed() {
         setLookbackDays(config.feedLookbackDays);
         setItems(page.items);
         setTotalCount(page.totalCount);
+        setPlaybackUrls({});
+        clearFeedPlayerPool();
         setActiveIndex(0);
         scrollOffsetRef.current = 0;
         feedIndexOnBlurRef.current = 0;
@@ -376,7 +349,8 @@ export default function Feed() {
     setActiveIndex(0);
     scrollOffsetRef.current = 0;
     feedIndexOnBlurRef.current = 0;
-    setPlaybackUrl(null);
+    setPlaybackUrls({});
+    clearFeedPlayerPool();
     flatRef.current?.scrollToOffset({ offset: 0, animated: false });
   }, [feedDate]);
 
@@ -455,69 +429,39 @@ export default function Feed() {
   );
 
   useEffect(() => {
-    if (!activeItem) {
-      setPlaybackUrl(null);
-      return;
-    }
+    if (gate?.state !== 'open' || items.length === 0 || onEndPage) return;
+    const videoIndex = Math.min(activeIndex, items.length - 1);
+    const start = Math.max(0, videoIndex - PREFETCH_BEHIND);
+    const end = Math.min(items.length - 1, videoIndex + PREFETCH_AHEAD);
     let cancelled = false;
-    setWatchedSeconds(0);
-    setVideoProgress(0);
-    viewReportedRef.current = null;
-    setPlaybackUrl(null);
-    fetchPlaybackForAnswer(activeItem.answerId)
-      .then((urls) => {
-        if (!cancelled) setPlaybackUrl(urls.playbackUrl);
-      })
-      .catch(() => {
-        if (!cancelled) setPlaybackUrl(null);
-      });
+
+    for (let i = start; i <= end; i++) {
+      const answerId = items[i].answerId;
+      if (playbackUrlsRef.current[answerId]) continue;
+      fetchPlaybackForAnswer(answerId)
+        .then((urls) => {
+          if (cancelled) return;
+          setPlaybackUrls((prev) =>
+            prev[answerId] === urls.playbackUrl ? prev : { ...prev, [answerId]: urls.playbackUrl },
+          );
+        })
+        .catch(() => {});
+    }
+
     return () => {
       cancelled = true;
     };
-  }, [activeItem?.answerId]);
-
-  useEffect(() => {
-    if (!activeItem || !playbackUrl) {
-      setVideoProgress(0);
-      return;
-    }
-
-    const syncPlayback = () => {
-      if (!feedActiveRef.current) return;
-      const t = safePlayerTime(player);
-      const dur = safePlayerDuration(player, activeItem.durationSeconds);
-      setWatchedSeconds(t);
-      setVideoProgress(dur > 0 ? Math.min(1, t / dur) : 0);
-      // Minimum watch is for view counts only — never blocks swiping to the next clip.
-      if (t >= minWatch && viewReportedRef.current !== activeItem.answerId) {
-        viewReportedRef.current = activeItem.answerId;
-        reportAnswerView(activeItem.answerId);
-      }
-    };
-
-    safeTimeUpdateInterval(player, 0.1);
-    syncPlayback();
-    const onTime = player.addListener('timeUpdate', syncPlayback);
-    const onStatus = player.addListener('statusChange', ({ status }) => {
-      if (status === 'readyToPlay') syncPlayback();
-    });
-    const tick = setInterval(syncPlayback, 250);
-
-    return () => {
-      safeRemoveListener(onTime);
-      safeRemoveListener(onStatus);
-      clearInterval(tick);
-      safeTimeUpdateInterval(player, 0);
-    };
-  }, [activeItem?.answerId, activeItem?.durationSeconds, playbackUrl, minWatch, player]);
+  }, [activeIndex, items, gate?.state, onEndPage]);
 
   const viewabilityConfig = useRef({ itemVisiblePercentThreshold: 80 }).current;
   const viewabilityConfigCallbackPairs = useRef([
     { viewabilityConfig, onViewableItemsChanged },
   ]).current;
 
+  const toggleMuted = useCallback(() => setMuted((m) => !m), []);
+
   const renderFeedRow = useCallback(
-    ({ item }: { item: FeedItem }) => {
+    ({ item, index }: { item: FeedItem; index: number }) => {
       if (item.answerId === FEED_END_KEY) {
         return (
           <View style={{ height: pageHeight, backgroundColor: colors.bgDark }}>
@@ -529,52 +473,42 @@ export default function Feed() {
           </View>
         );
       }
-      const isActive = item.answerId === activeItem?.answerId;
       return (
-        <View style={{ height: pageHeight }} pointerEvents="box-none">
-          {isActive ? (
-            <Pressable
-              style={StyleSheet.absoluteFill}
-              onPress={playback.togglePlayPause}
-              accessibilityLabel={playback.isPlaying ? 'Pause video' : 'Play video'}
-              accessibilityRole="button"
-            />
-          ) : null}
-          <FeedOverlay
-            item={item}
-            muted={muted}
-            onToggleMute={() => setMuted((m) => !m)}
-            onOpenProfile={() => router.push({ pathname: '/user/[id]', params: { id: item.userId } })}
-            onBrowse={openBrowse}
-            onSearchQuestions={openBrowse}
-            onFeedSettings={openFeedSettings}
-            onMoreOptions={social.openMenu}
-            onHeart={social.onHeartPress}
-            videoProgress={isActive ? videoProgress : 0}
-            isPlaying={isActive ? playback.isPlaying : false}
-            onTogglePlayPause={playback.togglePlayPause}
-          />
-        </View>
+        <FeedPageRow
+          item={item}
+          index={index}
+          activeIndex={activeIndex}
+          pageHeight={pageHeight}
+          playbackUrl={playbackUrls[item.answerId] ?? null}
+          feedActive={feedPlaybackActive}
+          isScreenFocused={isFocused}
+          muted={muted}
+          minWatchSeconds={minWatch}
+          onToggleMute={toggleMuted}
+          onBrowse={openBrowse}
+          onSearchQuestions={openBrowse}
+          onFeedSettings={openFeedSettings}
+          onMoreOptions={social.openMenu}
+          onHeart={social.onHeartPress}
+        />
       );
     },
     [
-      activeItem?.answerId,
+      activeIndex,
+      feedPlaybackActive,
+      isFocused,
       lookbackDays,
+      minWatch,
       muted,
       openBrowse,
       openFeedSettings,
       pageHeight,
-      playback.isPlaying,
-      playback.togglePlayPause,
+      playbackUrls,
       social.onHeartPress,
       social.openMenu,
-      videoProgress,
-    ]
+      toggleMuted,
+    ],
   );
-
-  // Keep the player view mounted while another stack screen covers the feed. Tearing down
-  // VideoView on blur remounts Android TextureView and flashes on pop; playback still pauses via isFocusedForPlayback.
-  const showVideo = !!session && !!playbackUrl && gate?.state === 'open';
 
   if (sessionLoading || !session) return <CenteredSpinner dark />;
 
@@ -657,22 +591,10 @@ export default function Feed() {
         onDismiss={social.closeMenu}
         onSelect={social.runMenuAction}
       />
-      {showVideo ? (
-        <VideoView
-          player={player}
-          style={[StyleSheet.absoluteFill, styles.videoLayer]}
-          contentFit="cover"
-          nativeControls={false}
-          surfaceType={Platform.OS === 'android' ? 'textureView' : undefined}
-          pointerEvents="none"
-        />
-      ) : (
-        <View style={[StyleSheet.absoluteFill, { backgroundColor: '#000' }]} pointerEvents="none" />
-      )}
       <FlatList
         ref={flatRef}
         data={listRows}
-        extraData={{ activeId: activeItem?.answerId, muted, videoProgress, isPlaying: playback.isPlaying }}
+        extraData={{ activeIndex, muted, playbackUrls }}
         keyExtractor={(item) => item.answerId}
         pagingEnabled
         // iOS "fast" is a light flick. On Android the same prop sets fling friction
@@ -705,6 +627,10 @@ export default function Feed() {
         }}
         onEndReachedThreshold={0.6}
         getItemLayout={(_, index) => ({ length: pageHeight, offset: pageHeight * index, index })}
+        initialNumToRender={2}
+        maxToRenderPerBatch={2}
+        windowSize={3}
+        removeClippedSubviews={Platform.OS === 'android'}
         style={StyleSheet.absoluteFill}
         renderItem={renderFeedRow}
       />
@@ -714,7 +640,6 @@ export default function Feed() {
 
 const styles = StyleSheet.create({
   root: { flex: 1, backgroundColor: '#000' },
-  videoLayer: { zIndex: 0 },
   center: { flex: 1, alignItems: 'center', justifyContent: 'center', gap: 16, paddingHorizontal: 24, backgroundColor: colors.bgDark },
   body: { fontFamily: fonts.body, fontSize: 14, lineHeight: 20, color: colors.textDarkMuted, textAlign: 'center' },
 });
