@@ -25,7 +25,7 @@ export default function HowItWorks() {
   ];
 
   return (
-    <Screen>
+    <Screen scroll edges={['top', 'bottom']}>
       <View style={{ gap: 12 }}>
         <Text style={styles.eyebrow}>HOW IT WORKS</Text>
         <Text style={styles.title}>One question. Every day. On camera.</Text>
@@ -43,7 +43,6 @@ export default function HowItWorks() {
           </View>
         ))}
       </View>
-      <View style={{ flex: 1 }} />
       <PrimaryButton label="Record My First Answer" onPress={() => router.replace('/question')} />
     </Screen>
   );

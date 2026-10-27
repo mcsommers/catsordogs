@@ -98,7 +98,9 @@ export default function Matches() {
   return (
     <Screen dark edges={['top']} flush>
       <View style={styles.header}>
-        <Text style={styles.title}>Matches</Text>
+        <View style={ui.headerWithTitle}>
+          <Text style={ui.headerTitleDark}>Matches</Text>
+        </View>
         <View style={styles.segments}>
           {SEGMENTS.map(({ key, label }) => {
             const badgeCount = segmentBadgeCount(key);
@@ -214,7 +216,7 @@ export default function Matches() {
                       )
                     }
                   >
-                    <Text style={styles.outlineBtnLabel}>Cancel Request</Text>
+                    <Text style={styles.outlineBtnLabel}>Cancel</Text>
                   </Pressable>
                   <PrimaryButton
                     label="View Profile"
@@ -274,7 +276,6 @@ export default function Matches() {
 
 const styles = StyleSheet.create({
   header: { paddingHorizontal: 20, paddingTop: 8, paddingBottom: 12, gap: 16 },
-  title: { ...ui.title, color: colors.white },
   segments: {
     flexDirection: 'row',
     backgroundColor: '#00000040',
