@@ -195,7 +195,9 @@ export default function TodaysQuestion() {
       <View style={styles.column}>
         <View style={styles.intro}>
         <QuestionBadge />
-        <Text style={styles.question}>{question}</Text>
+        <Text style={styles.question} allowFontScaling={false}>
+          {question}
+        </Text>
         <Text style={styles.subtext}>Everyone answers before anyone can see today&apos;s responses.</Text>
       </View>
 

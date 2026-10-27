@@ -170,7 +170,7 @@ export default function ReviewAndSubmit() {
             <RotateCcw size={16} color={colors.white} />
             <Text style={styles.rerecordLabel}>Re-record</Text>
           </Pressable>
-          <PrimaryButton label="Submit Answer" onPress={submit} disabled={!canSubmit} loading={submitting} style={{ flex: 1 }} />
+          <PrimaryButton label="Submit" onPress={submit} disabled={!canSubmit} loading={submitting} style={{ flex: 1 }} />
         </View>
       </View>
 

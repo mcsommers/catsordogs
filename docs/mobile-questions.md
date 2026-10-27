@@ -121,7 +121,7 @@ On **06i**, **Save** stays grey until the user changes a filter or ranking contr
 
 ## Caption wait timeout on Review (Mike, Oct 16, 2026)
 
-If auto-captions are still pending **8 seconds** after the video is **ready**, stop waiting on Mux: show **No caption.**, enable **Submit Answer**, and let the user edit on **05b**. The server stores that placeholder so submit works; a late Mux caption delivery does not overwrite it.
+If auto-captions are still pending **8 seconds** after the video is **ready**, stop waiting on Mux: show **No caption.**, enable **Submit**, and let the user edit on **05b**. The server stores that placeholder so submit works; a late Mux caption delivery does not overwrite it.
 
 ## City lookup: Open-Meteo or Google Places (Mike, Oct 15, 2026)
 

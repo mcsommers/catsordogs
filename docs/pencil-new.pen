@@ -40,9 +40,9 @@
     {
       "type": "rectangle",
       "id": "NmLPi",
-      "x": -622,
-      "y": 66,
-      "fill": "#141414",
+      "x": -660,
+      "y": 189,
+      "fill": "#cccccc",
       "width": 9616,
       "height": 3392
     },
@@ -4183,7 +4183,7 @@
                       "width": "fill_container",
                       "descendants": {
                         "dcLjE": {
-                          "content": "Submit Answer"
+                          "content": "Submit"
                         }
                       }
                     }
@@ -16400,7 +16400,7 @@
                               "stroke": "#FFFFFF33",
                               "descendants": {
                                 "xT9qn": {
-                                  "content": "Cancel Request",
+                                  "content": "Cancel",
                                   "fill": "$white"
                                 }
                               }
@@ -19394,7 +19394,7 @@
                           "width": "fill_container",
                           "descendants": {
                             "dcLjE": {
-                              "content": "Submit Answer"
+                              "content": "Submit"
                             }
                           }
                         }
@@ -33479,7 +33479,6 @@
           "id": "ZtVmE",
           "name": "Content Wrapper",
           "width": "fill_container",
-          "height": "fill_container",
           "layout": "vertical",
           "gap": 28,
           "padding": [
@@ -33733,13 +33732,6 @@
                   ]
                 }
               ]
-            },
-            {
-              "type": "frame",
-              "id": "WHPVE",
-              "name": "Spacer",
-              "width": "fill_container",
-              "height": "fill_container"
             },
             {
               "id": "RbMvU",
@@ -47985,7 +47977,7 @@
                       "width": "fill_container",
                       "descendants": {
                         "dcLjE": {
-                          "content": "Submit Answer"
+                          "content": "Submit"
                         }
                       }
                     }
@@ -48358,7 +48350,7 @@
                       "width": "fill_container",
                       "descendants": {
                         "dcLjE": {
-                          "content": "Submit Answer"
+                          "content": "Submit"
                         }
                       }
                     }

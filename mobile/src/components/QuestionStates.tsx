@@ -1,4 +1,4 @@
-import { Pressable, StyleSheet, Text, View } from 'react-native';
+import { Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
 import { Hourglass, Lock } from 'lucide-react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { tabBarOverlayHeight } from '../lib/tabBarLayout';
@@ -28,7 +28,15 @@ export function NoQuestionToday({ onCheckAgain, checking }: { onCheckAgain: () =
 export function FeedLocked({ question, onAnswer }: { question: string; onAnswer: () => void }) {
   const insets = useSafeAreaInsets();
   return (
-    <View style={[styles.center, { paddingHorizontal: 12, paddingBottom: tabBarOverlayHeight(insets.bottom) }]}>
+    <ScrollView
+      style={styles.flex}
+      contentContainerStyle={[
+        styles.feedLockedScroll,
+        { paddingBottom: tabBarOverlayHeight(insets.bottom) },
+      ]}
+      showsVerticalScrollIndicator={false}
+      keyboardShouldPersistTaps="handled"
+    >
       <View style={[styles.iconBadge, { width: 84, height: 84, borderRadius: 42 }]}>
         <Lock size={34} color={colors.accentDog} />
       </View>
@@ -48,11 +56,20 @@ export function FeedLocked({ question, onAnswer }: { question: string; onAnswer:
         onPress={onAnswer}
         style={{ alignSelf: 'stretch', marginTop: 20 }}
       />
-    </View>
+    </ScrollView>
   );
 }
 
 const styles = StyleSheet.create({
+  flex: { flex: 1 },
+  feedLockedScroll: {
+    flexGrow: 1,
+    alignItems: 'center',
+    justifyContent: 'center',
+    gap: 20,
+    paddingHorizontal: 12,
+    paddingTop: 24,
+  },
   center: { flex: 1, alignItems: 'center', justifyContent: 'center', gap: 20, paddingHorizontal: 20 },
   iconBadge: {
     width: 72,
