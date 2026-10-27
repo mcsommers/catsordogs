@@ -351,6 +351,7 @@ Icons for a future public listing are in the repo. See `docs/store-assets/README
 
 1. Open [Google Play Console](https://play.google.com/console) and click **Create app**.
    - App name: `Cats or Dogs?`
+   - Package name (application ID): `net.catsordogs.app`. Must match `mobile/app.json` (`expo.android.package`). Cannot be changed after you create the app.
    - Default language: English (United States)
    - App or game: App
    - Free
@@ -366,6 +367,14 @@ Icons for a future public listing are in the repo. See `docs/store-assets/README
 5. Under **App content**, declare that the app has user-generated content and that users can report and block. In the app, **Report** and **Block** are on a person's video and profile. Account deletion is **Profile → Privacy & Safety → Delete account**. Support URL: `https://catsordogs.net/support`
 
 Do not start a **Production** release. Testing uses **Internal testing** first, then **Closed testing** if you want a link instead of a list of emails.
+
+### Play Console prompts
+
+Answers for fields Play asks while you set up the listing. Add a row here when a new prompt is not already covered above.
+
+| Play Console field | What to enter |
+| --- | --- |
+| Package name (application ID) | `net.catsordogs.app` (same as iOS bundle ID; permanent after creation) |
 
 ### Store text you can edit
 
