@@ -368,6 +368,8 @@ Icons for a future public listing are in the repo. See `docs/store-assets/README
 
 Do not start a **Production** release. Testing uses **Internal testing** first, then **Closed testing** if you want a link instead of a list of emails.
 
+Step 6 is store listing and policy forms only. You install from Play after step 7 uploads a bundle and you roll out internal testing, then step 8.
+
 ### Play Console prompts
 
 Answers for fields Play asks while you set up the listing. Add a row here when a new prompt is not already covered above.
@@ -446,29 +448,59 @@ Pick the preview build it just made. The first time, sign in with the Apple acco
 
 **Submit once, then check Expo and Apple (not only the terminal).** Run **one** submit per build, for example `npx eas-cli submit --platform ios --profile preview --id <build-id> --non-interactive`. The CLI can sit on `Submitting` for a long time while Expo's queue uploads to Apple; that does not mean it failed. On [expo.dev](https://expo.dev/accounts/mcsommers/projects/cats-or-dogs/submissions), open **Submissions** for the project: **FINISHED** means Apple received the binary. **ERRORED** with *build number … has already been used* means a prior submit for that build already succeeded; do not spam submit. Extra submits for the same build only queue behind the first. After **FINISHED**, wait for Apple processing in App Store Connect → **TestFlight** (version **1.0.0**, build number matches EAS, for example **10**). The in-app **Profile** row **Version X (build)** should match. On this Mac, `npx eas-cli` on Node 24 can fail with a `dtrace` error; use Node 22 (`nvm use 22`) and run submit from `mobile` with a local `eas-cli` if needed.
 
-Android needs one extra key before the first upload. EAS cannot press the buttons in Play Console by itself.
+Android signing and Play upload use two different credentials on Expo. Do not mix them up.
 
-1. Follow Expo's guide for a Google Service Account key, linked from https://docs.expo.dev/submit/android.md (the section "Create a Google Service Account key").
-2. In Play Console, invite that service account with permission to release to testing tracks.
-3. Download the JSON key. Do not commit it and do not paste it into chat.
-4. Store it on Expo:
+| Expo credentials page (Android, `net.catsordogs.app`) | Purpose |
+| --- | --- |
+| **Build credentials → Android upload keystore** | Created when the first `eas build` asks **Generate a new Android Keystore?** Answer **yes**. EAS signs the `.aab`. |
+| **Service credentials → Google service account key for EAS Submit** | JSON from Google Cloud so `eas submit` can upload to Play. Optional if you upload the `.aab` yourself in Play Console. |
+| **FCM V1 service account key** | Android push on store builds. Separate from Play upload. Add when you UAT push on the Play build. |
+
+**First Android build.** From `mobile`, when `eas build --platform android --profile preview` asks for a new keystore, answer **yes**. Download a keystore backup only if Expo offers one; do not commit it.
+
+**Google service account (for `eas submit`).** Follow https://docs.expo.dev/submit/android.md and https://github.com/expo/fyi/blob/main/creating-google-service-account.md .
+
+- **Play Console vs Google Cloud login:** They can be different Gmail accounts (for example Play on `catsordogsapp@gmail.com`, Cloud on a personal account). The bridge is the **service account email** (`…@….iam.gserviceaccount.com`), not your human logins.
+- **Organization policy blocks JSON keys:** If Cloud Console says `iam.disableServiceAccountKeyCreation`, the Cloud project is under a work or school organization. Create a **new** Cloud project while signed in with a personal account that shows **No organization**, then create the service account and JSON there. Enable the [Google Play Android Developer API](https://console.cloud.google.com/apis/library/androidpublisher.googleapis.com) on that project.
+- **Play Console access:** Google removed **Settings → API access**. There is no separate "link Cloud project" step for new setups. Use **Users and permissions** only: https://play.google.com/console/users-and-permissions (sign in as the Play account owner). **Invite new users**, paste the service account email, then **App permissions** for **Cats or Dogs?** (`net.catsordogs.app`) with at least: **View app information (read-only)**, **Edit and delete draft apps**, **Release apps to testing tracks**, **Manage testing tracks and edit tester lists**, and **Release to production, exclude devices, and use Play App Signing**. **Admin** is not required.
+- Upload the JSON on Expo: [Project credentials → Android → `net.catsordogs.app`](https://expo.dev/accounts/mcsommers/projects/cats-or-dogs/credentials/android/net.catsordogs.app) → **Add a Google service account key** under **Google service account key for EAS Submit**. Do not commit the JSON or paste it into chat.
+
+Verify submit credentials (optional):
 
 ```sh
 cd mobile
-npx eas-cli@latest credentials --platform android
+npx eas-cli@latest submit --platform android --profile preview --latest --non-interactive --no-wait
 ```
 
-Choose the preview profile, then **Google Service Account → Manage your Google Service Account Key for Play Store Submissions**, and point it at the JSON file. If it asks which submit profile, choose **preview**.
+If the key is on Expo, the CLI prints **Google Service Account Key already set up** before it queues upload. Check outcome on [Expo Submissions](https://expo.dev/accounts/mcsommers/projects/cats-or-dogs/submissions). **ERRORED** with `EAS_GOOGLE_PLAY_PERMISSION_DENIED` means Play rejected the API upload. Permissions may need a few hours to propagate after you save them in Play Console. You can still ship the same build by **manual upload** (below).
 
-5. Upload:
+**Upload to Play (pick one path).**
+
+*Automated (`eas submit`):*
 
 ```sh
 npx eas-cli@latest submit --platform android --profile preview
 ```
 
-The first upload lands on the **internal testing** track and can sit as a draft until you open Play Console and roll that release out. Roll it out to internal testing only.
+The first upload targets the **internal** track (`mobile/eas.json`). It can create a draft in Play Console without attaching a bundle if submit failed; check Expo Submissions before you assume the file arrived.
 
-This Google key is only for uploading the app. It is not the Firebase key used for push, and it is not a Supabase key.
+*Manual (works without a working service account):*
+
+1. When the Android `eas build` is **Finished**, download the **`.aab`** from [Expo Builds](https://expo.dev/accounts/mcsommers/projects/cats-or-dogs/builds). Do not commit `.aab` files to git.
+2. Play Console → **Testing → Internal testing** → **Create release** or **Edit release** on a draft.
+3. **App bundles:** upload the `.aab`.
+4. **Release name:** internal label only (for example `1.0.0 internal 1`, 50 characters max). An **Untitled release** draft with no bundle usually means upload never succeeded; add the `.aab` here.
+5. **Release notes** for `en-US` (keep the language tags):
+
+```text
+<en-US>
+First internal test build. Staging server. Email sign-up only.
+</en-US>
+```
+
+6. **Next** → **Preview and confirm** → **Start rollout to Internal testing**. The track should become active, not only **Inactive • Draft release**.
+
+This Google service account JSON is only for Play API upload. It is not the Android upload keystore, not the FCM key, and not a Supabase key.
 
 ## Step 8. Install it yourself on staging
 
@@ -483,7 +515,7 @@ Do this before you invite anyone else. You want one clean pass in the installed 
 
 **Android.**
 
-1. Play Console → **Testing → Internal testing**. Add the Gmail address on your Android phone as a tester and copy the opt-in link.
+1. Confirm internal testing has a rolled-out release with an app bundle (step 7). Then Play Console → **Testing → Internal testing** → **Testers**. Add the Gmail address on your Android phone and copy the opt-in link.
 2. On that phone, open the link, accept the test, and install from the Play Store. The Play Store may take a few minutes to show the app after you opt in.
 
 **Sign up inside that installed app** with a new email, or log in with a staging account you already have. An email that already exists on staging cannot sign up again.
