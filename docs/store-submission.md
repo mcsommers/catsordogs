@@ -422,15 +422,42 @@ The home-screen icon comes from `mobile/assets/icon.png` (CD monogram, copied fr
 
 Build on Expo's servers. You do not need Xcode or Android Studio.
 
-From `mobile`:
+### Paired iOS + Android builds
+
+When you ship the same staging release to TestFlight and Play internal testing, build **both platforms together** so testers see the same **Profile** build number (for example **Version 1.0.0 (15)** on iPhone and Android).
+
+`mobile/eas.json` uses **`appVersionSource: remote`** and **`autoIncrement: true`** on the **preview** profile. EAS keeps an **iOS buildNumber** and an **Android versionCode** separately. They only stay aligned if you sync them before you build.
+
+1. Check counters (from `mobile`):
+
+```sh
+npx eas-cli@latest build:version:get --platform all --profile preview
+```
+
+2. If Android **versionCode** is behind iOS **buildNumber**, set Android to match iOS (one-time or after a solo platform rebuild):
+
+```sh
+npx eas-cli@latest build:version:set --platform android --profile preview
+```
+
+Enter the same integer as iOS **buildNumber** (for example **14**). Google only requires that **versionCode** always increases; skipping ahead is fine.
+
+3. Build both platforms in one command:
+
+```sh
+npx eas-cli@latest build --platform all --profile preview
+```
+
+With both counters equal, **autoIncrement** usually gives the **same next number** on each platform (for example **15** on both). After the builds finish, confirm with `build:version:get` again.
+
+4. Submit each platform (Step 7 upload section below). iOS → TestFlight; Android → internal testing (or manual `.aab` upload if `eas submit` fails).
+
+If you only rebuild one platform, run `build:version:get` before the next paired release and run **`build:version:set`** on Android if it drifted behind iOS.
+
+From `mobile`, you can still build one platform at a time when you only need that store:
 
 ```sh
 npx eas-cli@latest build --platform ios --profile preview
-```
-
-When that build has finished:
-
-```sh
 npx eas-cli@latest build --platform android --profile preview
 ```
 

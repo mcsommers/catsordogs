@@ -1,5 +1,6 @@
 const constants = {
   expoConfig: { version: '1.0.0' } as { version: string } | null,
+  executionEnvironment: 'standalone',
 };
 
 const application = {
@@ -14,19 +15,12 @@ jest.mock('expo-constants', () => ({
 
 jest.mock('expo-application', () => application);
 
-jest.mock('./canRegisterForRemotePush', () => ({
-  isExpoGo: jest.fn(() => false),
-}));
-
-import { isExpoGo } from './canRegisterForRemotePush';
 import { formatAppVersionLabel } from './appVersion';
-
-const mockIsExpoGo = isExpoGo as jest.MockedFunction<typeof isExpoGo>;
 
 describe('formatAppVersionLabel', () => {
   beforeEach(() => {
     constants.expoConfig = { version: '1.0.0' };
-    mockIsExpoGo.mockReturnValue(false);
+    constants.executionEnvironment = 'standalone';
     application.nativeApplicationVersion = '1.0.0';
     application.nativeBuildVersion = '14';
   });
@@ -36,8 +30,13 @@ describe('formatAppVersionLabel', () => {
   });
 
   it('omits the build number in Expo Go', () => {
-    mockIsExpoGo.mockReturnValue(true);
+    constants.executionEnvironment = 'storeClient';
     application.nativeBuildVersion = '1017700';
     expect(formatAppVersionLabel()).toBe('Version 1.0.0');
+  });
+
+  it('shows Android versionCode on an installed Play build', () => {
+    application.nativeBuildVersion = '3';
+    expect(formatAppVersionLabel()).toBe('Version 1.0.0 (3)');
   });
 });
