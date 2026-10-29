@@ -1,4 +1,4 @@
-import { Image, Pressable, StyleSheet, Text, View } from 'react-native';
+import { Image, Platform, Pressable, StyleSheet, Text, View } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { EllipsisVertical, Heart, MapPin } from 'lucide-react-native';
@@ -7,6 +7,7 @@ import type { ProfileAnswer } from '../lib/profile';
 import { formatProfileLocation, shortQuestionDate } from '../lib/format';
 import { FollowingBadge } from './FollowingBadge';
 import { ExpandableCaption } from './ExpandableCaption';
+import { FeedQuestionLabel } from './FeedQuestionLabel';
 import { BackButton } from './ui';
 import { colors, fonts } from '../theme';
 
@@ -38,18 +39,9 @@ type Props = {
   playbackError: string | null;
   isPlaying: boolean;
   onTogglePlayPause: () => void;
+  chromeVisible: boolean;
 };
 
-function QuestionPillLabel({ questionDate, questionText }: { questionDate: string; questionText: string }) {
-  return (
-    <Text style={styles.pillText}>
-      <Text style={styles.pillDate}>{shortQuestionDate(questionDate)} · </Text>
-      {questionText}
-    </Text>
-  );
-}
-
-/** 06k chrome inside one paging row — docs/mobile-feed-scroll.md */
 export function AnswerDetailOverlay({
   answer,
   subject,
@@ -68,12 +60,26 @@ export function AnswerDetailOverlay({
   playbackError,
   isPlaying,
   onTogglePlayPause,
+  chromeVisible,
 }: Props) {
   const insets = useSafeAreaInsets();
   const heartOn = matchState === 'sent' || matchState === 'matched';
   const locationLine = formatProfileLocation(subject.city, subject.distanceMiles);
   const ageLabel =
     subject.age != null && Number.isFinite(subject.age) ? `, ${subject.age}` : '';
+
+  if (!chromeVisible) {
+    if (playbackError) {
+      return (
+        <View style={StyleSheet.absoluteFill} pointerEvents="box-none">
+          <View style={styles.gateBanner}>
+            <Text style={styles.gateText}>{playbackError}</Text>
+          </View>
+        </View>
+      );
+    }
+    return null;
+  }
 
   return (
     <View style={StyleSheet.absoluteFill} pointerEvents="box-none" collapsable={false}>
@@ -83,10 +89,10 @@ export function AnswerDetailOverlay({
       <View style={[styles.top, { paddingTop: insets.top + 8 }]} pointerEvents="box-none" collapsable={false}>
         <BackButton onPress={onBack} dark />
         <View
-          style={styles.questionPill}
+          style={styles.questionBlock}
           accessibilityLabel={`${shortQuestionDate(answer.questionDate)} · ${answer.questionText}`}
         >
-          <QuestionPillLabel questionDate={answer.questionDate} questionText={answer.questionText} />
+          <FeedQuestionLabel questionDate={answer.questionDate} questionText={answer.questionText} />
         </View>
       </View>
 
@@ -168,17 +174,10 @@ export function AnswerDetailOverlay({
 }
 
 const styles = StyleSheet.create({
-  topScrim: { position: 'absolute', top: 0, left: 0, right: 0, height: 200 },
+  topScrim: { position: 'absolute', top: 0, left: 0, right: 0, height: 280 },
   bottomScrim: { position: 'absolute', bottom: 0, left: 0, right: 0, height: 360 },
   top: { paddingHorizontal: 20, gap: 10 },
-  questionPill: {
-    backgroundColor: '#00000066',
-    borderRadius: 16,
-    paddingVertical: 10,
-    paddingHorizontal: 12,
-  },
-  pillText: { fontFamily: fonts.bodySemi, fontSize: 12, lineHeight: 16, color: '#FFFFFFE6' },
-  pillDate: { fontFamily: fonts.bodyBold, fontSize: 12, lineHeight: 16, color: colors.accentDog },
+  questionBlock: { width: '100%' },
   bottom: { position: 'absolute', left: 0, right: 0, bottom: 0, paddingHorizontal: 20, gap: 16 },
   captionIdentityRow: { flexDirection: 'row', alignItems: 'flex-end', gap: 12 },
   identityCaptionCol: { flex: 1, gap: 16 },
@@ -191,7 +190,13 @@ const styles = StyleSheet.create({
     borderRadius: AVATAR_ACTION_SIZE / 2,
     backgroundColor: '#FFFFFF33',
   },
-  name: { fontFamily: fonts.heading, fontSize: 22, color: colors.white },
+  name: {
+    fontFamily: fonts.heading,
+    fontSize: 20,
+    lineHeight: 24,
+    color: colors.white,
+    ...(Platform.OS === 'android' ? { includeFontPadding: false } : null),
+  },
   followingWrap: { marginLeft: 4 },
   metaRow: { flexDirection: 'row', alignItems: 'center', gap: 6 },
   meta: { fontFamily: fonts.body, fontSize: 13, lineHeight: 17, color: '#FFFFFFB3', flexShrink: 1 },

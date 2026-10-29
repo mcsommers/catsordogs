@@ -1,8 +1,9 @@
 import { useEffect, useState } from 'react';
-import { Pressable, StyleSheet, Text, View } from 'react-native';
+import { Platform, Pressable, StyleSheet, Text, View } from 'react-native';
 import { colors, fonts } from '../theme';
 
-export const CAPTION_COLLAPSED_HEIGHT = 48;
+/** Design: 48px collapsed box (Pencil 06). Android needs extra height so two 12/16 lines are not clipped. */
+export const CAPTION_COLLAPSED_HEIGHT = Platform.OS === 'android' ? 58 : 48;
 
 type Props = {
   text: string;
@@ -70,7 +71,13 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   inner: { position: 'relative', width: '100%' },
-  caption: { fontFamily: fonts.body, fontSize: 12, lineHeight: 16, color: colors.white },
+  caption: {
+    fontFamily: fonts.body,
+    fontSize: 12,
+    lineHeight: 16,
+    color: colors.white,
+    ...(Platform.OS === 'android' ? { includeFontPadding: false } : null),
+  },
   measure: {
     position: 'absolute',
     left: 0,

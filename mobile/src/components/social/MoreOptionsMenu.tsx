@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useState, type ComponentType } from 'react';
-import { Image, Modal, Pressable, StyleSheet, Text, View } from 'react-native';
+import { Image, Modal, Platform, Pressable, StyleSheet, Text, View } from 'react-native';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import {
   Ban,
   EyeOff,
@@ -10,6 +11,7 @@ import {
   type LucideProps,
 } from 'lucide-react-native';
 import { colors, fonts } from '../../theme';
+import { bottomSheetPadding } from '../../lib/tabBarLayout';
 import { AboutFollowingDialog } from './AboutFollowingDialog';
 
 export type MoreMenuAction = 'follow' | 'unfollow' | 'not_interested' | 'report' | 'block' | 'delete_video' | 'cancel';
@@ -71,6 +73,8 @@ export function MoreOptionsMenu({
   onSelect,
   onDismiss,
 }: Props) {
+  const insets = useSafeAreaInsets();
+  const sheetPaddingBottom = bottomSheetPadding(insets.bottom);
   const rows = useMemo(() => buildRows(isFollowed, own), [isFollowed, own]);
   const title = menuTitle(firstName, age);
 
@@ -96,7 +100,7 @@ export function MoreOptionsMenu({
     <Modal visible={visible} transparent animationType="fade" onRequestClose={onDismiss}>
       <View style={styles.backdrop}>
         <Pressable style={StyleSheet.absoluteFill} onPress={dismissable ? onDismiss : undefined} accessibilityLabel="Dismiss" />
-        <View style={styles.sheet}>
+        <View style={[styles.sheet, { paddingBottom: sheetPaddingBottom }]}>
           {!own && title ? (
             <>
               <View style={styles.headerRow}>
@@ -172,7 +176,6 @@ const styles = StyleSheet.create({
     borderColor: colors.borderDark,
     borderBottomWidth: 0,
     paddingHorizontal: 20,
-    paddingBottom: 28,
     paddingTop: 20,
     gap: 4,
   },
@@ -234,5 +237,10 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
   },
-  cancelLabel: { fontFamily: fonts.bodyBold, fontSize: 15, color: colors.white },
+  cancelLabel: {
+    fontFamily: fonts.bodyBold,
+    fontSize: 15,
+    color: colors.white,
+    ...(Platform.OS === 'android' ? { includeFontPadding: false } : null),
+  },
 });
