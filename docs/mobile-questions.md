@@ -3,6 +3,10 @@
 A record of questions asked while planning the phone app, the options offered,
 and Mike's answer. Newest phase first.
 
+## Feed and 06k: tap video toggles chrome, not playback (Mike, Oct 29, 2026)
+
+On **06** and **06k**, tapping the video used to pause or play. Mike wanted tap to **hide or show** the overlay chrome (pill, metadata, actions, progress row, scrims) while playback continues. **Play/pause** stays on the progress row only. Swiping to another answer resets chrome to visible. Docs: `docs/mobile-feed-scroll.md`, MVP browsing row, UAT **B-03** and **C-13**.
+
 ## Android installed build: email confirmation stuck in Chrome (Mike, Oct 23, 2026)
 
 On an **installed Android build** (not Expo Go), tapping the sign-up link in Gmail could leave the user in Chrome on a Google-wrapped Supabase verify URL with `redirect_to=catsordogs://auth-callback`, with no handoff to the app. **iPhone Expo Go** was fine because it uses `exp://`.
@@ -109,11 +113,13 @@ If the user picked a past question from Browse Questions and is viewing that day
 
 ## No "Earlier answers" day-change banner (Mike, Oct 16, 2026)
 
-When the feed rolls to a previous day, only the question pill updates (date and question text). There is no **Earlier answers** banner or other day-change banner on **06** / **06u**.
+When the feed rolls to a previous day, only the question label updates (date and question text). There is no **Earlier answers** banner or other day-change banner on **06** / **06u**.
 
-**Feed chrome (06, Oct 2026):** Question pill = orange bold date · question (no quote/chevron). Top-right: feed settings, then search (opens **06c** with search focused). Bottom: name/age + city; caption (48px collapsed, 2 lines + ellipsis, tap to expand); profile photo, heart, and more stacked on the right (photo on top); progress bar + mute on the row below. No distance or streak on the feed. Pencil: **06 Feed**, **06 Feed Caption Expanded**, **06u**.
+**Feed chrome (06, Oct 2026):** Question label = orange date · question in heading type (no background pill). Top-right: feed settings, then search (opens **06c** with search focused). Bottom: name/age at **20pt** heading + city; caption (48px collapsed, 2 lines + ellipsis, tap to expand); profile photo, heart, and more stacked on the right (photo on top); progress bar + mute on the row below. No distance or streak on the feed. Pencil: **06 Feed**, **06 Feed Caption Expanded**, **06u**.
 
-**Answer detail (06k / 06ka, Oct 2026):** Same bottom pattern as **06**, plus map pin + **city · distance** under the name; **back** + non-tappable question pill at top (no settings/search). No streak on **06k**. Pencil: **06k Answer Detail**, **06ka Answer Detail (Your Answer)**.
+**Answer detail (06k / 06ka, Oct 2026):** Same bottom pattern as **06**, plus map pin + **city · distance** under the name; **back** + non-tappable question label at top (no settings/search). No streak on **06k**. Pencil: **06k Answer Detail**, **06ka Answer Detail (Your Answer)**.
+
+**Pencil modal stacking on feed (Oct 2026):** Later siblings draw on top. Feed confirmation frames (**06b**, **06f**, **06g**, **06h**, **06l**, **06r**, **06s**, **06w**, **06y**, **06ga**) use top-level order **06 Feed** → **Overlay Stack** (feed chrome) → **Scrim** (full-screen dim with **Dialog** inside). Bottom sheets (**06e**, **06kb**–**06kd**) use the same idea with **Sheet** inside **Scrim**. Do not place **Overlay Stack** after **Scrim** on confirmations; it covers the dialog in the design file.
 
 ## Feed Settings unsaved changes and save (Mike, Oct 16, 2026)
 
@@ -546,14 +552,14 @@ Answer: **Unified page.** Locked for implementation in `docs/mobile-feed-scroll.
 
 The **Build Plan** names Phase B as: scrollable feed, minimum watch time,
 captions, and followed-first display. The **requirements** also describe Browse
-Questions (06c/06d), the Question Pill, rolling to earlier days (06u; pill only, no day-change banner), the "You're all caught up" end screen (06v), and streak badges on feed
+Questions (06c/06d), the question label, rolling to earlier days (06u; label only, no day-change banner), the "You're all caught up" end screen (06v), and streak badges on feed
 videos. **Phase D** is where heart (match), the more-options menu (follow, report,
 block, Not Interested), and Feed Settings (06i) live.
 
 Options:
 
 - **Core only:** Today's feed (06): full-screen videos, captions, skip after
-  minimum watch, followed section looks distinct, Question Pill. Defer browse,
+  minimum watch, followed section looks distinct, question label. Defer browse,
   day rollover, end screen, and streak badge to a fast follow-up.
 - **Feed + browse (recommended):** Everything in core, plus Browse Questions and
   search (06c/06d), opening a past day's feed, day rollover (06u),
