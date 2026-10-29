@@ -15,6 +15,7 @@ import {
   safeTimeUpdateInterval,
 } from '../lib/videoPlayer';
 import { useVideoPlaybackControl } from '../hooks/useVideoPlaybackControl';
+import { useVideoChromeVisibility } from '../hooks/useVideoChromeVisibility';
 import { FeedOverlay } from './FeedOverlay';
 
 /** Active row plus one ahead/behind: mount native players for preload while keeping memory bounded. */
@@ -52,6 +53,7 @@ type OverlayProps = Pick<
   isPlaying: boolean;
   onToggleMute: () => void;
   onTogglePlayPause: () => void;
+  chromeVisible: boolean;
 };
 
 function RowOverlay({
@@ -66,6 +68,7 @@ function RowOverlay({
   onFeedSettings,
   onMoreOptions,
   onHeart,
+  chromeVisible,
 }: OverlayProps) {
   return (
     <FeedOverlay
@@ -81,6 +84,7 @@ function RowOverlay({
       videoProgress={videoProgress}
       isPlaying={isPlaying}
       onTogglePlayPause={onTogglePlayPause}
+      chromeVisible={chromeVisible}
     />
   );
 }
@@ -118,6 +122,7 @@ function ActiveFeedPageRowWithPlayer(props: FeedPageRowProps & { playbackUrl: st
   const player = getFeedPlayer(item.answerId, playbackUrl);
   const shouldPlay = feedActive && isScreenFocused;
   const playback = useVideoPlaybackControl(player, item.answerId, shouldPlay);
+  const { chromeVisible, toggleChromeVisibility } = useVideoChromeVisibility(item.answerId);
 
   const [videoProgress, setVideoProgress] = useState(0);
   const viewReportedRef = useRef<string | null>(null);
@@ -165,8 +170,8 @@ function ActiveFeedPageRowWithPlayer(props: FeedPageRowProps & { playbackUrl: st
       <FeedVideoLayer player={player} />
       <Pressable
         style={StyleSheet.absoluteFill}
-        onPress={playback.togglePlayPause}
-        accessibilityLabel={playback.isPlaying ? 'Pause video' : 'Play video'}
+        onPress={toggleChromeVisibility}
+        accessibilityLabel={chromeVisible ? 'Hide video controls' : 'Show video controls'}
         accessibilityRole="button"
       />
       <RowOverlay
@@ -176,6 +181,7 @@ function ActiveFeedPageRowWithPlayer(props: FeedPageRowProps & { playbackUrl: st
         isPlaying={playback.isPlaying}
         onToggleMute={onToggleMute}
         onTogglePlayPause={playback.togglePlayPause}
+        chromeVisible={chromeVisible}
         onBrowse={onBrowse}
         onSearchQuestions={onSearchQuestions}
         onFeedSettings={onFeedSettings}
@@ -225,6 +231,7 @@ function PreloadFeedPageRow(props: FeedPageRowProps) {
         isPlaying={false}
         onToggleMute={onToggleMute}
         onTogglePlayPause={() => {}}
+        chromeVisible
         onBrowse={onBrowse}
         onSearchQuestions={onSearchQuestions}
         onFeedSettings={onFeedSettings}
@@ -258,6 +265,7 @@ function ChromeFeedPageRow(props: FeedPageRowProps) {
         isPlaying={false}
         onToggleMute={onToggleMute}
         onTogglePlayPause={() => {}}
+        chromeVisible
         onBrowse={onBrowse}
         onSearchQuestions={onSearchQuestions}
         onFeedSettings={onFeedSettings}

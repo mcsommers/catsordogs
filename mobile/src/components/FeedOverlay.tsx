@@ -5,9 +5,10 @@ import { EllipsisVertical, Heart, Search, SlidersHorizontal } from 'lucide-react
 import { VideoProgressControls } from './VideoProgressControls';
 /** Chrome for one feed page; parent is a paging FlatList row — docs/mobile-feed-scroll.md */
 import type { FeedItem } from '../lib/feed';
-import { formatFeedPosterCity, shortQuestionDate } from '../lib/format';
+import { formatFeedPosterCity } from '../lib/format';
 import { FollowingBadge } from './FollowingBadge';
 import { ExpandableCaption } from './ExpandableCaption';
+import { FeedQuestionLabel } from './FeedQuestionLabel';
 import { colors, fonts } from '../theme';
 
 /** Space above the tab pill; Android needs extra room for 3-button system nav + tab padding. */
@@ -29,16 +30,8 @@ type Props = {
   videoProgress: number;
   isPlaying: boolean;
   onTogglePlayPause: () => void;
+  chromeVisible: boolean;
 };
-
-function QuestionPillLabel({ questionDate, questionText }: { questionDate: string; questionText: string }) {
-  return (
-    <Text style={styles.pillText}>
-      <Text style={styles.pillDate}>{shortQuestionDate(questionDate)} · </Text>
-      {questionText}
-    </Text>
-  );
-}
 
 export function FeedOverlay({
   item,
@@ -53,24 +46,26 @@ export function FeedOverlay({
   videoProgress,
   isPlaying,
   onTogglePlayPause,
+  chromeVisible,
 }: Props) {
   const insets = useSafeAreaInsets();
   const heartOn = item.matchState === 'sent' || item.matchState === 'matched';
   const city = formatFeedPosterCity(item.city);
+  if (!chromeVisible) return null;
   return (
     <View style={StyleSheet.absoluteFill} pointerEvents="box-none" collapsable={false}>
       <LinearGradient colors={['#000000B3', '#00000000']} style={styles.topScrim} pointerEvents="none" />
       <LinearGradient colors={['#00000000', '#000000D9']} style={styles.bottomScrim} pointerEvents="none" />
 
-      <View style={[styles.top, { paddingTop: insets.top + 8 }]} pointerEvents="box-none" collapsable={false}>
+      <View style={[styles.top, { paddingTop: insets.top + 16 }]} pointerEvents="box-none" collapsable={false}>
         <View style={styles.questionRow}>
           <Pressable
-            style={styles.questionPill}
+            style={styles.questionBlock}
             onPress={onBrowse}
             accessibilityRole="button"
             accessibilityLabel="Browse questions"
           >
-            <QuestionPillLabel questionDate={item.questionDate} questionText={item.questionText} />
+            <FeedQuestionLabel questionDate={item.questionDate} questionText={item.questionText} />
           </Pressable>
           <View style={styles.topActions}>
             <Pressable style={styles.iconBtn} onPress={onFeedSettings} accessibilityLabel="Feed settings" hitSlop={8}>
@@ -148,19 +143,11 @@ export function FeedOverlay({
 }
 
 const styles = StyleSheet.create({
-  topScrim: { position: 'absolute', top: 0, left: 0, right: 0, height: 200 },
+  topScrim: { position: 'absolute', top: 0, left: 0, right: 0, height: 280 },
   bottomScrim: { position: 'absolute', bottom: 0, left: 0, right: 0, height: 360 },
-  top: { paddingHorizontal: 20, gap: 10 },
-  questionRow: { flexDirection: 'row', alignItems: 'flex-start', gap: 8 },
-  questionPill: {
-    flex: 1,
-    backgroundColor: '#00000066',
-    borderRadius: 16,
-    paddingVertical: 10,
-    paddingHorizontal: 12,
-  },
-  pillText: { fontFamily: fonts.bodySemi, fontSize: 12, lineHeight: 16, color: '#FFFFFFE6' },
-  pillDate: { fontFamily: fonts.bodyBold, fontSize: 12, lineHeight: 16, color: colors.accentDog },
+  top: { paddingHorizontal: 20 },
+  questionRow: { flexDirection: 'row', alignItems: 'flex-start', gap: 8, marginTop: 10 },
+  questionBlock: { flex: 1, flexShrink: 1, marginTop: 14 },
   topActions: { gap: 8, alignItems: 'center' },
   iconBtn: {
     width: 36,
@@ -185,8 +172,8 @@ const styles = StyleSheet.create({
   nameIdentity: { flexDirection: 'row', alignItems: 'center', gap: 6, flexShrink: 1, flexWrap: 'wrap' },
   name: {
     fontFamily: fonts.heading,
-    fontSize: 22,
-    lineHeight: 26,
+    fontSize: 20,
+    lineHeight: 24,
     color: colors.white,
     ...(Platform.OS === 'android' ? { includeFontPadding: false } : null),
   },

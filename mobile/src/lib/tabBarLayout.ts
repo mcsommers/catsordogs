@@ -14,3 +14,11 @@ export function tabBarBottomPadding(bottomInset: number): number {
 export function tabBarOverlayHeight(bottomInset: number): number {
   return tabBarBottomPadding(bottomInset) + TAB_BAR_HEIGHT;
 }
+
+/** Bottom padding for edge-aligned modals/sheets (06e more-options). Play builds need nav-bar clearance Expo Go may not report. */
+export function bottomSheetPadding(bottomInset: number, base = 28): number {
+  if (Platform.OS === 'android') {
+    return base + (bottomInset > 0 ? bottomInset + 6 : 22);
+  }
+  return base + bottomInset;
+}

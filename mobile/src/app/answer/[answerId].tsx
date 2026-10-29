@@ -38,6 +38,7 @@ import {
   safeTimeUpdateInterval,
 } from '../../lib/videoPlayer';
 import { useVideoPlaybackControl } from '../../hooks/useVideoPlaybackControl';
+import { useVideoChromeVisibility } from '../../hooks/useVideoChromeVisibility';
 import { colors, fonts } from '../../theme';
 
 const GATE_MESSAGE = "Answer today's question to watch other people's videos.";
@@ -128,6 +129,7 @@ export default function AnswerDetailScreen() {
     activeAnswerId,
     isFocused && !!playbackUrl && !playbackError && !loading && answers.length > 0,
   );
+  const { chromeVisible, toggleChromeVisibility } = useVideoChromeVisibility(activeAnswerId);
 
   useEffect(() => {
     safeSetMuted(player, muted);
@@ -359,8 +361,8 @@ export default function AnswerDetailScreen() {
           {isActive && !playbackError ? (
             <Pressable
               style={StyleSheet.absoluteFill}
-              onPress={playback.togglePlayPause}
-              accessibilityLabel={playback.isPlaying ? 'Pause video' : 'Play video'}
+              onPress={toggleChromeVisibility}
+              accessibilityLabel={chromeVisible ? 'Hide video controls' : 'Show video controls'}
               accessibilityRole="button"
             />
           ) : null}
@@ -382,6 +384,7 @@ export default function AnswerDetailScreen() {
             playbackError={isActive ? playbackError : null}
             isPlaying={isActive ? playback.isPlaying : false}
             onTogglePlayPause={playback.togglePlayPause}
+            chromeVisible={isActive ? chromeVisible : true}
           />
         </View>
       );
@@ -404,6 +407,8 @@ export default function AnswerDetailScreen() {
       videoProgress,
       playback.isPlaying,
       playback.togglePlayPause,
+      chromeVisible,
+      toggleChromeVisibility,
       playbackError,
     ]
   );
