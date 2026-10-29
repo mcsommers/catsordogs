@@ -450,9 +450,18 @@ npx eas-cli@latest build --platform all --profile preview
 
 With both counters equal, **autoIncrement** usually gives the **same next number** on each platform (for example **15** on both). After the builds finish, confirm with `build:version:get` again.
 
-4. Submit each platform (Step 7 upload section below). iOS → TestFlight; Android → internal testing (or manual `.aab` upload if `eas submit` fails).
+4. **Submit both platforms (required).** Builds on expo.dev are not in TestFlight or Play until you submit. When an agent ships a preview release for Mike, **build + submit is one task**; do not stop after Step 3.
 
-If you only rebuild one platform, run `build:version:get` before the next paired release and run **`build:version:set`** on Android if it drifted behind iOS.
+   After **both** builds show **finished** on [Expo Builds](https://expo.dev/accounts/mcsommers/projects/cats-or-dogs/builds), note each **build id**, then from `mobile`:
+
+```sh
+npx eas-cli@latest submit --platform ios --profile preview --id <ios-build-id> --non-interactive --no-wait
+npx eas-cli@latest submit --platform android --profile preview --id <android-build-id> --non-interactive --no-wait
+```
+
+   Watch [Expo Submissions](https://expo.dev/accounts/mcsommers/projects/cats-or-dogs/submissions) until each row is **FINISHED**. Then iOS → App Store Connect **TestFlight**; Android → Play **internal testing** (details below). Same build numbers on both phones under Profile → **Version**.
+
+5. If you only rebuild one platform, run `build:version:get` before the next paired release and run **`build:version:set`** on Android if it drifted behind iOS.
 
 From `mobile`, you can still build one platform at a time when you only need that store:
 

@@ -98,6 +98,30 @@ points at Cats or Dogs - Staging). He starts the app with `cd mobile && npm run 
 If a change requires a development build, say so plainly, explain what breaks
 in Expo Go today, and offer an Expo Go–compatible path when one exists.
 
+Store testing builds (standing instruction from Mike):
+When Mike asks to **build**, **ship**, **upload**, or **push** a **preview** /
+TestFlight / Play **internal** release (paired iOS and Android), treat **build**
+and **submit** as **one job**. **`eas build` only uploads to Expo**; testers
+do not get the app until **`eas submit`** sends each binary to Apple and
+Google.
+
+1. From `mobile`, queue or wait for **finished** **preview** builds on **both**
+   platforms (usually `npx eas-cli@latest build --platform all --profile preview
+   --non-interactive`, with `--no-wait` only if you will monitor EAS until both
+   succeed).
+2. If Android **versionCode** lags iOS **buildNumber**, sync with
+   `build:version:get` / `build:version:set` per `docs/store-submission.md`
+   before building.
+3. **Always submit both** finished builds (do not stop when Builds are green):
+   `npx eas-cli@latest submit --platform ios --profile preview --id <ios-build-id>
+   --non-interactive --no-wait` and the same for Android with its build id
+   (`--latest` is ok only when you are sure it is the build you just made).
+4. Tell Mike to watch **Expo → Submissions** until each row is **FINISHED**, then
+   **TestFlight** (iOS) and Play **internal testing** (Android). Profile →
+   **Version** should match on both phones.
+5. Do **not** submit the **public** App Store or production Play listing unless
+   Mike explicitly asks for a public launch.
+
 Mobile forms (standing instruction from Mike):
 Show field-level errors as soon as the rule is knowable (for example an
 under-18 birthday right after the user picks a date). When the user
