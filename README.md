@@ -171,7 +171,7 @@ The hands-on tests to run on the phone are in [`docs/UAT-flows.md`](docs/UAT-flo
 
 The current testing build for other people's phones (TestFlight and Google Play testing) points at **staging**, not this production row. Steps are in [`docs/store-submission.md`](docs/store-submission.md). A later public launch is what uses production keys.
 
-**EAS (store testing builds):** The Expo project is [@mcsommers/cats-or-dogs](https://expo.dev/accounts/mcsommers/projects/cats-or-dogs). `mobile/eas.json` uses the **preview** profile (`distribution: store`, staging keys in Expo's preview environment). When you are ready to build after Apple and Google setup in the store doc, run from `mobile`: `npx eas-cli@latest build --platform ios --profile preview` (and the same for `android`). `mobile/.env` is still only for Expo Go on your Mac.
+**EAS (store testing builds):** The Expo project is [@mcsommers/cats-or-dogs](https://expo.dev/accounts/mcsommers/projects/cats-or-dogs). `mobile/eas.json` uses the **preview** profile (`distribution: store`, staging keys in Expo's preview environment). A full release is **build then submit** on both platforms (Expo **Builds** alone does not reach TestFlight or Play). Steps and commands are in [`docs/store-submission.md`](docs/store-submission.md) Step 7. `mobile/.env` is still only for Expo Go on your Mac.
 
 ### Keep phone UAT on staging
 
