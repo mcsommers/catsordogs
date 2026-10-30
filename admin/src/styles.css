@@ -197,6 +197,35 @@ table.sheet tbody tr.clickable:hover { background: #fafaf9; }
 table.sheet tbody tr.open { background: #fff7ed; }
 table.sheet tr.detail td { white-space: normal; background: #fffaf5; }
 
+.person-detail-columns {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  gap: 24px;
+  align-items: start;
+}
+@media (max-width: 720px) {
+  .person-detail-columns { grid-template-columns: 1fr; }
+}
+.person-feed-settings-title {
+  margin: 0;
+  font-size: 1rem;
+  font-weight: 600;
+}
+.feed-settings-dl {
+  margin: 0 0 8px;
+  display: grid;
+  grid-template-columns: minmax(8rem, 40%) minmax(0, 1fr);
+  gap: 4px 12px;
+}
+.feed-settings-dl dt {
+  margin: 0;
+  font-weight: 600;
+  color: #5c4a3a;
+}
+.feed-settings-dl dd {
+  margin: 0;
+}
+
 button.sort {
   border: 0;
   background: transparent;

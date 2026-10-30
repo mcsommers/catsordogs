@@ -2,7 +2,7 @@
 -- count as a view, unhiding restores one video only, profile-question lists
 -- are admin-only, and a missing next-day question emails each admin once.
 begin;
-select plan(66);
+select plan(70);
 
 delete from public.moderation_actions;
 delete from public.flags;
@@ -102,6 +102,8 @@ select throws_ok($$select * from public.admin_question_answer_counts()$$, '42501
   'a user cannot see how many people answered');
 select throws_ok($$select public.admin_queue_item_content((select id from queue_ids where label = 'profile'))$$,
   '42501', null, 'a user cannot open a review item');
+select throws_ok($$select public.admin_get_person_feed_settings(pg_temp.uid(1))$$, '42501', null,
+  'a user cannot read another person feed settings');
 
 -- ---------------------------------------------------------------------------
 -- An admin
@@ -133,6 +135,22 @@ select is((select answer_count from public.admin_list_people() where id = pg_tem
   'an admin sees how many answers a person has');
 select is((select last_sign_in_at from public.admin_list_people() where id = pg_temp.uid(1)),
   '2026-10-08 15:00:00+00'::timestamptz, 'an admin sees last login');
+
+update public.filter_preferences
+set filters = '{"show_me": "Women", "age_range": {"min": 25, "max": 40}}'::jsonb
+where user_id = pg_temp.uid(1);
+update public.feed_settings
+set shared_interests = 'high', relationship_goals = 'low', distance = 'medium',
+    specific_interests = array['Yoga']
+where user_id = pg_temp.uid(1);
+select is((select admin_get_person_feed_settings(pg_temp.uid(1)) -> 'filters' ->> 'show_me'), 'Women',
+  'an admin can read feed filters');
+select is((select admin_get_person_feed_settings(pg_temp.uid(1)) ->> 'shared_interests'), 'high',
+  'an admin can read feed ranking weights');
+select is((select admin_get_person_feed_settings(pg_temp.uid(1)) -> 'specific_interests' ->> 0), 'Yoga',
+  'an admin can read specific interests');
+select throws_ok($$select public.admin_get_person_feed_settings('00000000-0000-0000-0000-000000000099')$$,
+  'no_data_found', null, 'feed settings for a missing person are rejected');
 
 select is((select count(*) from public.admin_list_videos() where answer_status = 'disabled'), 2::bigint,
   'an admin can see hidden videos');

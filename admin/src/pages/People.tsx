@@ -2,6 +2,14 @@ import { Fragment, useEffect, useMemo, useState } from 'react';
 import { supabase } from '../supabase';
 import { formatWhen } from '../dates';
 import { useAuth } from '../auth';
+import {
+  describeFilterLines,
+  describeRankingLines,
+  mapFilterDefinition,
+  specificInterestsSummary,
+  type AdminPersonFeedSettings,
+  type FilterDefinition,
+} from '../feedSettingsDisplay';
 
 type Photo = { position: number; storage_path: string };
 type Person = {
@@ -60,6 +68,8 @@ const columns: { key: SortKey; label: string; align?: 'num' }[] = [
   { key: 'last_sign_in_at', label: 'Last login' },
 ];
 
+type FeedSettingsLoad = AdminPersonFeedSettings | 'loading' | 'error';
+
 export default function People() {
   const [people, setPeople] = useState<Person[]>([]);
   const [openId, setOpenId] = useState<string | null>(null);
@@ -72,11 +82,22 @@ export default function People() {
   const [pending, setPending] = useState<{ person: Person; makeAdmin: boolean } | null>(null);
   const [saving, setSaving] = useState(false);
   const [adminError, setAdminError] = useState<string | null>(null);
+  const [filterDefs, setFilterDefs] = useState<FilterDefinition[]>([]);
+  const [feedSettingsByPerson, setFeedSettingsByPerson] = useState<Record<string, FeedSettingsLoad>>({});
 
   useEffect(() => {
     supabase.rpc('admin_list_admin_ids').then(({ data }) => {
       setAdminIds(new Set((data ?? []) as string[]));
     });
+    supabase
+      .from('filter_definitions')
+      .select('key, label, control, min_value, max_value, unit, sort_order')
+      .eq('active', true)
+      .order('sort_order')
+      .then(({ data, error: defsError }) => {
+        if (defsError) return;
+        setFilterDefs((data ?? []).map((row) => mapFilterDefinition(row as Record<string, unknown>)));
+      });
     supabase.rpc('admin_list_people').then(async ({ data, error: loadError }) => {
       if (loadError) return setError(loadError.message);
       const rows = (data ?? []) as Person[];
@@ -95,12 +116,41 @@ export default function People() {
 
   const rows = useMemo(() => sortPeople(people, sortKey, sortDir), [people, sortKey, sortDir]);
 
+  async function loadFeedSettings(personId: string) {
+    setFeedSettingsByPerson((prev) => {
+      const existing = prev[personId];
+      if (existing && existing !== 'loading' && existing !== 'error') return prev;
+      return { ...prev, [personId]: 'loading' };
+    });
+    const { data, error: loadError } = await supabase.rpc('admin_get_person_feed_settings', { p_user_id: personId });
+    if (loadError) {
+      setFeedSettingsByPerson((prev) => ({ ...prev, [personId]: 'error' }));
+      return;
+    }
+    const row = data as Record<string, unknown>;
+    setFeedSettingsByPerson((prev) => ({
+      ...prev,
+      [personId]: {
+        filters:
+          row.filters && typeof row.filters === 'object' && !Array.isArray(row.filters)
+            ? (row.filters as Record<string, unknown>)
+            : {},
+        filters_updated_at: row.filters_updated_at ? String(row.filters_updated_at) : null,
+        shared_interests: String(row.shared_interests ?? 'medium'),
+        specific_interests: Array.isArray(row.specific_interests) ? (row.specific_interests as string[]) : [],
+        relationship_goals: String(row.relationship_goals ?? 'medium'),
+        distance: String(row.distance ?? 'medium'),
+      },
+    }));
+  }
+
   async function toggle(person: Person) {
     if (openId === person.id) {
       setOpenId(null);
       return;
     }
     setOpenId(person.id);
+    void loadFeedSettings(person.id);
     const missing = person.photos.filter((photo) => !photoUrls[photo.storage_path]);
     if (missing.length === 0) return;
     const next = { ...photoUrls };
@@ -152,7 +202,8 @@ export default function People() {
       <p className="muted">
         Every account, finished or not, reported or not. Click a column title to sort.
         Follower names are not shown: only the counts, which that person can already
-        see on their own profile. Click a row for the full profile, including photos.
+        see on their own profile. Click a row for the full profile, including photos
+        and their current Feed Settings.
       </p>
       {error ? <p className="error">{error}</p> : null}
       <div className="table-wrap">
@@ -178,6 +229,10 @@ export default function People() {
             {rows.map((person) => {
               const thumb = firstPhoto(person);
               const open = openId === person.id;
+              const feedLoad = open ? feedSettingsByPerson[person.id] : undefined;
+              const feedSettings =
+                feedLoad && feedLoad !== 'loading' && feedLoad !== 'error' ? feedLoad : null;
+              const feedRefreshing = feedLoad === 'loading' && feedSettings != null;
               return (
                 <Fragment key={person.id}>
                   <tr
@@ -204,58 +259,102 @@ export default function People() {
                   {open ? (
                     <tr key={`${person.id}-detail`} className="detail">
                       <td colSpan={columns.length}>
-                        <div className="stack">
-                          <div className="muted">
-                            {person.profile_completed_at ? 'Profile finished' : 'Profile not finished'}
-                            {person.age != null ? ` · ${person.age}` : ''}
+                        <div className="person-detail-columns">
+                          <div className="stack">
+                            <div className="muted">
+                              {person.profile_completed_at ? 'Profile finished' : 'Profile not finished'}
+                              {person.age != null ? ` · ${person.age}` : ''}
+                            </div>
+                            <div className="row">
+                              <span><strong>Admin access:</strong> {adminIds.has(person.id) ? 'Yes' : 'No'}</span>
+                              {adminIds.has(person.id) ? (
+                                person.id === userId
+                                  ? <span className="muted">You cannot remove your own admin access.</span>
+                                  : (
+                                    <button type="button" onClick={() => { setAdminError(null); setPending({ person, makeAdmin: false }); }}>
+                                      Remove admin
+                                    </button>
+                                  )
+                              ) : (
+                                <button type="button" onClick={() => { setAdminError(null); setPending({ person, makeAdmin: true }); }}>
+                                  Make admin
+                                </button>
+                              )}
+                            </div>
+                            <div className="photos">
+                              {person.photos.length === 0 ? <span className="muted">No photos</span> : null}
+                              {person.photos.map((photo) => (
+                                photoUrls[photo.storage_path]
+                                  ? <img key={photo.storage_path} src={photoUrls[photo.storage_path]} alt={`Photo ${photo.position}`} />
+                                  : <span key={photo.storage_path} className="muted">Photo {photo.position} unavailable</span>
+                              ))}
+                            </div>
+                            {person.about_me
+                              ? <p><strong>About Me</strong><br />{person.about_me}</p>
+                              : <p className="muted">No About Me</p>}
+                            <p>
+                              {line('Gender', person.gender)}
+                              {line('Orientation', (person.sexual_orientation ?? []).join(', '))}
+                              {line('Interested in', (person.interested_in ?? []).join(', '))}
+                              {line(
+                                'Height',
+                                person.height_inches != null
+                                  ? `${Math.floor(person.height_inches / 12)} ft ${person.height_inches % 12} in`
+                                  : null
+                              )}
+                              {line('City', person.city)}
+                              {line('Location lookup', person.latitude != null && person.longitude != null ? `${person.latitude}, ${person.longitude}` : null)}
+                              {line('Occupation', person.job_title)}
+                              {line('School', person.school)}
+                              {line('Interests', (person.interests ?? []).join(', '))}
+                              {line('Relationship goal', person.relationship_goal)}
+                              {line('Allow followers', person.allow_followers ? 'Yes' : 'No')}
+                              {line('Time zone', person.time_zone)}
+                              {line('Birthday', person.birthday)}
+                            </p>
                           </div>
-                          <div className="row">
-                            <span><strong>Admin access:</strong> {adminIds.has(person.id) ? 'Yes' : 'No'}</span>
-                            {adminIds.has(person.id) ? (
-                              person.id === userId
-                                ? <span className="muted">You cannot remove your own admin access.</span>
-                                : (
-                                  <button type="button" onClick={() => { setAdminError(null); setPending({ person, makeAdmin: false }); }}>
-                                    Remove admin
-                                  </button>
-                                )
-                            ) : (
-                              <button type="button" onClick={() => { setAdminError(null); setPending({ person, makeAdmin: true }); }}>
-                                Make admin
-                              </button>
-                            )}
+                          <div className="stack person-feed-settings">
+                            <h3 className="person-feed-settings-title">Feed settings</h3>
+                            <p className="muted">What this person sees in their feed today (filters and ranking).</p>
+                            {feedLoad === 'loading' && !feedSettings ? <p className="muted">Loading feed settings…</p> : null}
+                            {feedRefreshing ? <p className="muted">Refreshing…</p> : null}
+                            {feedLoad === 'error' ? (
+                              <p className="error">
+                                Could not load feed settings.{' '}
+                                <button type="button" className="text-link" onClick={() => loadFeedSettings(person.id)}>Try again</button>
+                              </p>
+                            ) : null}
+                            {feedSettings ? (
+                              <>
+                                {feedSettings.filters_updated_at ? (
+                                  <p className="muted">Filters last saved {formatWhen(feedSettings.filters_updated_at)}</p>
+                                ) : null}
+                                <p><strong>Filters</strong></p>
+                                <dl className="feed-settings-dl">
+                                  {describeFilterLines(filterDefs, feedSettings.filters).map(({ label, value }) => (
+                                    <Fragment key={label}>
+                                      <dt>{label}</dt>
+                                      <dd>{value}</dd>
+                                    </Fragment>
+                                  ))}
+                                </dl>
+                                <p><strong>Ranking</strong></p>
+                                <dl className="feed-settings-dl">
+                                  {describeRankingLines(feedSettings).map(({ label, value }) => (
+                                    <Fragment key={label}>
+                                      <dt>{label}</dt>
+                                      <dd>{value}</dd>
+                                    </Fragment>
+                                  ))}
+                                </dl>
+                                {specificInterestsSummary(feedSettings) ? (
+                                  <p className="muted">
+                                    <strong>Specific interests:</strong> {specificInterestsSummary(feedSettings)}
+                                  </p>
+                                ) : null}
+                              </>
+                            ) : null}
                           </div>
-                          <div className="photos">
-                            {person.photos.length === 0 ? <span className="muted">No photos</span> : null}
-                            {person.photos.map((photo) => (
-                              photoUrls[photo.storage_path]
-                                ? <img key={photo.storage_path} src={photoUrls[photo.storage_path]} alt={`Photo ${photo.position}`} />
-                                : <span key={photo.storage_path} className="muted">Photo {photo.position} unavailable</span>
-                            ))}
-                          </div>
-                          {person.about_me
-                            ? <p><strong>About Me</strong><br />{person.about_me}</p>
-                            : <p className="muted">No About Me</p>}
-                          <p>
-                            {line('Gender', person.gender)}
-                            {line('Orientation', (person.sexual_orientation ?? []).join(', '))}
-                            {line('Interested in', (person.interested_in ?? []).join(', '))}
-                            {line(
-                              'Height',
-                              person.height_inches != null
-                                ? `${Math.floor(person.height_inches / 12)} ft ${person.height_inches % 12} in`
-                                : null
-                            )}
-                            {line('City', person.city)}
-                            {line('Location lookup', person.latitude != null && person.longitude != null ? `${person.latitude}, ${person.longitude}` : null)}
-                            {line('Occupation', person.job_title)}
-                            {line('School', person.school)}
-                            {line('Interests', (person.interests ?? []).join(', '))}
-                            {line('Relationship goal', person.relationship_goal)}
-                            {line('Allow followers', person.allow_followers ? 'Yes' : 'No')}
-                            {line('Time zone', person.time_zone)}
-                            {line('Birthday', person.birthday)}
-                          </p>
                         </div>
                       </td>
                     </tr>
