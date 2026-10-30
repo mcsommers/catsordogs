@@ -1365,7 +1365,7 @@
               "fill": "$text-dark-muted",
               "textGrowth": "fixed-width",
               "width": 560,
-              "content": "Available soon on iOS and Android. Join the daily question and meet people who show up as themselves.",
+              "content": "Try the iPhone beta through TestFlight, or request access to our Android beta on Google Play.",
               "lineHeight": 1.45,
               "textAlign": "center",
               "fontFamily": "$font-body",
@@ -2796,7 +2796,7 @@
               "fill": "$text-dark-muted",
               "textGrowth": "fixed-width",
               "width": "fill_container",
-              "content": "Available soon on iOS and Android. Join the daily question and meet people who show up as themselves.",
+              "content": "Try the iPhone beta through TestFlight, or request access to our Android beta on Google Play.",
               "textAlign": "center",
               "fontFamily": "$font-body",
               "fontSize": 15,
@@ -3046,7 +3046,7 @@
       "id": "MHa5d",
       "x": 2415,
       "y": 0,
-      "name": "Download Modal",
+      "name": "Download Modal — Android",
       "width": 390,
       "fill": "$surface-dark",
       "cornerRadius": 16,
@@ -3061,7 +3061,7 @@
           "id": "zx8yb",
           "name": "Modal Title",
           "fill": "$white",
-          "content": "Coming Soon",
+          "content": "Available for beta testing",
           "fontFamily": "Anton",
           "fontSize": 32,
           "fontWeight": "normal"
@@ -3073,7 +3073,7 @@
           "fill": "$text-dark-muted",
           "textGrowth": "fixed-width",
           "width": "fill_container",
-          "content": "The Cats or Dogs? app is currently in development. Enter your email and we will notify you when we launch.",
+          "content": "To test Cats or Dogs? on your Android phone, we need to add you to our beta testing group. Submit your email address below to be added to our beta testing group. You will receive an email with instructions on how to install the app from the Google Play Store.",
           "lineHeight": 1.4,
           "fontFamily": "Funnel Sans",
           "fontSize": 15,
@@ -3126,7 +3126,7 @@
               "id": "Q3Rhe",
               "name": "Notify Label",
               "fill": "$white",
-              "content": "Notify me",
+              "content": "Add me to the testing group",
               "fontFamily": "Funnel Sans",
               "fontSize": 16,
               "fontWeight": "600"
@@ -4008,6 +4008,312 @@
               "fontFamily": "Funnel Sans",
               "fontSize": 14,
               "fontWeight": "normal"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "frame",
+      "id": "GDJ96",
+      "x": 5585,
+      "y": 0,
+      "name": "TestFlight Modal — iOS",
+      "clip": true,
+      "width": 390,
+      "fill": "$surface-dark",
+      "cornerRadius": 16,
+      "stroke": "$border-dark",
+      "strokeWidth": 1,
+      "layout": "vertical",
+      "gap": 14,
+      "padding": 28,
+      "children": [
+        {
+          "type": "text",
+          "id": "ec91J",
+          "name": "Modal Title",
+          "fill": "$white",
+          "textGrowth": "fixed-width",
+          "width": "fill_container",
+          "content": "Try Cats or Dogs? on iPhone",
+          "fontFamily": "Anton",
+          "fontSize": 32,
+          "fontWeight": "normal"
+        },
+        {
+          "type": "text",
+          "id": "zMpsq",
+          "name": "Modal Intro",
+          "fill": "$text-dark-muted",
+          "textGrowth": "fixed-width",
+          "width": "fill_container",
+          "content": "Our iPhone beta runs through Apple TestFlight. You need iOS 17 or later.",
+          "lineHeight": 1.4,
+          "fontFamily": "Funnel Sans",
+          "fontSize": 15,
+          "fontWeight": "normal"
+        },
+        {
+          "type": "frame",
+          "id": "rpWIg",
+          "name": "Steps List",
+          "width": "fill_container",
+          "layout": "vertical",
+          "gap": 12,
+          "children": [
+            {
+              "type": "frame",
+              "id": "JvOSo",
+              "name": "Step 1",
+              "width": "fill_container",
+              "gap": 12,
+              "children": [
+                {
+                  "type": "frame",
+                  "id": "c8fGY",
+                  "name": "Step Number",
+                  "width": 26,
+                  "height": 26,
+                  "fill": "#FFFFFF14",
+                  "cornerRadius": 999,
+                  "stroke": "$border-dark",
+                  "strokeWidth": 1,
+                  "justifyContent": "center",
+                  "alignItems": "center",
+                  "children": [
+                    {
+                      "type": "text",
+                      "id": "nSpHy",
+                      "name": "Number",
+                      "fill": "$white",
+                      "content": "1",
+                      "fontFamily": "Funnel Sans",
+                      "fontSize": 13,
+                      "fontWeight": "600"
+                    }
+                  ]
+                },
+                {
+                  "type": "frame",
+                  "id": "mVtqY",
+                  "name": "Step Text",
+                  "width": "fill_container",
+                  "layout": "vertical",
+                  "gap": 4,
+                  "children": [
+                    {
+                      "type": "text",
+                      "id": "wLtsa",
+                      "name": "Step Title",
+                      "fill": "$white",
+                      "textGrowth": "fixed-width",
+                      "width": "fill_container",
+                      "content": "Install TestFlight",
+                      "fontFamily": "Funnel Sans",
+                      "fontSize": 15,
+                      "fontWeight": "600"
+                    },
+                    {
+                      "type": "text",
+                      "id": "XUaSX",
+                      "name": "Step Body",
+                      "fill": "$text-dark-muted",
+                      "textGrowth": "fixed-width",
+                      "width": "fill_container",
+                      "content": "Download Apple's free TestFlight app from the App Store if you do not have it yet.",
+                      "lineHeight": 1.45,
+                      "fontFamily": "Funnel Sans",
+                      "fontSize": 14,
+                      "fontWeight": "normal"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "c8BD0",
+              "name": "Step 2",
+              "width": "fill_container",
+              "gap": 12,
+              "children": [
+                {
+                  "type": "frame",
+                  "id": "au9MD",
+                  "name": "Step Number",
+                  "width": 26,
+                  "height": 26,
+                  "fill": "#FFFFFF14",
+                  "cornerRadius": 999,
+                  "stroke": "$border-dark",
+                  "strokeWidth": 1,
+                  "justifyContent": "center",
+                  "alignItems": "center",
+                  "children": [
+                    {
+                      "type": "text",
+                      "id": "VkLfR",
+                      "name": "Number",
+                      "fill": "$white",
+                      "content": "2",
+                      "fontFamily": "Funnel Sans",
+                      "fontSize": 13,
+                      "fontWeight": "600"
+                    }
+                  ]
+                },
+                {
+                  "type": "frame",
+                  "id": "WNGxW",
+                  "name": "Step Text",
+                  "width": "fill_container",
+                  "layout": "vertical",
+                  "gap": 4,
+                  "children": [
+                    {
+                      "type": "text",
+                      "id": "Doa0a",
+                      "name": "Step Title",
+                      "fill": "$white",
+                      "textGrowth": "fixed-width",
+                      "width": "fill_container",
+                      "content": "Accept the invite",
+                      "fontFamily": "Funnel Sans",
+                      "fontSize": 15,
+                      "fontWeight": "600"
+                    },
+                    {
+                      "type": "text",
+                      "id": "Czi3N",
+                      "name": "Step Body",
+                      "fill": "$text-dark-muted",
+                      "textGrowth": "fixed-width",
+                      "width": "fill_container",
+                      "content": "Tap the button below to open our TestFlight invite, then tap Accept.",
+                      "lineHeight": 1.45,
+                      "fontFamily": "Funnel Sans",
+                      "fontSize": 14,
+                      "fontWeight": "normal"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "BeW8l",
+              "name": "Step 3",
+              "width": "fill_container",
+              "gap": 12,
+              "children": [
+                {
+                  "type": "frame",
+                  "id": "aBhzB",
+                  "name": "Step Number",
+                  "width": 26,
+                  "height": 26,
+                  "fill": "#FFFFFF14",
+                  "cornerRadius": 999,
+                  "stroke": "$border-dark",
+                  "strokeWidth": 1,
+                  "justifyContent": "center",
+                  "alignItems": "center",
+                  "children": [
+                    {
+                      "type": "text",
+                      "id": "K0QxF",
+                      "name": "Number",
+                      "fill": "$white",
+                      "content": "3",
+                      "fontFamily": "Funnel Sans",
+                      "fontSize": 13,
+                      "fontWeight": "600"
+                    }
+                  ]
+                },
+                {
+                  "type": "frame",
+                  "id": "k16dv",
+                  "name": "Step Text",
+                  "width": "fill_container",
+                  "layout": "vertical",
+                  "gap": 4,
+                  "children": [
+                    {
+                      "type": "text",
+                      "id": "rjNfw",
+                      "name": "Step Title",
+                      "fill": "$white",
+                      "textGrowth": "fixed-width",
+                      "width": "fill_container",
+                      "content": "Install the app",
+                      "fontFamily": "Funnel Sans",
+                      "fontSize": 15,
+                      "fontWeight": "600"
+                    },
+                    {
+                      "type": "text",
+                      "id": "r0dSY",
+                      "name": "Step Body",
+                      "fill": "$text-dark-muted",
+                      "textGrowth": "fixed-width",
+                      "width": "fill_container",
+                      "content": "In TestFlight, tap Install next to Cats or Dogs?",
+                      "lineHeight": 1.45,
+                      "fontFamily": "Funnel Sans",
+                      "fontSize": 14,
+                      "fontWeight": "normal"
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "frame",
+          "id": "z0nMBh",
+          "name": "Get TestFlight Button",
+          "width": "fill_container",
+          "height": 48,
+          "fill": "#007AFF",
+          "cornerRadius": 8,
+          "justifyContent": "center",
+          "alignItems": "center",
+          "children": [
+            {
+              "type": "text",
+              "id": "y00vX",
+              "name": "Get TestFlight Label",
+              "fill": "$white",
+              "content": "Get TestFlight",
+              "fontFamily": "Funnel Sans",
+              "fontSize": 16,
+              "fontWeight": "600"
+            }
+          ]
+        },
+        {
+          "type": "frame",
+          "id": "kdMYD",
+          "name": "Invite Button",
+          "width": "fill_container",
+          "height": 48,
+          "fill": "$accent-dog",
+          "cornerRadius": 8,
+          "justifyContent": "center",
+          "alignItems": "center",
+          "children": [
+            {
+              "type": "text",
+              "id": "y3I5X",
+              "name": "Invite Label",
+              "fill": "$white",
+              "content": "Install Cats or Dogs? (beta)",
+              "fontFamily": "Funnel Sans",
+              "fontSize": 16,
+              "fontWeight": "600"
             }
           ]
         }
