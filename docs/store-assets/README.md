@@ -24,3 +24,15 @@ Install [librsvg](https://formulae.brew.sh/formula/librsvg) (`brew install librs
 
 - **Apple:** Upload `app-icon-1024.png` in App Store Connect. Do not bake in rounded corners.
 - **Google Play:** Upload `app-icon-512.png` as the app icon. Adaptive launcher layers in `mobile/assets/` are separate from this listing asset.
+
+## `Play Store/`
+
+Phone screenshots and listing art uploaded to **Google Play Console** (closed testing and later production). Sources stay here so the team can re-export or replace them without hunting on a single Mac.
+
+| File | Use |
+| --- | --- |
+| `1024 x 500 (Google Play Store Feature Graphic).png` | **Feature graphic** (1024×500, required on the main store listing). |
+| `1024 x 500 (Google Play Store Feature Graphic).psd` | Editable source for the feature graphic. |
+| `Screenshot_*.png` | **Phone screenshots** for the Play listing (capture from a staging account on a real device). |
+
+Play icon upload still uses `app-icon/app-icon-512.png`, not this folder.
