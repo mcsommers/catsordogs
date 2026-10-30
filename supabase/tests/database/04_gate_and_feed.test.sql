@@ -3,7 +3,7 @@
 -- locations, and who can read what.
 -- (Followed-first ordering and its cap are in 05_feed_followed_cap.test.sql.)
 begin;
-select plan(149);
+select plan(150);
 
 delete from public.answers;
 delete from public.videos;
@@ -240,6 +240,8 @@ select is((select city from public.get_feed(50, 0, public.utc_today()) where fir
 select is((select gender from public.get_feed(50, 0, public.utc_today()) where first_name = 'W1'),
   'Woman',
   'each feed row carries gender so confirmation pronouns can be she/he/they');
+select is((select accepts_followers from public.get_feed(50, 0, public.utc_today()) where first_name = 'W1'), true,
+  'each feed row reports whether the poster accepts new followers');
 select ok(not exists (select 1 from public.get_feed(50) where first_name in ('X4', 'X5', 'X6', 'V')),
   'disabled, removed, unfinished and own answers are never in the feed');
 select is((select count(*) from information_schema.columns

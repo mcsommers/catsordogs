@@ -104,6 +104,7 @@ export default function AnswerDetailScreen() {
   const [subjectGender, setSubjectGender] = useState<string | null>(null);
   const [subjectAvatarUri, setSubjectAvatarUri] = useState<string | null>(null);
   const [isFollowed, setIsFollowed] = useState(() => oneParam(params.isFollowed) === '1');
+  const [acceptsFollowers, setAcceptsFollowers] = useState(true);
   const [matchState, setMatchState] = useState<FeedMatchState>('none');
   const [loading, setLoading] = useState(true);
   const [gateOpen, setGateOpen] = useState(true);
@@ -184,6 +185,7 @@ export default function AnswerDetailScreen() {
     try {
       const fs = await getFollowState(targetUserId);
       setIsFollowed(fs.following);
+      setAcceptsFollowers(fs.acceptsFollowers);
     } catch {
       // Keep route or prior state if the check fails.
     }
@@ -276,7 +278,7 @@ export default function AnswerDetailScreen() {
       : null;
 
   const social = useSocialActions(socialSubject, {
-    onStateChange: (patch) => {
+    onStateChange: (_userId, patch) => {
       if (patch.isFollowed != null) setIsFollowed(patch.isFollowed);
       if (patch.matchState != null) setMatchState(patch.matchState);
     },
@@ -463,6 +465,7 @@ export default function AnswerDetailScreen() {
         <MoreOptionsMenu
           visible={social.menuOpen}
           isFollowed={isFollowed}
+          acceptsFollowers={acceptsFollowers}
           firstName={subject.firstName}
           age={subject.age}
           avatarUri={subjectAvatarUri}

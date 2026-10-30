@@ -1,5 +1,6 @@
 import { useEffect, useState, type ReactNode } from 'react';
 import { TriangleAlert } from 'lucide-react-native';
+import { alertSocialActionError } from '../lib/socialErrors';
 import { Dialog, type DialogBadgeKind, type DialogHero } from './ui';
 
 export type ConfirmationRequest = {
@@ -45,6 +46,12 @@ export function ConfirmationProvider({ children }: { children: ReactNode }) {
 
   const dismiss = () => setRequest(null);
 
+  const runConfirmedAction = (action?: () => void | Promise<void>) => {
+    dismiss();
+    if (!action) return;
+    void Promise.resolve(action()).catch(alertSocialActionError);
+  };
+
   const hero =
     request == null || request.useIconHero
       ? {
@@ -72,9 +79,7 @@ export function ConfirmationProvider({ children }: { children: ReactNode }) {
         primary={{
           label: request?.confirmLabel ?? '',
           onPress: () => {
-            const action = request?.onConfirm;
-            dismiss();
-            if (action) void action();
+            runConfirmedAction(request?.onConfirm);
           },
         }}
         alternate={
@@ -82,9 +87,7 @@ export function ConfirmationProvider({ children }: { children: ReactNode }) {
             ? {
                 label: request.alternateLabel,
                 onPress: () => {
-                  const action = request.onAlternate;
-                  dismiss();
-                  if (action) void action();
+                  runConfirmedAction(request.onAlternate);
                 },
               }
             : undefined

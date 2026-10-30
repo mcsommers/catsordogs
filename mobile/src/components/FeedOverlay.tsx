@@ -5,7 +5,7 @@ import { EllipsisVertical, Heart, Search, SlidersHorizontal } from 'lucide-react
 import { VideoProgressControls } from './VideoProgressControls';
 /** Chrome for one feed page; parent is a paging FlatList row — docs/mobile-feed-scroll.md */
 import type { FeedItem } from '../lib/feed';
-import { formatFeedPosterCity } from '../lib/format';
+import { formatFeedPosterCity, formatNameAgeSuffix } from '../lib/format';
 import { FollowingBadge } from './FollowingBadge';
 import { ExpandableCaption } from './ExpandableCaption';
 import { FeedQuestionLabel } from './FeedQuestionLabel';
@@ -51,6 +51,7 @@ export function FeedOverlay({
   const insets = useSafeAreaInsets();
   const heartOn = item.matchState === 'sent' || item.matchState === 'matched';
   const city = formatFeedPosterCity(item.city);
+  const ageSuffix = formatNameAgeSuffix(item.age);
   if (!chromeVisible) return null;
   return (
     <View style={StyleSheet.absoluteFill} pointerEvents="box-none" collapsable={false}>
@@ -88,15 +89,12 @@ export function FeedOverlay({
           <View style={styles.identityCaptionCol}>
             <Pressable style={styles.identityBlock} onPress={onOpenProfile} accessibilityRole="button">
               <View style={styles.nameRow}>
-                <View style={styles.nameIdentity}>
-                  <Text style={styles.name}>{item.firstName}, {item.age}</Text>
-                  {city ? <Text style={styles.city}>{city}</Text> : null}
-                </View>
-                {item.isFollowed ? (
-                  <View style={styles.followingWrap}>
-                    <FollowingBadge />
-                  </View>
-                ) : null}
+                <Text style={styles.namePart}>
+                  {item.firstName.trim()}
+                  {ageSuffix}
+                </Text>
+                {city ? <Text style={styles.cityPart}>{city}</Text> : null}
+                {item.isFollowed ? <FollowingBadge /> : null}
               </View>
             </Pressable>
             <ExpandableCaption text={item.captionText ?? ''} resetKey={item.answerId} />
@@ -161,7 +159,14 @@ const styles = StyleSheet.create({
   captionIdentityRow: { flexDirection: 'row', alignItems: 'flex-end', gap: 12 },
   identityCaptionCol: { flex: 1, gap: 16 },
   identityBlock: { gap: 6 },
-  nameRow: { flexDirection: 'row', alignItems: 'center', gap: 8, flexWrap: 'wrap' },
+  nameRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 6,
+    flexWrap: 'wrap',
+    alignSelf: 'flex-start',
+    maxWidth: '100%',
+  },
   avatarImage: { width: AVATAR_ACTION_SIZE, height: AVATAR_ACTION_SIZE, borderRadius: AVATAR_ACTION_SIZE / 2 },
   avatarPlaceholder: {
     width: AVATAR_ACTION_SIZE,
@@ -169,22 +174,22 @@ const styles = StyleSheet.create({
     borderRadius: AVATAR_ACTION_SIZE / 2,
     backgroundColor: '#FFFFFF33',
   },
-  nameIdentity: { flexDirection: 'row', alignItems: 'center', gap: 6, flexShrink: 1, flexWrap: 'wrap' },
-  name: {
+  namePart: {
+    flexShrink: 0,
     fontFamily: fonts.heading,
     fontSize: 20,
     lineHeight: 24,
     color: colors.white,
     ...(Platform.OS === 'android' ? { includeFontPadding: false } : null),
   },
-  city: {
+  cityPart: {
+    flexShrink: 1,
     fontFamily: fonts.body,
     fontSize: 13,
     lineHeight: 17,
     color: '#FFFFFFB3',
     ...(Platform.OS === 'android' ? { includeFontPadding: false } : null),
   },
-  followingWrap: { marginLeft: 4 },
   actionStrip: { gap: 14, alignItems: 'center' },
   actionBtn: {
     width: 48,

@@ -19,6 +19,7 @@ export type FeedItem = {
   captionSegments: CaptionSegment[];
   durationSeconds: number;
   isFollowed: boolean;
+  acceptsFollowers: boolean;
   submittedAt: string;
   streakDays: number;
   matchState: FeedMatchState;
@@ -55,6 +56,7 @@ type FeedRow = {
   caption_segments: CaptionSegment[] | null;
   duration_seconds: number;
   is_followed: boolean;
+  accepts_followers: boolean;
   submitted_at: string;
   streak_days: number;
   match_state: string;
@@ -71,13 +73,14 @@ function mapFeedRow(row: FeedRow): FeedItem {
     questionText: row.question_text,
     firstName: row.first_name,
     gender: row.gender ? String(row.gender) : null,
-    age: row.age,
+    age: Number(row.age),
     distanceMiles: row.distance_miles,
     city: row.city ?? null,
     captionText: row.caption_text ?? '',
     captionSegments: Array.isArray(row.caption_segments) ? row.caption_segments : [],
     durationSeconds: Number(row.duration_seconds) || 0,
     isFollowed: row.is_followed,
+    acceptsFollowers: row.accepts_followers !== false,
     submittedAt: row.submitted_at,
     streakDays: row.streak_days ?? 0,
     matchState: (row.match_state as FeedMatchState) || 'none',

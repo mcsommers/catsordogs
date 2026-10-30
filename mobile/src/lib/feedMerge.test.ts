@@ -16,6 +16,7 @@ const item = (answerId: string): FeedItem => ({
   captionSegments: [],
   durationSeconds: 10,
   isFollowed: false,
+  acceptsFollowers: true,
   submittedAt: '',
   streakDays: 0,
   matchState: 'none',

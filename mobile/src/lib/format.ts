@@ -64,6 +64,14 @@ export function formatFeedPosterCity(city: string | null | undefined): string | 
   return trimmed ? trimmed : null;
 }
 
+/** Comma and age after a first name, e.g. ", 29". Empty when age is unknown. */
+export function formatNameAgeSuffix(age: unknown): string {
+  if (age == null || age === '') return '';
+  const n = typeof age === 'number' ? age : Number(age);
+  if (!Number.isFinite(n)) return '';
+  return `, ${Math.trunc(n)}`;
+}
+
 export function formatDistanceMiles(miles: number | null): string | null {
   if (miles == null) return null;
   if (miles <= 1) return '1 mile away';
