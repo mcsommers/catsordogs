@@ -1,5 +1,10 @@
 ---
-import { downloadModal } from '../data/homepage';
+import {
+  downloadModal,
+  testFlightAppStoreUrl,
+  testFlightInviteUrl,
+  testFlightModal,
+} from '../data/homepage';
 
 const supabaseUrl = import.meta.env.PUBLIC_SUPABASE_URL ?? '';
 const supabaseAnonKey = import.meta.env.PUBLIC_SUPABASE_ANON_KEY ?? '';
@@ -9,6 +14,7 @@ const supabaseAnonKey = import.meta.env.PUBLIC_SUPABASE_ANON_KEY ?? '';
   class="download-modal"
   id="download-modal"
   data-open="false"
+  data-mode="android"
   aria-hidden="true"
   data-supabase-url={supabaseUrl}
   data-supabase-anon-key={supabaseAnonKey}
@@ -22,25 +28,69 @@ const supabaseAnonKey = import.meta.env.PUBLIC_SUPABASE_ANON_KEY ?? '';
     aria-describedby="download-modal-desc"
   >
     <button type="button" class="download-modal__close" id="download-modal-close" aria-label="Close">×</button>
-    <h2 id="download-modal-title" class="download-modal__title">{downloadModal.title}</h2>
-    <p id="download-modal-desc" class="download-modal__message">{downloadModal.message}</p>
 
-    <form class="download-modal__form" id="download-modal-form" novalidate>
-      <label class="download-modal__label" for="download-modal-email">{downloadModal.emailLabel}</label>
-      <input
-        class="download-modal__input"
-        type="email"
-        id="download-modal-email"
-        name="email"
-        autocomplete="email"
-        inputmode="email"
-        required
-      />
-      <p class="download-modal__feedback" id="download-modal-feedback" hidden></p>
-      <button class="download-modal__submit" type="submit">{downloadModal.submitLabel}</button>
-    </form>
+    <div class="download-modal__view" id="download-modal-view-android" hidden>
+      <h2 id="download-modal-title" class="download-modal__title">{downloadModal.title}</h2>
+      <p id="download-modal-desc" class="download-modal__message">{downloadModal.message}</p>
 
-    <p class="download-modal__success" id="download-modal-success" hidden>{downloadModal.successMessage}</p>
+      <form class="download-modal__form" id="download-modal-form" novalidate>
+        <label class="download-modal__label" for="download-modal-email">{downloadModal.emailLabel}</label>
+        <input
+          class="download-modal__input"
+          type="email"
+          id="download-modal-email"
+          name="email"
+          autocomplete="email"
+          inputmode="email"
+          required
+        />
+        <p class="download-modal__feedback" id="download-modal-feedback" hidden></p>
+        <button class="download-modal__submit" type="submit">{downloadModal.submitLabel}</button>
+      </form>
+
+      <p class="download-modal__success" id="download-modal-success" hidden>{downloadModal.successMessage}</p>
+    </div>
+
+    <div class="download-modal__view" id="download-modal-view-ios" hidden>
+      <h2 class="download-modal__title" id="download-modal-ios-title">{testFlightModal.title}</h2>
+      <p class="download-modal__message" id="download-modal-ios-desc">{testFlightModal.intro}</p>
+
+      <ol class="download-modal__steps">
+        {
+          testFlightModal.steps.map((step, index) => (
+            <li class="download-modal__step">
+              <span class="download-modal__step-num">{index + 1}</span>
+              <div>
+                <p class="download-modal__step-title">{step.title}</p>
+                <p class="download-modal__step-body">{step.body}</p>
+              </div>
+            </li>
+          ))
+        }
+      </ol>
+
+      <div class="download-modal__ios-actions">
+        <a
+          class="download-modal__submit download-modal__submit--link download-modal__submit--app-store"
+          id="download-modal-ios-get-testflight"
+          href={testFlightAppStoreUrl}
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          {testFlightModal.getTestFlightButtonLabel}
+        </a>
+
+        <a
+          class="download-modal__submit download-modal__submit--link"
+          id="download-modal-ios-invite"
+          href={testFlightInviteUrl}
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          {testFlightModal.inviteButtonLabel}
+        </a>
+      </div>
+    </div>
   </div>
 </div>
 
@@ -53,8 +103,24 @@ const supabaseAnonKey = import.meta.env.PUBLIC_SUPABASE_ANON_KEY ?? '';
   const emailInput = document.getElementById('download-modal-email');
   const feedback = document.getElementById('download-modal-feedback');
   const success = document.getElementById('download-modal-success');
+  const viewAndroid = document.getElementById('download-modal-view-android');
+  const viewIos = document.getElementById('download-modal-view-ios');
+  const iosInvite = document.getElementById('download-modal-ios-invite');
+  const iosGetTestFlight = document.getElementById('download-modal-ios-get-testflight');
 
-  if (!modal || !backdrop || !closeBtn || !form || !emailInput || !feedback || !success) return;
+  if (
+    !modal ||
+    !backdrop ||
+    !closeBtn ||
+    !form ||
+    !emailInput ||
+    !feedback ||
+    !success ||
+    !viewAndroid ||
+    !viewIos
+  ) {
+    return;
+  }
 
   let lastFocused = null;
 
@@ -64,16 +130,42 @@ const supabaseAnonKey = import.meta.env.PUBLIC_SUPABASE_ANON_KEY ?? '';
     feedback.classList.toggle('download-modal__feedback--error', Boolean(isError));
   }
 
-  function openModal() {
+  function showView(mode) {
+    const isIos = mode === 'ios';
+    modal.dataset.mode = isIos ? 'ios' : 'android';
+    viewAndroid.hidden = isIos;
+    viewIos.hidden = !isIos;
+    modal.classList.toggle('download-modal--ios', isIos);
+  }
+
+  function openModal(mode) {
     lastFocused = document.activeElement;
+    showView(mode === 'ios' ? 'ios' : 'android');
     modal.dataset.open = 'true';
     modal.setAttribute('aria-hidden', 'false');
+    const panel = modal.querySelector('.download-modal__panel');
+    if (panel) {
+      panel.setAttribute(
+        'aria-labelledby',
+        mode === 'ios' ? 'download-modal-ios-title' : 'download-modal-title',
+      );
+      panel.setAttribute(
+        'aria-describedby',
+        mode === 'ios' ? 'download-modal-ios-desc' : 'download-modal-desc',
+      );
+    }
     document.body.style.overflow = 'hidden';
-    form.hidden = false;
-    success.hidden = true;
-    setFeedback('', false);
-    emailInput.value = '';
-    emailInput.focus();
+
+    if (mode === 'ios') {
+      const focusTarget = iosGetTestFlight || iosInvite || closeBtn;
+      focusTarget.focus();
+    } else {
+      form.hidden = false;
+      success.hidden = true;
+      setFeedback('', false);
+      emailInput.value = '';
+      emailInput.focus();
+    }
   }
 
   function closeModal() {
@@ -112,7 +204,10 @@ const supabaseAnonKey = import.meta.env.PUBLIC_SUPABASE_ANON_KEY ?? '';
   }
 
   document.querySelectorAll('[data-open-download-modal]').forEach((trigger) => {
-    trigger.addEventListener('click', openModal);
+    trigger.addEventListener('click', () => {
+      const mode = trigger.getAttribute('data-open-download-modal') || 'android';
+      openModal(mode);
+    });
   });
 
   backdrop.addEventListener('click', closeModal);

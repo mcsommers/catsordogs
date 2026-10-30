@@ -155,8 +155,16 @@ export const support = {
 export const downloadSection = {
   title: 'Download Cats or Dogs?',
   subtitle:
-    'Available soon on iOS and Android. Join the daily question and meet people who show up as themselves.',
+    'Try the iPhone beta through TestFlight, or request access to our Android beta on Google Play.',
 };
+
+/** Apple TestFlight helper app (stable App Store URL). */
+export const testFlightAppStoreUrl =
+  'https://apps.apple.com/app/testflight/id899247664';
+
+/** Public TestFlight beta invite (App Store Connect external testing). */
+export const testFlightInviteUrl =
+  'https://testflight.apple.com/join/YmnzaYfV';
 
 export const supportPage = {
   title: 'Support',
@@ -186,16 +194,38 @@ export const footer = {
 };
 
 export const downloadModal = {
-  title: 'Coming Soon',
+  title: 'Available for beta testing',
   message:
-    'The Cats or Dogs? app is currently in development. Enter your email and we will notify you when we launch.',
+    'To test Cats or Dogs? on your Android phone, we need to add you to our beta testing group. Submit your email address below to be added to our beta testing group. You will receive an email with instructions on how to install the app from the Google Play Store.',
   emailLabel: 'Email address',
-  submitLabel: 'Notify me',
-  successMessage: "Thanks. We'll email you when the app launches.",
+  submitLabel: 'Add me to the testing group',
+  successMessage: "Thanks. We'll email you with instructions to join the Android beta.",
   errorInvalid: 'Enter a valid email address.',
   errorGeneric: 'Something went wrong. Please try again.',
   errorNotConfigured:
     'Sign-up is not available right now. Please try again later.',
+};
+
+export const testFlightModal = {
+  title: 'Try Cats or Dogs? on iPhone',
+  intro:
+    'Our iPhone beta runs through Apple TestFlight. You need iOS 17 or later.',
+  steps: [
+    {
+      title: 'Install TestFlight',
+      body: 'Download Apple’s free TestFlight app from the App Store if you do not have it yet.',
+    },
+    {
+      title: 'Accept the invite',
+      body: 'Tap the button below to open our TestFlight invite, then tap Accept.',
+    },
+    {
+      title: 'Install the app',
+      body: 'In TestFlight, tap Install next to Cats or Dogs?',
+    },
+  ],
+  getTestFlightButtonLabel: 'Get TestFlight',
+  inviteButtonLabel: 'Install Cats or Dogs? (beta)',
 };
 
 export const seo = {

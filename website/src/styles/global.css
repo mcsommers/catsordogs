@@ -491,6 +491,10 @@ summary:focus-visible {
     opacity 0.22s ease;
 }
 
+.download-modal--ios .download-modal__panel {
+  max-height: min(92vh, 40rem);
+}
+
 .download-modal[data-open='true'] .download-modal__panel {
   transform: translateY(0) scale(1);
   opacity: 1;
@@ -598,6 +602,89 @@ summary:focus-visible {
   margin: 0.5rem 0 0;
   font-size: 0.9375rem;
   color: var(--text);
+}
+
+.download-modal__steps {
+  list-style: none;
+  margin: 0 0 1.25rem;
+  padding: 0;
+  display: grid;
+  gap: 0.875rem;
+}
+
+.download-modal__step {
+  display: flex;
+  gap: 0.75rem;
+  align-items: flex-start;
+}
+
+.download-modal__step-num {
+  flex-shrink: 0;
+  width: 1.625rem;
+  height: 1.625rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.8125rem;
+  font-weight: 700;
+  color: var(--text);
+  background: rgb(255 255 255 / 8%);
+  border: 1px solid var(--border-dark);
+  border-radius: 999px;
+}
+
+.download-modal__step-title {
+  margin: 0 0 0.25rem;
+  font-size: 0.9375rem;
+  font-weight: 600;
+  color: var(--text);
+}
+
+.download-modal__step-body {
+  margin: 0;
+  font-size: 0.875rem;
+  line-height: 1.45;
+  color: var(--text-muted);
+}
+
+.download-modal__submit--link {
+  display: block;
+  text-align: center;
+  text-decoration: none;
+  box-sizing: border-box;
+}
+
+.download-modal__ios-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.download-modal__submit--app-store {
+  background: #007aff;
+}
+
+.download-modal__submit--app-store:hover {
+  filter: brightness(1.06);
+}
+
+.download-modal__submit--link[hidden] {
+  display: none;
+}
+
+.download-modal__secondary-link {
+  display: block;
+  margin-top: 0.875rem;
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: var(--accent);
+  text-align: center;
+  text-decoration: underline;
+  text-underline-offset: 0.15em;
+}
+
+.download-modal__secondary-link:hover {
+  filter: brightness(1.08);
 }
 
 .steps {
