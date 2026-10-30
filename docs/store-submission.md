@@ -340,10 +340,11 @@ You must be 18 or older. You can block or report someone from their video or pro
 - **Save** is fine anytime to store draft metadata.
 - Do **not** tap **Add for Review** until you intend to ship on the **public** App Store. Testers use **TestFlight**, not this button.
 
-Icons for a future public listing are in the repo. See `docs/store-assets/README.md`.
+Listing art for the stores is in the repo. See `docs/store-assets/README.md`.
 
-- Apple: `docs/store-assets/app-icon/app-icon-1024.png` (square, no rounded corners)
-- Google: `docs/store-assets/app-icon/app-icon-512.png`
+- Apple app icon: `docs/store-assets/app-icon/app-icon-1024.png` (square, no rounded corners)
+- Google app icon: `docs/store-assets/app-icon/app-icon-512.png`
+- Google feature graphic (1024×500) and phone screenshots: `docs/store-assets/Play Store/` (PNG files; PSD source for the feature graphic is in the same folder)
 
 ## Step 6. Create the app on Google
 
@@ -360,8 +361,8 @@ Icons for a future public listing are in the repo. See `docs/store-assets/README
 3. Fill every task Play Console marks as required before a testing release can go out. New apps are blocked until these exist:
    - Short description and full description. A starting point is below. Edit it in your own words before you save.
    - App icon: `docs/store-assets/app-icon/app-icon-512.png`
-   - A feature graphic, 1024 by 500 pixels. There is not one in the repo yet. Ask the agent to export one from the app icon artwork if you want it made here.
-   - Phone screenshots. At least two. Use your own staging account so you are not publishing someone else's video. The screens look the same as they will for testers.
+   - Feature graphic (1024×500): `docs/store-assets/Play Store/1024 x 500 (Google Play Store Feature Graphic).png` (editable PSD in the same folder)
+   - Phone screenshots: at least two from `docs/store-assets/Play Store/` (or capture new ones from the installed build). Use your own staging account so you are not publishing someone else's video. The screens look the same as they will for testers.
    - Privacy policy URL: `https://catsordogs.net/privacy-policy`
 4. Complete the **content rating** questionnaire (IARC), the **Data safety** form, and the **ads** declaration. Ads: the app has none. Use the data list in the next section for Data safety. Target age: 18 and older.
 5. Under **App content**, declare that the app has user-generated content and that users can report and block. In the app, **Report** and **Block** are on a person's video and profile. Account deletion is **Profile → Privacy & Safety → Delete account**. Support URL: `https://catsordogs.net/support`
@@ -377,6 +378,9 @@ Answers for fields Play asks while you set up the listing. Add a row here when a
 | Play Console field | What to enter |
 | --- | --- |
 | Package name (application ID) | `net.catsordogs.app` (same as iOS bundle ID; permanent after creation) |
+| App icon (512×512) | `docs/store-assets/app-icon/app-icon-512.png` |
+| Feature graphic (1024×500) | `docs/store-assets/Play Store/1024 x 500 (Google Play Store Feature Graphic).png` |
+| Phone screenshots | PNGs in `docs/store-assets/Play Store/` (replace with fresh captures when the UI changes) |
 
 ### Store text you can edit
 
