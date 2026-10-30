@@ -90,8 +90,9 @@ export const privacyPolicy: LegalDocument = {
     },
     {
       title: 'Contact',
+      id: 'contact',
       paragraphs: [
-        'Questions about privacy: catsordogsapp+privacy@gmail.com.',
+        'Questions about privacy, or to request account deletion: catsordogsapp+privacy@gmail.com.',
       ],
     },
   ],

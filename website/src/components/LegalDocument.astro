@@ -14,9 +14,11 @@ const { document } = Astro.props;
     <p class="legal-page__updated">Last updated: {document.lastUpdated}</p>
     {document.intro ? <p class="legal-page__intro">{document.intro}</p> : null}
     {
-      document.sections.map((section, index) => (
-        <section class="legal-page__section" aria-labelledby={`legal-section-${index}`}>
-          <h2 class="legal-page__heading" id={`legal-section-${index}`}>{section.title}</h2>
+      document.sections.map((section, index) => {
+        const sectionId = section.id ?? `legal-section-${index}`;
+        return (
+        <section class="legal-page__section" aria-labelledby={sectionId}>
+          <h2 class="legal-page__heading" id={sectionId}>{section.title}</h2>
           {section.paragraphs.map((paragraph) => <p>{paragraph}</p>)}
           {section.bullets ? (
             <ul>
@@ -24,7 +26,8 @@ const { document } = Astro.props;
             </ul>
           ) : null}
         </section>
-      ))
+        );
+      })
     }
   </div>
 </main>
