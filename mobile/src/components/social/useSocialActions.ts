@@ -1,5 +1,4 @@
 import { useCallback, useState } from 'react';
-import { Alert } from 'react-native';
 import type { FeedMatchState } from '../../lib/feed';
 import {
   blockUser,
@@ -11,6 +10,7 @@ import {
   sendMatchRequest,
   unfollowUser,
 } from '../../lib/social';
+import { alertSocialActionError } from '../../lib/socialErrors';
 import type { MoreMenuAction } from './MoreOptionsMenu';
 import {
   confirmBlock,
@@ -37,7 +37,10 @@ export type SocialSubject = {
 };
 
 type Options = {
-  onStateChange?: (patch: Partial<Pick<SocialSubject, 'isFollowed' | 'matchState'>>) => void;
+  onStateChange?: (
+    userId: string,
+    patch: Partial<Pick<SocialSubject, 'isFollowed' | 'matchState'>>,
+  ) => void;
   onBlocked?: () => void;
   onNotInterested?: () => void;
   onMatchSent?: (result: 'sent' | 'matched') => void;
@@ -58,14 +61,14 @@ export function useSocialActions(subject: SocialSubject | null, options: Options
         if (action === 'follow') {
           confirmFollow(person, async () => {
             await followUser(subject.userId);
-            options.onStateChange?.({ isFollowed: true });
+            options.onStateChange?.(subject.userId, { isFollowed: true });
           });
           return;
         }
         if (action === 'unfollow') {
           confirmUnfollow(person, async () => {
             await unfollowUser(subject.userId);
-            options.onStateChange?.({ isFollowed: false });
+            options.onStateChange?.(subject.userId, { isFollowed: false });
           });
           return;
         }
@@ -130,7 +133,7 @@ export function useSocialActions(subject: SocialSubject | null, options: Options
           });
         }
       } catch (e) {
-        Alert.alert('Something went wrong', (e as Error).message || 'Please try again.');
+        alertSocialActionError(e);
       }
     },
     [subject, person, options]
@@ -141,25 +144,17 @@ export function useSocialActions(subject: SocialSubject | null, options: Options
     if (subject.matchState === 'matched') return;
     if (subject.matchState === 'sent') {
       confirmCancelMatch(person, async () => {
-        try {
-          await cancelMatchRequest(subject.userId);
-          options.onStateChange?.({ matchState: 'none' });
-          options.onMatchCancelled?.();
-        } catch (e) {
-          Alert.alert('Something went wrong', (e as Error).message || 'Please try again.');
-        }
+        await cancelMatchRequest(subject.userId);
+        options.onStateChange?.(subject.userId, { matchState: 'none' });
+        options.onMatchCancelled?.();
       });
       return;
     }
     confirmSendMatch(person, async () => {
-      try {
-        const result = await sendMatchRequest(subject.userId, subject.surface === 'profile' ? null : subject.answerId ?? null);
-        const next: FeedMatchState = result === 'matched' ? 'matched' : 'sent';
-        options.onStateChange?.({ matchState: next });
-        options.onMatchSent?.(result === 'matched' ? 'matched' : 'sent');
-      } catch (e) {
-        Alert.alert('Something went wrong', (e as Error).message || 'Please try again.');
-      }
+      const result = await sendMatchRequest(subject.userId, subject.surface === 'profile' ? null : subject.answerId ?? null);
+      const next: FeedMatchState = result === 'matched' ? 'matched' : 'sent';
+      options.onStateChange?.(subject.userId, { matchState: next });
+      options.onMatchSent?.(result === 'matched' ? 'matched' : 'sent');
     });
   }, [subject, person, options]);
 

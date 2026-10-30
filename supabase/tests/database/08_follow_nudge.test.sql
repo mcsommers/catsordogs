@@ -2,7 +2,7 @@
 -- notification-a-day limit, and that nobody using the app can ever learn who
 -- follows or nudged them.
 begin;
-select plan(95);
+select plan(97);
 
 delete from public.answers;
 delete from public.videos;
@@ -54,6 +54,10 @@ select throws_ok($$select public.follow_user(gen_random_uuid())$$, 'P0002', 'Per
 select throws_ok($$select public.follow_user('e0000008-0000-0000-0000-000000000000')$$, 'P0002', 'Person not found.', 'you cannot follow someone with an unfinished profile');
 select throws_ok($$select public.follow_user('e0000007-0000-0000-0000-000000000000')$$, '23514', 'This person is not accepting followers.',
   'new follows are rejected when the person turned followers off');
+select is((select accepts_followers from public.get_follow_state('e0000007-0000-0000-0000-000000000000')), false,
+  'get_follow_state reports when someone is not accepting followers');
+select is((select accepts_followers from public.get_follow_state('e0000001-0000-0000-0000-000000000000')), true,
+  'get_follow_state reports when someone accepts followers');
 select throws_ok($$select public.follow_user('e0000006-0000-0000-0000-000000000000')$$, 'P0002', 'Person not found.',
   'someone who blocked you looks exactly like someone who does not exist');
 select is((select following from public.get_follow_state('e0000001-0000-0000-0000-000000000000')), true, 'the app can tell F1 follows A');

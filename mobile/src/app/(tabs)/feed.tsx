@@ -112,6 +112,7 @@ export default function Feed() {
           captionSegments: [],
           durationSeconds: 0,
           isFollowed: false,
+          acceptsFollowers: true,
           submittedAt: '',
           streakDays: 0,
           matchState: 'none',
@@ -141,8 +142,8 @@ export default function Feed() {
     : null;
 
   const social = useSocialActions(socialSubject, {
-    onStateChange: (patch) => {
-      if (activeItem) patchFeedUser(activeItem.userId, patch);
+    onStateChange: (userId, patch) => {
+      patchFeedUser(userId, patch);
     },
     onBlocked: () => {
       if (activeItem) setItems((prev) => prev.filter((it) => it.userId !== activeItem.userId));
@@ -585,6 +586,7 @@ export default function Feed() {
       <MoreOptionsMenu
         visible={social.menuOpen}
         isFollowed={activeItem?.isFollowed ?? false}
+        acceptsFollowers={activeItem?.acceptsFollowers ?? true}
         firstName={activeItem?.firstName ?? ''}
         age={activeItem?.age}
         avatarUri={activeItem?.avatarUrl}
@@ -594,7 +596,7 @@ export default function Feed() {
       <FlatList
         ref={flatRef}
         data={listRows}
-        extraData={{ activeIndex, muted, playbackUrls }}
+        extraData={{ activeIndex, muted, playbackUrls, items }}
         keyExtractor={(item) => item.answerId}
         pagingEnabled
         // iOS "fast" is a light flick. On Android the same prop sets fling friction

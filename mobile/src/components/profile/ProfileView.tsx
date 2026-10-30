@@ -119,6 +119,7 @@ export function ProfileView({ userId, showBack }: Props) {
   const [loadingMore, setLoadingMore] = useState(false);
   const [failed, setFailed] = useState(false);
   const [isFollowed, setIsFollowed] = useState(false);
+  const [acceptsFollowers, setAcceptsFollowers] = useState(true);
   const [canNudge, setCanNudge] = useState(false);
   const [alreadyNudged, setAlreadyNudged] = useState(false);
   const [matchState, setMatchState] = useState<FeedMatchState>('none');
@@ -148,6 +149,7 @@ export function ProfileView({ userId, showBack }: Props) {
         await recordProfileView(p.userId);
         const fs = await getFollowState(p.userId);
         setIsFollowed(fs.following);
+        setAcceptsFollowers(fs.acceptsFollowers);
         setCanNudge(fs.canNudge);
         setAlreadyNudged(fs.alreadyNudged);
         if (p.matchState === 'incoming') {
@@ -226,7 +228,7 @@ export function ProfileView({ userId, showBack }: Props) {
       : null;
 
   const social = useSocialActions(socialSubject, {
-    onStateChange: (patch) => {
+    onStateChange: (_userId, patch) => {
       if (patch.isFollowed != null) setIsFollowed(patch.isFollowed);
       if (patch.matchState != null) setMatchState(patch.matchState);
     },
@@ -292,6 +294,7 @@ export function ProfileView({ userId, showBack }: Props) {
         <MoreOptionsMenu
           visible={social.menuOpen}
           isFollowed={isFollowed}
+          acceptsFollowers={acceptsFollowers}
           firstName={profile.firstName}
           age={profile.age}
           avatarUri={heroUrl}

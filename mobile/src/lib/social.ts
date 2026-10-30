@@ -7,6 +7,7 @@ export type FollowState = {
   following: boolean;
   canNudge: boolean;
   alreadyNudged: boolean;
+  acceptsFollowers: boolean;
 };
 
 export type MatchStateDetail = {
@@ -124,6 +125,7 @@ export async function getFollowState(userId: string): Promise<FollowState> {
     following: Boolean(r?.following),
     canNudge: Boolean(r?.can_nudge),
     alreadyNudged: Boolean(r?.already_nudged),
+    acceptsFollowers: r?.accepts_followers !== false,
   };
 }
 

@@ -29,6 +29,8 @@ type MenuRow = {
 type Props = {
   visible: boolean;
   isFollowed: boolean;
+  /** When false and not already followed, the Follow row is omitted (08b). */
+  acceptsFollowers?: boolean;
   /** Your own video (06kb): only Delete video and Cancel. */
   own?: boolean;
   firstName: string;
@@ -47,25 +49,29 @@ function menuTitle(firstName: string, age?: number | null): string {
   return name;
 }
 
-function buildRows(isFollowed: boolean, own: boolean): MenuRow[] {
+function buildRows(isFollowed: boolean, own: boolean, acceptsFollowers: boolean): MenuRow[] {
   if (own) {
     return [{ key: 'delete_video', label: 'Delete video', icon: Trash2, destructive: true, iconColor: DESTRUCTIVE }];
   }
-  const followRow: MenuRow = isFollowed
-    ? { key: 'unfollow', label: 'Unfollow', icon: UserMinus }
-    : { key: 'follow', label: 'Follow', icon: UserPlus };
-  return [
-    followRow,
+  const rows: MenuRow[] = [];
+  if (isFollowed) {
+    rows.push({ key: 'unfollow', label: 'Unfollow', icon: UserMinus });
+  } else if (acceptsFollowers) {
+    rows.push({ key: 'follow', label: 'Follow', icon: UserPlus });
+  }
+  rows.push(
     { key: 'not_interested', label: 'Not Interested', icon: EyeOff },
     { key: 'report', label: 'Report', icon: Flag },
     { key: 'block', label: 'Block', icon: Ban, destructive: true, iconColor: DESTRUCTIVE },
-  ];
+  );
+  return rows;
 }
 
 /** 06e / 06p / 06k more-options sheet — order matches MVP. Own video on 06k: 06kb. */
 export function MoreOptionsMenu({
   visible,
   isFollowed,
+  acceptsFollowers = true,
   own = false,
   firstName,
   age,
@@ -75,7 +81,10 @@ export function MoreOptionsMenu({
 }: Props) {
   const insets = useSafeAreaInsets();
   const sheetPaddingBottom = bottomSheetPadding(insets.bottom);
-  const rows = useMemo(() => buildRows(isFollowed, own), [isFollowed, own]);
+  const rows = useMemo(
+    () => buildRows(isFollowed, own, acceptsFollowers),
+    [isFollowed, own, acceptsFollowers],
+  );
   const title = menuTitle(firstName, age);
 
   /** The tap that opens this sheet would also hit the backdrop and close it immediately. */

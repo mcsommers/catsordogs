@@ -6,6 +6,7 @@ import {
   formatProfileIdentityLabel,
   formatVisibleProfileIdentity,
   formatFeedPosterCity,
+  formatNameAgeSuffix,
   formatStreakBadge,
   longDate,
   questionPillLabel,
@@ -54,6 +55,9 @@ describe('formatting', () => {
     expect(formatStreakBadge(14)).toBe('14-day streak');
     expect(formatFeedPosterCity('Brooklyn, NY')).toBe('Brooklyn, NY');
     expect(formatFeedPosterCity('  ')).toBeNull();
+    expect(formatNameAgeSuffix(29)).toBe(', 29');
+    expect(formatNameAgeSuffix('29')).toBe(', 29');
+    expect(formatNameAgeSuffix(null)).toBe('');
   });
 
   it('shows when you followed someone', () => {
