@@ -10,7 +10,7 @@ const { class: className } = Astro.props;
 ---
 
 <div class:list={['store-badges', className]}>
-  <button type="button" class="store-badge-btn" data-open-download-modal aria-label="Download on the App Store">
+  <button type="button" class="store-badge-btn" data-open-download-modal="ios" aria-label="Download on the App Store">
     <img
       class="store-badge"
       src={appStoreBadge.src}
@@ -21,7 +21,7 @@ const { class: className } = Astro.props;
       decoding="async"
     />
   </button>
-  <button type="button" class="store-badge-btn" data-open-download-modal aria-label="Get it on Google Play">
+  <button type="button" class="store-badge-btn" data-open-download-modal="android" aria-label="Get it on Google Play">
     <img
       class="store-badge"
       src={googlePlayBadge.src}

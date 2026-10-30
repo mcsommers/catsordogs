@@ -52,6 +52,7 @@ Living log of product questions, options, and Mike’s answers for the public ma
 | Oct 17, 2026 | **Hero visual:** Replaced layered `black.webp` + **06 Feed** inset with single asset `website/homepagehero.png` on desktop and mobile. |
 | Oct 17, 2026 | **Website assets:** Mike moved marketing assets under `website/assets/`; `website.pen` image fills updated to `../website/assets/…`. |
 | Oct 17, 2026 | **Website code:** Astro static site in `website/` (run `npm run website` from repo root). Copy lives in `website/src/data/homepage.ts`. Section nav anchors wired; store badges and footer legal labels are not links yet. Set `PUBLIC_SITE_URL` in `website/.env` before production build for canonical URLs, sitemap, and Open Graph. |
+| Oct 30, 2026 | **Download modals:** App Store badge opens **TestFlight Modal — iOS**; Google Play keeps **Download Modal — Android** email notify. Download section subtitle synced desktop + mobile. TestFlight invite URL hardcoded in `website/src/data/homepage.ts` (`testFlightInviteUrl`). |
 | Oct 17, 2026 | **Download modal:** Store badges open a Coming Soon dialog with email notify signup. Design frame **Download Modal** in `website.pen`. Backend: `website_launch_signups` + RPC `submit_website_launch_notify` (migration `20261043000000_website_launch_signups.sql`). Website needs `PUBLIC_SUPABASE_URL` and `PUBLIC_SUPABASE_ANON_KEY` in `website/.env`. |
 | Oct 17, 2026 | **Launch signup owner email:** Each new signup (not duplicates) POSTs to Edge Function `website-launch-signup-alert`, which emails **mikesommers@gmail.com** (migration `20261043400000_website_launch_signup_direct_alert.sql`). Requires `private.worker_config` on that Supabase project (same as the notification worker). Revisit when production admins are live. |
 | Oct 17, 2026 | **Admin email list:** `/admin/email-list` lists signups via RPC `admin_list_website_launch_signups` (migration `20261043100000_admin_list_website_launch_signups.sql`). Nav link **Email list** in the admin shell. |
@@ -66,6 +67,6 @@ Living log of product questions, options, and Mike’s answers for the public ma
 
 - [x] Link Privacy, Terms, and Community guidelines to `/privacy-policy`, `/terms-of-service`, and `/community-guidelines` (Oct 17, 2026).
 - [x] **Favicon:** **C. CD monogram** from **Favicon concepts** in `website.pen` shipped as `website/public/favicon.svg` (Oct 18, 2026).
-- [ ] **App store launch:** Remove the Coming Soon / notify modal (`DownloadModal.astro`, `SiteLayout` import); wire `StoreBadges.astro` to real App Store and Google Play URLs. Backend signup + owner email can stay or be retired then.
+- [ ] **App store launch:** When Android testing or public store URLs are ready, wire the Google Play badge to Play (retire or narrow the notify modal). iPhone TestFlight flow on the marketing site is live (Oct 30, 2026); public App Store URL replaces TestFlight modal when you ship publicly.
 - [ ] Refine subscription tier bullets when the Free / Gold / Platinum model is defined.
 - [ ] Optional: add anchor IDs / section labels in Pencil for handoff to code (not required for static design).
