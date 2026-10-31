@@ -15,6 +15,15 @@ export function safePause(player: VideoPlayer) {
   }
 }
 
+/** `createVideoPlayer` instances must be released or they leak native ExoPlayer / AVPlayer memory. */
+export function safeRelease(player: VideoPlayer) {
+  try {
+    player.release();
+  } catch {
+    // Already released, or the native object is gone after a screen pop.
+  }
+}
+
 export function safePlay(player: VideoPlayer) {
   try {
     player.play();

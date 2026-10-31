@@ -399,8 +399,8 @@ values ('https://<project id>.supabase.co/functions/v1/process-notifications', '
 ```
 
 Until this is done the scheduled job does nothing, so nothing is sent. Locally nothing is sent either (the tests use
-stand-ins for Expo and Resend). Push needs real phones with a development build and Expo push credentials, which come
-with the app screens.
+stand-ins for Expo and Resend). Push needs a TestFlight or Play build plus Expo push credentials (Apple push for iPhone;
+FCM V1 and `mobile/google-services.json` for Android). Expo Go cannot register Android remote push.
 
 ## Email confirmation
 

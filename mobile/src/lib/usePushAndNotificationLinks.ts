@@ -5,30 +5,9 @@ import { useRouter } from 'expo-router';
 import { canRegisterForRemotePush, canUseExpoNotificationsModule } from './canRegisterForRemotePush';
 import { ensureForegroundNotificationHandler } from './notificationHandler';
 import { registerForPushNotifications } from './push';
-import { navigateFromNotificationPayload } from './notificationNavigation';
+import { navigateFromNotificationPayload, pathFromNotificationUrl, pushAppPath } from './notificationNavigation';
 import { runNavigationAction } from './deferredNavigation';
 import { useSession } from './session';
-
-function pathFromUrl(url: string): string | null {
-  try {
-    const parsed = Linking.parse(url);
-    let path = parsed.path?.replace(/^\//, '') ?? '';
-    if (parsed.hostname && parsed.hostname !== 'catsordogs.net') {
-      // Custom scheme: catsordogs://user/uuid
-    } else if (parsed.hostname === 'catsordogs.net' && path) {
-      path = path.replace(/^\//, '');
-    }
-    if (!path || path === 'open-app' || path === 'open-app.html') return null;
-    if (path === 'question' || path === 'matches' || path === 'notifications') return `/${path}`;
-    if (path.startsWith('chat/')) return `/${path}`;
-    if (path.startsWith('user/')) return `/${path}`;
-    const deep = url.match(/\/(user|chat)\/[0-9a-f-]{36}/i);
-    if (deep) return deep[0];
-    return null;
-  } catch {
-    return null;
-  }
-}
 
 /** Register push when signed in; handle notification taps and https app links. */
 export function usePushAndNotificationLinks() {
@@ -59,13 +38,13 @@ export function usePushAndNotificationLinks() {
 
     const openPath = (href: string) => {
       runNavigationAction(() => {
-        router.push(href as `/question`);
+        pushAppPath(router, href);
       });
     };
 
     const handleUrl = (url: string | null) => {
       if (!url) return;
-      const href = pathFromUrl(url);
+      const href = pathFromNotificationUrl(url);
       if (href) openPath(href);
     };
 

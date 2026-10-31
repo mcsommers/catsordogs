@@ -494,7 +494,7 @@ Android signing and Play upload use two different credentials on Expo. Do not mi
 | --- | --- |
 | **Build credentials → Android upload keystore** | Created when the first `eas build` asks **Generate a new Android Keystore?** Answer **yes**. EAS signs the `.aab`. |
 | **Service credentials → Google service account key for EAS Submit** | JSON from Google Cloud so `eas submit` can upload to Play. Optional if you upload the `.aab` yourself in Play Console. |
-| **FCM V1 service account key** | Android push on store builds. Separate from Play upload. Add when you UAT push on the Play build. |
+| **FCM V1 service account key** | Android push on store builds. Separate from Play upload. Firebase project **cats-or-dogs-push** plus `mobile/google-services.json` (Oct 31, 2026). |
 
 **First Android build.** From `mobile`, when `eas build --platform android --profile preview` asks for a new keystore, answer **yes**. Download a keystore backup only if Expo offers one; do not commit it.
 
@@ -541,6 +541,8 @@ First internal test build. Staging server. Email sign-up only.
 6. **Next** → **Preview and confirm** → **Start rollout to Internal testing**. The track should become active, not only **Inactive • Draft release**.
 
 This Google service account JSON is only for Play API upload. It is not the Android upload keystore, not the FCM key, and not a Supabase key.
+
+**FCM V1 (Android push).** Separate from Play upload. Firebase project **cats-or-dogs-push**, Android app package `net.catsordogs.app`. Download `google-services.json` from Firebase and keep it at `mobile/google-services.json` (`expo.android.googleServicesFile` in `mobile/app.json`). Upload the Firebase **Service accounts** private key on Expo under **FCM V1 service account key**, not under **Google service account key for EAS Submit**. Do not commit the private key. `google-services.json` is public-facing and is committed so EAS can bake it into Play builds.
 
 ## Step 8. Install it yourself on staging
 

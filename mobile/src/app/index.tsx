@@ -1,8 +1,10 @@
 import { useEffect, useState } from 'react';
-import { Redirect } from 'expo-router';
+import { Redirect, type Href } from 'expo-router';
+import * as Linking from 'expo-linking';
 import { Text, View } from 'react-native';
 import { useSession } from '../lib/session';
 import { getGate, getProfileCompleted } from '../lib/api';
+import { pathFromNotificationUrl } from '../lib/notificationNavigation';
 import { startRoute, type StartRoute } from '../lib/routing';
 import { CenteredSpinner, PrimaryButton, styles } from '../components/ui';
 
@@ -12,6 +14,21 @@ export default function Start() {
   const [failed, setFailed] = useState(false);
   const [attempt, setAttempt] = useState(0);
   const [href, setHref] = useState<StartRoute | null>(null);
+  const [incomingPath, setIncomingPath] = useState<string | null | undefined>(undefined);
+
+  useEffect(() => {
+    let cancelled = false;
+    Linking.getInitialURL()
+      .then((url) => {
+        if (!cancelled) setIncomingPath(pathFromNotificationUrl(url));
+      })
+      .catch(() => {
+        if (!cancelled) setIncomingPath(null);
+      });
+    return () => {
+      cancelled = true;
+    };
+  }, []);
 
   useEffect(() => {
     if (loading) return;
@@ -36,8 +53,8 @@ export default function Start() {
     };
   }, [session, loading, attempt]);
 
-  if (!loading && !session && href) return <Redirect href={href} />;
-  if (!loading && session && href) return <Redirect href={href} />;
+  const openHref = href === '/feed' && incomingPath ? incomingPath : href;
+  if (!loading && href && incomingPath !== undefined) return <Redirect href={openHref as Href} />;
 
   if (failed) {
     return (

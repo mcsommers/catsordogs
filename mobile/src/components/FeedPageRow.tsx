@@ -4,7 +4,7 @@ import { VideoView, type VideoPlayer } from 'expo-video';
 import { router } from 'expo-router';
 import type { FeedItem } from '../lib/feed';
 import { reportAnswerView } from '../lib/feed';
-import { getFeedPlayer } from '../lib/feedPlayerPool';
+import { FEED_PLAYER_KEEP_RADIUS, getFeedPlayer } from '../lib/feedPlayerPool';
 import { registerFeedPlaybackPause } from '../lib/feedPlaybackCoordinator';
 import {
   safePause,
@@ -17,9 +17,6 @@ import {
 import { useVideoPlaybackControl } from '../hooks/useVideoPlaybackControl';
 import { useVideoChromeVisibility } from '../hooks/useVideoChromeVisibility';
 import { FeedOverlay } from './FeedOverlay';
-
-/** Active row plus one ahead/behind: mount native players for preload while keeping memory bounded. */
-const PLAYER_MOUNT_RADIUS = 1;
 
 export type FeedPageRowProps = {
   item: FeedItem;
@@ -277,7 +274,8 @@ function ChromeFeedPageRow(props: FeedPageRowProps) {
 }
 
 function FeedPageRowInner(props: FeedPageRowProps) {
-  const inRadius = Math.abs(props.index - props.activeIndex) <= PLAYER_MOUNT_RADIUS;
+  // VideoViews only for the active clip ± 1; the pool releases anything outside this window.
+  const inRadius = Math.abs(props.index - props.activeIndex) <= FEED_PLAYER_KEEP_RADIUS;
   if (props.index === props.activeIndex) {
     return <ActiveFeedPageRow {...props} />;
   }

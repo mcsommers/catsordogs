@@ -25,6 +25,7 @@
     },
     "android": {
       "package": "net.catsordogs.app",
+      "googleServicesFile": "./google-services.json",
       "backgroundColor": "#0B0B0C",
       "softwareKeyboardLayoutMode": "resize",
       "adaptiveIcon": {
