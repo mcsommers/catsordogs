@@ -1,11 +1,15 @@
 import { Platform } from 'react-native';
 import Constants, { AppOwnership, ExecutionEnvironment } from 'expo-constants';
 
-/** True when running inside Expo Go (not a store/TestFlight build). */
+/**
+ * True when running inside Expo Go (not a TestFlight / Play / store build).
+ * Do not treat `expoGoConfig != null` as Expo Go: SDK 58 store builds expose the
+ * embedded app config there, so that check skipped push on installed binaries.
+ */
 export function isExpoGo(): boolean {
   if (Constants.executionEnvironment === ExecutionEnvironment.StoreClient) return true;
   if (Constants.appOwnership === AppOwnership.Expo) return true;
-  return Constants.expoGoConfig != null;
+  return false;
 }
 
 /**

@@ -10,7 +10,7 @@
 *.p12
 *.key
 *.jks
-google-services.json
+*-firebase-adminsdk-*.json
 GoogleService-Info.plist
 
 # Node / Expo

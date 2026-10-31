@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "716611572209",
+    "project_id": "cats-or-dogs-push",
+    "storage_bucket": "cats-or-dogs-push.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:716611572209:android:93a183f81a97a1d969b450",
+        "android_client_info": {
+          "package_name": "net.catsordogs.app"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAnXp_tKKmdnqwLBzLyP6v1VFvKtLgkv_c"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

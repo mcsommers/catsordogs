@@ -23,7 +23,7 @@ This file is the **single index** for in-app notification types: what triggers t
 
 **User prefs (08c):** types: `daily_question`, `matches`, `messages`, `nudges`. New sign-ups get push and email **on** for all four (stored in `notification_preferences`). If a row is missing later, defaults are push on; email on **only for matches**. Types `moderation` and `admin_alert` ignore prefs (see below).
 
-**Push registration:** installed builds register when signed in; Expo Go skips remote push on Android (SDK 53+). See README and [UAT-flows.md](UAT-flows.md) **D-33**.
+**Push registration:** TestFlight / Play / store builds register when signed in. Detect Expo Go with `executionEnvironment === StoreClient` or `appOwnership === Expo` only. Do **not** use `expoGoConfig != null` (SDK 58 store builds fill that with the embedded app config, which skipped registration and showed the **08c** development-build note on installed apps). Android also needs the Expo **FCM V1** key and `mobile/google-services.json` (Firebase project **cats-or-dogs-push**). Expo Go still skips remote push on Android (SDK 53+). See README and [UAT-flows.md](UAT-flows.md) **D-33**.
 
 **Active chat:** while **07c** is open, the client heartbeats `set_active_chat`; message **push** is skipped if the session was updated within the last **90 seconds**. Email is unchanged. See **D-33c**.
 
@@ -221,7 +221,7 @@ See [mobile-questions.md](mobile-questions.md) (admin email on reports).
 | Enqueue: daily question | `enqueue_daily_question_notifications` in `20261008010000_daily_question_local_time.sql` |
 | Worker | `supabase/functions/process-notifications/index.ts` |
 | Email paths | `supabase/functions/_shared/notificationDeepLink.ts` |
-| Push tap / universal links | `mobile/src/lib/notificationNavigation.ts`, `mobile/src/hooks/usePushAndNotificationLinks.ts` |
+| Push tap / universal links | `mobile/src/lib/notificationNavigation.ts`, `mobile/src/lib/usePushAndNotificationLinks.ts`. Email https links on Android can open the app directly (`assetlinks.json`) or via the marketing **Open in the app** button. Installed builds must not route through the playing feed video first (Play crash, Oct 31 2026). |
 | Unsubscribe (link signing and handler) | `supabase/functions/_shared/unsubscribe.ts`, `supabase/functions/unsubscribe/`; DB `unsubscribe_email` in `20261008000000_follow_nudge_notifications.sql` |
 | Automated tests | `supabase/tests/database/09_notifications.test.sql`, `10_matching_messaging.test.sql`, `08_follow_nudge.test.sql`, API tests under `supabase/tests/api/` |
 

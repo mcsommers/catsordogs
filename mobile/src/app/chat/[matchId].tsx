@@ -13,6 +13,7 @@ import {
   View,
 } from 'react-native';
 import { router, useFocusEffect, useLocalSearchParams } from 'expo-router';
+import { firstRouteParam } from '../../lib/notificationNavigation';
 import { Bell, BellOff, Flag, HeartOff } from 'lucide-react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import {
@@ -45,7 +46,9 @@ import { colors, fonts } from '../../theme';
 const COMPOSER_EDGE_PAD = 8;
 
 export default function ChatScreen() {
-  const { matchId, justMatched } = useLocalSearchParams<{ matchId: string; justMatched?: string }>();
+  const params = useLocalSearchParams<{ matchId: string | string[]; justMatched?: string | string[] }>();
+  const matchId = firstRouteParam(params.matchId);
+  const justMatched = firstRouteParam(params.justMatched);
   const { session } = useSession();
   const { refreshMatchesAlert } = useMatchesAlert();
   const insets = useSafeAreaInsets();

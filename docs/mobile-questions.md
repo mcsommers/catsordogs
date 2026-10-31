@@ -3,6 +3,10 @@
 A record of questions asked while planning the phone app, the options offered,
 and Mike's answer. Newest phase first.
 
+## Feed must stay stable under fast swipe and profile round-trips (Mike, Oct 31, 2026)
+
+Most people swipe through feed videos quickly and move feed → profile → feed. That is the expected use, on iPhone and Android. The feed keeps native video players only for the **current clip plus one before and one after**, and **releases** the rest (`createVideoPlayer` does not free memory on its own). Opening a profile pauses that window but does not drop it, so back to the feed can resume the same clip. A leftover-player leak on Android closed the Play build after about 10 videos (Java heap ~256MB). iPhone has more headroom but uses the same pool. Docs: `docs/mobile-feed-scroll.md`. UAT **B-05c**, **C-07c**.
+
 ## Feed and 06k: tap video toggles chrome, not playback (Mike, Oct 29, 2026)
 
 On **06** and **06k**, tapping the video used to pause or play. Mike wanted tap to **hide or show** the overlay chrome (pill, metadata, actions, progress row, scrims) while playback continues. **Play/pause** stays on the progress row only. Swiping to another answer resets chrome to visible. Docs: `docs/mobile-feed-scroll.md`, MVP browsing row, UAT **B-03** and **C-13**.
@@ -40,6 +44,14 @@ On **07c**, bubbles you send use a light gray background (`#E0E0E4`) and dark te
 **In chat (07c):** While a chat is open, the app heartbeats `set_active_chat` on staging/production. The server skips **push** for new messages in that match while the heartbeat is fresh (90 seconds). Foreground banners for that match are suppressed too. Email is unchanged (still rate-limited per hour per thread).
 
 **Push tap crash (build 3):** TestFlight crash log showed `expo-video` releasing the feed player while React reported a fatal JS error during navigation to chat. Mitigations: pause/unmount feed `VideoView` when the feed tab is not focused, pause before `router.push` from notifications, and defer navigation until after interactions. Ship in the next iOS build.
+
+## Android email links crashed the Play build (Mike, Oct 31, 2026)
+
+Tapping **Open in the app** (or the https email link) for a match request, match, or message on the Play build closed the app. The link itself was valid; the app opened the feed video first, then jumped to **06j** / **07c** while Android was still tearing down `expo-video`. Cold start now opens the profile or chat path from the email when the profile is finished (skips the feed). The feed also pauses when the app leaves the foreground. **D-33b**.
+
+## Store-build push skipped as Expo Go (Mike, Oct 31, 2026)
+
+TestFlight and Play **build 16** showed **Push notifications need a development build...** on **08c** and never wrote `device_tokens`. `isExpoGo()` treated `expoGoConfig != null` as Expo Go; SDK 58 store builds put the embedded app config there. Detection now uses `StoreClient` / `appOwnership === Expo` only. Firebase project **cats-or-dogs-push** and `mobile/google-services.json` are in place for Android FCM. Both phones need the next store build before tokens register.
 
 ## Match push on TestFlight (Mike, Oct 20, 2026)
 

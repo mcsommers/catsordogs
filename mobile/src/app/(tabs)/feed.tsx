@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react';
 import {
+  AppState,
   FlatList,
   Platform,
   RefreshControl,
@@ -23,7 +24,12 @@ import {
 } from '../../lib/feed';
 import { loadFilterPreferencesUpdatedAt } from '../../lib/feedSettings';
 import { pauseFeedPlaybackBeforeNavigation, registerFeedPlaybackPause } from '../../lib/feedPlaybackCoordinator';
-import { clearFeedPlayerPool, pauseAllFeedPlayers } from '../../lib/feedPlayerPool';
+import {
+  clearFeedPlayerPool,
+  keepFeedPlayerIdsForIndex,
+  pauseAllFeedPlayers,
+  retainFeedPlayers,
+} from '../../lib/feedPlayerPool';
 import { FeedEndScreen } from '../../components/FeedEndScreen';
 import { FeedPageRow } from '../../components/FeedPageRow';
 import { FeedLocked, NoQuestionToday } from '../../components/QuestionStates';
@@ -37,12 +43,14 @@ import { useSocialActions, type SocialSubject } from '../../components/social/us
  * Feed tab (Pencil 06). UX invariant: unified vertical page scroll — see
  * docs/mobile-feed-scroll.md and AGENTS.md rule 6. Each row uses FeedPageRow
  * (video + FeedOverlay in renderItem); never float a full-screen overlay sibling above the list.
+ * Native players stay in a keep window of active ± 1 (released outside it) so fast swipe
+ * and feed → profile → feed stay stable on iPhone and Android.
  */
 const PAGE_SIZE = 12;
 const FEED_END_KEY = '__feed_caught_up__';
 /** Pull-to-refresh spinner sits below the status bar / playback progress chrome. */
 const FEED_REFRESH_SPINNER_OFFSET = 50;
-/** Prefetch playback URLs for clips near the active row (see FeedPageRow mount radius). */
+/** Prefetch playback URLs a little wider than the player keep window (active ± 1). */
 const PREFETCH_AHEAD = 2;
 const PREFETCH_BEHIND = 1;
 
@@ -228,6 +236,13 @@ export default function Feed() {
 
   useEffect(() => {
     return registerFeedPlaybackPause(pauseAllFeedPlayers);
+  }, []);
+
+  useEffect(() => {
+    const sub = AppState.addEventListener('change', (state) => {
+      if (state !== 'active') pauseAllFeedPlayers();
+    });
+    return () => sub.remove();
   }, []);
 
   useEffect(() => {
@@ -428,6 +443,10 @@ export default function Feed() {
     },
     [applyFeedPageIndex, indexForScrollOffset],
   );
+
+  useEffect(() => {
+    retainFeedPlayers(keepFeedPlayerIdsForIndex(items, activeIndex));
+  }, [activeIndex, items]);
 
   useEffect(() => {
     if (gate?.state !== 'open' || items.length === 0 || onEndPage) return;
